@@ -7,8 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../state.dart';
 import '../extensions.dart';
+import '../state.dart';
 import 'button.dart';
 
 enum GazeListViewIndicatorState {

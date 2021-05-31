@@ -5,8 +5,8 @@
 //
 
 import 'package:flutter/material.dart';
-import 'package:gazeinteraction/state.dart';
 
+import '../state.dart';
 import 'button_wrapper.dart';
 
 class GazeButtonProperties {

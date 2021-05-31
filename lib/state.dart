@@ -48,7 +48,7 @@ class GazeInteractive extends ChangeNotifier {
   }
 
   String _currentRoute = '';
-  String get currentRoute => currentRoute;
+  String get currentRoute => _currentRoute;
   set currentRoute(String value) {
     if (_currentRoute != value) {
       _currentRoute = value;
@@ -251,10 +251,5 @@ class GazeInteractive extends ChangeNotifier {
       }
     }
     return false;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
