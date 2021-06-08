@@ -13,7 +13,9 @@ import '../state.dart';
 
 class GazePointerView extends StatefulWidget {
   final GazeInteractive gazeInteractive;
-  GazePointerView({Key? key, required this.gazeInteractive}) : super(key: key);
+  GazePointerView({Key? key})
+      : gazeInteractive = GazeInteractive(),
+        super(key: key);
 
   @override
   _GazePointerViewState createState() => _GazePointerViewState();

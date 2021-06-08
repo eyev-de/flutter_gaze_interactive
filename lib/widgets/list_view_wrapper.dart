@@ -40,11 +40,11 @@ class GazeListViewWrapper extends StatefulWidget {
   final Widget wrappedWidget;
   final ScrollController controller;
   GazeListViewWrapper({
-    required this.gazeInteractive,
     required this.wrappedKey,
     required this.wrappedWidget,
     required this.controller,
-  }) : super(key: wrappedKey);
+  })  : gazeInteractive = GazeInteractive(),
+        super(key: wrappedKey);
   @override
   _GazeListViewWrapperState createState() => _GazeListViewWrapperState();
 }
