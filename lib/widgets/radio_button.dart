@@ -11,7 +11,7 @@ class GazeRadioButton extends StatelessWidget {
   final bool selected;
   final Color color;
   final void Function() onTap;
-  GazeRadioButton(Key? key, {required this.selected, this.color = Colors.yellow, required this.onTap}) : super(key: key);
+  GazeRadioButton({Key? key, required this.selected, this.color = Colors.yellow, required this.onTap}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GazeButton(
