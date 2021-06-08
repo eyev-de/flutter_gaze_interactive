@@ -1,4 +1,4 @@
-name: gazeinteraction
+name: gaze_interactive
 description: Gaze Interaction implements the interaction of eye-trackers (or pointer other devices) with specifically designed gaze interactive widgets.
 version: 0.0.1
 homepage:

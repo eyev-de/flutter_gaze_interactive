@@ -236,13 +236,13 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "gazeinteraction",
+      "name": "gaze_interactive",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-05-31T20:33:47.927431Z",
+  "generated": "2021-06-08T12:50:41.684568Z",
   "generator": "pub",
   "generatorVersion": "2.13.1"
 }
