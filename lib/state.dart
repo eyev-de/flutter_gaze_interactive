@@ -47,6 +47,8 @@ class GazeInteractive extends ChangeNotifier {
     load();
   }
 
+  bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate;
+
   String _currentRoute = '';
   String get currentRoute => _currentRoute;
   set currentRoute(String value) {
@@ -163,7 +165,6 @@ class GazeInteractive extends ChangeNotifier {
     required Offset position,
     required double width,
     required double height,
-    bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate,
   }) {
     if (!_active) return;
     _rect = Rect.fromCenter(
