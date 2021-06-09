@@ -36,7 +36,7 @@ class GazeTextField extends StatelessWidget {
     this.placeholder,
     this.enabled,
     this.placeholderStyle,
-    this.padding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
+    this.padding = const EdgeInsets.fromLTRB(20, 30, 20, 30),
     this.cursorRadius = const Radius.circular(20),
     this.style,
     this.keyboardType = TextInputType.name,
@@ -69,9 +69,11 @@ class GazeTextField extends StatelessWidget {
           color: Colors.grey.shade900,
           borderRadius: BorderRadius.circular(20),
         ),
+        onTap: () {
+          if (onFocus != null) onFocus!();
+        },
       ),
       onGazed: () {
-        focusNode.requestFocus();
         if (onFocus != null) onFocus!();
       },
     );
