@@ -168,7 +168,7 @@ class GazeInteractive extends ChangeNotifier {
   }) {
     if (!_active) return;
     _rect = Rect.fromCenter(
-      center: position + Offset(width / 2, height / 2),
+      center: position,
       width: width,
       height: height,
     );
