@@ -1,4 +1,4 @@
-//  Skyle
+//  Gaze Interactive
 //
 //  Created by Konstantin Wachendorff.
 //  Copyright © 2021 eyeV GmbH. All rights reserved.
@@ -43,7 +43,11 @@ class GazeTextField extends StatelessWidget {
     this.route,
     this.onChanged,
     this.onFocus,
-  }) : super(key: key);
+  }) : super(key: key) {
+    controller.addListener(() {
+      if (onChanged != null) onChanged!(controller.text);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return GazeButtonWrapper(
@@ -56,7 +60,6 @@ class GazeTextField extends StatelessWidget {
       wrappedWidget: CupertinoTextField(
         focusNode: focusNode,
         controller: controller,
-        onChanged: onChanged,
         maxLength: maxLength,
         placeholder: placeholder,
         enabled: enabled,

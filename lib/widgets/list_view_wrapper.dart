@@ -1,4 +1,4 @@
-//  Skyle
+//  Gaze Interactive
 //
 //  Created by Konstantin Wachendorff.
 //  Copyright © 2021 eyeV GmbH. All rights reserved.
@@ -36,15 +36,15 @@ extension GazeListViewIndicatorStateValue on GazeListViewIndicatorState {
 
 class GazeListViewWrapper extends StatefulWidget {
   final GazeInteractive gazeInteractive;
-  final GlobalKey wrappedKey;
+  final GlobalKey wrappedKey = GlobalKey();
   final Widget wrappedWidget;
   final ScrollController controller;
   GazeListViewWrapper({
-    required this.wrappedKey,
+    Key? key,
     required this.wrappedWidget,
     required this.controller,
   })  : gazeInteractive = GazeInteractive(),
-        super(key: wrappedKey);
+        super(key: key);
   @override
   _GazeListViewWrapperState createState() => _GazeListViewWrapperState();
 }

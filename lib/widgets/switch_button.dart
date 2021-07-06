@@ -1,4 +1,4 @@
-//  Skyle
+//  Gaze Interactive
 //
 //  Created by Konstantin Wachendorff.
 //  Copyright © 2021 eyeV GmbH. All rights reserved.

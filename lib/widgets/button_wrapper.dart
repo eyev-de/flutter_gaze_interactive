@@ -1,4 +1,4 @@
-//  Skyle
+//  Gaze Interactive
 //
 //  Created by Konstantin Wachendorff.
 //  Copyright © 2021 eyeV GmbH. All rights reserved.
@@ -104,13 +104,8 @@ class _GazeButtonWrapperState extends State<GazeButtonWrapper> with SingleTicker
                     child: child,
                   );
                 },
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Container(
-                      height: constraints.maxHeight,
-                      color: widget.properties.color.withOpacity(0.5),
-                    );
-                  },
+                child: Container(
+                  color: widget.properties.color.withOpacity(0.5),
                 ),
               ),
             ),

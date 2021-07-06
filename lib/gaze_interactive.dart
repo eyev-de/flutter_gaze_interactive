@@ -1,3 +1,9 @@
+//  Gaze Interactive
+//
+//  Created by Konstantin Wachendorff.
+//  Copyright © 2021 eyeV GmbH. All rights reserved.
+//
+
 library gaze_interactive;
 
 export 'state.dart';

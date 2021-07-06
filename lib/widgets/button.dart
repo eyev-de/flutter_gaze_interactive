@@ -1,4 +1,4 @@
-//  Skyle
+//  Gaze Interactive
 //
 //  Created by Konstantin Wachendorff.
 //  Copyright © 2021 eyeV GmbH. All rights reserved.
@@ -10,7 +10,7 @@ import '../state.dart';
 import 'button_wrapper.dart';
 
 class GazeButtonProperties {
-  final Key key;
+  final Key? key;
   final int id;
   final bool selected;
   final String? text;
@@ -31,7 +31,7 @@ class GazeButtonProperties {
   final String? route;
   final Widget? child;
   GazeButtonProperties({
-    required this.key,
+    this.key,
     this.id = 0,
     this.selected = true,
     this.text,
