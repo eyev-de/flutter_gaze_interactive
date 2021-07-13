@@ -115,6 +115,7 @@ class GazeButton extends StatelessWidget {
   Widget _buildVertical(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (properties.iconColor != null)
           Row(
