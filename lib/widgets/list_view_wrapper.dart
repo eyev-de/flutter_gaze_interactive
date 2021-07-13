@@ -35,16 +35,15 @@ extension GazeListViewIndicatorStateValue on GazeListViewIndicatorState {
 }
 
 class GazeListViewWrapper extends StatefulWidget {
-  final GazeInteractive gazeInteractive;
-  final GlobalKey wrappedKey = GlobalKey();
+  final GazeInteractive gazeInteractive = GazeInteractive();
+  final GlobalKey wrappedKey;
   final Widget wrappedWidget;
   final ScrollController controller;
   GazeListViewWrapper({
-    Key? key,
+    required this.wrappedKey,
     required this.wrappedWidget,
     required this.controller,
-  })  : gazeInteractive = GazeInteractive(),
-        super(key: key);
+  }) : super(key: wrappedKey);
   @override
   _GazeListViewWrapperState createState() => _GazeListViewWrapperState();
 }

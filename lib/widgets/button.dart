@@ -7,7 +7,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '../state.dart';
 import 'button_wrapper.dart';
 
 class GazeButtonProperties {
@@ -71,7 +70,6 @@ class GazeButton extends StatelessWidget {
             borderRadius: properties.borderRadius,
             route: properties.route,
           ),
-          gazeInteractive: GazeInteractive(),
           wrappedKey: gazeInteractiveKey,
           wrappedWidget: _buildButton(context),
           onGazed: () {

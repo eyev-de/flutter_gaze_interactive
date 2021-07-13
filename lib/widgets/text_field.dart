@@ -7,7 +7,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../state.dart';
 import 'button_wrapper.dart';
 
 class GazeTextField extends StatelessWidget {
@@ -55,7 +54,6 @@ class GazeTextField extends StatelessWidget {
         borderRadius: BorderRadius.all(cursorRadius),
         route: route,
       ),
-      gazeInteractive: GazeInteractive(),
       wrappedKey: gazeInteractiveKey,
       wrappedWidget: CupertinoTextField(
         focusNode: focusNode,

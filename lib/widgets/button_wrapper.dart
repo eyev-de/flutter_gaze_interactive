@@ -23,12 +23,16 @@ class GazeButtonWrapperProperties {
 
 class GazeButtonWrapper extends StatefulWidget {
   final GazeButtonWrapperProperties properties;
-  final GazeInteractive gazeInteractive;
+  final GazeInteractive gazeInteractive = GazeInteractive();
   final GlobalKey wrappedKey;
   final Widget wrappedWidget;
   final void Function() onGazed;
-  GazeButtonWrapper({required this.properties, required this.gazeInteractive, required this.wrappedKey, required this.wrappedWidget, required this.onGazed})
-      : super(key: wrappedKey);
+  GazeButtonWrapper({
+    required this.properties,
+    required this.wrappedKey,
+    required this.wrappedWidget,
+    required this.onGazed,
+  }) : super(key: wrappedKey);
   @override
   _GazeButtonWrapperState createState() => _GazeButtonWrapperState();
 }

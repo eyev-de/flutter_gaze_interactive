@@ -9,6 +9,7 @@ library gaze_interactive;
 export 'state.dart';
 export 'widgets/button.dart';
 export 'widgets/button_wrapper.dart';
+export 'widgets/list_view.dart';
 export 'widgets/list_view_wrapper.dart';
 export 'widgets/pointer_view.dart';
 export 'widgets/radio_button.dart';
