@@ -4,6 +4,7 @@
 //  Copyright © 2021 eyeV GmbH. All rights reserved.
 //
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../state.dart';
@@ -64,6 +65,7 @@ class GazeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (properties.gazeInteractive) {
       return Container(
+        color: Colors.blue,
         padding: properties.padding,
         child: GazeButtonWrapper(
           properties: GazeButtonWrapperProperties(
@@ -135,14 +137,17 @@ class GazeButton extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                properties.text!,
-                textAlign: TextAlign.center,
-                style: properties.textStyle ??
-                    TextStyle(
-                      color: properties.textColor,
-                      fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
-                    ),
+              Expanded(
+                child: AutoSizeText(
+                  properties.text!,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: properties.textStyle ??
+                      TextStyle(
+                        color: properties.textColor,
+                        fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
+                      ),
+                ),
               ),
             ],
           )
@@ -173,14 +178,17 @@ class GazeButton extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                properties.text!,
-                textAlign: TextAlign.center,
-                style: properties.textStyle ??
-                    TextStyle(
-                      color: properties.textColor,
-                      fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
-                    ),
+              Expanded(
+                child: AutoSizeText(
+                  properties.text!,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: properties.textStyle ??
+                      TextStyle(
+                        color: properties.textColor,
+                        fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
+                      ),
+                ),
               ),
             ],
           )
