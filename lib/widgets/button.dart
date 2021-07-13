@@ -65,7 +65,6 @@ class GazeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (properties.gazeInteractive) {
       return Container(
-        color: Colors.blue,
         padding: properties.padding,
         child: GazeButtonWrapper(
           properties: GazeButtonWrapperProperties(
@@ -136,8 +135,9 @@ class GazeButton extends StatelessWidget {
         if (properties.text != null)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
+              Flexible(
                 child: AutoSizeText(
                   properties.text!,
                   textAlign: TextAlign.center,
@@ -177,8 +177,9 @@ class GazeButton extends StatelessWidget {
         if (properties.text != null)
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
+              Flexible(
                 child: AutoSizeText(
                   properties.text!,
                   textAlign: TextAlign.center,
