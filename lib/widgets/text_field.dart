@@ -19,7 +19,7 @@ class GazeTextField extends StatelessWidget {
 
   final String? placeholder;
   final int? maxLength;
-  final bool? enabled;
+  final bool enabled;
   final TextStyle? placeholderStyle;
   final EdgeInsetsGeometry padding;
   final Radius cursorRadius;
@@ -33,7 +33,7 @@ class GazeTextField extends StatelessWidget {
     required this.focusNode,
     this.maxLength,
     this.placeholder,
-    this.enabled,
+    this.enabled = true,
     this.placeholderStyle,
     this.padding = const EdgeInsets.fromLTRB(20, 30, 20, 30),
     this.cursorRadius = const Radius.circular(20),
@@ -49,13 +49,38 @@ class GazeTextField extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return GazeButtonWrapper(
-      properties: GazeButtonWrapperProperties(
-        borderRadius: BorderRadius.all(cursorRadius),
-        route: route,
-      ),
-      wrappedKey: gazeInteractiveKey,
-      wrappedWidget: CupertinoTextField(
+    if (enabled) {
+      return GazeButtonWrapper(
+        properties: GazeButtonWrapperProperties(
+          borderRadius: BorderRadius.all(cursorRadius),
+          route: route,
+        ),
+        wrappedKey: gazeInteractiveKey,
+        wrappedWidget: CupertinoTextField(
+          focusNode: focusNode,
+          controller: controller,
+          maxLength: maxLength,
+          placeholder: placeholder,
+          enabled: enabled,
+          placeholderStyle: placeholderStyle,
+          padding: padding,
+          cursorRadius: cursorRadius,
+          style: style,
+          keyboardType: keyboardType,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade900,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          onTap: () {
+            if (onFocus != null) onFocus!();
+          },
+        ),
+        onGazed: () {
+          if (onFocus != null) onFocus!();
+        },
+      );
+    } else {
+      return CupertinoTextField(
         focusNode: focusNode,
         controller: controller,
         maxLength: maxLength,
@@ -70,13 +95,7 @@ class GazeTextField extends StatelessWidget {
           color: Colors.grey.shade900,
           borderRadius: BorderRadius.circular(20),
         ),
-        onTap: () {
-          if (onFocus != null) onFocus!();
-        },
-      ),
-      onGazed: () {
-        if (onFocus != null) onFocus!();
-      },
-    );
+      );
+    }
   }
 }
