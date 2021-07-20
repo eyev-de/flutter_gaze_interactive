@@ -21,28 +21,26 @@ class GazeRadioButton extends StatelessWidget {
         horizontal: true,
         borderRadius: BorderRadius.circular(20),
         gazeInteractive: !selected,
-        child: Positioned.fill(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IgnorePointer(
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: selected ? color : null,
-                    border: selected
-                        ? null
-                        : Border.all(
-                            color: color,
-                            width: 2,
-                          ),
-                  ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IgnorePointer(
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: selected ? color : null,
+                  border: selected
+                      ? null
+                      : Border.all(
+                          color: color,
+                          width: 2,
+                        ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       onTap: selected ? null : onTap,
