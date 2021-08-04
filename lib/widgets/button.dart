@@ -63,7 +63,7 @@ class GazeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (properties.gazeInteractive) {
-      return Container(
+      return Padding(
         padding: properties.padding,
         child: GazeButtonWrapper(
           properties: GazeButtonWrapperProperties(
@@ -78,7 +78,7 @@ class GazeButton extends StatelessWidget {
         ),
       );
     }
-    return Container(
+    return Padding(
       padding: properties.padding,
       child: _buildButton(context),
     );
