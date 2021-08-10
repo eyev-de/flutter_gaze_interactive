@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'button_wrapper.dart';
 
 class GazeButtonProperties {
-  final Key? key;
+  final GlobalKey key;
   final int id;
   final bool selected;
   final String? text;
@@ -31,7 +31,7 @@ class GazeButtonProperties {
   final String? route;
   final Widget? child;
   GazeButtonProperties({
-    this.key,
+    required this.key,
     this.id = 0,
     this.selected = true,
     this.text,
@@ -56,31 +56,25 @@ class GazeButtonProperties {
 
 class GazeButton extends StatelessWidget {
   final GazeButtonProperties properties;
-  final GlobalKey gazeInteractiveKey = GlobalKey();
   final void Function()? onTap;
   GazeButton({required this.properties, this.onTap}) : super(key: properties.key);
 
   @override
   Widget build(BuildContext context) {
-    if (properties.gazeInteractive) {
-      return Padding(
-        padding: properties.padding,
-        child: GazeButtonWrapper(
-          properties: GazeButtonWrapperProperties(
-            borderRadius: properties.borderRadius,
-            route: properties.route,
-          ),
-          wrappedKey: gazeInteractiveKey,
-          wrappedWidget: _buildButton(context),
-          onGazed: () {
-            if (onTap != null) onTap!();
-          },
-        ),
-      );
-    }
     return Padding(
       padding: properties.padding,
-      child: _buildButton(context),
+      child: GazeButtonWrapper(
+        properties: GazeButtonWrapperProperties(
+          borderRadius: properties.borderRadius,
+          route: properties.route,
+          gazeInteractive: properties.gazeInteractive,
+        ),
+        wrappedKey: properties.key,
+        wrappedWidget: _buildButton(context),
+        onGazed: () {
+          if (onTap != null) onTap!();
+        },
+      ),
     );
   }
 

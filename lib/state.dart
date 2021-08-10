@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../extensions.dart';
 
-enum GazeInteractiveType { button, scroll }
+enum GazeInteractiveType { selectable, scrollable }
 
 class GazeInteractionData {
   final GlobalKey key;
@@ -122,25 +122,33 @@ class GazeInteractive extends ChangeNotifier {
   }
 
   void register(GazeInteractionData data) {
+    // print('Register:');
     switch (data.type) {
-      case GazeInteractiveType.button:
-        _listOfButtons.add(data);
+      case GazeInteractiveType.selectable:
+        final exists = _listOfButtons.where((element) => element.key == data.key);
+        if (exists.isEmpty) _listOfButtons.add(data);
         break;
-      case GazeInteractiveType.scroll:
-        _listOfScrollViews.add(data);
+      case GazeInteractiveType.scrollable:
+        final exists = _listOfScrollViews.where((element) => element.key == data.key);
+        if (exists.isEmpty) _listOfScrollViews.add(data);
         break;
     }
+    // print('List of GazeButtons contains ${_listOfButtons.length} elements.');
+    // print('List of GazeListViews contains ${_listOfScrollViews.length} elemenst.');
   }
 
   void unregister(GlobalKey key, GazeInteractiveType type) {
+    // print('Unregister:');
     switch (type) {
-      case GazeInteractiveType.button:
+      case GazeInteractiveType.selectable:
         _listOfButtons.removeWhere((element) => element.key == key);
         break;
-      case GazeInteractiveType.scroll:
+      case GazeInteractiveType.scrollable:
         _listOfScrollViews.removeWhere((element) => element.key == key);
         break;
     }
+    // print('List of GazeButtons contains ${_listOfButtons.length} elements.');
+    // print('List of GazeListViews contains ${_listOfScrollViews.length} elemenst.');
   }
 
   void registerGazeView(GazePointerData element) {

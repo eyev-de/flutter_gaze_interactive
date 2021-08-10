@@ -14,10 +14,12 @@ class GazeButtonWrapperProperties {
   final BorderRadius borderRadius;
   final Color color;
   final String? route;
+  final bool gazeInteractive;
   GazeButtonWrapperProperties({
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.color = Colors.grey,
     this.route,
+    this.gazeInteractive = true,
   });
 }
 
@@ -28,11 +30,12 @@ class GazeButtonWrapper extends StatefulWidget {
   final Widget wrappedWidget;
   final void Function() onGazed;
   GazeButtonWrapper({
+    Key? key,
     required this.properties,
     required this.wrappedKey,
     required this.wrappedWidget,
     required this.onGazed,
-  }) : super(key: wrappedKey);
+  }) : super(key: key);
   @override
   _GazeButtonWrapperState createState() => _GazeButtonWrapperState();
 }
@@ -67,7 +70,7 @@ class _GazeButtonWrapperState extends State<GazeButtonWrapper> with SingleTicker
             _controller?.stop();
             _controller?.reset();
           }
-          widget.onGazed();
+          if (widget.properties.gazeInteractive) widget.onGazed();
         }
       });
   }
@@ -77,44 +80,46 @@ class _GazeButtonWrapperState extends State<GazeButtonWrapper> with SingleTicker
     return Stack(
       children: [
         widget.wrappedWidget,
-        Positioned.fill(
-          child: IgnorePointer(
-            child: Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: widget.properties.borderRadius,
-                border: Border.all(
-                  color: gazeIn ? widget.properties.color : Colors.transparent,
-                  width: 3,
+        if (widget.properties.gazeInteractive)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: widget.properties.borderRadius,
+                  border: Border.all(
+                    color: gazeIn ? widget.properties.color : Colors.transparent,
+                    width: 3,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Positioned.fill(
-          child: IgnorePointer(
-            child: Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: widget.properties.borderRadius,
-              ),
-              child: AnimatedBuilder(
-                animation: _controller!,
-                builder: (context, child) {
-                  return Transform(
-                    transform: Matrix4.diagonal3Values(_controller!.value, 1, 1),
-                    alignment: Alignment.centerLeft,
-                    origin: const Offset(0, 1),
-                    child: child,
-                  );
-                },
-                child: Container(
-                  color: widget.properties.color.withOpacity(0.5),
+        if (widget.properties.gazeInteractive)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: widget.properties.borderRadius,
+                ),
+                child: AnimatedBuilder(
+                  animation: _controller!,
+                  builder: (context, child) {
+                    return Transform(
+                      transform: Matrix4.diagonal3Values(_controller!.value, 1, 1),
+                      alignment: Alignment.centerLeft,
+                      origin: const Offset(0, 1),
+                      child: child,
+                    );
+                  },
+                  child: Container(
+                    color: widget.properties.color.withOpacity(0.5),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -124,7 +129,7 @@ class _GazeButtonWrapperState extends State<GazeButtonWrapper> with SingleTicker
     _timer?.cancel();
     super.deactivate();
     widget.gazeInteractive.removeListener(_listener);
-    widget.gazeInteractive.unregister(widget.wrappedKey, GazeInteractiveType.button);
+    widget.gazeInteractive.unregister(widget.wrappedKey, GazeInteractiveType.selectable);
   }
 
   @override
@@ -162,7 +167,7 @@ class _GazeButtonWrapperState extends State<GazeButtonWrapper> with SingleTicker
             }
           });
         },
-        type: GazeInteractiveType.button,
+        type: GazeInteractiveType.selectable,
       ),
     );
   }

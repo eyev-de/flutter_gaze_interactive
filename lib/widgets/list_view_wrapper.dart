@@ -73,7 +73,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
         onGazeLeave: () {
           _active = false;
         },
-        type: GazeInteractiveType.scroll,
+        type: GazeInteractiveType.scrollable,
       ),
     );
     widget.controller.addListener(_scrollListener);
@@ -90,7 +90,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
   void deactivate() {
     super.deactivate();
     widget.gazeInteractive.removeListener(_listener);
-    widget.gazeInteractive.unregister(widget.wrappedKey, GazeInteractiveType.scroll);
+    widget.gazeInteractive.unregister(widget.wrappedKey, GazeInteractiveType.scrollable);
     widget.controller.removeListener(_scrollListener);
   }
 
