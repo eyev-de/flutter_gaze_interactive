@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'button_wrapper.dart';
 
 class GazeTextField extends StatelessWidget {
-  final GlobalKey gazeInteractiveKey = GlobalKey();
+  final GlobalKey gazeInteractiveKey;
 
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -28,7 +28,7 @@ class GazeTextField extends StatelessWidget {
   final String? route;
 
   GazeTextField({
-    Key? key,
+    required this.gazeInteractiveKey,
     required this.controller,
     required this.focusNode,
     this.maxLength,
@@ -42,45 +42,21 @@ class GazeTextField extends StatelessWidget {
     this.route,
     this.onChanged,
     this.onFocus,
-  }) : super(key: key) {
+  }) : super(key: gazeInteractiveKey) {
     controller.addListener(() {
       if (onChanged != null) onChanged!(controller.text);
     });
   }
   @override
   Widget build(BuildContext context) {
-    if (enabled) {
-      return GazeButtonWrapper(
-        properties: GazeButtonWrapperProperties(
-          borderRadius: BorderRadius.all(cursorRadius),
-          route: route,
-        ),
-        wrappedKey: gazeInteractiveKey,
-        wrappedWidget: CupertinoTextField(
-          focusNode: focusNode,
-          controller: controller,
-          maxLength: maxLength,
-          placeholder: placeholder,
-          enabled: enabled,
-          placeholderStyle: placeholderStyle,
-          padding: padding,
-          cursorRadius: cursorRadius,
-          style: style,
-          keyboardType: keyboardType,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade900,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          onTap: () {
-            if (onFocus != null) onFocus!();
-          },
-        ),
-        onGazed: () {
-          if (onFocus != null) onFocus!();
-        },
-      );
-    } else {
-      return CupertinoTextField(
+    return GazeButtonWrapper(
+      properties: GazeButtonWrapperProperties(
+        borderRadius: BorderRadius.all(cursorRadius),
+        route: route,
+        gazeInteractive: enabled,
+      ),
+      wrappedKey: gazeInteractiveKey,
+      wrappedWidget: CupertinoTextField(
         focusNode: focusNode,
         controller: controller,
         maxLength: maxLength,
@@ -95,7 +71,13 @@ class GazeTextField extends StatelessWidget {
           color: Colors.grey.shade900,
           borderRadius: BorderRadius.circular(20),
         ),
-      );
-    }
+        onTap: () {
+          if (onFocus != null) onFocus!();
+        },
+      ),
+      onGazed: () {
+        if (onFocus != null) onFocus!();
+      },
+    );
   }
 }
