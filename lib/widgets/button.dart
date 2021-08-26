@@ -18,6 +18,7 @@ class GazeButtonProperties {
   final TextStyle? textStyle;
   final IconData? icon;
   final Color? iconColor;
+  final double iconSize;
   final Color? borderColor;
   final Color backgroundColor;
   final double width;
@@ -39,6 +40,7 @@ class GazeButtonProperties {
     this.textStyle,
     this.icon,
     this.iconColor,
+    this.iconSize = 35,
     this.borderColor,
     this.backgroundColor = Colors.transparent,
     this.width = 220.0,
@@ -162,7 +164,7 @@ class GazeButton extends StatelessWidget {
                 child: Icon(
                   properties.icon,
                   color: properties.iconColor,
-                  size: 35,
+                  size: properties.iconSize,
                 ),
               )
             ],

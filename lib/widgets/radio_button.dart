@@ -10,14 +10,23 @@ import 'button.dart';
 class GazeRadioButton extends StatelessWidget {
   final bool selected;
   final Color color;
+  final EdgeInsets innerPadding;
+  final double size;
   final void Function() onTap;
-  GazeRadioButton({Key? key, required this.selected, this.color = Colors.yellow, required this.onTap}) : super(key: key);
+  GazeRadioButton({
+    Key? key,
+    required this.selected,
+    this.color = Colors.yellow,
+    this.innerPadding = const EdgeInsets.fromLTRB(60, 60, 60, 60),
+    this.size = 30,
+    required this.onTap,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GazeButton(
       properties: GazeButtonProperties(
         key: GlobalKey(),
-        innerPadding: const EdgeInsets.fromLTRB(60, 60, 60, 60),
+        innerPadding: innerPadding,
         horizontal: true,
         borderRadius: BorderRadius.circular(20),
         gazeInteractive: !selected,
@@ -26,8 +35,8 @@ class GazeRadioButton extends StatelessWidget {
           children: [
             IgnorePointer(
               child: Container(
-                width: 30,
-                height: 30,
+                width: size,
+                height: size,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: selected ? color : null,

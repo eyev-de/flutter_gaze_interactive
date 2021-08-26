@@ -62,8 +62,7 @@ class _GazePointerViewState extends State<GazePointerView> {
     _timer = Timer(const Duration(milliseconds: 1200), () {
       if (mounted) {
         setState(() {
-          _opacity = 0.0;
-          if (kDebugMode) _opacity = 0.6;
+          _opacity = kDebugMode ? 0.6 : 0.0;
         });
       }
     });
