@@ -56,24 +56,29 @@ class GazeTextField extends StatelessWidget {
         gazeInteractive: enabled,
       ),
       wrappedKey: gazeInteractiveKey,
-      wrappedWidget: CupertinoTextField(
-        focusNode: focusNode,
-        controller: controller,
-        maxLength: maxLength,
-        placeholder: placeholder,
-        enabled: enabled,
-        placeholderStyle: placeholderStyle,
-        padding: padding,
-        cursorRadius: cursorRadius,
-        style: style,
-        keyboardType: keyboardType,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-          borderRadius: BorderRadius.circular(20),
+      wrappedWidget: Positioned.fill(
+        child: CupertinoTextField(
+          focusNode: focusNode,
+          controller: controller,
+          maxLength: maxLength,
+          minLines: null,
+          maxLines: null,
+          placeholder: placeholder,
+          enabled: enabled,
+          placeholderStyle: placeholderStyle,
+          padding: padding,
+          cursorRadius: cursorRadius,
+          style: style,
+          keyboardType: keyboardType,
+          expands: true,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade900,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          onTap: () {
+            if (onFocus != null) onFocus!();
+          },
         ),
-        onTap: () {
-          if (onFocus != null) onFocus!();
-        },
       ),
       onGazed: () {
         if (onFocus != null) onFocus!();
