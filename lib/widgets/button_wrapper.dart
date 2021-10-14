@@ -13,7 +13,7 @@ import '../state.dart';
 class GazeButtonWrapperProperties {
   final BorderRadius borderRadius;
   final Color color;
-  final String? route;
+  String? route;
   final bool gazeInteractive;
   GazeButtonWrapperProperties({
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
@@ -35,7 +35,10 @@ class GazeButtonWrapper extends StatefulWidget {
     required this.wrappedKey,
     required this.wrappedWidget,
     required this.onGazed,
-  }) : super(key: key);
+  }) : super(key: key) {
+    // Route is set automatically if not supplied
+    properties.route ??= gazeInteractive.currentRoute;
+  }
   @override
   _GazeButtonWrapperState createState() => _GazeButtonWrapperState();
 }
@@ -143,8 +146,7 @@ class _GazeButtonWrapperState extends State<GazeButtonWrapper> with SingleTicker
     widget.gazeInteractive.register(
       GazeInteractionData(
         key: widget.wrappedKey,
-        // Route is set automatically if not supplied
-        route: widget.properties.route ?? widget.gazeInteractive.currentRoute,
+        route: widget.properties.route!,
         onGazeEnter: () {
           _timer?.cancel();
           if (mounted) {

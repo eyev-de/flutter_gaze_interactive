@@ -26,7 +26,7 @@ class _GazePointerViewState extends State<GazePointerView> {
   Offset _pointerOffset = const Offset(0, 0);
   Offset _localPointerOffset = const Offset(0, 0);
 
-  Size size = const Size(70, 70);
+  Size size = const Size(50, 50);
 
   Timer? _timer;
   double _opacity = 0.6;

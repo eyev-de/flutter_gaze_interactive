@@ -56,7 +56,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
 
   _GazeListViewWrapperState();
 
-  static const double scrollArea = 0.25;
+  static const double scrollArea = 0.2;
 
   @override
   void initState() {

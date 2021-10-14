@@ -54,6 +54,10 @@ class GazeInteractive extends ChangeNotifier {
   set currentRoute(String value) {
     if (_currentRoute != value) {
       _currentRoute = value;
+      _currentScrollView?.onGazeLeave();
+      _currentScrollView = null;
+      _currentButton?.onGazeLeave();
+      _currentButton = null;
       notifyListeners();
     }
   }

@@ -23,7 +23,6 @@ class GazeButtonProperties {
   final Color backgroundColor;
   final double width;
   final double height;
-  final EdgeInsets padding;
   final EdgeInsets innerPadding;
   final BorderRadius borderRadius;
   final bool horizontal;
@@ -47,7 +46,6 @@ class GazeButtonProperties {
     this.height = 60.0,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.horizontal = false,
-    this.padding = const EdgeInsets.all(0),
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.gazeInteractive = true,
     this.color,
@@ -63,20 +61,17 @@ class GazeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: properties.padding,
-      child: GazeButtonWrapper(
-        properties: GazeButtonWrapperProperties(
-          borderRadius: properties.borderRadius,
-          route: properties.route,
-          gazeInteractive: properties.gazeInteractive,
-        ),
-        wrappedKey: properties.key,
-        wrappedWidget: _buildButton(context),
-        onGazed: () {
-          if (onTap != null) onTap!();
-        },
+    return GazeButtonWrapper(
+      properties: GazeButtonWrapperProperties(
+        borderRadius: properties.borderRadius,
+        route: properties.route,
+        gazeInteractive: properties.gazeInteractive,
       ),
+      wrappedKey: properties.key,
+      wrappedWidget: _buildButton(context),
+      onGazed: () {
+        if (onTap != null) onTap!();
+      },
     );
   }
 
