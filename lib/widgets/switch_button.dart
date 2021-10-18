@@ -17,12 +17,18 @@ class GazeSwitchButtonProperties {
   final Color disabledColor;
   final Color unToggledColor;
   final Color toggledColor;
+  final EdgeInsets innerPadding;
+  final Size size;
+  final EdgeInsets margin;
   GazeSwitchButtonProperties({
     required this.toggled,
     this.enabled = true,
     this.disabledColor = Colors.grey,
     this.unToggledColor = Colors.grey,
     this.toggledColor = Colors.blue,
+    this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
+    this.size = const Size(80, 80),
+    this.margin = const EdgeInsets.fromLTRB(15, 35, 15, 35),
   });
 }
 
@@ -37,13 +43,15 @@ class GazeSwitchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        AnimatedContainer(
+    return GazeButton(
+      properties: GazeButtonProperties(
+        key: GlobalKey(),
+        innerPadding: const EdgeInsets.all(0),
+        child: AnimatedContainer(
+          width: properties.size.width,
+          height: properties.size.height,
           duration: const Duration(milliseconds: 300),
           clipBehavior: Clip.antiAlias,
-          width: 80,
-          height: 80,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
@@ -62,28 +70,18 @@ class GazeSwitchButton extends StatelessWidget {
               angle: angle,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                margin: Theme.of(context).switchButtonPadding,
+                margin: properties.margin,
                 decoration: BoxDecoration(color: _getColor(), borderRadius: BorderRadius.circular(5)),
               ),
             ),
           ),
         ),
-        SizedBox(
-          width: 80,
-          height: 80,
-          child: GazeButton(
-            properties: GazeButtonProperties(
-              key: GlobalKey(),
-              text: ' ',
-            ),
-            onTap: properties.enabled
-                ? () {
-                    if (onToggled != null) onToggled!(!properties.toggled);
-                  }
-                : null,
-          ),
-        ),
-      ],
+      ),
+      onTap: properties.enabled
+          ? () {
+              if (onToggled != null) onToggled!(!properties.toggled);
+            }
+          : null,
     );
   }
 
