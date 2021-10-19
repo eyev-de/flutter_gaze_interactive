@@ -163,7 +163,7 @@ class GazeInteractive extends ChangeNotifier {
   void unregisterGazeView(GlobalKey key) {
     _listOfGazeViews.removeWhere((element) => element.key == key);
     if (_listOfGazeViews.isNotEmpty) {
-      _currentGazeView = _listOfGazeViews.first;
+      _currentGazeView = _listOfGazeViews.last;
     } else {
       _currentButton = null;
     }
