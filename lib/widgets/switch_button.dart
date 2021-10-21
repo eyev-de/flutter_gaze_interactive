@@ -20,6 +20,7 @@ class GazeSwitchButtonProperties {
   final EdgeInsets innerPadding;
   final Size size;
   final EdgeInsets margin;
+  final String? route;
   GazeSwitchButtonProperties({
     required this.toggled,
     this.enabled = true,
@@ -29,6 +30,7 @@ class GazeSwitchButtonProperties {
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.size = const Size(80, 80),
     this.margin = const EdgeInsets.fromLTRB(15, 35, 15, 35),
+    this.route,
   });
 }
 
@@ -47,6 +49,7 @@ class GazeSwitchButton extends StatelessWidget {
       properties: GazeButtonProperties(
         key: GlobalKey(),
         innerPadding: const EdgeInsets.all(0),
+        route: properties.route,
         child: AnimatedContainer(
           width: properties.size.width,
           height: properties.size.height,
