@@ -26,6 +26,7 @@ class GazeTextField extends StatelessWidget {
   final TextStyle? style;
   final TextInputType? keyboardType;
   final String? route;
+  final TextAlignVertical? textAlignVertical;
 
   GazeTextField({
     required this.gazeInteractiveKey,
@@ -40,6 +41,7 @@ class GazeTextField extends StatelessWidget {
     this.style,
     this.keyboardType = TextInputType.name,
     this.route,
+    this.textAlignVertical,
     this.onChanged,
     this.onFocus,
   }) : super(key: gazeInteractiveKey) {
@@ -71,6 +73,7 @@ class GazeTextField extends StatelessWidget {
           style: style,
           keyboardType: keyboardType,
           expands: true,
+          textAlignVertical: textAlignVertical,
           decoration: BoxDecoration(
             color: Colors.grey.shade900,
             borderRadius: BorderRadius.circular(20),
