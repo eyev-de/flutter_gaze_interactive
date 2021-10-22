@@ -170,7 +170,9 @@ class GazeInteractive extends ChangeNotifier {
   }
 
   void onGaze(Offset position) {
-    _currentGazeView?.onGaze(position);
+    if (active) {
+      _currentGazeView?.onGaze(position);
+    }
   }
 
   void newPosition({
