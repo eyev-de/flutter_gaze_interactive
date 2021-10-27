@@ -7,7 +7,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import 'button_wrapper.dart';
+import 'selection_animation.dart';
+
+enum GazeButtonTapTypes { single, double }
 
 class GazeButtonProperties {
   final GlobalKey key;
@@ -30,6 +32,7 @@ class GazeButtonProperties {
   final Color? color;
   final String? route;
   final Widget? child;
+  final GazeButtonTapTypes tapType;
   GazeButtonProperties({
     required this.key,
     this.id = 0,
@@ -51,6 +54,7 @@ class GazeButtonProperties {
     this.color,
     this.route,
     this.child,
+    this.tapType = GazeButtonTapTypes.single,
   });
 }
 
@@ -61,8 +65,8 @@ class GazeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GazeButtonWrapper(
-      properties: GazeButtonWrapperProperties(
+    return GazeSelectionAnimation(
+      properties: GazeSelectionAnimationProperties(
         borderRadius: properties.borderRadius,
         route: properties.route,
         gazeInteractive: properties.gazeInteractive,
@@ -75,6 +79,12 @@ class GazeButton extends StatelessWidget {
     );
   }
 
+  void Function()? _determineTap(GazeButtonTapTypes type) {
+    if (properties.tapType == type) {
+      return onTap;
+    }
+  }
+
   Widget _buildButton(BuildContext context) {
     return Material(
       color: properties.selected ? properties.backgroundColor : Colors.transparent,
@@ -85,7 +95,8 @@ class GazeButton extends StatelessWidget {
         splashColor: properties.textColor.withAlpha(60),
         focusColor: properties.textColor.withAlpha(20),
         highlightColor: properties.textColor.withAlpha(20),
-        onTap: onTap,
+        onTap: _determineTap(GazeButtonTapTypes.single),
+        onDoubleTap: _determineTap(GazeButtonTapTypes.double),
         child: Container(
           padding: properties.innerPadding,
           decoration: BoxDecoration(

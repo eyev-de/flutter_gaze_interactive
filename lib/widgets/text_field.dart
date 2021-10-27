@@ -7,7 +7,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'button_wrapper.dart';
+import 'selection_animation.dart';
 
 class GazeTextField extends StatelessWidget {
   final GlobalKey gazeInteractiveKey;
@@ -51,8 +51,8 @@ class GazeTextField extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return GazeButtonWrapper(
-      properties: GazeButtonWrapperProperties(
+    return GazeSelectionAnimation(
+      properties: GazeSelectionAnimationProperties(
         borderRadius: BorderRadius.all(cursorRadius),
         route: route,
         gazeInteractive: enabled,

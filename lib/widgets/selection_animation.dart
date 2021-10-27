@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 
 import '../state.dart';
 
-class GazeButtonWrapperProperties {
+class GazeSelectionAnimationProperties {
   final BorderRadius borderRadius;
   final Color color;
   String? route;
   final bool gazeInteractive;
-  GazeButtonWrapperProperties({
+  GazeSelectionAnimationProperties({
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.color = Colors.grey,
     this.route,
@@ -23,13 +23,13 @@ class GazeButtonWrapperProperties {
   });
 }
 
-class GazeButtonWrapper extends StatefulWidget {
-  final GazeButtonWrapperProperties properties;
+class GazeSelectionAnimation extends StatefulWidget {
+  final GazeSelectionAnimationProperties properties;
   final GazeInteractive gazeInteractive = GazeInteractive();
   final GlobalKey wrappedKey;
   final Widget wrappedWidget;
   final void Function() onGazed;
-  GazeButtonWrapper({
+  GazeSelectionAnimation({
     Key? key,
     required this.properties,
     required this.wrappedKey,
@@ -40,15 +40,15 @@ class GazeButtonWrapper extends StatefulWidget {
     properties.route ??= gazeInteractive.currentRoute;
   }
   @override
-  _GazeButtonWrapperState createState() => _GazeButtonWrapperState();
+  _GazeSelectionAnimationState createState() => _GazeSelectionAnimationState();
 }
 
-class _GazeButtonWrapperState extends State<GazeButtonWrapper> with SingleTickerProviderStateMixin {
+class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Timer? _timer;
   bool gazeIn = false;
 
-  _GazeButtonWrapperState();
+  _GazeSelectionAnimationState();
 
   @override
   void initState() {
