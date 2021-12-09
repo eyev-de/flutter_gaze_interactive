@@ -63,7 +63,6 @@ class GazeTextField extends StatelessWidget {
           focusNode: focusNode,
           controller: controller,
           maxLength: maxLength,
-          minLines: null,
           maxLines: null,
           placeholder: placeholder,
           enabled: enabled,
