@@ -219,14 +219,17 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                       child: GazeButton(
                         properties: GazeButtonProperties(
                           key: GlobalKey(),
+                          route: widget.gazeInteractive.currentRoute,
                           gazeInteractive: false,
                           innerPadding: const EdgeInsets.all(10),
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(100),
                             topRight: Radius.circular(100),
                           ),
-                          icon: Icons.arrow_downward,
-                          iconColor: Theme.of(context).primaryColor,
+                          icon: Icon(
+                            Icons.arrow_downward,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           backgroundColor: Colors.white.withOpacity(_downIndicatorState.opacity),
                           horizontal: true,
                         ),
@@ -251,14 +254,17 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                   child: GazeButton(
                     properties: GazeButtonProperties(
                       key: GlobalKey(),
+                      route: widget.gazeInteractive.currentRoute,
                       gazeInteractive: false,
                       innerPadding: const EdgeInsets.all(10),
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(100),
                         bottomRight: Radius.circular(100),
                       ),
-                      icon: Icons.arrow_upward,
-                      iconColor: Theme.of(context).primaryColor,
+                      icon: Icon(
+                        Icons.arrow_upward,
+                        color: Theme.of(context).primaryColor,
+                      ),
                       backgroundColor: Colors.white.withOpacity(_upIndicatorState.opacity),
                       horizontal: true,
                     ),

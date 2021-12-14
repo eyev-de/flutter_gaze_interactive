@@ -13,48 +13,36 @@ enum GazeButtonTapTypes { single, double }
 
 class GazeButtonProperties {
   final GlobalKey key;
-  final int id;
-  final bool selected;
   final String? text;
   final Color textColor;
   final TextStyle? textStyle;
-  final IconData? icon;
-  final Color? iconColor;
-  final double iconSize;
+  final Icon? icon;
   final Color? borderColor;
   final Color backgroundColor;
-  final double width;
-  final double height;
   final EdgeInsets innerPadding;
   final BorderRadius borderRadius;
   final bool horizontal;
   final bool gazeInteractive;
-  final Color? color;
-  final String? route;
+  final String route;
   final Widget? child;
   final GazeButtonTapTypes tapType;
+  final GazeSelectionAnimationType gazeSelectionAnimationType;
   GazeButtonProperties({
     required this.key,
-    this.id = 0,
-    this.selected = true,
+    required this.route,
     this.text,
     this.textColor = Colors.white,
     this.textStyle,
     this.icon,
-    this.iconColor,
-    this.iconSize = 35,
     this.borderColor,
     this.backgroundColor = Colors.transparent,
-    this.width = 220.0,
-    this.height = 60.0,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.horizontal = false,
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.gazeInteractive = true,
-    this.color,
-    this.route,
     this.child,
     this.tapType = GazeButtonTapTypes.single,
+    this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
   });
 }
 
@@ -68,13 +56,15 @@ class GazeButton extends StatelessWidget {
     return GazeSelectionAnimation(
       properties: GazeSelectionAnimationProperties(
         borderRadius: properties.borderRadius,
+        backgroundColor: properties.backgroundColor,
         route: properties.route,
         gazeInteractive: properties.gazeInteractive,
+        type: properties.gazeSelectionAnimationType,
       ),
       wrappedKey: properties.key,
       wrappedWidget: _buildButton(context),
       onGazed: () {
-        if (onTap != null) onTap!();
+        onTap?.call();
       },
     );
   }
@@ -86,30 +76,26 @@ class GazeButton extends StatelessWidget {
   }
 
   Widget _buildButton(BuildContext context) {
-    return Material(
-      color: properties.selected ? properties.backgroundColor : Colors.transparent,
+    return InkWell(
       borderRadius: properties.borderRadius,
-      child: InkWell(
-        borderRadius: properties.borderRadius,
-        hoverColor: properties.textColor.withAlpha(20),
-        splashColor: properties.textColor.withAlpha(60),
-        focusColor: properties.textColor.withAlpha(20),
-        highlightColor: properties.textColor.withAlpha(20),
-        onTap: _determineTap(GazeButtonTapTypes.single),
-        onDoubleTap: _determineTap(GazeButtonTapTypes.double),
-        child: Container(
-          padding: properties.innerPadding,
-          decoration: BoxDecoration(
-            borderRadius: properties.borderRadius,
-            border: properties.borderColor != null
-                ? Border.all(
-                    color: properties.borderColor!,
-                    width: 3,
-                  )
-                : null,
-          ),
-          child: properties.child ?? (properties.horizontal ? _buildHorizontal(context) : _buildVertical(context)),
+      hoverColor: properties.textColor.withAlpha(20),
+      splashColor: properties.textColor.withAlpha(60),
+      focusColor: properties.textColor.withAlpha(20),
+      highlightColor: properties.textColor.withAlpha(20),
+      onTap: _determineTap(GazeButtonTapTypes.single),
+      onDoubleTap: _determineTap(GazeButtonTapTypes.double),
+      child: Container(
+        padding: properties.innerPadding,
+        decoration: BoxDecoration(
+          borderRadius: properties.borderRadius,
+          border: properties.borderColor != null
+              ? Border.all(
+                  color: properties.borderColor!,
+                  width: 3,
+                )
+              : null,
         ),
+        child: properties.child ?? (properties.horizontal ? _buildHorizontal(context) : _buildVertical(context)),
       ),
     );
   }
@@ -119,17 +105,13 @@ class GazeButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (properties.iconColor != null)
+        if (properties.icon != null)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: Icon(
-                  properties.icon,
-                  color: properties.iconColor,
-                  size: 30,
-                ),
+                child: properties.icon,
               )
             ],
           ),
@@ -138,18 +120,7 @@ class GazeButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                child: AutoSizeText(
-                  properties.text!,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  style: properties.textStyle ??
-                      TextStyle(
-                        color: properties.textColor,
-                        fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
-                      ),
-                ),
-              ),
+              _text(context),
             ],
           )
       ],
@@ -161,17 +132,13 @@ class GazeButton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (properties.iconColor != Colors.transparent)
+        if (properties.icon != null)
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: EdgeInsets.fromLTRB(0, 0, _rightInnerPadding, 0),
-                child: Icon(
-                  properties.icon,
-                  color: properties.iconColor,
-                  size: properties.iconSize,
-                ),
+                child: properties.icon,
               )
             ],
           ),
@@ -180,21 +147,25 @@ class GazeButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                child: AutoSizeText(
-                  properties.text!,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  style: properties.textStyle ??
-                      TextStyle(
-                        color: properties.textColor,
-                        fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
-                      ),
-                ),
-              ),
+              _text(context),
             ],
           )
       ],
+    );
+  }
+
+  Widget _text(BuildContext context) {
+    return Flexible(
+      child: AutoSizeText(
+        properties.text!,
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        style: properties.textStyle ??
+            TextStyle(
+              color: properties.textColor,
+              fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
+            ),
+      ),
     );
   }
 }

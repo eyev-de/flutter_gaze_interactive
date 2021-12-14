@@ -20,7 +20,7 @@ class GazeSwitchButtonProperties {
   final EdgeInsets innerPadding;
   final Size size;
   final EdgeInsets margin;
-  final String? route;
+  final String route;
   GazeSwitchButtonProperties({
     required this.initial,
     this.enabled = true,
@@ -30,7 +30,7 @@ class GazeSwitchButtonProperties {
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.size = const Size(80, 80),
     this.margin = const EdgeInsets.fromLTRB(15, 35, 15, 35),
-    this.route,
+    this.route = '/',
   });
 }
 

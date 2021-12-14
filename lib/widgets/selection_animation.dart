@@ -10,16 +10,31 @@ import 'package:flutter/material.dart';
 
 import '../state.dart';
 
+enum GazeSelectionAnimationType {
+  progress,
+  fade,
+}
+
+abstract class GazeSelectionAnimatable extends StatefulWidget {
+  const GazeSelectionAnimatable({Key? key}) : super(key: key);
+}
+
 class GazeSelectionAnimationProperties {
   final BorderRadius borderRadius;
+  final Color? backgroundColor;
+  final Color? animationColor;
   final Color color;
-  String? route;
+  final String route;
   final bool gazeInteractive;
+  final GazeSelectionAnimationType type;
   GazeSelectionAnimationProperties({
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.backgroundColor,
+    this.animationColor,
     this.color = Colors.grey,
-    this.route,
+    required this.route,
     this.gazeInteractive = true,
+    this.type = GazeSelectionAnimationType.progress,
   });
 }
 
@@ -35,16 +50,15 @@ class GazeSelectionAnimation extends StatefulWidget {
     required this.wrappedKey,
     required this.wrappedWidget,
     required this.onGazed,
-  }) : super(key: key) {
-    // Route is set automatically if not supplied
-    properties.route ??= gazeInteractive.currentRoute;
-  }
+  }) : super(key: key);
+
   @override
   _GazeSelectionAnimationState createState() => _GazeSelectionAnimationState();
 }
 
 class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with SingleTickerProviderStateMixin {
-  AnimationController? _controller;
+  late AnimationController _controller;
+  late Animation<Color?> _colorTween;
   Timer? _timer;
   bool gazeIn = false;
 
@@ -59,7 +73,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   }
 
   void _listener() {
-    if (_controller != null) _controller!.duration = widget.gazeInteractive.gazeInteractiveDuration;
+    _controller.duration = widget.gazeInteractive.gazeInteractiveDuration;
   }
 
   void _initAnimation() {
@@ -70,19 +84,24 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
         if (status == AnimationStatus.completed) {
           _timer?.cancel();
           if (mounted) {
-            _controller?.stop();
-            _controller?.reset();
+            _controller
+              ..stop()
+              ..reset();
           }
           if (widget.properties.gazeInteractive) widget.onGazed();
         }
       });
+    _colorTween = ColorTween(
+      begin: widget.properties.backgroundColor,
+      end: widget.properties.animationColor,
+    ).animate(_controller);
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        widget.wrappedWidget,
+        _wrappedWidget(),
         if (widget.properties.gazeInteractive)
           Positioned.fill(
             child: IgnorePointer(
@@ -98,7 +117,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
               ),
             ),
           ),
-        if (widget.properties.gazeInteractive)
+        if (widget.properties.gazeInteractive && widget.properties.type == GazeSelectionAnimationType.progress)
           Positioned.fill(
             child: IgnorePointer(
               child: Container(
@@ -107,10 +126,10 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
                   borderRadius: widget.properties.borderRadius,
                 ),
                 child: AnimatedBuilder(
-                  animation: _controller!,
+                  animation: _controller,
                   builder: (context, child) {
                     return Transform(
-                      transform: Matrix4.diagonal3Values(_controller!.value, 1, 1),
+                      transform: Matrix4.diagonal3Values(_controller.value, 1, 1),
                       alignment: Alignment.centerLeft,
                       origin: const Offset(0, 1),
                       child: child,
@@ -127,6 +146,29 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
     );
   }
 
+  Widget _wrappedWidget() {
+    if (widget.properties.backgroundColor == null) return widget.wrappedWidget;
+    switch (widget.properties.type) {
+      case GazeSelectionAnimationType.progress:
+        return Material(
+          color: widget.properties.backgroundColor,
+          borderRadius: widget.properties.borderRadius,
+          child: widget.wrappedWidget,
+        );
+      case GazeSelectionAnimationType.fade:
+        return AnimatedBuilder(
+          animation: _colorTween,
+          builder: (context, child) {
+            return Material(
+              color: _colorTween.value,
+              borderRadius: widget.properties.borderRadius,
+              child: widget.wrappedWidget,
+            );
+          },
+        );
+    }
+  }
+
   @override
   void deactivate() {
     _timer?.cancel();
@@ -138,7 +180,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   @override
   void dispose() {
     _timer?.cancel();
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -146,14 +188,14 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
     widget.gazeInteractive.register(
       GazeInteractionData(
         key: widget.wrappedKey,
-        route: widget.properties.route!,
+        route: widget.properties.route,
         onGazeEnter: () {
           _timer?.cancel();
           if (mounted) {
             setState(() {
               gazeIn = true;
             });
-            _controller?.forward();
+            _controller.forward();
           }
         },
         onGazeLeave: () {
@@ -162,10 +204,10 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
               gazeIn = false;
             });
           }
-          if (mounted) _controller?.stop();
+          if (mounted) _controller.stop();
           _timer = Timer(widget.gazeInteractive.gazeInteractiveRecoverTime, () {
             if (mounted) {
-              _controller?.reset();
+              _controller.reset();
             }
           });
         },

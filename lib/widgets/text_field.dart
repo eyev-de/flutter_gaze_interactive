@@ -9,14 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'selection_animation.dart';
 
-class GazeTextField extends StatelessWidget {
-  final GlobalKey gazeInteractiveKey;
-
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final void Function(String)? onChanged;
-  final void Function()? onFocus;
-
+class GazeTextFieldProperties {
   final String? placeholder;
   final int? maxLength;
   final bool enabled;
@@ -25,23 +18,38 @@ class GazeTextField extends StatelessWidget {
   final Radius cursorRadius;
   final TextStyle? style;
   final TextInputType? keyboardType;
-  final String? route;
   final TextAlignVertical? textAlignVertical;
-
-  GazeTextField({
-    required this.gazeInteractiveKey,
-    required this.controller,
-    required this.focusNode,
+  GazeTextFieldProperties({
     this.maxLength,
     this.placeholder,
     this.enabled = true,
     this.placeholderStyle,
     this.padding = const EdgeInsets.fromLTRB(20, 30, 20, 30),
-    this.cursorRadius = const Radius.circular(20),
+    this.cursorRadius = const Radius.circular(2),
     this.style,
     this.keyboardType = TextInputType.name,
-    this.route,
     this.textAlignVertical,
+  });
+}
+
+class GazeTextField extends StatelessWidget {
+  final GlobalKey gazeInteractiveKey;
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final String route;
+
+  final GazeTextFieldProperties properties;
+
+  final void Function(String)? onChanged;
+  final void Function()? onFocus;
+
+  GazeTextField({
+    required this.gazeInteractiveKey,
+    required this.controller,
+    required this.focusNode,
+    required this.properties,
+    required this.route,
     this.onChanged,
     this.onFocus,
   }) : super(key: gazeInteractiveKey) {
@@ -53,26 +61,25 @@ class GazeTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return GazeSelectionAnimation(
       properties: GazeSelectionAnimationProperties(
-        borderRadius: BorderRadius.all(cursorRadius),
         route: route,
-        gazeInteractive: enabled,
+        gazeInteractive: properties.enabled,
       ),
       wrappedKey: gazeInteractiveKey,
       wrappedWidget: Positioned.fill(
         child: CupertinoTextField(
           focusNode: focusNode,
           controller: controller,
-          maxLength: maxLength,
+          maxLength: properties.maxLength,
           maxLines: null,
-          placeholder: placeholder,
-          enabled: enabled,
-          placeholderStyle: placeholderStyle,
-          padding: padding,
-          cursorRadius: cursorRadius,
-          style: style,
-          keyboardType: keyboardType,
+          placeholder: properties.placeholder,
+          enabled: properties.enabled,
+          placeholderStyle: properties.placeholderStyle,
+          padding: properties.padding,
+          cursorRadius: properties.cursorRadius,
+          style: properties.style,
+          keyboardType: properties.keyboardType,
           expands: true,
-          textAlignVertical: textAlignVertical,
+          textAlignVertical: properties.textAlignVertical,
           decoration: BoxDecoration(
             color: Colors.grey.shade900,
             borderRadius: BorderRadius.circular(20),
