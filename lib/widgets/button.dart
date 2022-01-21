@@ -27,6 +27,7 @@ class GazeButtonProperties {
   final Widget? child;
   final GazeButtonTapTypes tapType;
   final GazeSelectionAnimationType gazeSelectionAnimationType;
+  final Color animationColor;
   GazeButtonProperties({
     required this.key,
     required this.route,
@@ -43,6 +44,7 @@ class GazeButtonProperties {
     this.child,
     this.tapType = GazeButtonTapTypes.single,
     this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
+    this.animationColor = Colors.black,
   });
 }
 
@@ -60,6 +62,7 @@ class GazeButton extends StatelessWidget {
         route: properties.route,
         gazeInteractive: properties.gazeInteractive,
         type: properties.gazeSelectionAnimationType,
+        animationColor: properties.animationColor,
       ),
       wrappedKey: properties.key,
       wrappedWidget: _buildButton(context),
