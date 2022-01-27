@@ -12,10 +12,12 @@ class GazeListView extends StatelessWidget {
   final GlobalKey gazeInteractiveKey = GlobalKey();
   final Widget wrappedWidget;
   final ScrollController controller;
+  final String route;
   GazeListView({
     Key? key,
     required this.wrappedWidget,
     required this.controller,
+    required this.route,
   }) : super(key: key);
 
   @override
@@ -24,6 +26,7 @@ class GazeListView extends StatelessWidget {
       wrappedWidget: wrappedWidget,
       controller: controller,
       wrappedKey: gazeInteractiveKey,
+      route: route,
     );
   }
 }

@@ -39,10 +39,12 @@ class GazeListViewWrapper extends StatefulWidget {
   final GlobalKey wrappedKey;
   final Widget wrappedWidget;
   final ScrollController controller;
+  final String route;
   GazeListViewWrapper({
     required this.wrappedKey,
     required this.wrappedWidget,
     required this.controller,
+    required this.route,
   }) : super(key: wrappedKey);
   @override
   _GazeListViewWrapperState createState() => _GazeListViewWrapperState();
@@ -66,7 +68,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
     widget.gazeInteractive.register(
       GazeInteractionData(
         key: widget.wrappedKey,
-        route: widget.gazeInteractive.currentRoute,
+        route: widget.route,
         onGazeEnter: () {
           _active = true;
         },
@@ -219,7 +221,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                       child: GazeButton(
                         properties: GazeButtonProperties(
                           key: GlobalKey(),
-                          route: widget.gazeInteractive.currentRoute,
+                          route: widget.route,
                           gazeInteractive: false,
                           innerPadding: const EdgeInsets.all(10),
                           borderRadius: const BorderRadius.only(
@@ -254,7 +256,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                   child: GazeButton(
                     properties: GazeButtonProperties(
                       key: GlobalKey(),
-                      route: widget.gazeInteractive.currentRoute,
+                      route: widget.route,
                       gazeInteractive: false,
                       innerPadding: const EdgeInsets.all(10),
                       borderRadius: const BorderRadius.only(
