@@ -7,6 +7,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../extensions.dart';
@@ -38,6 +39,7 @@ class GazePointerData {
 }
 
 class GazeInteractive extends ChangeNotifier {
+  Logger? logger;
   static final GazeInteractive _instance = GazeInteractive._internal();
   factory GazeInteractive() {
     return _instance;
@@ -68,7 +70,7 @@ class GazeInteractive extends ChangeNotifier {
   GazeInteractionData? _currentButton;
   GazeInteractionData? _currentScrollView;
 
-  final ListQueue<GazePointerData> _listOfGazeViews = ListQueue<GazePointerData>();
+  final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
   GazePointerData? _currentGazeView;
 
   Future<void> load() async {
@@ -125,7 +127,7 @@ class GazeInteractive extends ChangeNotifier {
   }
 
   void register(GazeInteractionData data) {
-    // print('Register:');
+    logger?.i('GazeInteractiveLib: Register GazeInteractive: ${data.type}:');
     switch (data.type) {
       case GazeInteractiveType.selectable:
         final exists = _listOfButtons.where((element) => element.key == data.key);
@@ -136,12 +138,12 @@ class GazeInteractive extends ChangeNotifier {
         if (exists.isEmpty) _listOfScrollViews.add(data);
         break;
     }
-    // print('List of GazeButtons contains ${_listOfButtons.length} elements.');
-    // print('List of GazeListViews contains ${_listOfScrollViews.length} elemenst.');
+    logger?.i('GazeInteractiveLib: List of GazeButtons contains ${_listOfButtons.length} elements.');
+    logger?.i('GazeInteractiveLib: List of GazeListViews contains ${_listOfScrollViews.length} elemenst.');
   }
 
   void unregister(GlobalKey key, GazeInteractiveType type) {
-    // print('Unregister:');
+    logger?.i('GazeInteractiveLib: Unregister GazeInteractive: $type');
     switch (type) {
       case GazeInteractiveType.selectable:
         _listOfButtons.removeWhere((element) => element.key == key);
@@ -150,22 +152,26 @@ class GazeInteractive extends ChangeNotifier {
         _listOfScrollViews.removeWhere((element) => element.key == key);
         break;
     }
-    // print('List of GazeButtons contains ${_listOfButtons.length} elements.');
-    // print('List of GazeListViews contains ${_listOfScrollViews.length} elemenst.');
+    logger?.i('GazeInteractiveLib: List of GazeButtons contains ${_listOfButtons.length} elements.');
+    logger?.i('GazeInteractiveLib: List of GazeListViews contains ${_listOfScrollViews.length} elemenst.');
   }
 
-  void registerGazeView(GazePointerData element) {
-    _listOfGazeViews.add(element);
+  void registerGazePointerView(GazePointerData element) {
+    logger?.i('GazeInteractiveLib: Register GazePointerView:');
+    _listOfGazePointerViews.add(element);
     _currentGazeView = element;
+    logger?.i('GazeInteractiveLib: List of GazePointerViews contains ${_listOfGazePointerViews.length} elements.');
   }
 
-  void unregisterGazeView(GlobalKey key) {
-    _listOfGazeViews.removeWhere((element) => element.key == key);
-    if (_listOfGazeViews.isNotEmpty) {
-      _currentGazeView = _listOfGazeViews.last;
+  void unregisterGazePointerView(GlobalKey key) {
+    logger?.i('GazeInteractiveLib: Unegister GazePointerView:');
+    _listOfGazePointerViews.removeWhere((element) => element.key == key);
+    if (_listOfGazePointerViews.isNotEmpty) {
+      _currentGazeView = _listOfGazePointerViews.last;
     } else {
       _currentButton = null;
     }
+    logger?.i('GazeInteractiveLib: List of GazePointerViews contains ${_listOfGazePointerViews.length} elements.');
   }
 
   void onGaze(Offset position) {

@@ -32,7 +32,7 @@ class _GazePointerViewState extends State<GazePointerView> {
   double _opacity = 0.6;
 
   _GazePointerViewState() {
-    GazeInteractive().registerGazeView(
+    GazeInteractive().registerGazePointerView(
       GazePointerData(
         key: wrappedkey,
         onGaze: _onGazeData,
@@ -53,7 +53,7 @@ class _GazePointerViewState extends State<GazePointerView> {
 
   @override
   void dispose() {
-    GazeInteractive().unregisterGazeView(wrappedkey);
+    GazeInteractive().unregisterGazePointerView(wrappedkey);
 
     super.dispose();
   }
