@@ -21,7 +21,18 @@ class GazeSwitchButtonState extends ChangeNotifier {
     }
   }
 
-  GazeSwitchButtonState({required bool toggled}) : _toggled = toggled;
+  bool _gazeInteractive;
+  bool get gazeInteractive => _gazeInteractive;
+  set gazeInteractive(bool value) {
+    if (value != _toggled) {
+      _gazeInteractive = value;
+      notifyListeners();
+    }
+  }
+
+  GazeSwitchButtonState({required bool toggled, bool gazeInteractive = true})
+      : _toggled = toggled,
+        _gazeInteractive = gazeInteractive;
 }
 
 class GazeSwitchButtonProperties {
@@ -96,6 +107,7 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
             key: GlobalKey(),
             innerPadding: const EdgeInsets.all(0),
             route: widget.properties.route,
+            gazeInteractive: _state.gazeInteractive,
             child: AnimatedContainer(
               width: widget.properties.size.width,
               height: widget.properties.size.height,
