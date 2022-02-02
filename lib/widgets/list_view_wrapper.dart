@@ -129,6 +129,10 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
   Future<void> _listener() async {
     if (!_active || _animating || !widget.controller.hasClients || !_downIndicatorState.isVisible && !_upIndicatorState.isVisible) return;
     final rect = widget.gazeInteractive.rect;
+    await _calculate(rect);
+  }
+
+  Future<void> _calculate(Rect rect) async {
     final bounds = widget.wrappedKey.globalPaintBounds;
     if (bounds != null) {
       // calculate top area in which scrolling happens
@@ -202,81 +206,92 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.wrappedWidget,
-        IgnorePointer(
-          child: AnimatedOpacity(
-            opacity: _downIndicatorState.isVisible ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 150),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 300,
-                      height: 60,
-                      child: GazeButton(
-                        properties: GazeButtonProperties(
-                          key: GlobalKey(),
-                          route: widget.route,
-                          gazeInteractive: false,
-                          innerPadding: const EdgeInsets.all(10),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(100),
-                            topRight: Radius.circular(100),
+    return MouseRegion(
+      onHover: (event) {
+        if (!_active) {
+          _calculate(Rect.fromCenter(
+            center: event.position,
+            width: 10,
+            height: 10,
+          ));
+        }
+      },
+      child: Stack(
+        children: [
+          widget.wrappedWidget,
+          IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _downIndicatorState.isVisible ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 150),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        height: 60,
+                        child: GazeButton(
+                          properties: GazeButtonProperties(
+                            key: GlobalKey(),
+                            route: widget.route,
+                            gazeInteractive: false,
+                            innerPadding: const EdgeInsets.all(10),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(100),
+                              topRight: Radius.circular(100),
+                            ),
+                            icon: Icon(
+                              Icons.arrow_downward,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            backgroundColor: Colors.white.withOpacity(_downIndicatorState.opacity),
+                            horizontal: true,
                           ),
-                          icon: Icon(
-                            Icons.arrow_downward,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          backgroundColor: Colors.white.withOpacity(_downIndicatorState.opacity),
-                          horizontal: true,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        IgnorePointer(
-          child: AnimatedOpacity(
-            opacity: _upIndicatorState.isVisible ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 150),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 300,
-                  height: 60,
-                  child: GazeButton(
-                    properties: GazeButtonProperties(
-                      key: GlobalKey(),
-                      route: widget.route,
-                      gazeInteractive: false,
-                      innerPadding: const EdgeInsets.all(10),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(100),
-                        bottomRight: Radius.circular(100),
+          IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _upIndicatorState.isVisible ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 150),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    height: 60,
+                    child: GazeButton(
+                      properties: GazeButtonProperties(
+                        key: GlobalKey(),
+                        route: widget.route,
+                        gazeInteractive: false,
+                        innerPadding: const EdgeInsets.all(10),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(100),
+                          bottomRight: Radius.circular(100),
+                        ),
+                        icon: Icon(
+                          Icons.arrow_upward,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        backgroundColor: Colors.white.withOpacity(_upIndicatorState.opacity),
+                        horizontal: true,
                       ),
-                      icon: Icon(
-                        Icons.arrow_upward,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      backgroundColor: Colors.white.withOpacity(_upIndicatorState.opacity),
-                      horizontal: true,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
