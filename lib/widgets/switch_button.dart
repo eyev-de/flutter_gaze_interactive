@@ -86,6 +86,7 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
   @override
   void initState() {
     super.initState();
+    widget.properties.state.addListener(_toggle);
     if (widget.properties.state.toggled) {
       controller.forward();
     }
@@ -94,6 +95,7 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
   @override
   void dispose() {
     controller.dispose();
+    widget.properties.state.removeListener(_toggle);
     super.dispose();
   }
 
@@ -135,10 +137,11 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
           ),
           onTap: widget.properties.enabled
               ? () async {
-                  _toggle(_state.toggled);
+                  final toggled = widget.properties.state.toggled;
+                  widget.properties.state.toggled = !toggled;
                   if (widget.onToggled != null) {
                     if (!await widget.onToggled!(widget.properties.state.toggled)) {
-                      _toggle(_state.toggled);
+                      widget.properties.state.toggled = toggled;
                     }
                   }
                 }
@@ -148,13 +151,13 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
     );
   }
 
-  void _toggle(bool toggled) {
-    if (toggled) {
+  void _toggle() {
+    final toggled = widget.properties.state.toggled;
+    if (!toggled) {
       controller.reverse();
     } else {
       controller.forward();
     }
-    widget.properties.state.toggled = !toggled;
   }
 
   Color _getColor(bool toggled) {
