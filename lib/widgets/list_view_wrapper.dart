@@ -79,7 +79,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
       ),
     );
     widget.controller.addListener(_scrollListener);
-    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.controller.hasClients && widget.controller.position.extentAfter > 0 && !_downIndicatorState.isVisible) {
         setState(() {
           _downIndicatorState = GazeListViewIndicatorState.visible;
