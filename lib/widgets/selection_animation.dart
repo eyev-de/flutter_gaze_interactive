@@ -45,12 +45,12 @@ class GazeSelectionAnimation extends StatefulWidget {
   final Widget wrappedWidget;
   final void Function() onGazed;
   GazeSelectionAnimation({
-    Key? key,
-    required this.properties,
     required this.wrappedKey,
+    required this.properties,
+    // required this.wrappedKey,
     required this.wrappedWidget,
     required this.onGazed,
-  }) : super(key: key);
+  }) : super(key: wrappedKey);
 
   @override
   _GazeSelectionAnimationState createState() => _GazeSelectionAnimationState();

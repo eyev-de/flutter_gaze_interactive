@@ -54,7 +54,6 @@ class _GazePointerViewState extends State<GazePointerView> {
   @override
   void dispose() {
     GazeInteractive().unregisterGazePointerView(wrappedkey);
-
     super.dispose();
   }
 
@@ -80,13 +79,13 @@ class _GazePointerViewState extends State<GazePointerView> {
         final Offset temp = _validate(context, event - Offset(size.width / 2, size.height / 2));
         _pointerOffset = temp;
       });
+      GazeInteractive().newPosition(
+        position: _pointerOffset + Offset(size.width / 2, size.height / 2),
+        width: size.width,
+        height: size.height,
+      );
     }
     _restartTimer();
-    GazeInteractive().newPosition(
-      position: _pointerOffset + Offset(size.width / 2, size.height / 2),
-      width: size.width,
-      height: size.height,
-    );
   }
 
   @override
@@ -98,29 +97,33 @@ class _GazePointerViewState extends State<GazePointerView> {
       height: size.height,
       child: GestureDetector(
         onPanStart: (details) {
-          final RenderBox? getBox = context.findRenderObject() as RenderBox?;
-          final Offset local = getBox?.globalToLocal(details.globalPosition) ?? const Offset(0, 0);
-          final Offset temp = _validate(context, details.globalPosition - local);
-          setState(() {
-            _pointerOffset = temp;
-            _localPointerOffset = local;
-          });
-          GazeInteractive().newPosition(
-            position: temp + Offset(size.width / 2, size.height / 2),
-            width: size.width,
-            height: size.height,
-          );
+          if (mounted) {
+            final RenderBox? getBox = context.findRenderObject() as RenderBox?;
+            final Offset local = getBox?.globalToLocal(details.globalPosition) ?? const Offset(0, 0);
+            final Offset temp = _validate(context, details.globalPosition - local);
+            setState(() {
+              _pointerOffset = temp;
+              _localPointerOffset = local;
+            });
+            GazeInteractive().newPosition(
+              position: temp + Offset(size.width / 2, size.height / 2),
+              width: size.width,
+              height: size.height,
+            );
+          }
         },
         onPanUpdate: (details) {
-          final Offset temp = _validate(context, details.globalPosition - _localPointerOffset);
-          setState(() {
-            _pointerOffset = temp;
-          });
-          GazeInteractive().newPosition(
-            position: temp + Offset(size.width / 2, size.height / 2),
-            width: size.width,
-            height: size.height,
-          );
+          if (mounted) {
+            final Offset temp = _validate(context, details.globalPosition - _localPointerOffset);
+            setState(() {
+              _pointerOffset = temp;
+            });
+            GazeInteractive().newPosition(
+              position: temp + Offset(size.width / 2, size.height / 2),
+              width: size.width,
+              height: size.height,
+            );
+          }
         },
         child: AnimatedOpacity(
           opacity: _opacity,

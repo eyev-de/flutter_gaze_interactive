@@ -51,7 +51,7 @@ class GazeButtonProperties {
 class GazeButton extends StatelessWidget {
   final GazeButtonProperties properties;
   final void Function()? onTap;
-  GazeButton({required this.properties, this.onTap}) : super(key: properties.key);
+  GazeButton({Key? key, required this.properties, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

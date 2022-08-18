@@ -45,6 +45,7 @@ class GazeTextField extends StatelessWidget {
   final void Function()? onFocus;
 
   GazeTextField({
+    Key? key,
     required this.gazeInteractiveKey,
     required this.controller,
     required this.focusNode,
@@ -52,7 +53,7 @@ class GazeTextField extends StatelessWidget {
     required this.route,
     this.onChanged,
     this.onFocus,
-  }) : super(key: gazeInteractiveKey) {
+  }) : super(key: key) {
     controller.addListener(() {
       if (onChanged != null) onChanged!(controller.text);
     });
