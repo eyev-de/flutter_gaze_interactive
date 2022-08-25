@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gaze_interactive/gaze_interactive.dart';
+import 'package:gaze_widgets_lib/date_picker/date_picker.dart';
+import 'package:gaze_widgets_lib/gaze_widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gaze Interactive Demo',
+      title: 'Gaze Keyboard Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -30,6 +32,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  DateTime _dateTime = DateTime.now();
 
   @override
   void initState() {
@@ -51,6 +54,9 @@ class _AppState extends State<App> {
                   width: 200,
                   height: 80,
                   child: GazeTextField(
+                    gazeInteractiveKey: GlobalKey(),
+                    controller: _controller,
+                    onChanged: (value) {},
                     properties: GazeTextFieldProperties(
                       maxLength: 30,
                       placeholder: 'Name',
@@ -58,26 +64,55 @@ class _AppState extends State<App> {
                       padding: const EdgeInsets.all(20),
                       style: const TextStyle(fontSize: 20, color: Colors.white),
                     ),
-                    gazeInteractiveKey: GlobalKey(),
-                    controller: _controller,
-                    onChanged: (value) {},
-                    onFocus: () {},
+                    onFocus: () {
+                      GazeKeyboard().show(
+                        context,
+                        GazeKeyboardState(node: _focusNode, placeholder: 'Name', controller: _controller),
+                        () {
+                          GazeInteractive().currentRoute = '/dialog';
+                        },
+                        (_context) => Navigator.of(_context).pop(),
+                        (_context) {
+                          GazeInteractive().currentRoute = '/';
+                        },
+                      );
+                    },
                     focusNode: _focusNode,
                     route: '/',
                   ),
                 ),
+                Text(_dateTime.toIso8601String()),
                 SizedBox(
                   width: 200,
                   height: 80,
                   child: GazeButton(
                     properties: GazeButtonProperties(
                       key: GlobalKey(),
-                      route: '/',
                       text: 'Hallo Was machst du da?',
                       textColor: Colors.black,
+                      route: '/',
                     ),
-                    onTap: () {
+                    onTap: () async {
                       print('LOL');
+                      await showDialog(
+                          context: context,
+                          builder: ((context) {
+                            return GazeDatePicker(
+                              firstDate: DateTime.parse('2012-12-12'),
+                              initialDate: DateTime.now(),
+                              route: '/',
+                              lastDate: DateTime.parse('2025-12-12'),
+                              selected: (value, context) {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  _dateTime = value;
+                                });
+                              },
+                              cancelled: (context) {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          }));
                     },
                   ),
                 ),

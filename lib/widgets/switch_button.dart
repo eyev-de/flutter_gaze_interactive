@@ -9,7 +9,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'button.dart';
+import 'button/button.dart';
 
 class GazeSwitchButtonState extends ChangeNotifier {
   bool _toggled;
@@ -48,6 +48,7 @@ class GazeSwitchButtonProperties {
   final GazeSwitchButtonState state;
   GazeSwitchButtonProperties({
     required this.state,
+    required this.route,
     this.enabled = true,
     this.disabledColor = Colors.grey,
     this.unToggledColor = Colors.grey,
@@ -55,7 +56,6 @@ class GazeSwitchButtonProperties {
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.size = const Size(80, 80),
     this.margin = const EdgeInsets.fromLTRB(15, 35, 15, 35),
-    this.route = '/',
   });
 }
 

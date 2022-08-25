@@ -6,7 +6,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../gaze_interactive.dart';
+import 'list_view_wrapper.dart';
 
 class GazeListView extends StatelessWidget {
   final GlobalKey gazeInteractiveKey = GlobalKey();

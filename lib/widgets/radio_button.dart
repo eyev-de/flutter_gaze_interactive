@@ -5,7 +5,7 @@
 //
 
 import 'package:flutter/material.dart';
-import 'button.dart';
+import 'button/button.dart';
 
 class GazeRadioButton extends StatelessWidget {
   final bool selected;

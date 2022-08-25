@@ -7,9 +7,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../extensions.dart';
-import '../state.dart';
-import 'button.dart';
+import '../../extensions.dart';
+import '../../state.dart';
+import '../button/button.dart';
 
 enum GazeListViewIndicatorState {
   hidden,

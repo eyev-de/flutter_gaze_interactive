@@ -7,7 +7,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'selection_animation.dart';
+import 'button/selection_animation.dart';
 
 class GazeTextFieldProperties {
   final String? placeholder;

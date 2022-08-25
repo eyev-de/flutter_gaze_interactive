@@ -8,7 +8,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../state.dart';
+import '../../state.dart';
 
 enum GazeSelectionAnimationType {
   progress,
