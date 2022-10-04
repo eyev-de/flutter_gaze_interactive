@@ -1,7 +1,7 @@
 //  Gaze Interactive
 //
 //  Created by Konstantin Wachendorff.
-//  Copyright © 2021 eyeV GmbH. All rights reserved.
+//  Copyright © eyeV GmbH. All rights reserved.
 //
 
 import 'dart:math' as math;

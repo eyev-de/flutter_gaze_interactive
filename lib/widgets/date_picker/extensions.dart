@@ -1,7 +1,7 @@
 //  Gaze Widgets Lib
 //
 //  Created by Konstantin Wachendorff.
-//  Copyright © 2021 eyeV GmbH. All rights reserved.
+//  Copyright © eyeV GmbH. All rights reserved.
 //
 
 extension DateOnlyCompare on DateTime {
