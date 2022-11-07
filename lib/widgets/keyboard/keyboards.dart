@@ -17,14 +17,16 @@ enum Language {
 }
 
 class Keyboards {
-  static List<List<Widget>> get(Language lang, String route, bool _shift, bool shift, bool capsLock, void Function(String?, GazeKeyType) action) {
+  static List<List<Widget>> get(Language lang, String route,
+      {required bool shift, required bool capsLock, required void Function(String?, GazeKeyType) action}) {
+    final shiftState = shift ^ capsLock;
     switch (lang) {
       case Language.german:
-        return _german(_shift, route, shift, capsLock, action);
+        return _german(shiftState, route, shift, capsLock, action);
       case Language.english:
-        return _english(_shift, route, shift, capsLock, action);
+        return _english(shiftState, route, shift, capsLock, action);
       case Language.speak:
-        return _speak(_shift, route, shift, capsLock, action);
+        return _speak(shiftState, route, shift, capsLock, action);
     }
   }
 
@@ -151,7 +153,7 @@ class Keyboards {
         GazeKey(content: 'j', route: route, shift: _shift, onTap: action),
         GazeKey(content: 'k', route: route, shift: _shift, onTap: action),
         GazeKey(content: 'l', route: route, shift: _shift, onTap: action),
-        GazeKey(content: const [":", ';'], route: route, shift: _shift, onTap: action),
+        GazeKey(content: const [':', ';'], route: route, shift: _shift, onTap: action),
         GazeKey(content: const ['"', "'"], route: route, shift: _shift, onTap: action),
         // GazeKey(content: 'Enter', route: route, widthRatio: 1.2, type: GazeKeyType.enter, onTap: action),
       ],

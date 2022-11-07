@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import '../../gaze_interactive.dart';
+import '../button/button.dart';
+import '../pointer_view.dart';
 import 'keyboard_key.dart';
 import 'keyboard_text.dart';
 import 'keyboards.dart';
@@ -188,6 +189,7 @@ class GazeKeyboard {
                       ],
                     ),
                   ),
+                  GazePointerView(),
                 ],
               );
             },
@@ -285,7 +287,7 @@ class GazeKeyboard {
                   backgroundColor: Colors.grey.shade900,
                   borderRadius: BorderRadius.zero,
                   innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.keyboard_hide_rounded,
                     color: Colors.white,
                   ),
@@ -327,19 +329,20 @@ class GazeKeyboardWidget extends StatelessWidget {
   }
 
   Widget _keyboard(GazeKeyboardState state) {
-    final _shift = state.shift ^ state.capsLock;
-    final keys = Keyboards.get(state.language, state.route, _shift, state.shift, state.capsLock, action);
+    final keys = Keyboards.get(state.language, state.route, shift: state.shift, capsLock: state.capsLock, action: action);
     if (!state.withNumbers) keys.removeAt(0);
-    if (!state.withAlt)
+    if (!state.withAlt) {
       keys[keys.length - 1].removeWhere((key) {
         if (key is GazeKey) return key.type == GazeKeyType.alt;
         return false;
       });
-    if (!state.withCtrl)
+    }
+    if (!state.withCtrl) {
       keys[keys.length - 1].removeWhere((key) {
         if (key is GazeKey) return key.type == GazeKeyType.ctrl;
         return false;
       });
+    }
     return Column(
       children: [
         for (var row in keys)

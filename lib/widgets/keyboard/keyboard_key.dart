@@ -98,7 +98,7 @@ class GazeKey extends StatelessWidget {
       final _switchTo = shift != null && shift && content.length == 1 && validCharacters.hasMatch(content);
       return _spaceOut(Text(
         _switchTo ? content.toUpperCase() : content,
-        style: TextStyle(fontSize: 20, color: Colors.white),
+        style: const TextStyle(fontSize: 20, color: Colors.white),
       ));
     } else if (content is IconData) {
       return _spaceOut(Icon(
@@ -141,8 +141,9 @@ class GazeKey extends StatelessWidget {
             innerPadding: const EdgeInsets.all(0),
             child: _buildContent(content, shift),
             route: route,
-            animationColor: Theme.of(context).primaryColor,
+            animationColor: !changeColor ? Theme.of(context).primaryColor : Colors.grey.shade900,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
+            reselectable: true,
           ),
           onTap: onTap != null
               ? () {

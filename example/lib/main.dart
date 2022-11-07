@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Gaze Keyboard Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryTextTheme: TextTheme(headline1: TextStyle(fontSize: 30)),
       ),
       home: const App(),
     );
@@ -57,7 +58,7 @@ class _AppState extends State<App> {
                     onChanged: (value) {},
                     properties: GazeTextFieldProperties(
                       maxLength: 30,
-                      placeholder: 'Name',
+                      placeholder: 'Search',
                       placeholderStyle: const TextStyle(fontSize: 20, color: Colors.white),
                       padding: const EdgeInsets.all(20),
                       style: const TextStyle(fontSize: 20, color: Colors.white),
@@ -65,14 +66,10 @@ class _AppState extends State<App> {
                     onFocus: () {
                       GazeKeyboard().show(
                         context,
-                        GazeKeyboardState(node: _focusNode, placeholder: 'Name', controller: _controller),
-                        () {
-                          GazeInteractive().currentRoute = '/dialog';
-                        },
-                        (_context) => Navigator.of(_context).pop(),
-                        (_context) {
-                          GazeInteractive().currentRoute = '/';
-                        },
+                        GazeKeyboardState(node: _focusNode, placeholder: 'Search', controller: _controller, route: '/dialog'),
+                        () => GazeInteractive().currentRoute = '/dialog',
+                        (ctx) => Navigator.of(ctx).pop(),
+                        (ctx) => GazeInteractive().currentRoute = '/',
                       );
                     },
                     focusNode: _focusNode,
@@ -93,24 +90,25 @@ class _AppState extends State<App> {
                     onTap: () async {
                       print('LOL');
                       await showDialog(
-                          context: context,
-                          builder: ((context) {
-                            return GazeDatePicker(
-                              firstDate: DateTime.parse('2012-12-12'),
-                              initialDate: DateTime.now(),
-                              route: '/',
-                              lastDate: DateTime.parse('2025-12-12'),
-                              selected: (value, context) {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  _dateTime = value;
-                                });
-                              },
-                              cancelled: (context) {
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          }));
+                        context: context,
+                        builder: (context) {
+                          return GazeDatePicker(
+                            firstDate: DateTime.parse('2012-12-12'),
+                            initialDate: DateTime.now(),
+                            route: '/',
+                            lastDate: DateTime.parse('2025-12-12'),
+                            selected: (value, context) {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                _dateTime = value;
+                              });
+                            },
+                            cancelled: (context) {
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                      );
                     },
                   ),
                 ),

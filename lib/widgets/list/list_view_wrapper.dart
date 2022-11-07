@@ -40,11 +40,13 @@ class GazeListViewWrapper extends StatefulWidget {
   final Widget wrappedWidget;
   final ScrollController controller;
   final String route;
+  final double indicatorWidth;
   GazeListViewWrapper({
     required this.wrappedKey,
     required this.wrappedWidget,
     required this.controller,
     required this.route,
+    required this.indicatorWidth,
   }) : super(key: wrappedKey);
   @override
   _GazeListViewWrapperState createState() => _GazeListViewWrapperState();
@@ -80,7 +82,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
     );
     widget.controller.addListener(_scrollListener);
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.controller.hasClients && widget.controller.position.extentAfter > 0 && !_downIndicatorState.isVisible) {
+      if (mounted && widget.controller.hasClients && widget.controller.position.extentAfter > 0 && !_downIndicatorState.isVisible) {
         setState(() {
           _downIndicatorState = GazeListViewIndicatorState.visible;
         });
@@ -97,7 +99,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
   }
 
   void _scrollListener() {
-    if (!widget.controller.hasClients) return;
+    if (!widget.controller.hasClients || !mounted) return;
     if (widget.controller.position.atEdge) {
       if (widget.controller.position.pixels == 0) {
         if (_upIndicatorState.isVisible) {
@@ -127,7 +129,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
   }
 
   Future<void> _listener() async {
-    if (!_active || _animating || !widget.controller.hasClients || !_downIndicatorState.isVisible && !_upIndicatorState.isVisible) return;
+    if (!mounted || !_active || _animating || !widget.controller.hasClients || !_downIndicatorState.isVisible && !_upIndicatorState.isVisible) return;
     final rect = widget.gazeInteractive.rect;
     await _calculate(rect);
   }
@@ -230,7 +232,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        width: 300,
+                        width: widget.indicatorWidth,
                         height: 60,
                         child: GazeButton(
                           properties: GazeButtonProperties(
@@ -265,7 +267,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 300,
+                    width: widget.indicatorWidth,
                     height: 60,
                     child: GazeButton(
                       properties: GazeButtonProperties(

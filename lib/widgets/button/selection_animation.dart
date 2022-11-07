@@ -15,9 +15,18 @@ enum GazeSelectionAnimationType {
   fade,
 }
 
-abstract class GazeSelectionAnimatable extends StatefulWidget {
-  const GazeSelectionAnimatable({Key? key}) : super(key: key);
-}
+// class GazeSelectionAnimatable extends StatefulWidget {
+//   const GazeSelectionAnimatable({Key? key}) : super(key: key);
+
+//   @override
+//   State<StatefulWidget> createState() => _GazeSelectionAnimatableState();
+// }
+
+// class _GazeSelectionAnimatableState extends State<GazeSelectionAnimatable> {
+//   @override
+//   Widget build(BuildContext context) {
+//   }
+// }
 
 class GazeSelectionAnimationProperties {
   final BorderRadius borderRadius;
@@ -27,6 +36,7 @@ class GazeSelectionAnimationProperties {
   final String route;
   final bool gazeInteractive;
   final GazeSelectionAnimationType type;
+  final bool reselectable;
   GazeSelectionAnimationProperties({
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.backgroundColor,
@@ -35,25 +45,24 @@ class GazeSelectionAnimationProperties {
     required this.route,
     this.gazeInteractive = true,
     this.type = GazeSelectionAnimationType.progress,
+    this.reselectable = false,
   });
 }
 
 class GazeSelectionAnimation extends StatefulWidget {
   final GazeSelectionAnimationProperties properties;
-  final GazeInteractive gazeInteractive = GazeInteractive();
   final GlobalKey wrappedKey;
   final Widget wrappedWidget;
   final void Function() onGazed;
   GazeSelectionAnimation({
     required this.wrappedKey,
     required this.properties,
-    // required this.wrappedKey,
     required this.wrappedWidget,
     required this.onGazed,
   }) : super(key: wrappedKey);
 
   @override
-  _GazeSelectionAnimationState createState() => _GazeSelectionAnimationState();
+  State<StatefulWidget> createState() => _GazeSelectionAnimationState();
 }
 
 class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with SingleTickerProviderStateMixin {
@@ -69,24 +78,23 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
     super.initState();
     _register();
     _initAnimation();
-    widget.gazeInteractive.addListener(_listener);
+    GazeInteractive().addListener(_listener);
   }
 
   void _listener() {
-    _controller.duration = widget.gazeInteractive.gazeInteractiveDuration;
+    _controller.duration = GazeInteractive().gazeInteractiveDuration;
   }
 
   void _initAnimation() {
     _controller = AnimationController(
-      duration: widget.gazeInteractive.gazeInteractiveDuration,
+      duration: GazeInteractive().gazeInteractiveDuration,
       vsync: this,
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _timer?.cancel();
           if (mounted) {
-            _controller
-              ..stop()
-              ..reset();
+            _controller.reset();
+            if (widget.properties.reselectable) _controller.forward();
           }
           if (widget.properties.gazeInteractive) widget.onGazed();
         }
@@ -173,8 +181,8 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   void deactivate() {
     _timer?.cancel();
     super.deactivate();
-    widget.gazeInteractive.removeListener(_listener);
-    widget.gazeInteractive.unregister(widget.wrappedKey, GazeInteractiveType.selectable);
+    GazeInteractive().removeListener(_listener);
+    GazeInteractive().unregister(widget.wrappedKey, GazeInteractiveType.selectable);
   }
 
   @override
@@ -185,7 +193,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   }
 
   void _register() {
-    widget.gazeInteractive.register(
+    GazeInteractive().register(
       GazeInteractionData(
         key: widget.wrappedKey,
         route: widget.properties.route,
@@ -205,10 +213,8 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
             });
           }
           if (mounted) _controller.stop();
-          _timer = Timer(widget.gazeInteractive.gazeInteractiveRecoverTime, () {
-            if (mounted) {
-              _controller.reset();
-            }
+          _timer = Timer(GazeInteractive().gazeInteractiveRecoverTime, () {
+            if (mounted) _controller.reset();
           });
         },
         type: GazeInteractiveType.selectable,
