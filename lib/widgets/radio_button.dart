@@ -28,31 +28,33 @@ class GazeRadioButton extends StatelessWidget {
     return GazeButton(
       properties: GazeButtonProperties(
         key: GlobalKey(),
-        innerPadding: innerPadding,
         horizontal: true,
         borderRadius: BorderRadius.circular(20),
         gazeInteractive: !selected,
         route: route,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IgnorePointer(
-              child: Container(
-                width: size,
-                height: size,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: selected ? color : null,
-                  border: selected
-                      ? null
-                      : Border.all(
-                          color: color,
-                          width: 2,
-                        ),
+        child: Padding(
+          padding: innerPadding,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IgnorePointer(
+                child: Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: selected ? color : null,
+                    border: selected
+                        ? null
+                        : Border.all(
+                            color: color,
+                            width: 2,
+                          ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       onTap: selected ? null : onTap,
