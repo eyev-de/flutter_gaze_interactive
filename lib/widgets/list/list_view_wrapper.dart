@@ -14,10 +14,8 @@ import '../button/button.dart';
 enum GazeListViewIndicatorState {
   hidden,
   visible,
-  active,
-}
+  active;
 
-extension GazeListViewIndicatorStateValue on GazeListViewIndicatorState {
   double get opacity {
     switch (this) {
       case GazeListViewIndicatorState.hidden:
@@ -41,12 +39,16 @@ class GazeListViewWrapper extends StatefulWidget {
   final ScrollController controller;
   final String route;
   final double indicatorWidth;
+  final double indicatorHeight;
+  final EdgeInsets indicatorInnerPadding;
   GazeListViewWrapper({
     required this.wrappedKey,
     required this.wrappedWidget,
     required this.controller,
     required this.route,
     required this.indicatorWidth,
+    required this.indicatorHeight,
+    required this.indicatorInnerPadding,
   }) : super(key: wrappedKey);
   @override
   _GazeListViewWrapperState createState() => _GazeListViewWrapperState();
@@ -128,10 +130,22 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
     }
   }
 
-  Future<void> _listener() async {
-    if (!mounted || !_active || _animating || !widget.controller.hasClients || !_downIndicatorState.isVisible && !_upIndicatorState.isVisible) return;
-    final rect = widget.gazeInteractive.rect;
-    await _calculate(rect);
+  // If rect and active are not null the call was made by MouseRegion
+  // If there is no area to scroll this will return and hide the indicators
+  Future<void> _listener({Rect? rect, bool? active}) async {
+    final _localActive = active ?? _active;
+    if (!mounted || !_localActive || _animating || !widget.controller.hasClients) return;
+    if (widget.controller.position.maxScrollExtent == 0) {
+      if (_downIndicatorState != GazeListViewIndicatorState.hidden || _upIndicatorState != GazeListViewIndicatorState.hidden) {
+        setState(() {
+          _downIndicatorState = GazeListViewIndicatorState.hidden;
+          _upIndicatorState = GazeListViewIndicatorState.hidden;
+        });
+      }
+      return;
+    }
+    final _rect = rect ?? widget.gazeInteractive.rect;
+    await _calculate(_rect);
   }
 
   Future<void> _calculate(Rect rect) async {
@@ -195,14 +209,9 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
           curve: Curves.ease,
         );
         _animating = false;
-      } else {
-        if (_downIndicatorState != GazeListViewIndicatorState.visible || _upIndicatorState != GazeListViewIndicatorState.visible) {
-          setState(() {
-            _upIndicatorState = GazeListViewIndicatorState.visible;
-            _downIndicatorState = GazeListViewIndicatorState.visible;
-          });
-        }
       }
+      // Hides the indicators if they are at the edge at the end of scrolling
+      _scrollListener();
     }
   }
 
@@ -211,11 +220,12 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
     return MouseRegion(
       onHover: (event) {
         if (!_active) {
-          _calculate(Rect.fromCenter(
+          final rect = Rect.fromCenter(
             center: event.position,
             width: 10,
             height: 10,
-          ));
+          );
+          _listener(rect: rect, active: true);
         }
       },
       child: Stack(
@@ -233,13 +243,12 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                     children: [
                       SizedBox(
                         width: widget.indicatorWidth,
-                        height: 60,
+                        height: widget.indicatorHeight,
                         child: GazeButton(
                           properties: GazeButtonProperties(
-                            key: GlobalKey(),
                             route: widget.route,
                             gazeInteractive: false,
-                            innerPadding: const EdgeInsets.all(10),
+                            innerPadding: widget.indicatorInnerPadding,
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(100),
                               topRight: Radius.circular(100),
@@ -268,13 +277,12 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
                 children: [
                   SizedBox(
                     width: widget.indicatorWidth,
-                    height: 60,
+                    height: widget.indicatorHeight,
                     child: GazeButton(
                       properties: GazeButtonProperties(
-                        key: GlobalKey(),
                         route: widget.route,
                         gazeInteractive: false,
-                        innerPadding: const EdgeInsets.all(10),
+                        innerPadding: widget.indicatorInnerPadding,
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(100),
                           bottomRight: Radius.circular(100),

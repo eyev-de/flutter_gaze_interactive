@@ -11,7 +11,6 @@ import 'selection_animation.dart';
 enum GazeButtonTapTypes { single, double }
 
 class GazeButtonProperties {
-  final GlobalKey key;
   final String? text;
   final Color textColor;
   final TextStyle? textStyle;
@@ -31,8 +30,7 @@ class GazeButtonProperties {
   final Color animationColor;
   final bool reselectable;
   GazeButtonProperties({
-    required this.key,
-    required this.route,
+    this.route = '/',
     this.text,
     this.textColor = Colors.white,
     this.textStyle,
@@ -70,7 +68,7 @@ class GazeButton extends StatelessWidget {
         animationColor: properties.animationColor,
         reselectable: properties.reselectable,
       ),
-      wrappedKey: properties.key,
+      wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
       onGazed: () {
         onTap?.call();

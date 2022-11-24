@@ -27,7 +27,6 @@ class GazeRadioButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GazeButton(
       properties: GazeButtonProperties(
-        key: GlobalKey(),
         horizontal: true,
         borderRadius: BorderRadius.circular(20),
         gazeInteractive: !selected,

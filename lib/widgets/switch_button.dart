@@ -106,7 +106,6 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
       builder: (context, child) => Consumer<GazeSwitchButtonState>(
         builder: (context, _state, child) => GazeButton(
           properties: GazeButtonProperties(
-            key: GlobalKey(),
             innerPadding: const EdgeInsets.all(0),
             route: widget.properties.route,
             gazeInteractive: _state.gazeInteractive,

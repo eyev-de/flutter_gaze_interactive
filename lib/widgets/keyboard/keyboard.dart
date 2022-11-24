@@ -90,7 +90,6 @@ class GazeKeyboard {
                                           height: 100,
                                           child: GazeButton(
                                             properties: GazeButtonProperties(
-                                              key: GlobalKey(),
                                               backgroundColor: Colors.grey.shade900,
                                               borderRadius: BorderRadius.zero,
                                               innerPadding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
@@ -120,7 +119,6 @@ class GazeKeyboard {
                                           height: 100,
                                           child: GazeButton(
                                             properties: GazeButtonProperties(
-                                              key: GlobalKey(),
                                               backgroundColor: Colors.grey.shade900,
                                               borderRadius: BorderRadius.zero,
                                               innerPadding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
@@ -144,7 +142,6 @@ class GazeKeyboard {
                                           width: 120,
                                           child: GazeButton(
                                             properties: GazeButtonProperties(
-                                              key: GlobalKey(),
                                               backgroundColor: Colors.grey.shade900,
                                               borderRadius: BorderRadius.zero,
                                               innerPadding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
@@ -219,7 +216,6 @@ class GazeKeyboard {
                 padding: const EdgeInsets.all(1),
                 child: GazeButton(
                   properties: GazeButtonProperties(
-                    key: GlobalKey(),
                     borderRadius: BorderRadius.zero,
                     innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
                     backgroundColor: state.language == Language.german ? Theme.of(context).primaryColor : Colors.transparent,
@@ -244,7 +240,6 @@ class GazeKeyboard {
                 padding: const EdgeInsets.all(1),
                 child: GazeButton(
                   properties: GazeButtonProperties(
-                    key: GlobalKey(),
                     borderRadius: BorderRadius.zero,
                     innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
                     backgroundColor: state.language == Language.english ? Theme.of(context).primaryColor : Colors.transparent,
@@ -283,7 +278,6 @@ class GazeKeyboard {
               padding: const EdgeInsets.all(1),
               child: GazeButton(
                 properties: GazeButtonProperties(
-                  key: GlobalKey(),
                   backgroundColor: Colors.grey.shade900,
                   borderRadius: BorderRadius.zero,
                   innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),

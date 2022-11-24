@@ -162,7 +162,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                     final thisYear = widget.firstDate.year + index;
                     return GazeButton(
                       properties: GazeButtonProperties(
-                        key: GlobalKey(),
                         route: widget.route,
                         backgroundColor: _current.year == thisYear ? Theme.of(context).primaryColor : Colors.transparent,
                         text: '$thisYear',
@@ -257,7 +256,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                   Flexible(
                     child: GazeButton(
                       properties: GazeButtonProperties(
-                        key: GlobalKey(),
                         route: widget.route,
                         child: Container(
                           padding: const EdgeInsets.all(20),
@@ -288,7 +286,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                   Flexible(
                     child: GazeButton(
                       properties: GazeButtonProperties(
-                        key: GlobalKey(),
                         route: widget.route,
                         icon: Icon(
                           Icons.arrow_back,
@@ -310,7 +307,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                   Flexible(
                     child: GazeButton(
                       properties: GazeButtonProperties(
-                        key: GlobalKey(),
                         route: widget.route,
                         icon: Icon(
                           Icons.arrow_forward,
@@ -343,7 +339,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
               padding: const EdgeInsets.all(5),
               child: GazeButton(
                 properties: GazeButtonProperties(
-                  key: GlobalKey(),
                   route: widget.route,
                   text: widget.cancelLabel,
                 ),
@@ -359,7 +354,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
               padding: const EdgeInsets.all(5),
               child: GazeButton(
                 properties: GazeButtonProperties(
-                  key: GlobalKey(),
                   route: widget.route,
                   text: widget.selectLabel,
                   backgroundColor: Theme.of(context).primaryColor,
@@ -436,7 +430,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
           padding: const EdgeInsets.all(5),
           child: GazeButton(
             properties: GazeButtonProperties(
-              key: GlobalKey(),
               route: widget.route,
               text: '$day',
               textColor: tooEaryOrTooLate ? Colors.white54 : Colors.white,

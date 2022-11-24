@@ -82,7 +82,6 @@ class _AppState extends State<App> {
                   height: 80,
                   child: GazeButton(
                     properties: GazeButtonProperties(
-                      key: GlobalKey(),
                       text: 'Hallo Was machst du da?',
                       textColor: Colors.black,
                       route: '/',

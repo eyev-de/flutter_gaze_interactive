@@ -135,7 +135,6 @@ class GazeKey extends StatelessWidget {
         padding: const EdgeInsets.all(1),
         child: GazeButton(
           properties: GazeButtonProperties(
-            key: GlobalKey(),
             backgroundColor: changeColor ? Theme.of(context).primaryColor : Colors.grey.shade900,
             borderRadius: BorderRadius.zero,
             innerPadding: const EdgeInsets.all(0),
