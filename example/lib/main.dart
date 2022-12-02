@@ -53,7 +53,6 @@ class _AppState extends State<App> {
                   width: 200,
                   height: 80,
                   child: GazeTextField(
-                    gazeInteractiveKey: GlobalKey(),
                     controller: _controller,
                     onChanged: (value) {},
                     properties: GazeTextFieldProperties(

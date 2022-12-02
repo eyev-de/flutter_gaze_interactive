@@ -19,6 +19,7 @@ class GazeTextFieldProperties {
   final TextStyle? style;
   final TextInputType? keyboardType;
   final TextAlignVertical? textAlignVertical;
+  final TextAlign textAlign;
   GazeTextFieldProperties({
     this.maxLength,
     this.placeholder,
@@ -29,12 +30,11 @@ class GazeTextFieldProperties {
     this.style,
     this.keyboardType = TextInputType.name,
     this.textAlignVertical,
+    this.textAlign = TextAlign.start,
   });
 }
 
 class GazeTextField extends StatelessWidget {
-  final GlobalKey gazeInteractiveKey;
-
   final TextEditingController controller;
   final FocusNode focusNode;
   final String route;
@@ -46,7 +46,6 @@ class GazeTextField extends StatelessWidget {
 
   GazeTextField({
     Key? key,
-    required this.gazeInteractiveKey,
     required this.controller,
     required this.focusNode,
     required this.properties,
@@ -65,7 +64,7 @@ class GazeTextField extends StatelessWidget {
         route: route,
         gazeInteractive: properties.enabled,
       ),
-      wrappedKey: gazeInteractiveKey,
+      wrappedKey: GlobalKey(),
       wrappedWidget: Positioned.fill(
         child: CupertinoTextField(
           focusNode: focusNode,
@@ -81,6 +80,7 @@ class GazeTextField extends StatelessWidget {
           keyboardType: properties.keyboardType,
           expands: true,
           textAlignVertical: properties.textAlignVertical,
+          textAlign: properties.textAlign,
           decoration: BoxDecoration(
             color: Colors.grey.shade900,
             borderRadius: BorderRadius.circular(20),
