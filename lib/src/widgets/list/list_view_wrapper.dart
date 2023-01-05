@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../element_data.dart';
+import '../../element_type.dart';
 import '../../extensions.dart';
 import '../../state.dart';
 import '../button/button.dart';
@@ -70,7 +72,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
     // addlistener to the GazeInteractive instance
     widget.gazeInteractive.addListener(_listener);
     widget.gazeInteractive.register(
-      GazeInteractionData(
+      GazeScrollableData(
         key: widget.wrappedKey,
         route: widget.route,
         onGazeEnter: () {
@@ -79,7 +81,6 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
         onGazeLeave: () {
           _active = false;
         },
-        type: GazeInteractiveType.scrollable,
       ),
     );
     widget.controller.addListener(_scrollListener);
@@ -96,7 +97,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
   void deactivate() {
     super.deactivate();
     widget.gazeInteractive.removeListener(_listener);
-    widget.gazeInteractive.unregister(widget.wrappedKey, GazeInteractiveType.scrollable);
+    widget.gazeInteractive.unregister(key: widget.wrappedKey, type: GazeElementType.scrollable);
     widget.controller.removeListener(_scrollListener);
   }
 
@@ -166,7 +167,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
         bounds.bottom,
       );
 
-      final double maxScrollSpeed = widget.gazeInteractive.gazeInteractiveScrollFactor;
+      final double maxScrollSpeed = widget.gazeInteractive.scrollFactor;
       if (tempTop.overlaps(rect)) {
         // In top area
         if (widget.controller.offset == 0) return;

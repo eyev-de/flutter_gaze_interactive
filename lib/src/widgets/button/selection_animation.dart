@@ -8,6 +8,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../element_data.dart';
+import '../../element_type.dart';
 import '../../state.dart';
 
 enum GazeSelectionAnimationType {
@@ -82,12 +84,12 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   }
 
   void _listener() {
-    _controller.duration = GazeInteractive().gazeInteractiveDuration;
+    _controller.duration = GazeInteractive().duration;
   }
 
   void _initAnimation() {
     _controller = AnimationController(
-      duration: GazeInteractive().gazeInteractiveDuration,
+      duration: GazeInteractive().duration,
       vsync: this,
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
@@ -182,7 +184,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
     _timer?.cancel();
     super.deactivate();
     GazeInteractive().removeListener(_listener);
-    GazeInteractive().unregister(widget.wrappedKey, GazeInteractiveType.selectable);
+    GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
   }
 
   @override
@@ -194,7 +196,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
 
   void _register() {
     GazeInteractive().register(
-      GazeInteractionData(
+      GazeSelectableData(
         key: widget.wrappedKey,
         route: widget.properties.route,
         onGazeEnter: () {
@@ -213,11 +215,10 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
             });
           }
           if (mounted) _controller.stop();
-          _timer = Timer(GazeInteractive().gazeInteractiveRecoverTime, () {
+          _timer = Timer(GazeInteractive().recoverTime, () {
             if (mounted) _controller.reset();
           });
         },
-        type: GazeInteractiveType.selectable,
       ),
     );
   }

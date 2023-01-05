@@ -13,6 +13,7 @@ enum GazeButtonTapTypes { single, double }
 class GazeButtonProperties {
   final String? text;
   final Color textColor;
+  final TextAlign textAlign;
   final TextStyle? textStyle;
   final Icon? icon;
   final Color? borderColor;
@@ -33,6 +34,7 @@ class GazeButtonProperties {
     this.route = '/',
     this.text,
     this.textColor = Colors.white,
+    this.textAlign = TextAlign.center,
     this.textStyle,
     this.icon,
     this.borderColor,
@@ -153,13 +155,15 @@ class GazeButton extends StatelessWidget {
             ],
           ),
         if (properties.text != null)
-          Column(
-            mainAxisAlignment: properties.verticalAlignment,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _text(context),
-            ],
-          )
+          Flexible(
+            child: Column(
+              mainAxisAlignment: properties.verticalAlignment,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _text(context),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -168,7 +172,7 @@ class GazeButton extends StatelessWidget {
     return Flexible(
       child: Text(
         properties.text!,
-        textAlign: TextAlign.center,
+        textAlign: properties.textAlign,
         // maxLines: 1,
         style: properties.textStyle ??
             TextStyle(

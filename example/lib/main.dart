@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gaze_interactive/gaze_interactive.dart';
+import 'package:gaze_interactive/api.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Gaze Keyboard Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        primaryTextTheme: TextTheme(headline1: TextStyle(fontSize: 30)),
+        primaryTextTheme: const TextTheme(headline1: TextStyle(fontSize: 30)),
       ),
       home: const App(),
     );
@@ -86,7 +86,6 @@ class _AppState extends State<App> {
                       route: '/',
                     ),
                     onTap: () async {
-                      print('LOL');
                       await showDialog(
                         context: context,
                         builder: (context) {
@@ -124,8 +123,8 @@ bool gazeInteractionPredicate(Rect itemRect, Rect gazePointerRect, String itemRo
   // gazePointerRect.center
   final intersection = itemRect.intersect(gazePointerRect);
   if (intersection.width.isNegative || intersection.height.isNegative) return false;
-  final intersectionArea = intersection.width * intersection.height;
-  final gazePointerArea = gazePointerRect.width * gazePointerRect.height;
+  // final intersectionArea = intersection.width * intersection.height;
+  // final gazePointerArea = gazePointerRect.width * gazePointerRect.height;
   // itemRect.overlaps(gazePointerRect)
   // Check in case of Dialog
   // && intersectionArea >= gazePointerArea / 2

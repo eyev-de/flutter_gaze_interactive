@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import '../button/button.dart';
-import '../pointer_view.dart';
+import '../pointer/pointer_view.dart';
 import 'keyboard_key.dart';
 import 'keyboard_text.dart';
 import 'keyboards.dart';
