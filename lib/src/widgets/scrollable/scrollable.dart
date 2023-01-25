@@ -6,19 +6,19 @@
 
 import 'package:flutter/material.dart';
 
-import 'list_view_wrapper.dart';
+import 'scrollable_impl.dart';
 
-class GazeListView extends StatelessWidget {
+class GazeScrollable extends StatelessWidget {
   final GlobalKey gazeInteractiveKey = GlobalKey();
-  final Widget wrappedWidget;
+  final Widget child;
   final ScrollController controller;
   final String route;
   final double indicatorWidth;
   final double indicatorHeight;
   final EdgeInsets indicatorInnerPadding;
-  GazeListView({
+  GazeScrollable({
     Key? key,
-    required this.wrappedWidget,
+    required this.child,
     required this.controller,
     required this.route,
     this.indicatorWidth = 300,
@@ -28,14 +28,14 @@ class GazeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GazeListViewWrapper(
-      wrappedWidget: wrappedWidget,
+    return GazeScrollableImpl(
       controller: controller,
       wrappedKey: gazeInteractiveKey,
       route: route,
       indicatorWidth: indicatorWidth,
       indicatorHeight: indicatorHeight,
       indicatorInnerPadding: indicatorInnerPadding,
+      child: child,
     );
   }
 }

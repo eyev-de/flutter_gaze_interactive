@@ -76,9 +76,9 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
   @override
   void deactivate() {
     _fadeOutTimer?.cancel();
-    super.deactivate();
     widget._gazeInteractive.unregister(key: _wrappedkey, type: GazeElementType.pointer);
     GazeInteractive().removeListener(_listener);
+    super.deactivate();
   }
 
   @override
@@ -134,7 +134,7 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
     }
   }
 
-  double get _size => widget._state.type == GazePointerType.active ? widget._gazeInteractive.pointerSize / 2 : widget._gazeInteractive.pointerSize;
+  double get _size => widget._state.type == GazePointerType.active ? widget._gazeInteractive.pointerSize / 1.5 : widget._gazeInteractive.pointerSize;
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +174,7 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
                     _localPointerOffset = local;
                   });
                   _gazeInteractive.onGaze(
-                    temp,
+                    temp + Offset(_size / 2, _size / 2),
                   );
                   // _gazeInteractive.newPosition(
                   //   position: temp + Offset(_size / 2, _size / 2),
@@ -190,7 +190,7 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
                     _pointerOffset = temp;
                   });
                   _gazeInteractive.onGaze(
-                    temp,
+                    temp + Offset(_size / 2, _size / 2),
                   );
                   // _gazeInteractive.newPosition(
                   //   position: temp + Offset(_size / 2, _size / 2),

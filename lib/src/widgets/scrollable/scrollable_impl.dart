@@ -13,39 +13,39 @@ import '../../extensions.dart';
 import '../../state.dart';
 import '../button/button.dart';
 
-enum GazeListViewIndicatorState {
+enum GazeScrollableIndicatorState {
   hidden,
   visible,
   active;
 
   double get opacity {
     switch (this) {
-      case GazeListViewIndicatorState.hidden:
+      case GazeScrollableIndicatorState.hidden:
         return 0;
-      case GazeListViewIndicatorState.visible:
+      case GazeScrollableIndicatorState.visible:
         return 0.15;
-      case GazeListViewIndicatorState.active:
+      case GazeScrollableIndicatorState.active:
         return 1;
     }
   }
 
   bool get isVisible {
-    return opacity > GazeListViewIndicatorState.hidden.opacity;
+    return opacity > GazeScrollableIndicatorState.hidden.opacity;
   }
 }
 
-class GazeListViewWrapper extends StatefulWidget {
+class GazeScrollableImpl extends StatefulWidget {
   final GazeInteractive gazeInteractive = GazeInteractive();
   final GlobalKey wrappedKey;
-  final Widget wrappedWidget;
+  final Widget child;
   final ScrollController controller;
   final String route;
   final double indicatorWidth;
   final double indicatorHeight;
   final EdgeInsets indicatorInnerPadding;
-  GazeListViewWrapper({
+  GazeScrollableImpl({
     required this.wrappedKey,
-    required this.wrappedWidget,
+    required this.child,
     required this.controller,
     required this.route,
     required this.indicatorWidth,
@@ -53,16 +53,16 @@ class GazeListViewWrapper extends StatefulWidget {
     required this.indicatorInnerPadding,
   }) : super(key: wrappedKey);
   @override
-  _GazeListViewWrapperState createState() => _GazeListViewWrapperState();
+  _GazeScrollableImplState createState() => _GazeScrollableImplState();
 }
 
-class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
+class _GazeScrollableImplState extends State<GazeScrollableImpl> {
   bool _active = false;
   bool _animating = false;
-  GazeListViewIndicatorState _upIndicatorState = GazeListViewIndicatorState.hidden;
-  GazeListViewIndicatorState _downIndicatorState = GazeListViewIndicatorState.hidden;
+  GazeScrollableIndicatorState _upIndicatorState = GazeScrollableIndicatorState.hidden;
+  GazeScrollableIndicatorState _downIndicatorState = GazeScrollableIndicatorState.hidden;
 
-  _GazeListViewWrapperState();
+  _GazeScrollableImplState();
 
   static const double scrollArea = 0.2;
 
@@ -87,7 +87,7 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted && widget.controller.hasClients && widget.controller.position.extentAfter > 0 && !_downIndicatorState.isVisible) {
         setState(() {
-          _downIndicatorState = GazeListViewIndicatorState.visible;
+          _downIndicatorState = GazeScrollableIndicatorState.visible;
         });
       }
     });
@@ -95,10 +95,10 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
 
   @override
   void deactivate() {
-    super.deactivate();
     widget.gazeInteractive.removeListener(_listener);
     widget.gazeInteractive.unregister(key: widget.wrappedKey, type: GazeElementType.scrollable);
     widget.controller.removeListener(_scrollListener);
+    super.deactivate();
   }
 
   void _scrollListener() {
@@ -107,25 +107,33 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
       if (widget.controller.position.pixels == 0) {
         if (_upIndicatorState.isVisible) {
           setState(() {
-            _upIndicatorState = GazeListViewIndicatorState.hidden;
+            _upIndicatorState = GazeScrollableIndicatorState.hidden;
           });
         }
       } else {
         if (_downIndicatorState.isVisible) {
           setState(() {
-            _downIndicatorState = GazeListViewIndicatorState.hidden;
+            _downIndicatorState = GazeScrollableIndicatorState.hidden;
           });
         }
       }
     } else {
       if (!_upIndicatorState.isVisible) {
         setState(() {
-          _upIndicatorState = GazeListViewIndicatorState.visible;
+          _upIndicatorState = GazeScrollableIndicatorState.visible;
         });
       }
       if (!_downIndicatorState.isVisible) {
         setState(() {
-          _downIndicatorState = GazeListViewIndicatorState.visible;
+          _downIndicatorState = GazeScrollableIndicatorState.visible;
+        });
+      }
+    }
+    if (widget.controller.position.maxScrollExtent == 0) {
+      if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
+        setState(() {
+          _downIndicatorState = GazeScrollableIndicatorState.hidden;
+          _upIndicatorState = GazeScrollableIndicatorState.hidden;
         });
       }
     }
@@ -137,10 +145,10 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
     final _localActive = active ?? _active;
     if (!mounted || !_localActive || _animating || !widget.controller.hasClients) return;
     if (widget.controller.position.maxScrollExtent == 0) {
-      if (_downIndicatorState != GazeListViewIndicatorState.hidden || _upIndicatorState != GazeListViewIndicatorState.hidden) {
+      if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
         setState(() {
-          _downIndicatorState = GazeListViewIndicatorState.hidden;
-          _upIndicatorState = GazeListViewIndicatorState.hidden;
+          _downIndicatorState = GazeScrollableIndicatorState.hidden;
+          _upIndicatorState = GazeScrollableIndicatorState.hidden;
         });
       }
       return;
@@ -171,10 +179,10 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
       if (tempTop.overlaps(rect)) {
         // In top area
         if (widget.controller.offset == 0) return;
-        if (_downIndicatorState != GazeListViewIndicatorState.visible || _upIndicatorState != GazeListViewIndicatorState.active) {
+        if (_downIndicatorState != GazeScrollableIndicatorState.visible || _upIndicatorState != GazeScrollableIndicatorState.active) {
           setState(() {
-            _upIndicatorState = GazeListViewIndicatorState.active;
-            _downIndicatorState = GazeListViewIndicatorState.visible;
+            _upIndicatorState = GazeScrollableIndicatorState.active;
+            _downIndicatorState = GazeScrollableIndicatorState.visible;
           });
         }
         // calculate scrolling factor
@@ -191,10 +199,10 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
       } else if (tempBottom.overlaps(rect)) {
         // In bottom area;
         if (widget.controller.position.atEdge && widget.controller.position.pixels > 0) return;
-        if (_downIndicatorState != GazeListViewIndicatorState.active || _upIndicatorState != GazeListViewIndicatorState.visible) {
+        if (_downIndicatorState != GazeScrollableIndicatorState.active || _upIndicatorState != GazeScrollableIndicatorState.visible) {
           setState(() {
-            _downIndicatorState = GazeListViewIndicatorState.active;
-            _upIndicatorState = GazeListViewIndicatorState.visible;
+            _downIndicatorState = GazeScrollableIndicatorState.active;
+            _upIndicatorState = GazeScrollableIndicatorState.visible;
           });
         }
         // calculate scrolling factor
@@ -231,11 +239,11 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
       },
       child: Stack(
         children: [
-          widget.wrappedWidget,
+          widget.child,
           IgnorePointer(
-            child: AnimatedOpacity(
+            child: Opacity(
               opacity: _downIndicatorState.isVisible ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 150),
+              // duration: const Duration(milliseconds: 150),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -270,9 +278,9 @@ class _GazeListViewWrapperState extends State<GazeListViewWrapper> {
             ),
           ),
           IgnorePointer(
-            child: AnimatedOpacity(
+            child: Opacity(
               opacity: _upIndicatorState.isVisible ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 150),
+              // duration: const Duration(milliseconds: 150),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

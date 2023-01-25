@@ -82,9 +82,9 @@ class _GazeViewImplState extends State<GazeViewImpl> {
 
   @override
   void deactivate() {
-    super.deactivate();
     GazeInteractive().removeListener(_listener);
     GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.all);
+    super.deactivate();
   }
 
   void _register() {

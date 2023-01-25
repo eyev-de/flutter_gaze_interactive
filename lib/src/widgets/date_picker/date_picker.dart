@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../button/button.dart';
-import '../list/list_view.dart';
+import '../scrollable/scrollable.dart';
 import 'extensions.dart';
 
 class GazeDatePicker extends StatefulWidget {
@@ -142,10 +142,10 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
         children: [
           SlideTransition(
             position: _animationYear,
-            child: GazeListView(
+            child: GazeScrollable(
               route: widget.route,
               controller: _scrollController,
-              wrappedWidget: Padding(
+              child: Padding(
                 padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
                 child: GridView.builder(
                   padding: const EdgeInsets.all(10),

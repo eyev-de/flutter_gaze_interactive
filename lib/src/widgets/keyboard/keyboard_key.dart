@@ -129,7 +129,7 @@ class GazeKey extends StatelessWidget {
   Widget build(BuildContext context) {
     final _switchTo = shift ?? false;
     final changeColor = _switchTo && (type == GazeKeyType.caps || type == GazeKeyType.shift);
-    return Expanded(
+    return Flexible(
       flex: widthRatio.round(),
       child: Padding(
         padding: const EdgeInsets.all(1),

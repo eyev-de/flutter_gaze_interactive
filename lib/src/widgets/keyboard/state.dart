@@ -6,7 +6,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'controller.dart';
+import 'keyboard_controller.dart';
 import 'keyboards.dart';
 
 class GazeKeyboardState extends ChangeNotifier {
@@ -57,6 +57,15 @@ class GazeKeyboardState extends ChangeNotifier {
   set ctrl(bool value) {
     if (value != _ctrl) {
       _ctrl = value;
+      notifyListeners();
+    }
+  }
+
+  bool _selecting = false;
+  bool get selecting => _selecting;
+  set selecting(bool value) {
+    if (value != _selecting) {
+      _selecting = value;
       notifyListeners();
     }
   }

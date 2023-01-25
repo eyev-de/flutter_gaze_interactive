@@ -55,12 +55,12 @@ class GazeSelectionAnimation extends StatefulWidget {
   final GazeSelectionAnimationProperties properties;
   final GlobalKey wrappedKey;
   final Widget wrappedWidget;
-  final void Function() onGazed;
+  final void Function()? onGazed;
   GazeSelectionAnimation({
     required this.wrappedKey,
     required this.properties,
     required this.wrappedWidget,
-    required this.onGazed,
+    this.onGazed,
   }) : super(key: wrappedKey);
 
   @override
@@ -98,7 +98,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
             _controller.reset();
             if (widget.properties.reselectable) _controller.forward();
           }
-          if (widget.properties.gazeInteractive) widget.onGazed();
+          if (widget.properties.gazeInteractive) widget.onGazed?.call();
         }
       });
     _colorTween = ColorTween(
@@ -182,9 +182,9 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   @override
   void deactivate() {
     _timer?.cancel();
-    super.deactivate();
     GazeInteractive().removeListener(_listener);
     GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
+    super.deactivate();
   }
 
   @override

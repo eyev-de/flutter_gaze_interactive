@@ -200,7 +200,7 @@ class Keyboards {
         GazeKey(content: 'ü', route: route, shift: _shift, onTap: action),
       ],
       [
-        const Spacer(),
+        GazeKey(content: Icons.keyboard_capslock_rounded, route: route, shift: capsLock, type: GazeKeyType.caps, onTap: action),
         GazeKey(content: 'a', route: route, shift: _shift, onTap: action),
         GazeKey(content: 's', route: route, shift: _shift, onTap: action),
         GazeKey(content: 'd', route: route, shift: _shift, onTap: action),
@@ -219,12 +219,12 @@ class Keyboards {
         GazeKey(content: 'x', route: route, shift: _shift, onTap: action),
         GazeKey(content: 'c', route: route, shift: _shift, onTap: action),
         GazeKey(content: 'v', route: route, shift: _shift, onTap: action),
-        GazeKey(content: Icons.space_bar, route: route, widthRatio: 2, onTap: action),
+        GazeKey(content: ' ', route: route, widthRatio: 2, onTap: action),
         GazeKey(content: 'b', route: route, shift: _shift, onTap: action),
         GazeKey(content: 'n', route: route, shift: _shift, onTap: action),
         GazeKey(content: 'm', route: route, shift: _shift, onTap: action),
         GazeKey(content: const ['.', ','], route: route, shift: _shift, onTap: action),
-        const Spacer(),
+        GazeKey(content: const ['?', '!'], route: route, shift: _shift, onTap: action),
       ],
     ];
   }

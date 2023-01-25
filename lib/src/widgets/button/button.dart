@@ -15,14 +15,20 @@ class GazeButtonProperties {
   final Color textColor;
   final TextAlign textAlign;
   final TextStyle? textStyle;
+
   final Icon? icon;
+
   final Color? borderColor;
+  final double borderWidth;
+  final BorderRadius borderRadius;
+
   final Color backgroundColor;
   final EdgeInsets innerPadding;
-  final BorderRadius borderRadius;
   final bool horizontal;
+
   final MainAxisAlignment horizontalAlignment;
   final MainAxisAlignment verticalAlignment;
+
   final bool gazeInteractive;
   final String route;
   final Widget? child;
@@ -38,6 +44,7 @@ class GazeButtonProperties {
     this.textStyle,
     this.icon,
     this.borderColor,
+    this.borderWidth = 3,
     this.backgroundColor = Colors.transparent,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.horizontal = false,
@@ -103,7 +110,7 @@ class GazeButton extends StatelessWidget {
                 border: properties.borderColor != null
                     ? Border.all(
                         color: properties.borderColor!,
-                        width: 3,
+                        width: properties.borderWidth,
                       )
                     : null,
               ),
@@ -122,7 +129,7 @@ class GazeButton extends StatelessWidget {
             mainAxisAlignment: properties.horizontalAlignment,
             children: [
               Container(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, properties.text != null ? 10 : 0),
                 child: properties.icon,
               )
             ],

@@ -85,14 +85,10 @@ class GazeTextField extends StatelessWidget {
             color: Colors.grey.shade900,
             borderRadius: BorderRadius.circular(20),
           ),
-          onTap: () {
-            if (onFocus != null) onFocus!();
-          },
+          onTap: onFocus?.call,
         ),
       ),
-      onGazed: () {
-        if (onFocus != null) onFocus!();
-      },
+      onGazed: onFocus?.call,
     );
   }
 }
