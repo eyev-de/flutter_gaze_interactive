@@ -86,6 +86,7 @@ class GazeKeyboard {
                                           child: GazeKeyboardTextWidget(
                                             state: state,
                                             node: node,
+                                            minHeight: 80,
                                           ),
                                         ),
                                       ),
@@ -93,7 +94,7 @@ class GazeKeyboard {
                                         child: Padding(
                                           padding: const EdgeInsets.all(1),
                                           child: SizedBox(
-                                            height: 100,
+                                            height: 80,
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
                                                 backgroundColor: Colors.grey.shade900,
@@ -127,7 +128,7 @@ class GazeKeyboard {
                                         child: Padding(
                                           padding: const EdgeInsets.all(1),
                                           child: SizedBox(
-                                            height: 100,
+                                            height: 80,
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
                                                 backgroundColor: Colors.grey.shade900,
@@ -152,15 +153,14 @@ class GazeKeyboard {
                                         child: Padding(
                                           padding: const EdgeInsets.all(1),
                                           child: SizedBox(
-                                            height: 100,
+                                            height: 80,
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
                                                 backgroundColor: Colors.grey.shade900,
                                                 borderRadius: BorderRadius.zero,
-                                                innerPadding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
                                                 icon: const Icon(
                                                   Icons.check,
-                                                  color: Colors.green,
+                                                  color: Colors.teal,
                                                 ),
                                                 horizontal: true,
                                                 route: state.route,
@@ -181,7 +181,7 @@ class GazeKeyboard {
                           ),
                           Flexible(
                             child: SizedBox(
-                              height: 100,
+                              height: 80,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [

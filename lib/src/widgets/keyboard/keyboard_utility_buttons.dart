@@ -27,7 +27,6 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
         GazeKeyboardUtilityCopyButton(state: state, node: node),
         GazeKeyboardUtilityCutButton(state: state, node: node),
         GazeKeyboardUtilityPasteButton(state: state, node: node),
-        const Spacer(flex: 3),
       ],
     );
   }

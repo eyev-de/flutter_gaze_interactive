@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../api.dart';
 import '../scrollable/scrollable.dart';
 import 'state.dart';
 
@@ -17,6 +18,7 @@ class GazeKeyboardTextWidget extends StatelessWidget {
   final controller = ScrollController();
   final double minHeight;
   final int maxLines;
+  final void Function()? onTap;
 
   GazeKeyboardTextWidget({
     Key? key,
@@ -24,6 +26,7 @@ class GazeKeyboardTextWidget extends StatelessWidget {
     required this.node,
     this.minHeight = 100,
     this.maxLines = 10,
+    this.onTap,
   }) : super(key: key) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       node.requestFocus();
@@ -42,25 +45,31 @@ class GazeKeyboardTextWidget extends StatelessWidget {
         bottom: 0,
         left: 0,
         right: 0,
-        child: Container(
-          constraints: BoxConstraints(minHeight: minHeight),
-          child: CupertinoTextField(
-            controller: state.controller,
-            placeholder: state.placeholder,
-            focusNode: node,
-            style: Theme.of(context).textTheme.titleLarge,
-            enabled: true,
-            cursorColor: Colors.white,
-            showCursor: true,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade900,
+        child: GazeButton(
+          properties: GazeButtonProperties(
+            child: Container(
+              constraints: BoxConstraints(minHeight: minHeight),
+              child: CupertinoTextField(
+                controller: state.controller,
+                placeholder: state.placeholder,
+                focusNode: node,
+                style: Theme.of(context).textTheme.titleLarge,
+                enabled: true,
+                cursorColor: Colors.white,
+                showCursor: true,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                ),
+                minLines: 1,
+                maxLines: maxLines,
+                keyboardType: TextInputType.none,
+                padding: const EdgeInsets.all(20),
+                scrollController: controller,
+              ),
             ),
-            minLines: 1,
-            maxLines: maxLines,
-            keyboardType: TextInputType.none,
-            padding: const EdgeInsets.all(20),
-            scrollController: controller,
+            gazeInteractive: onTap != null,
           ),
+          onTap: onTap,
         ),
       ),
     );

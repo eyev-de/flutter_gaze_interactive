@@ -96,13 +96,13 @@ class Keyboards {
         // GazeKey(content: 'shift', route: route, widthRatio: 1.5, shift: shift, type: GazeKeyType.shift, onTap: action),
       ],
       [
-        GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
+        if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
         if (Platform.isWindows) GazeKey(content: 'win', route: route, widthRatio: 1.2, type: GazeKeyType.win, onTap: action),
-        GazeKey(content: 'alt', route: route, widthRatio: 1.5, type: GazeKeyType.alt, onTap: action),
+        if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'alt', route: route, widthRatio: 1.5, type: GazeKeyType.alt, onTap: action),
         GazeKey(content: ' ', route: route, widthRatio: 11.7, onTap: action),
-        GazeKey(content: 'alt gr', route: route, widthRatio: 1.5, type: GazeKeyType.alt, onTap: action),
+        if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'alt gr', route: route, widthRatio: 1.5, type: GazeKeyType.alt, onTap: action),
         if (Platform.isWindows) GazeKey(content: 'win', route: route, widthRatio: 1.2, type: GazeKeyType.win, onTap: action),
-        GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
+        if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
       ]
     ];
   }
@@ -172,13 +172,13 @@ class Keyboards {
         // GazeKey(content: 'shift', route: route, widthRatio: 1.5, shift: shift, type: GazeKeyType.shift, onTap: action),
       ],
       [
-        GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
+        if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
         if (Platform.isWindows) GazeKey(content: 'win', route: route, widthRatio: 1.2, type: GazeKeyType.win, onTap: action),
         GazeKey(content: 'alt', route: route, widthRatio: 1.5, type: GazeKeyType.alt, onTap: action),
         GazeKey(content: ' ', route: route, widthRatio: 11.7, onTap: action),
-        GazeKey(content: 'alt gr', route: route, widthRatio: 1.5, type: GazeKeyType.alt, onTap: action),
+        if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'alt gr', route: route, widthRatio: 1.5, type: GazeKeyType.alt, onTap: action),
         if (Platform.isWindows) GazeKey(content: 'win', route: route, widthRatio: 1.2, type: GazeKeyType.win, onTap: action),
-        GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
+        if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'ctrl', route: route, widthRatio: 1.5, type: GazeKeyType.ctrl, onTap: action),
       ]
     ];
   }
