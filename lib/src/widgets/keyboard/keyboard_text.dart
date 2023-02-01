@@ -53,7 +53,7 @@ class GazeKeyboardTextWidget extends StatelessWidget {
                 controller: state.controller,
                 placeholder: state.placeholder,
                 focusNode: node,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.bodyLarge,
                 enabled: true,
                 cursorColor: Colors.white,
                 showCursor: true,

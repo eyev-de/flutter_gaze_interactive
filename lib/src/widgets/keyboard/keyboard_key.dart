@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../responsive.dart';
 import '../button/button.dart';
 import '../button/selection_animation.dart';
 
@@ -57,7 +58,7 @@ class GazeKey extends StatelessWidget {
     this.onTap,
   }) : super(key: key);
 
-  static Widget _buildContent(Object content, bool? shift) {
+  static Widget _buildContent(BuildContext context, Object content, bool? shift) {
     if (content is List) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -68,7 +69,12 @@ class GazeKey extends StatelessWidget {
               Text(
                 content[0],
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: Responsive.getResponsiveValue(
+                      forLargeScreen: 18,
+                      forMediumScreen: 14,
+                      forVeryLargeScreen: 20,
+                      context: context,
+                    ),
                     color: shift != null
                         ? !shift
                             ? Colors.grey.shade500
@@ -83,7 +89,12 @@ class GazeKey extends StatelessWidget {
               Text(
                 content[1],
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: Responsive.getResponsiveValue(
+                      forLargeScreen: 18,
+                      forMediumScreen: 14,
+                      forVeryLargeScreen: 20,
+                      context: context,
+                    ),
                     color: shift != null
                         ? shift
                             ? Colors.grey.shade500
@@ -98,13 +109,25 @@ class GazeKey extends StatelessWidget {
       final _switchTo = shift != null && shift && content.length == 1 && validCharacters.hasMatch(content);
       return _spaceOut(Text(
         _switchTo ? content.toUpperCase() : content,
-        style: const TextStyle(fontSize: 20, color: Colors.white),
+        style: TextStyle(
+            fontSize: Responsive.getResponsiveValue(
+              forLargeScreen: 18,
+              forMediumScreen: 14,
+              forVeryLargeScreen: 20,
+              context: context,
+            ),
+            color: Colors.white),
       ));
     } else if (content is IconData) {
       return _spaceOut(Icon(
         content,
         color: Colors.white,
-        size: 35,
+        size: Responsive.getResponsiveValue(
+          forVeryLargeScreen: 35,
+          forLargeScreen: 25,
+          forMediumScreen: 25,
+          context: context,
+        ),
       ));
     } else {
       return Container();
@@ -138,7 +161,7 @@ class GazeKey extends StatelessWidget {
             backgroundColor: changeColor ? Theme.of(context).primaryColor : Colors.grey.shade900,
             borderRadius: BorderRadius.zero,
             innerPadding: const EdgeInsets.all(0),
-            child: _buildContent(content, shift),
+            child: _buildContent(context, content, shift),
             route: route,
             animationColor: !changeColor ? Theme.of(context).primaryColor : Colors.grey.shade900,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,

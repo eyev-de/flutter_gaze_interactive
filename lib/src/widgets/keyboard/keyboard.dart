@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import '../../extensions.dart';
+import '../../responsive.dart';
 import '../button/button.dart';
 import '../pointer/pointer_view.dart';
 import 'keyboard_key.dart';
@@ -86,7 +87,11 @@ class GazeKeyboard {
                                           child: GazeKeyboardTextWidget(
                                             state: state,
                                             node: node,
-                                            minHeight: 80,
+                                            minHeight: Responsive.getResponsiveValue(
+                                              forLargeScreen: 80,
+                                              forMediumScreen: 60,
+                                              context: context,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -94,7 +99,11 @@ class GazeKeyboard {
                                         child: Padding(
                                           padding: const EdgeInsets.all(1),
                                           child: SizedBox(
-                                            height: 80,
+                                            height: Responsive.getResponsiveValue(
+                                              forLargeScreen: 80,
+                                              forMediumScreen: 60,
+                                              context: context,
+                                            ),
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
                                                 backgroundColor: Colors.grey.shade900,
@@ -128,7 +137,11 @@ class GazeKeyboard {
                                         child: Padding(
                                           padding: const EdgeInsets.all(1),
                                           child: SizedBox(
-                                            height: 80,
+                                            height: Responsive.getResponsiveValue(
+                                              forLargeScreen: 80,
+                                              forMediumScreen: 60,
+                                              context: context,
+                                            ),
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
                                                 backgroundColor: Colors.grey.shade900,
@@ -153,7 +166,11 @@ class GazeKeyboard {
                                         child: Padding(
                                           padding: const EdgeInsets.all(1),
                                           child: SizedBox(
-                                            height: 80,
+                                            height: Responsive.getResponsiveValue(
+                                              forLargeScreen: 80,
+                                              forMediumScreen: 60,
+                                              context: context,
+                                            ),
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
                                                 backgroundColor: Colors.grey.shade900,
@@ -181,7 +198,11 @@ class GazeKeyboard {
                           ),
                           Flexible(
                             child: SizedBox(
-                              height: 80,
+                              height: Responsive.getResponsiveValue(
+                                forLargeScreen: 80,
+                                forMediumScreen: 60,
+                                context: context,
+                              ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../extensions.dart';
+import '../../responsive.dart';
 import '../button/button.dart';
 import 'state.dart';
 
@@ -36,11 +37,12 @@ abstract class GazeKeyboardUtilityButton extends StatelessWidget {
   final GazeKeyboardState state;
   final FocusNode node;
   final String label;
-  const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label});
+  final TextStyle? textStyle;
+  const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label, this.textStyle});
 }
 
 class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilitySelectButton({super.key, required super.state, required super.node, super.label = 'Select'});
+  const GazeKeyboardUtilitySelectButton({super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -49,12 +51,19 @@ class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
         child: GazeButton(
           properties: GazeButtonProperties(
             text: label,
+            textStyle: textStyle,
             innerPadding: const EdgeInsets.all(0),
             backgroundColor: state.selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
             borderRadius: BorderRadius.zero,
-            icon: const Icon(
+            icon: Icon(
               MdiIcons.select,
               color: Colors.white,
+              size: Responsive.getResponsiveValue(
+                forVeryLargeScreen: 35,
+                forLargeScreen: 20,
+                forMediumScreen: 18,
+                context: context,
+              ),
             ),
             route: state.route,
           ),
@@ -100,12 +109,13 @@ class GazeKeyboardUtilityMoveCursorRightButton extends GazeKeyboardUtilityButton
 }
 
 class GazeKeyboardUtilityCopyButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityCopyButton({super.key, required super.state, required super.node, super.label = 'Copy'});
+  const GazeKeyboardUtilityCopyButton({super.key, required super.state, required super.node, super.label = 'Copy', super.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
       text: label,
+      textStyle: textStyle,
       icon: Icons.copy,
       route: state.route,
       onTap: () {
@@ -117,12 +127,13 @@ class GazeKeyboardUtilityCopyButton extends GazeKeyboardUtilityButton {
 }
 
 class GazeKeyboardUtilityCutButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityCutButton({super.key, required super.state, required super.node, super.label = 'Cut'});
+  const GazeKeyboardUtilityCutButton({super.key, required super.state, required super.node, super.label = 'Cut', super.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
       text: label,
+      textStyle: textStyle,
       icon: Icons.cut,
       route: state.route,
       onTap: () {
@@ -134,12 +145,13 @@ class GazeKeyboardUtilityCutButton extends GazeKeyboardUtilityButton {
 }
 
 class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityPasteButton({super.key, required super.state, required super.node, super.label = 'Paste'});
+  const GazeKeyboardUtilityPasteButton({super.key, required super.state, required super.node, super.label = 'Paste', super.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
       text: label,
+      textStyle: textStyle,
       icon: Icons.paste,
       route: state.route,
       onTap: () async {
@@ -153,6 +165,7 @@ class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
 class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   final String route;
   final String? text;
+  final TextStyle? textStyle;
   final IconData icon;
   final Function()? onTap;
 
@@ -160,6 +173,7 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
     super.key,
     required this.route,
     required this.icon,
+    this.textStyle,
     this.text,
     this.onTap,
   });
@@ -172,12 +186,19 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
         child: GazeButton(
           properties: GazeButtonProperties(
             text: text,
+            textStyle: textStyle,
             innerPadding: const EdgeInsets.all(0),
             backgroundColor: Colors.grey.shade900,
             borderRadius: BorderRadius.zero,
             icon: Icon(
               icon,
               color: Colors.white,
+              size: Responsive.getResponsiveValue(
+                forVeryLargeScreen: 35,
+                forLargeScreen: 20,
+                forMediumScreen: 18,
+                context: context,
+              ),
             ),
             route: route,
           ),
