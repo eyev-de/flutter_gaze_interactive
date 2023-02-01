@@ -106,6 +106,7 @@ class GazeKeyboard {
                                             ),
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
+                                                innerPadding: const EdgeInsets.all(0),
                                                 backgroundColor: Colors.grey.shade900,
                                                 borderRadius: BorderRadius.zero,
                                                 icon: const Icon(
@@ -144,6 +145,7 @@ class GazeKeyboard {
                                             ),
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
+                                                innerPadding: const EdgeInsets.all(0),
                                                 backgroundColor: Colors.grey.shade900,
                                                 borderRadius: BorderRadius.zero,
                                                 icon: const Icon(
@@ -173,6 +175,7 @@ class GazeKeyboard {
                                             ),
                                             child: GazeButton(
                                               properties: GazeButtonProperties(
+                                                innerPadding: const EdgeInsets.all(0),
                                                 backgroundColor: Colors.grey.shade900,
                                                 borderRadius: BorderRadius.zero,
                                                 icon: const Icon(
