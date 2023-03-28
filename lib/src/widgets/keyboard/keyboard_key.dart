@@ -166,6 +166,7 @@ class GazeKey extends StatelessWidget {
             animationColor: !changeColor ? Theme.of(context).primaryColor : Colors.grey.shade900,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
             reselectable: true,
+            withSound: true,
           ),
           onTap: onTap != null
               ? () {

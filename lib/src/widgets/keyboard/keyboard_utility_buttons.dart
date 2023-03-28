@@ -66,6 +66,7 @@ class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
               ),
             ),
             route: state.route,
+            withSound: true,
           ),
           onTap: () {
             node.requestFocus();
@@ -201,6 +202,7 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
               ),
             ),
             route: route,
+            withSound: true,
           ),
           onTap: onTap,
         ),

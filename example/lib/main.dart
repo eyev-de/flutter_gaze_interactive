@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Gaze Keyboard Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        primaryTextTheme: const TextTheme(headline1: TextStyle(fontSize: 30)),
+        primaryTextTheme: const TextTheme(displayLarge: TextStyle(fontSize: 30)),
       ),
       home: const App(),
     );

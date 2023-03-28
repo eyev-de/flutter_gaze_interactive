@@ -4,8 +4,10 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'dart:async';
 import 'dart:collection';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,10 +16,15 @@ import 'element_data.dart';
 import 'element_type.dart';
 import 'extensions.dart';
 
+final clickSoundSource = AssetSource('packages/gaze_interactive/lib/assets/click.mp3');
+final player = AudioPlayer()..setSource(clickSoundSource);
+
 class GazeInteractive extends ChangeNotifier {
   Logger? logger;
   static final GazeInteractive _instance = GazeInteractive._internal();
   factory GazeInteractive() {
+    AudioCache.instance.prefix = '';
+    unawaited(player.setVolume(3));
     return _instance;
   }
   GazeInteractive._internal() {

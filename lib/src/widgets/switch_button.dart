@@ -73,28 +73,30 @@ class GazeSwitchButton extends StatefulWidget {
 }
 
 class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerProviderStateMixin {
-  late AnimationController controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
-  late Animation<double> animation = Tween<double>(begin: math.pi, end: math.pi / 2).animate(
-    CurvedAnimation(
-      parent: controller,
-      curve: Curves.elasticInOut,
-    ),
-  );
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
 
   _GazeSwitchButtonState();
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _animation = Tween<double>(begin: math.pi, end: math.pi / 2).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticInOut,
+      ),
+    );
     widget.properties.state.addListener(_toggle);
     if (widget.properties.state.toggled) {
-      controller.forward();
+      _controller.forward();
     }
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    if (mounted) _controller.dispose();
     widget.properties.state.removeListener(_toggle);
     super.dispose();
   }
@@ -122,9 +124,9 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
                 ),
               ),
               child: AnimatedBuilder(
-                animation: animation,
+                animation: _animation,
                 builder: (context, child) => Transform.rotate(
-                  angle: animation.value,
+                  angle: _animation.value,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     margin: widget.properties.margin,
@@ -153,9 +155,9 @@ class _GazeSwitchButtonState extends State<GazeSwitchButton> with SingleTickerPr
   void _toggle() {
     final toggled = widget.properties.state.toggled;
     if (!toggled) {
-      controller.reverse();
+      _controller.reverse();
     } else {
-      controller.forward();
+      _controller.forward();
     }
   }
 

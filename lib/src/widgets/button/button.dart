@@ -4,8 +4,12 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'dart:async';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
+import '../../state.dart';
 import 'selection_animation.dart';
 
 enum GazeButtonTapTypes { single, double }
@@ -36,6 +40,7 @@ class GazeButtonProperties {
   final GazeSelectionAnimationType gazeSelectionAnimationType;
   final Color animationColor;
   final bool reselectable;
+  final bool withSound;
   GazeButtonProperties({
     this.route = '/',
     this.text,
@@ -57,6 +62,7 @@ class GazeButtonProperties {
     this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
     this.animationColor = Colors.black,
     this.reselectable = false,
+    this.withSound = false,
   });
 }
 
@@ -69,9 +75,10 @@ class GazeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GazeSelectionAnimation(
       properties: GazeSelectionAnimationProperties(
-        borderRadius: properties.borderRadius,
-        backgroundColor: properties.backgroundColor,
         route: properties.route,
+        borderRadius: properties.borderRadius,
+        borderWidth: properties.borderWidth,
+        backgroundColor: properties.backgroundColor,
         gazeInteractive: properties.gazeInteractive,
         type: properties.gazeSelectionAnimationType,
         animationColor: properties.animationColor,
@@ -79,17 +86,27 @@ class GazeButton extends StatelessWidget {
       ),
       wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
-      onGazed: () {
-        onTap?.call();
-      },
+      onGazed: _tap,
     );
   }
 
   void Function()? _determineTap(GazeButtonTapTypes type) {
     if (properties.tapType == type) {
-      return onTap;
+      return _tap;
     }
     return null;
+  }
+
+  void _tap() {
+    unawaited(_maybePlaySound());
+    onTap?.call();
+  }
+
+  Future<void> _maybePlaySound() async {
+    if (properties.withSound) {
+      if (player.state == PlayerState.playing) await player.stop();
+      await player.play(clickSoundSource);
+    }
   }
 
   Widget _buildButton(BuildContext context) {
@@ -101,7 +118,7 @@ class GazeButton extends StatelessWidget {
       highlightColor: properties.textColor.withAlpha(20),
       onTap: _determineTap(GazeButtonTapTypes.single),
       onDoubleTap: _determineTap(GazeButtonTapTypes.double),
-      child: Container(
+      child: AnimatedContainer(
         padding: properties.child != null ? null : properties.innerPadding,
         decoration: properties.child != null
             ? null
@@ -114,6 +131,7 @@ class GazeButton extends StatelessWidget {
                       )
                     : null,
               ),
+        duration: const Duration(milliseconds: 150),
         child: properties.child ?? (properties.horizontal ? _buildHorizontal(context) : _buildVertical(context)),
       ),
     );
@@ -184,7 +202,7 @@ class GazeButton extends StatelessWidget {
         style: properties.textStyle ??
             TextStyle(
               color: properties.textColor,
-              fontSize: Theme.of(context).primaryTextTheme.bodyText1!.fontSize,
+              fontSize: Theme.of(context).primaryTextTheme.bodyLarge!.fontSize,
             ),
       ),
     );

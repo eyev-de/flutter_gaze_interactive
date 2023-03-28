@@ -45,31 +45,13 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
   late DateTime _current = widget.initialDate;
   late final PageController _pageController = PageController(initialPage: _initialIndex);
 
-  late final AnimationController _animationControllerYear = AnimationController(
-    duration: const Duration(milliseconds: 150),
-    vsync: this,
-  );
+  late final AnimationController _animationControllerYear;
 
-  late final Animation<Offset> _animationYear = Tween<Offset>(
-    begin: const Offset(0, -1),
-    end: const Offset(0, 0),
-  ).animate(CurvedAnimation(
-    parent: _animationControllerYear,
-    curve: Curves.easeOut,
-  ));
+  late final Animation<Offset> _animationYear;
 
-  late final AnimationController _animationControllerMonth = AnimationController(
-    duration: const Duration(milliseconds: 150),
-    vsync: this,
-  );
+  late final AnimationController _animationControllerMonth;
 
-  late final Animation<Offset> _animationMonth = Tween<Offset>(
-    begin: const Offset(0, 0),
-    end: const Offset(0, 1),
-  ).animate(CurvedAnimation(
-    parent: _animationControllerMonth,
-    curve: Curves.easeOut,
-  ));
+  late final Animation<Offset> _animationMonth;
 
   final ScrollController _scrollController = ScrollController();
   final yearsPerRow = 7;
@@ -79,15 +61,39 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
   @override
   void initState() {
     super.initState();
+    _animationControllerYear = AnimationController(
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _animationYear = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: _animationControllerYear,
+      curve: Curves.easeOut,
+    ));
+    _animationControllerMonth = AnimationController(
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _animationMonth = Tween<Offset>(
+      begin: const Offset(0, 0),
+      end: const Offset(0, 1),
+    ).animate(CurvedAnimation(
+      parent: _animationControllerMonth,
+      curve: Curves.easeOut,
+    ));
     _pageController.addListener(_listener);
   }
 
   @override
   void dispose() {
-    _animationControllerYear.dispose();
-    _animationControllerMonth.dispose();
-    _pageController.dispose();
-    _scrollController.dispose();
+    if (mounted) {
+      _animationControllerYear.dispose();
+      _animationControllerMonth.dispose();
+      _pageController.dispose();
+      _scrollController.dispose();
+    }
     super.dispose();
   }
 
@@ -234,7 +240,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
   Widget control() {
     final blockNext = widget.lastDate.isSameMonth(_current);
     final blockPrevious = widget.firstDate.isSameMonth(_current);
-    final style = Theme.of(context).primaryTextTheme.headline1;
+    final style = Theme.of(context).primaryTextTheme.displayLarge;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -373,7 +379,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
     final firstWeekday = DateTime(month.year, month.month).weekday;
     final lastDay = DateTime(month.year, month.month + 1, 0).day;
     final weeks = ((lastDay + firstWeekday) / 7).ceil();
-    final style = Theme.of(context).primaryTextTheme.headline5;
+    final style = Theme.of(context).primaryTextTheme.headlineSmall;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),

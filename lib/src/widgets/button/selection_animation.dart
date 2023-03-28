@@ -31,20 +31,22 @@ enum GazeSelectionAnimationType {
 // }
 
 class GazeSelectionAnimationProperties {
+  final String route;
   final BorderRadius borderRadius;
+  final double borderWidth;
   final Color? backgroundColor;
   final Color? animationColor;
   final Color color;
-  final String route;
   final bool gazeInteractive;
   final GazeSelectionAnimationType type;
   final bool reselectable;
   GazeSelectionAnimationProperties({
+    required this.route,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.borderWidth = 3,
     this.backgroundColor,
     this.animationColor,
     this.color = Colors.grey,
-    required this.route,
     this.gazeInteractive = true,
     this.type = GazeSelectionAnimationType.progress,
     this.reselectable = false,
@@ -121,7 +123,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
                   borderRadius: widget.properties.borderRadius,
                   border: Border.all(
                     color: gazeIn ? widget.properties.color : Colors.transparent,
-                    width: 3,
+                    width: widget.properties.borderWidth,
                   ),
                 ),
               ),
@@ -190,7 +192,7 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   @override
   void dispose() {
     _timer?.cancel();
-    _controller.dispose();
+    if (mounted) _controller.dispose();
     super.dispose();
   }
 

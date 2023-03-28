@@ -40,27 +40,30 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
   Timer? _fadeOutTimer;
   double _opacity = 0.6;
 
-  late final AnimationController _controller = AnimationController(
-    duration: GazeInteractive().duration,
-    vsync: this,
-  )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        if (mounted) {
-          _controller.reset();
-        }
-        widget._state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
-      }
-    });
-  late final Animation<double> _actionTween = Tween<double>(
-    begin: 0,
-    end: 1,
-  ).animate(_controller);
+  late final AnimationController _controller;
+  late final Animation<double> _actionTween;
 
   _GazePointerViewState();
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: GazeInteractive().duration,
+      vsync: this,
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          if (mounted) {
+            _controller.reset();
+          }
+          widget._state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
+        }
+      });
+    _actionTween = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(_controller);
+
     widget._gazeInteractive.register(
       GazePointerData(
         key: _wrappedkey,
