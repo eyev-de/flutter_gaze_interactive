@@ -86,20 +86,20 @@ class GazeButton extends StatelessWidget {
       ),
       wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
-      onGazed: _tap,
+      onGazed: _tap(),
     );
   }
 
   void Function()? _determineTap(GazeButtonTapTypes type) {
     if (properties.tapType == type) {
-      return _tap;
+      return _tap();
     }
     return null;
   }
 
-  void _tap() {
-    unawaited(_maybePlaySound());
-    onTap?.call();
+  void Function()? _tap() {
+    if (onTap != null) unawaited(_maybePlaySound());
+    return onTap;
   }
 
   Future<void> _maybePlaySound() async {
