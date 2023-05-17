@@ -21,6 +21,7 @@ class GazeButtonProperties {
   final TextStyle? textStyle;
 
   final Icon? icon;
+  final EdgeInsets? iconPadding;
 
   final Color? borderColor;
   final double borderWidth;
@@ -56,6 +57,7 @@ class GazeButtonProperties {
     this.horizontalAlignment = MainAxisAlignment.center,
     this.verticalAlignment = MainAxisAlignment.center,
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
+    this.iconPadding,
     this.gazeInteractive = true,
     this.child,
     this.tapType = GazeButtonTapTypes.single,
@@ -86,20 +88,20 @@ class GazeButton extends StatelessWidget {
       ),
       wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
-      onGazed: _tap(),
+      onGazed: _tap,
     );
   }
 
   void Function()? _determineTap(GazeButtonTapTypes type) {
     if (properties.tapType == type) {
-      return _tap();
+      return _tap;
     }
     return null;
   }
 
-  void Function()? _tap() {
+  void _tap() {
     if (onTap != null) unawaited(_maybePlaySound());
-    return onTap;
+    return onTap?.call();
   }
 
   Future<void> _maybePlaySound() async {
@@ -165,7 +167,9 @@ class GazeButton extends StatelessWidget {
   }
 
   Widget _buildHorizontal(BuildContext context) {
-    final rightInnerPadding = properties.text == null ? 0.0 : 20.0;
+    // final rightInnerPadding = properties.text == null ? 0.0 : 20.0;
+    final iconPadding = properties.iconPadding ?? (properties.text == null ? const EdgeInsets.all(0) : const EdgeInsets.fromLTRB(0, 0, 20, 0));
+
     return Row(
       mainAxisAlignment: properties.horizontalAlignment,
       children: [
@@ -174,7 +178,7 @@ class GazeButton extends StatelessWidget {
             mainAxisAlignment: properties.verticalAlignment,
             children: [
               Container(
-                padding: EdgeInsets.fromLTRB(0, 0, rightInnerPadding, 0),
+                padding: iconPadding,
                 child: properties.icon,
               )
             ],

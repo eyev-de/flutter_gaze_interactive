@@ -176,5 +176,8 @@ linter:
     - void_checks
   
 analyzer:
+  language:
+    strict-casts: true
+    strict-raw-types: true
   exclude:
     - test/

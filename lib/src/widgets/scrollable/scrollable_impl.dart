@@ -129,7 +129,7 @@ class _GazeScrollableImplState extends State<GazeScrollableImpl> {
         });
       }
     }
-    if (widget.controller.position.maxScrollExtent == 0) {
+    if (widget.controller.position.extentBefore == 0.0 && widget.controller.position.extentAfter == 0.0) {
       if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
         setState(() {
           _downIndicatorState = GazeScrollableIndicatorState.hidden;

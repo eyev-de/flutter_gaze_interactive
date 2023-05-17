@@ -4,19 +4,19 @@ version: 0.0.1
 homepage:
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
 
   # For Linux you need to do the following:
   # https://github.com/bluefireteam/audioplayers/blob/main/packages/audioplayers_linux/requirements.md
-  audioplayers: ^3.0.1
+  audioplayers: ^4.0.1
   
   flutter:
     sdk: flutter
 
-  intl: ^0.17.0
+  intl: ^0.18.0
   
   logger: ^1.1.0
 

@@ -57,8 +57,10 @@ class _AppState extends State<App> {
                     onChanged: (value) {},
                     properties: GazeTextFieldProperties(
                       maxLength: 30,
-                      placeholder: 'Search',
-                      placeholderStyle: const TextStyle(fontSize: 20, color: Colors.white),
+                      decoration: const InputDecoration(
+                        hintText: 'Search',
+                        hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
                       padding: const EdgeInsets.all(20),
                       style: const TextStyle(fontSize: 20, color: Colors.white),
                     ),

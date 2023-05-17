@@ -59,6 +59,19 @@ class GazeKey extends StatelessWidget {
   }) : super(key: key);
 
   static Widget _buildContent(BuildContext context, Object content, bool? shift) {
+    final textStyle = TextStyle(
+      fontSize: Responsive.getResponsiveValue(
+        forLargeScreen: 18,
+        forMediumScreen: 14,
+        forVeryLargeScreen: 20,
+        context: context,
+      ),
+      color: shift != null
+          ? shift
+              ? Colors.grey.shade500
+              : Colors.white
+          : Colors.white,
+    );
     if (content is List) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -66,41 +79,13 @@ class GazeKey extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                content[0],
-                style: TextStyle(
-                    fontSize: Responsive.getResponsiveValue(
-                      forLargeScreen: 18,
-                      forMediumScreen: 14,
-                      forVeryLargeScreen: 20,
-                      context: context,
-                    ),
-                    color: shift != null
-                        ? !shift
-                            ? Colors.grey.shade500
-                            : Colors.white
-                        : Colors.white),
-              ),
+              Text(content[0] as String, style: textStyle),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                content[1],
-                style: TextStyle(
-                    fontSize: Responsive.getResponsiveValue(
-                      forLargeScreen: 18,
-                      forMediumScreen: 14,
-                      forVeryLargeScreen: 20,
-                      context: context,
-                    ),
-                    color: shift != null
-                        ? shift
-                            ? Colors.grey.shade500
-                            : Colors.white
-                        : Colors.white),
-              ),
+              Text(content[1] as String, style: textStyle),
             ],
           ),
         ],
@@ -109,14 +94,7 @@ class GazeKey extends StatelessWidget {
       final _switchTo = shift != null && shift && content.length == 1 && validCharacters.hasMatch(content);
       return _spaceOut(Text(
         _switchTo ? content.toUpperCase() : content,
-        style: TextStyle(
-            fontSize: Responsive.getResponsiveValue(
-              forLargeScreen: 18,
-              forMediumScreen: 14,
-              forVeryLargeScreen: 20,
-              context: context,
-            ),
-            color: Colors.white),
+        style: TextStyle(fontSize: textStyle.fontSize, color: Colors.white),
       ));
     } else if (content is IconData) {
       return _spaceOut(Icon(
@@ -171,7 +149,7 @@ class GazeKey extends StatelessWidget {
           onTap: onTap != null
               ? () {
                   if (content is List) {
-                    onTap?.call(_switchTo ? (content as List)[0] : (content as List)[1], type);
+                    onTap?.call((_switchTo ? (content as List)[0] : (content as List)[1]) as String?, type);
                   } else if (content is String) {
                     if (_switchTo) {
                       if ((content as String).length == 1 && validCharacters.hasMatch(content as String)) {
