@@ -26,8 +26,8 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
         GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
         GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
         GazeKeyboardUtilityCopyButton(state: state, node: node),
-        GazeKeyboardUtilityCutButton(state: state, node: node),
         GazeKeyboardUtilityPasteButton(state: state, node: node),
+        GazeKeyboardUtilityCutButton(state: state, node: node),
       ],
     );
   }
@@ -45,7 +45,7 @@ abstract class GazeKeyboardUtilityButton extends StatelessWidget {
 class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
   const GazeKeyboardUtilitySelectButton(
       {super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
-
+  
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
