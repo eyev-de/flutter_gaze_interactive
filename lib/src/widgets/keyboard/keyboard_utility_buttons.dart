@@ -36,13 +36,15 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
 abstract class GazeKeyboardUtilityButton extends StatelessWidget {
   final GazeKeyboardState state;
   final FocusNode node;
-  final String label;
+  final String? label;
   final TextStyle? textStyle;
-  const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label, this.textStyle});
+  const GazeKeyboardUtilityButton(
+      {super.key, required this.state, required this.node, required this.label, this.textStyle});
 }
 
 class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilitySelectButton({super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
+  const GazeKeyboardUtilitySelectButton(
+      {super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -79,7 +81,8 @@ class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
 }
 
 class GazeKeyboardUtilityMoveCursorLeftButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityMoveCursorLeftButton({super.key, required super.state, required super.node}) : super(label: '');
+  const GazeKeyboardUtilityMoveCursorLeftButton({super.key, required super.state, required super.node})
+      : super(label: '');
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
@@ -94,7 +97,8 @@ class GazeKeyboardUtilityMoveCursorLeftButton extends GazeKeyboardUtilityButton 
 }
 
 class GazeKeyboardUtilityMoveCursorRightButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityMoveCursorRightButton({super.key, required super.state, required super.node}) : super(label: '');
+  const GazeKeyboardUtilityMoveCursorRightButton({super.key, required super.state, required super.node})
+      : super(label: '');
 
   @override
   Widget build(BuildContext context) {
@@ -110,12 +114,13 @@ class GazeKeyboardUtilityMoveCursorRightButton extends GazeKeyboardUtilityButton
 }
 
 class GazeKeyboardUtilityCopyButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityCopyButton({super.key, required super.state, required super.node, super.label = 'Copy', super.textStyle});
+  const GazeKeyboardUtilityCopyButton(
+      {super.key, required super.state, super.label, required super.node, super.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
-      text: label,
+      text: state.selecting ? 'Copy' : 'Copy All',
       textStyle: textStyle,
       icon: Icons.copy,
       route: state.route,
@@ -128,12 +133,13 @@ class GazeKeyboardUtilityCopyButton extends GazeKeyboardUtilityButton {
 }
 
 class GazeKeyboardUtilityCutButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityCutButton({super.key, required super.state, required super.node, super.label = 'Cut', super.textStyle});
+  const GazeKeyboardUtilityCutButton(
+      {super.key, required super.state, required super.node, super.label, super.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
-      text: label,
+      text: state.selecting ? 'Cut' : 'Cut All',
       textStyle: textStyle,
       icon: Icons.cut,
       route: state.route,
@@ -146,7 +152,8 @@ class GazeKeyboardUtilityCutButton extends GazeKeyboardUtilityButton {
 }
 
 class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityPasteButton({super.key, required super.state, required super.node, super.label = 'Paste', super.textStyle});
+  const GazeKeyboardUtilityPasteButton(
+      {super.key, required super.state, required super.node, super.label = 'Paste', super.textStyle});
 
   @override
   Widget build(BuildContext context) {
