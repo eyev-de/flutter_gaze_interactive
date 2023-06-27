@@ -36,7 +36,7 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
 abstract class GazeKeyboardUtilityButton extends StatelessWidget {
   final GazeKeyboardState state;
   final FocusNode node;
-  final String label;
+  final String? label;
   final TextStyle? textStyle;
   const GazeKeyboardUtilityButton(
       {super.key, required this.state, required this.node, required this.label, this.textStyle});
@@ -45,7 +45,7 @@ abstract class GazeKeyboardUtilityButton extends StatelessWidget {
 class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
   const GazeKeyboardUtilitySelectButton(
       {super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
-  
+
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
@@ -98,12 +98,12 @@ class GazeKeyboardUtilityMoveCursorRightButton extends GazeKeyboardUtilityButton
 
 class GazeKeyboardUtilityCopyButton extends GazeKeyboardUtilityButton {
   const GazeKeyboardUtilityCopyButton(
-      {super.key, required super.state, required super.node, super.label = 'Copy', super.textStyle});
+      {super.key, required super.state, super.label, required super.node, super.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
-      text: label,
+      text: state.selecting ? 'Copy' : 'Copy All',
       textStyle: textStyle,
       icon: Icons.copy,
       route: state.route,
@@ -117,12 +117,12 @@ class GazeKeyboardUtilityCopyButton extends GazeKeyboardUtilityButton {
 
 class GazeKeyboardUtilityCutButton extends GazeKeyboardUtilityButton {
   const GazeKeyboardUtilityCutButton(
-      {super.key, required super.state, required super.node, super.label = 'Cut', super.textStyle});
+      {super.key, required super.state, required super.node, super.label, super.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GazeKeyboardUtilityBaseButton(
-      text: label,
+      text: state.selecting ? 'Cut' : 'Cut All',
       textStyle: textStyle,
       icon: Icons.cut,
       route: state.route,
