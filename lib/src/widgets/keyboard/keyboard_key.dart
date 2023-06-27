@@ -66,6 +66,11 @@ class GazeKey extends StatelessWidget {
         forVeryLargeScreen: 20,
         context: context,
       ),
+      color: shift != null
+          ? shift
+              ? Colors.grey.shade500
+              : Colors.white
+          : Colors.white,
     );
     if (content is List) {
       return Column(
@@ -74,25 +79,13 @@ class GazeKey extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(content[0] as String,
-                  style: textStyle.copyWith(
-                      color: shift != null
-                          ? shift
-                              ? Colors.white
-                              : Colors.grey.shade500
-                          : Colors.white)),
+              Text(content[0] as String, style: textStyle),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(content[1] as String,
-                  style: textStyle.copyWith(
-                      color: shift != null
-                          ? shift
-                              ? Colors.grey.shade500
-                              : Colors.white
-                          : Colors.white)),
+              Text(content[1] as String, style: textStyle),
             ],
           ),
         ],
