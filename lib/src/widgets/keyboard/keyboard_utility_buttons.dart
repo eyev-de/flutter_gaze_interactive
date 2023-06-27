@@ -45,37 +45,18 @@ abstract class GazeKeyboardUtilityButton extends StatelessWidget {
 class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
   const GazeKeyboardUtilitySelectButton(
       {super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
+  
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Padding(
-        padding: const EdgeInsets.all(1),
-        child: GazeButton(
-          properties: GazeButtonProperties(
-            text: label,
-            textStyle: textStyle,
-            innerPadding: const EdgeInsets.all(0),
-            backgroundColor: state.selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
-            borderRadius: BorderRadius.zero,
-            icon: Icon(
-              MdiIcons.select,
-              color: Colors.white,
-              size: Responsive.getResponsiveValue(
-                forVeryLargeScreen: 35,
-                forLargeScreen: 20,
-                forMediumScreen: 18,
-                context: context,
-              ),
-            ),
-            route: state.route,
-            withSound: true,
-          ),
-          onTap: () {
-            node.requestFocus();
-            state.selecting = !state.selecting;
-          },
-        ),
-      ),
+    return GazeKeyboardUtilityBaseButton(
+      icon: MdiIcons.select,
+      route: state.route,
+      onTap: () {
+        node.requestFocus();
+        state.selecting = !state.selecting;
+      },
+      backgroundColor: state.selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
+      reselectable: false,
     );
   }
 }
@@ -92,6 +73,7 @@ class GazeKeyboardUtilityMoveCursorLeftButton extends GazeKeyboardUtilityButton 
         node.requestFocus();
         state.controller.moveCursorRight(selecting: state.selecting);
       },
+      reselectable: true,
     );
   }
 }
@@ -109,6 +91,7 @@ class GazeKeyboardUtilityMoveCursorRightButton extends GazeKeyboardUtilityButton
         node.requestFocus();
         state.controller.moveCursorLeft(selecting: state.selecting);
       },
+      reselectable: true,
     );
   }
 }
@@ -176,6 +159,8 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   final TextStyle? textStyle;
   final IconData icon;
   final Function()? onTap;
+  final Color? backgroundColor;
+  final bool reselectable;
 
   const GazeKeyboardUtilityBaseButton({
     super.key,
@@ -184,6 +169,8 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
     this.textStyle,
     this.text,
     this.onTap,
+    this.backgroundColor,
+    this.reselectable = false,
   });
 
   @override
@@ -196,8 +183,9 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
             text: text,
             textStyle: textStyle,
             innerPadding: const EdgeInsets.all(0),
-            backgroundColor: Colors.grey.shade900,
+            backgroundColor: backgroundColor ?? Colors.grey.shade900,
             borderRadius: BorderRadius.zero,
+            reselectable: reselectable,
             icon: Icon(
               icon,
               color: Colors.white,
