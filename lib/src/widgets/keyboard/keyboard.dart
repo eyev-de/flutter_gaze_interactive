@@ -120,20 +120,14 @@ class GazeKeyboard {
                                                 node.requestFocus();
                                                 final selection = state.controller.selection;
                                                 if (state.controller.text.isNotEmpty) {
-                                                  var startIndex = selection.base.affinity == TextAffinity.downstream
-                                                      ? selection.baseOffset
-                                                      : selection.extentOffset;
-                                                  final endIndex = selection.base.affinity == TextAffinity.upstream
-                                                      ? selection.baseOffset
-                                                      : selection.extentOffset;
-                                                  startIndex = selection.baseOffset == selection.extentOffset
-                                                      ? startIndex - 1
-                                                      : startIndex;
+                                                  var startIndex =
+                                                      selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
+                                                  final endIndex =
+                                                      selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
+                                                  startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
                                                   if (startIndex.isNegative) startIndex = 0;
-                                                  state.controller.text =
-                                                      state.controller.text.replaceRange(startIndex, endIndex, '');
-                                                  state.controller.selection =
-                                                      TextSelection.fromPosition(TextPosition(offset: startIndex));
+                                                  state.controller.text = state.controller.text.replaceRange(startIndex, endIndex, '');
+                                                  state.controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
                                                 }
                                               },
                                             ),
@@ -195,8 +189,7 @@ class GazeKeyboard {
                                                 node.requestFocus();
                                                 if (state.controller.text[state.controller.text.length - 1] == ' ') {
                                                   var words = state.controller.text.trim().split(' ');
-                                                  state.controller.text =
-                                                      '${words.sublist(0, words.length - 1).join(' ')} ';
+                                                  state.controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
                                                 } else {
                                                   var words = state.controller.text.split(' ');
                                                   state.controller.text = words.sublist(0, words.length - 1).join(' ');
@@ -317,8 +310,7 @@ class GazeKeyboard {
                   properties: GazeButtonProperties(
                     borderRadius: BorderRadius.zero,
                     // innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-                    backgroundColor:
-                        state.language == Language.german ? Theme.of(context).primaryColor : Colors.transparent,
+                    backgroundColor: state.language == Language.german ? Theme.of(context).primaryColor : Colors.transparent,
                     text: 'GER',
                     textStyle: const TextStyle(
                       fontSize: 20,
@@ -342,8 +334,7 @@ class GazeKeyboard {
                   properties: GazeButtonProperties(
                     borderRadius: BorderRadius.zero,
                     // innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-                    backgroundColor:
-                        state.language == Language.english ? Theme.of(context).primaryColor : Colors.transparent,
+                    backgroundColor: state.language == Language.english ? Theme.of(context).primaryColor : Colors.transparent,
                     text: 'ENG',
                     textStyle: const TextStyle(
                       fontSize: 20,
@@ -424,8 +415,7 @@ class GazeKeyboardWidget extends StatelessWidget {
   }
 
   Widget _keyboard(GazeKeyboardState state) {
-    final keys =
-        Keyboards.get(state.language, state.route, shift: state.shift, capsLock: state.capsLock, action: action);
+    final keys = Keyboards.get(state.language, state.route, shift: state.shift, capsLock: state.capsLock, action: action);
     if (!state.withNumbers) keys.removeAt(0);
     if (!state.withAlt) {
       keys[keys.length - 1].removeWhere((key) {

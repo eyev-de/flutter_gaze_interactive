@@ -13,11 +13,7 @@ extension GlobalKeyExtension on GlobalKey {
     try {
       final renderObject = currentContext?.findRenderObject() as RenderBox?;
       final translation = renderObject?.getTransformTo(null).getTranslation();
-      if (translation != null &&
-          renderObject != null &&
-          renderObject.hasSize &&
-          currentState != null &&
-          currentState!.mounted) {
+      if (translation != null && renderObject != null && renderObject.hasSize && currentState != null && currentState!.mounted) {
         return renderObject.paintBounds.shift(Offset(translation.x, translation.y));
       }
     } finally {}
@@ -69,8 +65,7 @@ extension TextEditingControllerExtension on TextEditingController {
   void cut() {
     String cutText = text;
     if (!selection.isCollapsed) {
-      var startIndex =
-          selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
+      var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
       final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
       startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
       if (startIndex.isNegative) startIndex = 0;
@@ -86,8 +81,7 @@ extension TextEditingControllerExtension on TextEditingController {
   void copy() {
     String copyText = text;
     if (!selection.isCollapsed) {
-      var startIndex =
-          selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
+      var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
       final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
       startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
       if (startIndex.isNegative) startIndex = 0;
