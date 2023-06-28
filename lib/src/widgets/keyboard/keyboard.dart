@@ -164,7 +164,44 @@ class GazeKeyboard {
                                         ),
                                       ),
                                       Flexible(
-                                        flex: 2,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(1),
+                                          child: SizedBox(
+                                            height: Responsive.getResponsiveValue(
+                                              forLargeScreen: 80,
+                                              forMediumScreen: 60,
+                                              context: context,
+                                            ),
+                                            child: GazeButton(
+                                              properties: GazeButtonProperties(
+                                                text: 'Word',
+                                                textColor: Colors.red,
+                                                innerPadding: const EdgeInsets.all(0),
+                                                backgroundColor: Colors.grey.shade900,
+                                                borderRadius: BorderRadius.zero,
+                                                icon: const Icon(
+                                                  Icons.delete_sweep,
+                                                  color: Colors.red,
+                                                ),
+                                                route: state.route,
+                                              ),
+                                              onTap: () {
+                                                node.requestFocus();
+                                                if (state.controller.text[state.controller.text.length - 1] == ' ') {
+                                                  var words = state.controller.text.trim().split(' ');
+                                                  state.controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
+                                                } else {
+                                                  var words = state.controller.text.split(' ');
+                                                  state.controller.text = words.sublist(0, words.length - 1).join(' ');
+                                                }
+
+                                                state.controller.moveCursorMostRight();
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Flexible(
                                         child: Padding(
                                           padding: const EdgeInsets.all(1),
                                           child: SizedBox(
