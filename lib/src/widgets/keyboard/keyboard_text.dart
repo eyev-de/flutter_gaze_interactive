@@ -10,7 +10,7 @@ import 'package:flutter/scheduler.dart';
 
 import '../button/button.dart';
 import '../scrollable/scrollable.dart';
-import 'state.dart';
+import 'keyboard_state.dart';
 
 class GazeKeyboardTextWidget extends StatelessWidget {
   final GazeKeyboardState state;
