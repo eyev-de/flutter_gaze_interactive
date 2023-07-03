@@ -47,7 +47,6 @@ class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('Building multiple times???');
     final selecting = ref.watch(state.selectingStateProvider);
     return GazeKeyboardUtilityBaseButton(
       icon: MdiIcons.select,
