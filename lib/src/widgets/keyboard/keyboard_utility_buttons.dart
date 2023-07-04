@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import '../../core/clipboard_provider.dart';
 import '../../core/extensions.dart';
 import '../../core/responsive.dart';
 import '../button/button.dart';
@@ -139,15 +140,19 @@ class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final clipboardContent = ref.watch(clipboardProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
       textStyle: textStyle,
       icon: Icons.paste,
+      iconColor: clipboardContent != '' ? Colors.white : Colors.grey,
       route: state.route,
-      onTap: () async {
-        node.requestFocus();
-        await state.controller.paste();
-      },
+      onTap: clipboardContent != ''
+          ? () async {
+              node.requestFocus();
+              await state.controller.paste();
+            }
+          : null,
     );
   }
 }
@@ -157,6 +162,7 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   final String? text;
   final TextStyle? textStyle;
   final IconData icon;
+  final Color? iconColor;
   final Function()? onTap;
   final Color? backgroundColor;
   final bool reselectable;
@@ -165,6 +171,7 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
     super.key,
     required this.route,
     required this.icon,
+    this.iconColor,
     this.textStyle,
     this.text,
     this.onTap,
@@ -174,6 +181,13 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final size = Responsive.getResponsiveValue(
+    //             forVeryLargeScreen: 35,
+    //             forLargeScreen: 20,
+    //             forMediumScreen: 18,
+    //             context: context,
+    //           );
+    const double size = 20;
     return Flexible(
       child: Padding(
         padding: const EdgeInsets.all(1),
@@ -187,13 +201,8 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
             reselectable: reselectable,
             icon: Icon(
               icon,
-              color: Colors.white,
-              size: Responsive.getResponsiveValue(
-                forVeryLargeScreen: 35,
-                forLargeScreen: 20,
-                forMediumScreen: 18,
-                context: context,
-              ),
+              color: iconColor ?? Colors.white,
+              size: size,
             ),
             route: route,
             withSound: true,
