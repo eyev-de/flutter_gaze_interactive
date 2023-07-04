@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gaze_interactive/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  runApp(GazeContext(sharedPreferences: prefs, child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,9 +15,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Gaze Keyboard Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryTextTheme: const TextTheme(displayLarge: TextStyle(fontSize: 30)),
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Colors.blue,
+        primaryTextTheme: const TextTheme(displayLarge: TextStyle(fontSize: 30, color: Colors.white)),
       ),
       home: const App(),
     );
@@ -51,7 +54,7 @@ class _AppState extends State<App> {
               children: [
                 SizedBox(
                   width: 200,
-                  height: 80,
+                  height: 120,
                   child: GazeTextField(
                     controller: _controller,
                     onChanged: (value) {},
@@ -84,7 +87,7 @@ class _AppState extends State<App> {
                   child: GazeButton(
                     properties: GazeButtonProperties(
                       text: 'Hallo Was machst du da?',
-                      textColor: Colors.black,
+                      textColor: Colors.white,
                       route: '/',
                     ),
                     onTap: () async {

@@ -74,3 +74,7 @@ build/
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 .vscode/launch.json
+
+# riverpod / freezed
+*.g.dart 
+*.freezed.dart

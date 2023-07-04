@@ -6,10 +6,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../element_data.dart';
-import '../../element_type.dart';
-import '../../extensions.dart';
+import '../../core/element_data.dart';
+import '../../core/element_type.dart';
+import '../../core/extensions.dart';
 import '../../state.dart';
 import '../button/button.dart';
 
@@ -34,8 +35,7 @@ enum GazeScrollableIndicatorState {
   }
 }
 
-class GazeScrollableImpl extends StatefulWidget {
-  final GazeInteractive gazeInteractive = GazeInteractive();
+class GazeScrollableImpl extends ConsumerStatefulWidget {
   final GlobalKey wrappedKey;
   final Widget child;
   final ScrollController controller;
@@ -56,11 +56,13 @@ class GazeScrollableImpl extends StatefulWidget {
   _GazeScrollableImplState createState() => _GazeScrollableImplState();
 }
 
-class _GazeScrollableImplState extends State<GazeScrollableImpl> {
+class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
   bool _active = false;
   bool _animating = false;
-  GazeScrollableIndicatorState _upIndicatorState = GazeScrollableIndicatorState.hidden;
-  GazeScrollableIndicatorState _downIndicatorState = GazeScrollableIndicatorState.hidden;
+  // GazeScrollableIndicatorState _upIndicatorState = GazeScrollableIndicatorState.hidden;
+  final _upIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
+  // GazeScrollableIndicatorState _downIndicatorState = GazeScrollableIndicatorState.hidden;
+  final _downIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
 
   _GazeScrollableImplState();
 
@@ -70,91 +72,105 @@ class _GazeScrollableImplState extends State<GazeScrollableImpl> {
   void initState() {
     super.initState();
     // addlistener to the GazeInteractive instance
-    widget.gazeInteractive.addListener(_listener);
-    widget.gazeInteractive.register(
+    // widget.gazeInteractive.addListener(_listener);
+    GazeInteractive().register(
       GazeScrollableData(
         key: widget.wrappedKey,
         route: widget.route,
         onGazeEnter: () {
           _active = true;
         },
-        onGazeLeave: () {
+        onGazeLeave: (_) {
           _active = false;
         },
       ),
     );
     widget.controller.addListener(_scrollListener);
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      final _downIndicatorState = ref.read(_downIndicatorProvider);
       if (mounted && widget.controller.hasClients && widget.controller.position.extentAfter > 0 && !_downIndicatorState.isVisible) {
-        setState(() {
-          _downIndicatorState = GazeScrollableIndicatorState.visible;
-        });
+        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        // setState(() {
+        //   _downIndicatorState = GazeScrollableIndicatorState.visible;
+        // });
       }
     });
   }
 
   @override
   void deactivate() {
-    widget.gazeInteractive.removeListener(_listener);
-    widget.gazeInteractive.unregister(key: widget.wrappedKey, type: GazeElementType.scrollable);
+    // widget.gazeInteractive.removeListener(_listener);
+    GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.scrollable);
     widget.controller.removeListener(_scrollListener);
     super.deactivate();
   }
 
   void _scrollListener() {
     if (!widget.controller.hasClients || !mounted) return;
+    final _upIndicatorState = ref.read(_upIndicatorProvider);
+    final _downIndicatorState = ref.read(_downIndicatorProvider);
+
     if (widget.controller.position.atEdge) {
       if (widget.controller.position.pixels == 0) {
         if (_upIndicatorState.isVisible) {
-          setState(() {
-            _upIndicatorState = GazeScrollableIndicatorState.hidden;
-          });
+          ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+          // setState(() {
+          //   _upIndicatorState = GazeScrollableIndicatorState.hidden;
+          // });
         }
       } else {
         if (_downIndicatorState.isVisible) {
-          setState(() {
-            _downIndicatorState = GazeScrollableIndicatorState.hidden;
-          });
+          ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+          // setState(() {
+          //   _downIndicatorState = GazeScrollableIndicatorState.hidden;
+          // });
         }
       }
     } else {
       if (!_upIndicatorState.isVisible) {
-        setState(() {
-          _upIndicatorState = GazeScrollableIndicatorState.visible;
-        });
+        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        // setState(() {
+        //   _upIndicatorState = GazeScrollableIndicatorState.visible;
+        // });
       }
       if (!_downIndicatorState.isVisible) {
-        setState(() {
-          _downIndicatorState = GazeScrollableIndicatorState.visible;
-        });
+        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        // setState(() {
+        //   _downIndicatorState = GazeScrollableIndicatorState.visible;
+        // });
       }
     }
     if (widget.controller.position.extentBefore == 0.0 && widget.controller.position.extentAfter == 0.0) {
       if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
-        setState(() {
-          _downIndicatorState = GazeScrollableIndicatorState.hidden;
-          _upIndicatorState = GazeScrollableIndicatorState.hidden;
-        });
+        // setState(() {
+        // _downIndicatorState = GazeScrollableIndicatorState.hidden;
+        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+        // _upIndicatorState = GazeScrollableIndicatorState.hidden;
+        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+        // });
       }
     }
   }
 
   // If rect and active are not null the call was made by MouseRegion
   // If there is no area to scroll this will return and hide the indicators
-  Future<void> _listener({Rect? rect, bool? active}) async {
+  Future<void> _listener(Rect rect, {bool? active}) async {
     final _localActive = active ?? _active;
     if (!mounted || !_localActive || _animating || !widget.controller.hasClients) return;
+    final _upIndicatorState = ref.read(_upIndicatorProvider);
+    final _downIndicatorState = ref.read(_downIndicatorProvider);
     if (widget.controller.position.maxScrollExtent == 0) {
       if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
-        setState(() {
-          _downIndicatorState = GazeScrollableIndicatorState.hidden;
-          _upIndicatorState = GazeScrollableIndicatorState.hidden;
-        });
+        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+        // setState(() {
+        //   _downIndicatorState = GazeScrollableIndicatorState.hidden;
+        //   _upIndicatorState = GazeScrollableIndicatorState.hidden;
+        // });
       }
       return;
     }
-    final _rect = rect ?? widget.gazeInteractive.rect;
-    await _calculate(_rect);
+    await _calculate(rect);
   }
 
   Future<void> _calculate(Rect rect) async {
@@ -175,15 +191,20 @@ class _GazeScrollableImplState extends State<GazeScrollableImpl> {
         bounds.bottom,
       );
 
-      final double maxScrollSpeed = widget.gazeInteractive.scrollFactor;
+      final double maxScrollSpeed = ref.read(GazeInteractive().scrollFactor);
+      // final double maxScrollSpeed = widget.gazeInteractive.scrollFactor;
+      final _upIndicatorState = ref.read(_upIndicatorProvider);
+      final _downIndicatorState = ref.read(_downIndicatorProvider);
       if (tempTop.overlaps(rect)) {
         // In top area
         if (widget.controller.offset == 0) return;
         if (_downIndicatorState != GazeScrollableIndicatorState.visible || _upIndicatorState != GazeScrollableIndicatorState.active) {
-          setState(() {
-            _upIndicatorState = GazeScrollableIndicatorState.active;
-            _downIndicatorState = GazeScrollableIndicatorState.visible;
-          });
+          ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+          ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
+          // setState(() {
+          //   _upIndicatorState = GazeScrollableIndicatorState.active;
+          //   _downIndicatorState = GazeScrollableIndicatorState.visible;
+          // });
         }
         // calculate scrolling factor
         final double factor = (tempTop.bottom - rect.topCenter.dy) / tempTop.height * maxScrollSpeed;
@@ -200,10 +221,12 @@ class _GazeScrollableImplState extends State<GazeScrollableImpl> {
         // In bottom area;
         if (widget.controller.position.atEdge && widget.controller.position.pixels > 0) return;
         if (_downIndicatorState != GazeScrollableIndicatorState.active || _upIndicatorState != GazeScrollableIndicatorState.visible) {
-          setState(() {
-            _downIndicatorState = GazeScrollableIndicatorState.active;
-            _upIndicatorState = GazeScrollableIndicatorState.visible;
-          });
+          ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
+          ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+          // setState(() {
+          //   _downIndicatorState = GazeScrollableIndicatorState.active;
+          //   _upIndicatorState = GazeScrollableIndicatorState.visible;
+          // });
         }
         // calculate scrolling factor
         final double factor = (rect.bottomCenter.dy - tempBottom.top) / tempTop.height * maxScrollSpeed;
@@ -226,6 +249,11 @@ class _GazeScrollableImplState extends State<GazeScrollableImpl> {
 
   @override
   Widget build(BuildContext context) {
+    final _upIndicatorState = ref.watch(_upIndicatorProvider);
+    final _downIndicatorState = ref.watch(_downIndicatorProvider);
+    ref.listen(GazeInteractive().currentRectStateProvider, (previous, next) {
+      _listener(next);
+    });
     return MouseRegion(
       onHover: (event) {
         if (!_active) {
@@ -234,7 +262,7 @@ class _GazeScrollableImplState extends State<GazeScrollableImpl> {
             width: 10,
             height: 10,
           );
-          _listener(rect: rect, active: true);
+          _listener(rect, active: true);
         }
       },
       child: Stack(

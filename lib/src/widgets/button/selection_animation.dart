@@ -7,9 +7,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../element_data.dart';
-import '../../element_type.dart';
+import '../../core/element_data.dart';
+import '../../core/element_type.dart';
 import '../../state.dart';
 
 enum GazeSelectionAnimationType {
@@ -53,7 +54,7 @@ class GazeSelectionAnimationProperties {
   });
 }
 
-class GazeSelectionAnimation extends StatefulWidget {
+class GazeSelectionAnimation extends ConsumerStatefulWidget {
   final GazeSelectionAnimationProperties properties;
   final GlobalKey wrappedKey;
   final Widget wrappedWidget;
@@ -66,10 +67,10 @@ class GazeSelectionAnimation extends StatefulWidget {
   }) : super(key: wrappedKey);
 
   @override
-  State<StatefulWidget> createState() => _GazeSelectionAnimationState();
+  _GazeSelectionAnimationState createState() => _GazeSelectionAnimationState();
 }
 
-class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with SingleTickerProviderStateMixin {
+class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorTween;
   Timer? _timer;
@@ -82,16 +83,11 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
     super.initState();
     _register();
     _initAnimation();
-    GazeInteractive().addListener(_listener);
-  }
-
-  void _listener() {
-    _controller.duration = GazeInteractive().duration;
   }
 
   void _initAnimation() {
     _controller = AnimationController(
-      duration: GazeInteractive().duration,
+      duration: Duration(milliseconds: ref.read(GazeInteractive().duration)),
       vsync: this,
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
@@ -111,6 +107,9 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(GazeInteractive().duration, (previous, next) {
+      _controller.duration = Duration(milliseconds: next);
+    });
     return Stack(
       children: [
         _wrappedWidget(),
@@ -184,7 +183,6 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
   @override
   void deactivate() {
     _timer?.cancel();
-    GazeInteractive().removeListener(_listener);
     GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
     super.deactivate();
   }
@@ -210,14 +208,14 @@ class _GazeSelectionAnimationState extends State<GazeSelectionAnimation> with Si
             _controller.forward();
           }
         },
-        onGazeLeave: () {
+        onGazeLeave: (recoverTime) {
           if (mounted) {
             setState(() {
               gazeIn = false;
             });
           }
           if (mounted) _controller.stop();
-          _timer = Timer(GazeInteractive().recoverTime, () {
+          _timer = Timer(Duration(milliseconds: recoverTime), () {
             if (mounted) _controller.reset();
           });
         },

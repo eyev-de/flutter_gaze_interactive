@@ -9,130 +9,98 @@ import 'dart:collection';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'element_data.dart';
-import 'element_type.dart';
-import 'extensions.dart';
+import 'core/element_data.dart';
+import 'core/element_type.dart';
+import 'core/extensions.dart';
+import 'core/local_store_notifiers.dart';
 
 final clickSoundSource = AssetSource('packages/gaze_interactive/lib/assets/click.mp3');
 final player = AudioPlayer()..setSource(clickSoundSource);
 
-class GazeInteractive extends ChangeNotifier {
+class GazeInteractive {
+  late WidgetRef ref;
   Logger? logger;
+  final sharedPreferencesProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
   static final GazeInteractive _instance = GazeInteractive._internal();
   factory GazeInteractive() {
     AudioCache.instance.prefix = '';
-    unawaited(player.setVolume(3));
+    unawaited(player.setVolume(1));
     return _instance;
   }
-  GazeInteractive._internal() {
-    load();
-  }
+  GazeInteractive._internal() {}
 
   bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate;
 
-  String _currentRoute = '';
-  String get currentRoute => _currentRoute;
+  String get currentRoute => ref.read(currentRouteStateProvider);
   set currentRoute(String value) {
-    if (_currentRoute != value) {
-      _currentRoute = value;
-      leaveAllGazeViews();
-      notifyListeners();
+    if (ref.read(currentRouteStateProvider) != value) {
+      Future.delayed(const Duration(), () {
+        ref.read(currentRouteStateProvider.notifier).state = value;
+      });
     }
   }
 
-  Rect _rect = Rect.zero;
-  Rect get rect => _rect;
+  final activeStateProvider = StateProvider<bool>((ref) => true);
+
+  final currentRouteStateProvider = StateProvider<String>((ref) => '');
+
+  final currentRectStateProvider = StateProvider<Rect>((ref) => Rect.zero);
+
+  // Rect _rect = Rect.zero;
+  // Rect get rect => _rect;
 
   final List<GazeElementData> _registeredGazeViews = [];
   List<GazeElementData> _currentGazeViews = [];
 
   void leaveAllGazeViews() {
+    logger?.i('Leaving ${_currentGazeViews.length} gaze views...');
     for (final gazeView in _currentGazeViews) {
-      gazeView.onGazeLeave?.call();
+      gazeView.onGazeLeave?.call(ref.read(recoverTime));
     }
     _currentGazeViews.clear();
   }
 
-  final ListQueue<GazeElementData> _listOfGazePointerViews = ListQueue<GazeElementData>();
-  GazeElementData? _currentGazePointerView;
+  final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
+  GazePointerData? _currentGazePointerView;
 
-  Future<void> load() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var tmp = prefs.getInt('gazeInteractiveDuration') ?? 1800;
-    _duration = Duration(milliseconds: tmp);
-    _scrollFactor = prefs.getDouble('gazeInteractiveScrollFactor') ?? 80;
-    _pointerSize = prefs.getDouble('gazeInteractiveGazePointerSize') ?? 50;
-    _fixationRadius = prefs.getDouble('gazeInteractiveFixationRadius') ?? 100;
-    tmp = prefs.getInt('gazeInteractiveRecoverTime') ?? 2000;
-    _recoverTime = Duration(milliseconds: tmp);
-  }
+  // bool _active = true;
+  // bool get active => _active;
+  // set active(bool value) {
+  //   _active = value;
+  //   if (!_active) {
+  //     leaveAllGazeViews();
+  //   }
+  //   notifyListeners();
+  // }
 
-  Future<void> save() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('gazeInteractiveDuration', duration.inMilliseconds);
-    await prefs.setDouble('gazeInteractiveScrollFactor', scrollFactor);
-    await prefs.setDouble('gazeInteractiveGazePointerSize', pointerSize);
-    await prefs.setDouble('gazeInteractiveFixationRadius', fixationRadius);
-    await prefs.setInt('gazeInteractiveRecoverTime', recoverTime.inMilliseconds);
-  }
+  late final duration = StateNotifierProvider<GazeInteractiveDurationLocalNotifier, int>((ref) {
+    return GazeInteractiveDurationLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
 
-  bool _active = true;
-  bool get active => _active;
-  set active(bool value) {
-    _active = value;
-    if (!_active) {
-      leaveAllGazeViews();
-    }
-    notifyListeners();
-  }
+  late final recoverTime = StateNotifierProvider<GazeInteractiveRecoverTimeLocalNotifier, int>((ref) {
+    return GazeInteractiveRecoverTimeLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
 
-  Duration _duration = const Duration(milliseconds: 1800);
-  Duration get duration => _duration;
-  set duration(Duration value) {
-    _duration = value;
-    save();
-    notifyListeners();
-  }
+  late final scrollFactor = StateNotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>((ref) {
+    return GazeInteractiveScrollFactorLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
 
-  Duration _recoverTime = const Duration(milliseconds: 3000);
-  Duration get recoverTime => _recoverTime;
-  set recoverTime(Duration value) {
-    _recoverTime = value;
-    save();
-    notifyListeners();
-  }
+  late final pointerSize = StateNotifierProvider<GazeInteractivePointerSizeLocalNotifier, double>((ref) {
+    return GazeInteractivePointerSizeLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
 
-  double _scrollFactor = 80;
-  double get scrollFactor => _scrollFactor;
-  set scrollFactor(double value) {
-    _scrollFactor = value;
-    save();
-    notifyListeners();
-  }
-
-  double _pointerSize = 50;
-  double get pointerSize => _pointerSize;
-  set pointerSize(double value) {
-    _pointerSize = value;
-    save();
-    notifyListeners();
-  }
-
-  double _fixationRadius = 100;
-  double get fixationRadius => _fixationRadius;
-  set fixationRadius(double value) {
-    _fixationRadius = value;
-    save();
-    notifyListeners();
-  }
+  late final fixationRadius = StateNotifierProvider<GazeInteractiveFixationRadiusLocalNotifier, double>((ref) {
+    return GazeInteractiveFixationRadiusLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
 
   void register(GazeElementData data) {
     logger?.i('GazeInteractiveLib: Register GazeInteractive: ${data.type}:');
     if (data.type == GazeElementType.pointer) {
-      _listOfGazePointerViews.add(data);
+      _listOfGazePointerViews.add(data as GazePointerData);
       _currentGazePointerView = data;
     } else {
       final exists = _registeredGazeViews.where((element) => element.key == data.key);
@@ -161,7 +129,9 @@ class GazeInteractive extends ChangeNotifier {
 
   /// API endpoint for updating the current gaze position.
   void onGaze(Offset position) {
+    final active = ref.read(activeStateProvider);
     if (active) {
+      _currentGazePointerView?.onPointerMove = _onPointerMove;
       _currentGazePointerView?.onGaze?.call(position);
       for (final view in _currentGazeViews) {
         view.onGaze?.call(position);
@@ -171,6 +141,7 @@ class GazeInteractive extends ChangeNotifier {
 
   /// API endpoint for signaling a fixation.
   void onFixation() {
+    final active = ref.read(activeStateProvider);
     if (active) {
       _currentGazePointerView?.onFixation?.call();
     }
@@ -179,93 +150,135 @@ class GazeInteractive extends ChangeNotifier {
   /// Internal endpoint
   /// DO NOT USE
   /// TODO(krjw): Change it!!!
-  void newPosition({
-    required Offset position,
-    required double width,
-    required double height,
-  }) {
-    if (!_active) return;
-    _rect = Rect.fromCenter(
+  void _onPointerMove(
+    Offset position,
+    Size size,
+  ) {
+    final active = ref.read(activeStateProvider);
+    if (!active) return;
+    final rect = Rect.fromCenter(
       center: position,
-      width: width,
-      height: height,
+      width: size.width,
+      height: size.height,
     );
-    notifyListeners();
+    final currentRoute = ref.read(currentRouteStateProvider);
     if (_currentGazePointerView != null) {
-      _currentGazeViews = _algo(
-        rect: rect,
-        current: _currentGazeViews,
-        list: _registeredGazeViews,
+      _currentGazeViews = _getNewListOfActiveGazeElements(
+        gazePointerRect: rect,
+        currentElements: _currentGazeViews,
+        registeredElements: _registeredGazeViews,
         currentGazePointer: _currentGazePointerView!,
         currentRoute: currentRoute,
         predicate: predicate,
+        recoverTime: ref.read(recoverTime),
       );
     }
   }
 
-  static List<GazeElementData> _algo({
-    required Rect rect,
-    required List<GazeElementData> current,
-    required List<GazeElementData> list,
+  static List<GazeElementData> _getNewListOfActiveGazeElements({
+    required Rect gazePointerRect,
+    required List<GazeElementData> currentElements,
+    required List<GazeElementData> registeredElements,
     required GazeElementData currentGazePointer,
     required String currentRoute,
-    bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate,
+    bool Function(Rect elementRect, Rect gazePointerRect, String elementRoute, String currentRoute)? predicate,
+    required int recoverTime,
   }) {
-    if (current.isNotEmpty) {
-      // Remove all that were left
-      current.removeWhere((element) {
-        if (!_check(
-          gazePointerRect: rect,
-          item: element,
+    if (currentElements.isNotEmpty) {
+      // Remove all that were left by the gaze pointer
+      currentElements.removeWhere((element) {
+        if (!_determineIfGazeElementIsLookedAt(
+          gazePointerRect: gazePointerRect,
+          element: element,
           currentGazePointer: currentGazePointer,
           currentRoute: currentRoute,
           predicate: predicate,
         )) {
-          element.onGazeLeave?.call();
+          element.onGazeLeave?.call(recoverTime);
           return true;
         }
         return false;
       });
     }
-    // Do not use entries in current
-    final _list = list.where((e1) => current.where((e2) => e1.key == e2.key).isEmpty);
-    // Searching list for new item
-    for (final item in _list) {
-      if (_check(
-        gazePointerRect: rect,
-        item: item,
+    // Do not use entries in currentElements
+    final _registeredElements = registeredElements.where((e1) => currentElements.where((e2) => e1.key == e2.key).isEmpty);
+    // Searching registeredElements for a new element
+    for (final element in _registeredElements) {
+      if (_determineIfGazeElementIsLookedAt(
+        gazePointerRect: gazePointerRect,
+        element: element,
         currentGazePointer: currentGazePointer,
         currentRoute: currentRoute,
         predicate: predicate,
       )) {
-        // New item found
-        item.onGazeEnter?.call();
-        current.add(item);
+        // New element was found
+        element.onGazeEnter?.call();
+        currentElements.add(element);
       }
     }
-    return current;
+    return currentElements;
   }
 
-  static bool _check({
+  static bool _determineIfGazeElementIsLookedAt({
     required Rect gazePointerRect,
-    required GazeElementData item,
+    required GazeElementData element,
     required GazeElementData? currentGazePointer,
     required String currentRoute,
     bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate,
   }) {
-    // Get bounds of Widget
-    final itemRect = item.key.globalPaintBounds;
+    // Get bounds of the element
+    final elementRect = element.key.globalPaintBounds;
     // Check if bounds and context exist
-    if (itemRect != null) {
+    if (elementRect != null) {
       // Check in case of supplied custom predicate
-      if (predicate != null) return predicate(itemRect, gazePointerRect, item.route!, currentRoute);
-      // Check if the route is the current one and if the rect overlaps the bounds of the widget
+      if (predicate != null) return predicate(elementRect, gazePointerRect, element.route!, currentRoute);
+      // Check if the route is the current one and if the rect of the gaze pointer overlaps the bounds of the element
       // This should be enough in most cases
       // Beware full screen dialogs and multiple navigators
-      if (item.route == currentRoute && itemRect.overlaps(gazePointerRect)) {
+      if (element.route == currentRoute && elementRect.overlaps(gazePointerRect)) {
         return true;
       }
     }
     return false;
+  }
+}
+
+class GazeContext extends StatelessWidget {
+  final Widget child;
+  final SharedPreferences sharedPreferences;
+
+  const GazeContext({super.key, required this.child, required this.sharedPreferences});
+
+  @override
+  Widget build(Object context) => ProviderScope(overrides: [
+        GazeInteractive().sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+      ], child: _GazeContext(child: child));
+}
+
+class _GazeContext extends ConsumerStatefulWidget {
+  final Widget child;
+  const _GazeContext({required this.child});
+
+  @override
+  _GazeContextState createState() => _GazeContextState();
+}
+
+class _GazeContextState extends ConsumerState<_GazeContext> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    GazeInteractive().ref = ref;
+    ref
+      ..listen(GazeInteractive().activeStateProvider, (prev, next) {
+        GazeInteractive().leaveAllGazeViews();
+      })
+      ..listen(GazeInteractive().currentRectStateProvider, (prev, next) {
+        GazeInteractive().leaveAllGazeViews();
+      });
+    return ProviderScope(child: widget.child);
   }
 }
