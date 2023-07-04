@@ -93,7 +93,7 @@ class GazeButton extends StatelessWidget {
   }
 
   void Function()? _determineTap(GazeButtonTapTypes type) {
-    if (properties.tapType == type) {
+    if (properties.tapType == type && onTap != null) {
       return _tap;
     }
     return null;

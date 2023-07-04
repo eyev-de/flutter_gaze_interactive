@@ -9,39 +9,51 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../element_data.dart';
-import '../../element_type.dart';
+import '../../core/element_data.dart';
+import '../../core/element_type.dart';
 import '../../state.dart';
-import 'pointer_state.dart';
+import 'pointer_state.model.dart';
 import 'pointer_type.dart';
 
-class GazePointerView extends StatefulWidget {
-  final GazeInteractive _gazeInteractive;
+class GazePointerView extends ConsumerStatefulWidget {
   final GazePointerState _state;
   GazePointerView({Key? key, GazePointerState? state})
-      : _gazeInteractive = GazeInteractive(),
-        _state = state ?? GazePointerState(),
+      : _state = state ?? GazePointerState(),
         super(key: key);
 
   @override
   _GazePointerViewState createState() => _GazePointerViewState();
 }
 
-class _GazePointerViewState extends State<GazePointerView> with SingleTickerProviderStateMixin {
+class _GazePointerViewState extends ConsumerState<GazePointerView> with SingleTickerProviderStateMixin {
   final GlobalKey _wrappedkey = GlobalKey();
-  Offset _pointerOffset = const Offset(0, 0);
-  Offset _localPointerOffset = const Offset(0, 0);
+  // Offset _pointerOffset = const Offset(0, 0);
+  final _pointerOffsetProvider = StateProvider((ref) => const Offset(0, 0));
 
-  Offset _fixationPoint = const Offset(0, 0);
+  // Offset _localPointerOffset = const Offset(0, 0);
+  final _localPointerOffsetProvider = StateProvider((ref) => const Offset(0, 0));
+
+  // Offset _fixationPoint = const Offset(0, 0);
+  final _fixationPointProvider = StateProvider((ref) => const Offset(0, 0));
+
+  late final _stateProvider = StateProvider((ref) => widget._state);
+
   double _fixationRadius = 100;
 
   Timer? _fadeOutTimer;
-  double _opacity = 0.6;
+  // double _opacity = 0.6;
+  final _opacityState = StateProvider((ref) => 0.6);
 
   late final AnimationController _controller;
   late final Animation<double> _actionTween;
+
+  late final gazePointerData = GazePointerData(
+    key: _wrappedkey,
+    onGaze: _onGazeData,
+    onFixation: _onFixation,
+  );
 
   _GazePointerViewState();
 
@@ -49,13 +61,15 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: GazeInteractive().duration,
+      duration: Duration(milliseconds: ref.read(GazeInteractive().duration)),
       vsync: this,
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           if (mounted) {
             _controller.reset();
           }
+          final _pointerOffset = ref.read(_pointerOffsetProvider);
+          final _size = ref.read(_sizeProvider);
           widget._state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
         }
       });
@@ -64,23 +78,20 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
       end: 1,
     ).animate(_controller);
 
-    widget._gazeInteractive.register(
-      GazePointerData(
-        key: _wrappedkey,
-        onGaze: _onGazeData,
-        onFixation: _onFixation,
-      ),
-    );
+    GazeInteractive().register(gazePointerData);
     _startFadeOutTimer();
-    GazeInteractive().addListener(_listener);
-    if (kDebugMode) _pointerOffset = const Offset(100, 100);
+    // GazeInteractive().addListener(_listener);
+    if (kDebugMode) {
+      Future.delayed(const Duration(), () => ref.read(_pointerOffsetProvider.notifier).state = const Offset(100, 100));
+      // _pointerOffset = const Offset(100, 100);
+    }
   }
 
   @override
   void deactivate() {
     _fadeOutTimer?.cancel();
-    widget._gazeInteractive.unregister(key: _wrappedkey, type: GazeElementType.pointer);
-    GazeInteractive().removeListener(_listener);
+    GazeInteractive().unregister(key: _wrappedkey, type: GazeElementType.pointer);
+    // GazeInteractive().removeListener(_listener);
     super.deactivate();
   }
 
@@ -91,17 +102,18 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
     super.dispose();
   }
 
-  void _listener() {
-    _controller.duration = GazeInteractive().duration;
-    _fixationRadius = GazeInteractive().fixationRadius;
-  }
+  // void _listener() {
+  //   _controller.duration = GazeInteractive().duration;
+  //   _fixationRadius = GazeInteractive().fixationRadius;
+  // }
 
   void _startFadeOutTimer() {
     _fadeOutTimer = Timer(const Duration(milliseconds: 1200), () {
       if (mounted) {
-        setState(() {
-          _opacity = kDebugMode ? 0.6 : 0.0;
-        });
+        ref.read(_opacityState.notifier).state = kDebugMode ? 0.6 : 0.0;
+        // setState(() {
+        //   _opacity = kDebugMode ? 0.6 : 0.0;
+        // });
       }
     });
   }
@@ -113,16 +125,22 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
 
   void _onGazeData(Offset gaze) {
     if (mounted) {
-      setState(() {
-        _opacity = 0.6;
-        final Offset temp = _validate(context, gaze - Offset(_size / 2, _size / 2), _size);
-        _pointerOffset = temp;
-      });
-      widget._gazeInteractive.newPosition(
-        position: _pointerOffset + Offset(_size / 2, _size / 2),
-        width: _size,
-        height: _size,
-      );
+      ref.read(_opacityState.notifier).state = 0.6;
+      final _size = ref.read(_sizeProvider);
+      final Offset temp = _validate(context, gaze - Offset(_size / 2, _size / 2), _size);
+      ref.read(_pointerOffsetProvider.notifier).state = temp;
+      // setState(() {
+      // _opacity = 0.6;
+      // final Offset temp = _validate(context, gaze - Offset(_size / 2, _size / 2), _size);
+      // _pointerOffset = temp;
+      // });
+      gazePointerData.onPointerMove?.call(temp + Offset(_size / 2, _size / 2), Size(_size, _size));
+      // GazeInteractive().newPosition(
+      //   position: temp + Offset(_size / 2, _size / 2),
+      //   width: _size,
+      //   height: _size,
+      // );
+      final _fixationPoint = ref.read(_fixationPointProvider);
       if (widget._state.type == GazePointerType.active && _leftFixationRadius(gaze, _fixationPoint, _fixationRadius)) {
         _controller.reset();
       }
@@ -132,87 +150,108 @@ class _GazePointerViewState extends State<GazePointerView> with SingleTickerProv
 
   void _onFixation() {
     if (mounted && widget._state.type == GazePointerType.active && !_controller.isAnimating) {
-      _fixationPoint = _pointerOffset;
+      // _fixationPoint = _pointerOffset;
+      ref.read(_fixationPointProvider.notifier).state = ref.read(_pointerOffsetProvider);
       _controller.forward();
     }
   }
 
-  double get _size => widget._state.type == GazePointerType.active ? widget._gazeInteractive.pointerSize / 1.5 : widget._gazeInteractive.pointerSize;
+  late final _sizeProvider = StateProvider((ref) {
+    final _state = ref.watch(_stateProvider);
+    final _size = ref.watch(GazeInteractive().pointerSize);
+    if (_state.type == GazePointerType.active) {
+      return _size / 1.5;
+    }
+    return _size;
+  });
 
   @override
   Widget build(BuildContext context) {
+    final _size = ref.watch(_sizeProvider);
+    final _fixationRadius = ref.watch(GazeInteractive().fixationRadius);
+    final _pointerOffset = ref.watch(_pointerOffsetProvider);
+    final _opacity = ref.watch(_opacityState);
+    final _state = ref.watch(_stateProvider);
+    ref
+      ..listen(GazeInteractive().duration, (previous, next) {
+        _controller.duration = Duration(milliseconds: next);
+      })
+      ..listen(GazeInteractive().fixationRadius, (previous, next) {
+        this._fixationRadius = next;
+      });
     return Positioned(
       left: _pointerOffset.dx,
       top: _pointerOffset.dy,
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: widget._gazeInteractive),
-          ChangeNotifierProvider.value(value: widget._state),
-        ],
-        child: Consumer2<GazeInteractive, GazePointerState>(
-          builder: (context, _gazeInteractive, _state, child) {
-            if (_state.ignorePointer) {
-              return AnimatedOpacity(
-                opacity: _opacity,
-                duration: const Duration(milliseconds: 150),
-                child: pointer(_state, _size),
-              );
-            }
-            return GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {},
-              onTapDown: (details) {},
-              onTapUp: (details) {
-                if (kDebugMode && widget._state.type == GazePointerType.active && !_controller.isAnimating) {
-                  _controller.forward();
-                }
-              },
-              onPanStart: (details) {
-                if (mounted) {
-                  final RenderBox? getBox = context.findRenderObject() as RenderBox?;
-                  final Offset local = getBox?.globalToLocal(details.globalPosition) ?? const Offset(0, 0);
-                  final Offset temp = _validate(context, details.globalPosition - local, _size);
-                  setState(() {
-                    _pointerOffset = temp;
-                    _localPointerOffset = local;
-                  });
-                  _gazeInteractive.onGaze(
-                    temp + Offset(_size / 2, _size / 2),
-                  );
-                  // _gazeInteractive.newPosition(
-                  //   position: temp + Offset(_size / 2, _size / 2),
-                  //   width: _size,
-                  //   height: _size,
-                  // );
-                }
-              },
-              onPanUpdate: (details) {
-                if (mounted) {
-                  final Offset temp = _validate(context, details.globalPosition - _localPointerOffset, _size);
-                  setState(() {
-                    _pointerOffset = temp;
-                  });
-                  _gazeInteractive.onGaze(
-                    temp + Offset(_size / 2, _size / 2),
-                  );
-                  // _gazeInteractive.newPosition(
-                  //   position: temp + Offset(_size / 2, _size / 2),
-                  //   width: _size,
-                  //   height: _size,
-                  // );
-                  if (kDebugMode && widget._state.type == GazePointerType.active && _leftFixationRadius(temp, _fixationPoint, _fixationRadius)) {
-                    _controller.reset();
-                  }
-                }
-              },
-              child: AnimatedOpacity(
-                opacity: _opacity,
-                duration: const Duration(milliseconds: 150),
-                child: pointer(_state, _size),
-              ),
+      child: Builder(
+        builder: (context) {
+          if (_state.ignorePointer) {
+            return AnimatedOpacity(
+              opacity: _opacity,
+              duration: const Duration(milliseconds: 150),
+              child: pointer(_state, _size),
             );
-          },
-        ),
+          }
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {},
+            onTapDown: (details) {},
+            onTapUp: (details) {
+              if (kDebugMode && widget._state.type == GazePointerType.active && !_controller.isAnimating) {
+                _controller.forward();
+              }
+            },
+            onPanStart: (details) {
+              if (mounted) {
+                final RenderBox? getBox = context.findRenderObject() as RenderBox?;
+                final Offset local = getBox?.globalToLocal(details.globalPosition) ?? const Offset(0, 0);
+                final Offset temp = _validate(context, details.globalPosition - local, _size);
+                ref.read(_pointerOffsetProvider.notifier).state = temp;
+                ref.read(_localPointerOffsetProvider.notifier).state = local;
+
+                // setState(() {
+                //   _pointerOffset = temp;
+                //   _localPointerOffset = local;
+                // });
+                GazeInteractive().onGaze(
+                  temp + Offset(_size / 2, _size / 2),
+                );
+                // _gazeInteractive.newPosition(
+                //   position: temp + Offset(_size / 2, _size / 2),
+                //   width: _size,
+                //   height: _size,
+                // );
+              }
+            },
+            onPanUpdate: (details) {
+              if (mounted) {
+                final _localPointerOffset = ref.read(_localPointerOffsetProvider);
+                final Offset temp = _validate(context, details.globalPosition - _localPointerOffset, _size);
+                ref.read(_pointerOffsetProvider.notifier).state = temp;
+
+                // setState(() {
+                //   _pointerOffset = temp;
+                // });
+                GazeInteractive().onGaze(
+                  temp + Offset(_size / 2, _size / 2),
+                );
+                // _gazeInteractive.newPosition(
+                //   position: temp + Offset(_size / 2, _size / 2),
+                //   width: _size,
+                //   height: _size,
+                // );
+                final _fixationPoint = ref.read(_fixationPointProvider);
+                if (kDebugMode && widget._state.type == GazePointerType.active && _leftFixationRadius(temp, _fixationPoint, _fixationRadius)) {
+                  _controller.reset();
+                }
+              }
+            },
+            child: AnimatedOpacity(
+              opacity: _opacity,
+              duration: const Duration(milliseconds: 150),
+              child: pointer(_state, _size),
+            ),
+          );
+        },
       ),
     );
   }

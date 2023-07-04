@@ -5,11 +5,12 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../element_data.dart';
-import '../element_type.dart';
-import '../extensions.dart';
-import '../scroll_direction.dart';
+import '../core/element_data.dart';
+import '../core/element_type.dart';
+import '../core/extensions.dart';
+import '../core/scroll_direction.dart';
 import '../state.dart';
 
 class GazeView extends StatelessWidget {
@@ -44,7 +45,7 @@ class GazeView extends StatelessWidget {
   }
 }
 
-class GazeViewImpl extends StatefulWidget {
+class GazeViewImpl extends ConsumerStatefulWidget {
   final GlobalKey wrappedKey;
   final Widget child;
   final String route;
@@ -64,10 +65,10 @@ class GazeViewImpl extends StatefulWidget {
   }) : super(key: wrappedKey);
 
   @override
-  State<StatefulWidget> createState() => _GazeViewImplState();
+  _GazeViewImplState createState() => _GazeViewImplState();
 }
 
-class _GazeViewImplState extends State<GazeViewImpl> {
+class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
   bool _active = false;
   static const double scrollArea = 0.3;
 
@@ -75,14 +76,10 @@ class _GazeViewImplState extends State<GazeViewImpl> {
   void initState() {
     super.initState();
     _register();
-    GazeInteractive().addListener(_listener);
   }
-
-  void _listener() {}
 
   @override
   void deactivate() {
-    GazeInteractive().removeListener(_listener);
     GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.all);
     super.deactivate();
   }
@@ -100,7 +97,7 @@ class _GazeViewImplState extends State<GazeViewImpl> {
             });
           }
         },
-        onGazeLeave: () {
+        onGazeLeave: (_) {
           if (mounted) {
             widget.onGazeLeave?.call();
             setState(() {
@@ -136,7 +133,8 @@ class _GazeViewImplState extends State<GazeViewImpl> {
         bounds.bottom,
       );
 
-      final double maxScrollSpeed = GazeInteractive().scrollFactor;
+      final double maxScrollSpeed = ref.read(GazeInteractive().scrollFactor);
+      // final double maxScrollSpeed = GazeInteractive().scrollFactor;
       if (tempTop.overlaps(rect)) {
         // In top area
         // calculate scrolling factor

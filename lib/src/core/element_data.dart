@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 
 import 'element_type.dart';
 
-class GazeElementData {
+final class GazeElementData {
   final GlobalKey key;
   final String? route;
   final GazeElementType type;
 
   final void Function()? onGazeEnter;
-  final void Function()? onGazeLeave;
+  final void Function(int recoverTime)? onGazeLeave;
   final void Function(Offset)? onGaze;
   final void Function()? onScroll;
   final void Function()? onFixation;
@@ -31,7 +31,7 @@ class GazeElementData {
   });
 }
 
-class GazeSelectableData extends GazeElementData {
+final class GazeSelectableData extends GazeElementData {
   const GazeSelectableData({
     required super.key,
     required super.route,
@@ -40,7 +40,7 @@ class GazeSelectableData extends GazeElementData {
   }) : super(type: GazeElementType.selectable);
 }
 
-class GazeScrollableData extends GazeElementData {
+final class GazeScrollableData extends GazeElementData {
   const GazeScrollableData({
     required super.key,
     required super.route,
@@ -49,8 +49,9 @@ class GazeScrollableData extends GazeElementData {
   }) : super(type: GazeElementType.scrollable);
 }
 
-class GazePointerData extends GazeElementData {
-  const GazePointerData({
+final class GazePointerData extends GazeElementData {
+  Function(Offset, Size)? onPointerMove;
+  GazePointerData({
     required super.key,
     required super.onGaze,
     super.onFixation,

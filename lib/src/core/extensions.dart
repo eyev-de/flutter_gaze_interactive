@@ -123,4 +123,17 @@ extension TextEditingControllerExtension on TextEditingController {
       ),
     );
   }
+
+  void moveCursorMostRight() {
+    int baseOffset = selection.baseOffset;
+    int extentOffset = selection.extentOffset;
+    baseOffset = extentOffset = text.length;
+    value = TextEditingValue(
+      text: text,
+      selection: TextSelection(
+        baseOffset: baseOffset,
+        extentOffset: extentOffset,
+      ),
+    );
+  }
 }
