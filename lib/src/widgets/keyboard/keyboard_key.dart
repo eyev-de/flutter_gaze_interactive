@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/extensions.dart';
-import '../../core/responsive.dart';
 import '../button/button.dart';
 import '../button/selection_animation.dart';
 import 'keyboard_state.dart';
@@ -68,13 +67,7 @@ class GazeKey extends ConsumerWidget {
   }) : super(key: key);
 
   static Widget _buildContent(BuildContext context, Object content, bool? shift) {
-    final textStyle = TextStyle(
-      // fontSize: Responsive.getResponsiveValue(
-      //   forLargeScreen: 18,
-      //   forMediumScreen: 14,
-      //   forVeryLargeScreen: 20,
-      //   context: context,
-      // ),
+    const textStyle = TextStyle(
       fontSize: 20,
     );
     if (content is List) {

@@ -10,7 +10,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import '../../core/clipboard_provider.dart';
 import '../../core/extensions.dart';
-import '../../core/responsive.dart';
 import '../button/button.dart';
 import 'keyboard_state.dart';
 
@@ -181,12 +180,6 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final size = Responsive.getResponsiveValue(
-    //             forVeryLargeScreen: 35,
-    //             forLargeScreen: 20,
-    //             forMediumScreen: 18,
-    //             context: context,
-    //           );
     const double size = 20;
     return Flexible(
       child: Padding(

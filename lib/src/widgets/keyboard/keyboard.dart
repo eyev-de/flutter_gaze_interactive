@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../core/extensions.dart';
-import '../../core/responsive.dart';
 import '../button/button.dart';
 import '../pointer/pointer_view.dart';
 import 'keyboard_key.dart';
