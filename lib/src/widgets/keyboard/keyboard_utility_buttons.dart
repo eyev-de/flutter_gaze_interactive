@@ -142,7 +142,7 @@ class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
     final clipboardContent = ref.watch(clipboardProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
-      textStyle: textStyle,
+      textStyle: textStyle?.copyWith(color: clipboardContent != '' ? Colors.white : Colors.grey),
       icon: Icons.paste,
       iconColor: clipboardContent != '' ? Colors.white : Colors.grey,
       route: state.route,
@@ -198,6 +198,7 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
               size: size,
             ),
             route: route,
+            gazeInteractive: onTap != null,
             withSound: true,
           ),
           onTap: onTap,

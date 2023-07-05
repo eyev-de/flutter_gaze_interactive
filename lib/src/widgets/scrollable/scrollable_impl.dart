@@ -87,9 +87,11 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
     );
     widget.controller.addListener(_scrollListener);
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      final _downIndicatorState = ref.read(_downIndicatorProvider);
-      if (mounted && widget.controller.hasClients && widget.controller.position.extentAfter > 0 && !_downIndicatorState.isVisible) {
-        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+      if (mounted && widget.controller.hasClients && widget.controller.position.extentAfter > 0) {
+        final _downIndicatorState = ref.read(_downIndicatorProvider);
+        if (!_downIndicatorState.isVisible) {
+          ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        }
         // setState(() {
         //   _downIndicatorState = GazeScrollableIndicatorState.visible;
         // });
