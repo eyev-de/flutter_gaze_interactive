@@ -16,7 +16,7 @@ class _ClipboardNotifier extends StateNotifier<String> {
   _ClipboardNotifier() : super('') {
     clipboardTriggerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
       final content = await Clipboard.getData('text/plain');
-      if (content != null && content.text != null) state = content.text!;
+      if (content != null && content.text != null && state != content.text) state = content.text!;
     });
   }
 }

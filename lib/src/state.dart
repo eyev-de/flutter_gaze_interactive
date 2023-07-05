@@ -31,7 +31,7 @@ class GazeInteractive {
     unawaited(player.setVolume(1));
     return _instance;
   }
-  GazeInteractive._internal() {}
+  GazeInteractive._internal();
 
   bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate;
 
@@ -40,6 +40,15 @@ class GazeInteractive {
     if (ref.read(currentRouteStateProvider) != value) {
       Future.delayed(const Duration(), () {
         ref.read(currentRouteStateProvider.notifier).state = value;
+      });
+    }
+  }
+
+  bool get active => ref.read(activeStateProvider);
+  set active(bool value) {
+    if (ref.read(activeStateProvider) != value) {
+      Future.delayed(const Duration(), () {
+        ref.read(activeStateProvider.notifier).state = value;
       });
     }
   }
@@ -66,16 +75,6 @@ class GazeInteractive {
 
   final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
   GazePointerData? _currentGazePointerView;
-
-  // bool _active = true;
-  // bool get active => _active;
-  // set active(bool value) {
-  //   _active = value;
-  //   if (!_active) {
-  //     leaveAllGazeViews();
-  //   }
-  //   notifyListeners();
-  // }
 
   late final duration = StateNotifierProvider<GazeInteractiveDurationLocalNotifier, int>((ref) {
     return GazeInteractiveDurationLocalNotifier(ref.read(sharedPreferencesProvider));
@@ -131,7 +130,7 @@ class GazeInteractive {
   void onGaze(Offset position) {
     final active = ref.read(activeStateProvider);
     if (active) {
-      _currentGazePointerView?.onPointerMove = _onPointerMove;
+      _currentGazePointerView?.onPointerMove = onPointerMove;
       _currentGazePointerView?.onGaze?.call(position);
       for (final view in _currentGazeViews) {
         view.onGaze?.call(position);
@@ -150,7 +149,7 @@ class GazeInteractive {
   /// Internal endpoint
   /// DO NOT USE
   /// TODO(krjw): Change it!!!
-  void _onPointerMove(
+  void onPointerMove(
     Offset position,
     Size size,
   ) {
