@@ -59,9 +59,6 @@ class GazeInteractive {
 
   final currentRectStateProvider = StateProvider<Rect>((ref) => Rect.zero);
 
-  // Rect _rect = Rect.zero;
-  // Rect get rect => _rect;
-
   final List<GazeElementData> _registeredGazeViews = [];
   List<GazeElementData> _currentGazeViews = [];
 
@@ -160,6 +157,7 @@ class GazeInteractive {
       width: size.width,
       height: size.height,
     );
+    ref.read(currentRectStateProvider.notifier).state = rect;
     final currentRoute = ref.read(currentRouteStateProvider);
     if (_currentGazePointerView != null) {
       _currentGazeViews = _getNewListOfActiveGazeElements(
@@ -275,7 +273,7 @@ class _GazeContextState extends ConsumerState<_GazeContext> {
       ..listen(GazeInteractive().activeStateProvider, (prev, next) {
         GazeInteractive().leaveAllGazeViews();
       })
-      ..listen(GazeInteractive().currentRectStateProvider, (prev, next) {
+      ..listen(GazeInteractive().currentRouteStateProvider, (prev, next) {
         GazeInteractive().leaveAllGazeViews();
       });
     return ProviderScope(child: widget.child);
