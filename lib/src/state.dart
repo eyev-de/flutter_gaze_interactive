@@ -59,9 +59,6 @@ class GazeInteractive {
 
   final currentRectStateProvider = StateProvider<Rect>((ref) => Rect.zero);
 
-  // Rect _rect = Rect.zero;
-  // Rect get rect => _rect;
-
   final List<GazeElementData> _registeredGazeViews = [];
   List<GazeElementData> _currentGazeViews = [];
 
