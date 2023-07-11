@@ -128,6 +128,7 @@ class GazeKeyboard {
                                     ),
                                   ),
                                 ),
+                                // Delete Button
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
@@ -153,6 +154,7 @@ class GazeKeyboard {
                                     ),
                                   ),
                                 ),
+                                // Delete Word Button
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
@@ -186,6 +188,7 @@ class GazeKeyboard {
                                     ),
                                   ),
                                 ),
+                                // Submit Button
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
@@ -226,7 +229,7 @@ class GazeKeyboard {
                             const Spacer(),
                             Flexible(
                               flex: 8,
-                              child: GazeKeyboardUtilityButtons(state: state, node: node),
+                              child: GazeKeyboardUtilityButtons(state: state, node: node, type: state.type),
                             ),
                             const Spacer(),
                           ],
