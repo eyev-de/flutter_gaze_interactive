@@ -16,6 +16,7 @@ class GazeKeyboardState {
   final FocusNode? node;
   final GazeKeyboardController keyboardController = GazeKeyboardController(WidgetsBinding.instance);
   final String route;
+  final KeyboardType type;
 
   final languageStateProvider = StateProvider((ref) => Language.german);
   final shiftStateProvider = StateProvider((ref) => false);
@@ -39,5 +40,6 @@ class GazeKeyboardState {
     this.withCtrl = true,
     this.withAlt = true,
     this.withNumbers = true,
+    this.type = KeyboardType.extended,
   });
 }

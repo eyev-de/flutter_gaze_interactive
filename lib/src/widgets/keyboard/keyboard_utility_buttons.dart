@@ -12,25 +12,44 @@ import '../../core/clipboard_provider.dart';
 import '../../core/extensions.dart';
 import '../button/button.dart';
 import 'keyboard_state.dart';
+import 'keyboards.dart';
 
 class GazeKeyboardUtilityButtons extends StatelessWidget {
   final GazeKeyboardState state;
   final FocusNode node;
+  final KeyboardType? type;
 
-  const GazeKeyboardUtilityButtons({super.key, required this.state, required this.node});
+  GazeKeyboardUtilityButtons({super.key, required this.state, required this.node, this.type = KeyboardType.extended});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        GazeKeyboardUtilitySelectButton(state: state, node: node),
-        GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
-        GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
-        GazeKeyboardUtilityCopyButton(state: state, node: node),
-        GazeKeyboardUtilityPasteButton(state: state, node: node),
-        GazeKeyboardUtilityCutButton(state: state, node: node),
-      ],
-    );
+    switch (type!) {
+      case KeyboardType.editor:
+        return Row(
+          children: [
+            GazeKeyboardUtilitySelectButton(state: state, node: node),
+            GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
+            GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
+            GazeKeyboardUtilityCopyButton(state: state, node: node),
+            GazeKeyboardUtilityPasteButton(state: state, node: node),
+            GazeKeyboardUtilityCutButton(state: state, node: node),
+            GazeKeyboardUtilityDeleteButton(state: state, node: node),
+            GazeKeyboardUtilityDeleteWordButton(state: state, node: node),
+          ],
+        );
+      case KeyboardType.extended:
+      case KeyboardType.speak:
+        return Row(
+          children: [
+            GazeKeyboardUtilitySelectButton(state: state, node: node),
+            GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
+            GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
+            GazeKeyboardUtilityCopyButton(state: state, node: node),
+            GazeKeyboardUtilityPasteButton(state: state, node: node),
+            GazeKeyboardUtilityCutButton(state: state, node: node),
+          ],
+        );
+    }
   }
 }
 
@@ -152,6 +171,55 @@ class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
               await state.controller.paste();
             }
           : null,
+    );
+  }
+}
+
+class GazeKeyboardUtilityDeleteButton extends GazeKeyboardUtilityButton {
+  const GazeKeyboardUtilityDeleteButton({super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selecting = ref.watch(state.selectingStateProvider);
+    return GazeKeyboardUtilityBaseButton(
+      icon: Icons.delete,
+      iconColor: Colors.red,
+      text: 'Delete All',
+      textStyle: const TextStyle(color: Colors.red),
+      route: state.route,
+      onTap: () {
+        node.requestFocus();
+        state.controller.text = '';
+      },
+      backgroundColor: selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
+    );
+  }
+}
+
+class GazeKeyboardUtilityDeleteWordButton extends GazeKeyboardUtilityButton {
+  const GazeKeyboardUtilityDeleteWordButton({super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selecting = ref.watch(state.selectingStateProvider);
+    return GazeKeyboardUtilityBaseButton(
+      icon: Icons.delete_sweep,
+      iconColor: Colors.red,
+      text: 'Delete Word',
+      textStyle: const TextStyle(color: Colors.red),
+      route: state.route,
+      onTap: () {
+        node.requestFocus();
+        if (state.controller.text[state.controller.text.length - 1] == ' ') {
+          final words = state.controller.text.trim().split(' ');
+          state.controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
+        } else {
+          final words = state.controller.text.split(' ');
+          state.controller.text = words.sublist(0, words.length - 1).join(' ');
+        }
+        state.controller.moveCursorMostRight();
+      },
+      backgroundColor: selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
     );
   }
 }
