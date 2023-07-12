@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -65,7 +65,7 @@ class GazeInteractive {
   void leaveAllGazeViews() {
     logger?.i('Leaving ${_currentGazeViews.length} gaze views...');
     for (final gazeView in _currentGazeViews) {
-      gazeView.onGazeLeave?.call(ref.read(recoverTime));
+      gazeView.onGazeLeave?.call();
     }
     _currentGazeViews.clear();
   }
@@ -167,7 +167,6 @@ class GazeInteractive {
         currentGazePointer: _currentGazePointerView!,
         currentRoute: currentRoute,
         predicate: predicate,
-        recoverTime: ref.read(recoverTime),
       );
     }
   }
@@ -179,7 +178,6 @@ class GazeInteractive {
     required GazeElementData currentGazePointer,
     required String currentRoute,
     bool Function(Rect elementRect, Rect gazePointerRect, String elementRoute, String currentRoute)? predicate,
-    required int recoverTime,
   }) {
     if (currentElements.isNotEmpty) {
       // Remove all that were left by the gaze pointer
@@ -191,7 +189,7 @@ class GazeInteractive {
           currentRoute: currentRoute,
           predicate: predicate,
         )) {
-          element.onGazeLeave?.call(recoverTime);
+          element.onGazeLeave?.call();
           return true;
         }
         return false;

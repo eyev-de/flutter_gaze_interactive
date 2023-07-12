@@ -1,6 +1,6 @@
 //  Gaze Keyboard Lib
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 

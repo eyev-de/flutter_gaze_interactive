@@ -1,14 +1,16 @@
 //  Gaze Interactive
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants.dart';
 import '../../core/element_data.dart';
 import '../../core/element_type.dart';
 import '../../state.dart';
@@ -74,6 +76,8 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   late AnimationController _controller;
   late Animation<Color?> _colorTween;
   Timer? _timer;
+  late int _recoverTime;
+  late int _duration;
   bool gazeIn = false;
 
   _GazeSelectionAnimationState();
@@ -86,15 +90,23 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   }
 
   void _initAnimation() {
+    _recoverTime = ref.read(GazeInteractive().recoverTime);
+    _duration = ref.read(GazeInteractive().duration);
     _controller = AnimationController(
-      duration: Duration(milliseconds: ref.read(GazeInteractive().duration)),
+      duration: Duration(milliseconds: _duration),
       vsync: this,
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _timer?.cancel();
           if (mounted) {
             _controller.reset();
-            if (widget.properties.reselectable) _controller.forward();
+            if (widget.properties.reselectable) {
+              final _newDuration = (_duration / 2).round();
+              _duration = max(_newDuration, gazeInteractiveMinDuration);
+              _controller
+                ..duration = Duration(milliseconds: _duration)
+                ..forward();
+            }
           }
           if (widget.properties.gazeInteractive) widget.onGazed?.call();
         }
@@ -107,9 +119,14 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(GazeInteractive().duration, (previous, next) {
-      _controller.duration = Duration(milliseconds: next);
-    });
+    ref
+      ..listen(GazeInteractive().duration, (previous, next) {
+        _duration = next;
+        _controller.duration = Duration(milliseconds: _duration);
+      })
+      ..listen(GazeInteractive().recoverTime, (previous, next) {
+        _recoverTime = next;
+      });
     return Stack(
       children: [
         _wrappedWidget(),
@@ -208,14 +225,16 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
             _controller.forward();
           }
         },
-        onGazeLeave: (recoverTime) {
+        onGazeLeave: () {
           if (mounted) {
             setState(() {
               gazeIn = false;
             });
+            _controller.stop();
+            _duration = ref.read(GazeInteractive().duration);
+            _controller.duration = Duration(milliseconds: _duration);
           }
-          if (mounted) _controller.stop();
-          _timer = Timer(Duration(milliseconds: recoverTime), () {
+          _timer = Timer(Duration(milliseconds: _recoverTime), () {
             if (mounted) _controller.reset();
           });
         },

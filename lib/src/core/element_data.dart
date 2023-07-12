@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -14,7 +14,7 @@ final class GazeElementData {
   final GazeElementType type;
 
   final void Function()? onGazeEnter;
-  final void Function(int recoverTime)? onGazeLeave;
+  final void Function()? onGazeLeave;
   final void Function(Offset)? onGaze;
   final void Function()? onScroll;
   final void Function()? onFixation;

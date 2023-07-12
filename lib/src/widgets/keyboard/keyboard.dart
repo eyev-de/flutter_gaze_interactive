@@ -1,6 +1,6 @@
 //  Gaze Widgets Lib
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -98,33 +98,11 @@ class GazeKeyboard {
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
+                                    child: _GazeKeyboardDeleteButton(
+                                      controller: state.controller,
+                                      node: node,
                                       height: height,
-                                      child: GazeButton(
-                                        properties: GazeButtonProperties(
-                                          innerPadding: const EdgeInsets.all(0),
-                                          backgroundColor: Colors.grey.shade900,
-                                          borderRadius: BorderRadius.zero,
-                                          icon: const Icon(
-                                            Icons.keyboard_backspace_rounded,
-                                            color: Colors.white,
-                                          ),
-                                          horizontal: true,
-                                          route: state.route,
-                                        ),
-                                        onTap: () {
-                                          node.requestFocus();
-                                          final selection = state.controller.selection;
-                                          if (state.controller.text.isNotEmpty) {
-                                            var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-                                            final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-                                            startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
-                                            if (startIndex.isNegative) startIndex = 0;
-                                            state.controller.text = state.controller.text.replaceRange(startIndex, endIndex, '');
-                                            state.controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
-                                          }
-                                        },
-                                      ),
+                                      route: state.route,
                                     ),
                                   ),
                                 ),
@@ -132,25 +110,11 @@ class GazeKeyboard {
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
+                                    child: _GazeKeyboardDeleteAllButton(
+                                      controller: state.controller,
+                                      node: node,
                                       height: height,
-                                      child: GazeButton(
-                                        properties: GazeButtonProperties(
-                                          innerPadding: const EdgeInsets.all(0),
-                                          backgroundColor: Colors.grey.shade900,
-                                          borderRadius: BorderRadius.zero,
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          horizontal: true,
-                                          route: state.route,
-                                        ),
-                                        onTap: () {
-                                          node.requestFocus();
-                                          state.controller.text = '';
-                                        },
-                                      ),
+                                      route: state.route,
                                     ),
                                   ),
                                 ),
@@ -158,33 +122,11 @@ class GazeKeyboard {
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
+                                    child: _GazeKeyboardDeleteWordButton(
+                                      controller: state.controller,
+                                      node: node,
                                       height: height,
-                                      child: GazeButton(
-                                        properties: GazeButtonProperties(
-                                          text: 'Word',
-                                          textColor: Colors.red,
-                                          innerPadding: const EdgeInsets.all(0),
-                                          backgroundColor: Colors.grey.shade900,
-                                          borderRadius: BorderRadius.zero,
-                                          icon: const Icon(
-                                            Icons.delete_sweep,
-                                            color: Colors.red,
-                                          ),
-                                          route: state.route,
-                                        ),
-                                        onTap: () {
-                                          node.requestFocus();
-                                          if (state.controller.text[state.controller.text.length - 1] == ' ') {
-                                            final words = state.controller.text.trim().split(' ');
-                                            state.controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
-                                          } else {
-                                            final words = state.controller.text.split(' ');
-                                            state.controller.text = words.sublist(0, words.length - 1).join(' ');
-                                          }
-                                          state.controller.moveCursorMostRight();
-                                        },
-                                      ),
+                                      route: state.route,
                                     ),
                                   ),
                                 ),
@@ -419,5 +361,166 @@ class GazeKeyboardWidget extends ConsumerWidget {
           ),
       ],
     );
+  }
+}
+
+class _GazeKeyboardDeleteButton extends ConsumerWidget {
+  final TextEditingController controller;
+  final FocusNode node;
+  final double height;
+  final String route;
+  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
+
+  _GazeKeyboardDeleteButton({
+    required this.controller,
+    required this.node,
+    required this.height,
+    required this.route,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = ref.watch(controllerTextProvider);
+    return SizedBox(
+      height: height,
+      child: GazeButton(
+        properties: GazeButtonProperties(
+          innerPadding: const EdgeInsets.all(0),
+          backgroundColor: Colors.grey.shade900,
+          borderRadius: BorderRadius.zero,
+          icon: Icon(
+            Icons.keyboard_backspace_rounded,
+            color: text == '' ? Colors.grey : Colors.white,
+          ),
+          horizontal: true,
+          route: route,
+          gazeInteractive: text != '',
+        ),
+        onTap: text == ''
+            ? null
+            : () {
+                node.requestFocus();
+                final selection = controller.selection;
+                if (controller.text.isNotEmpty) {
+                  var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
+                  final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
+                  startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
+                  if (startIndex.isNegative) startIndex = 0;
+                  controller.text = controller.text.replaceRange(startIndex, endIndex, '');
+                  controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
+                }
+              },
+      ),
+    );
+  }
+}
+
+class _GazeKeyboardDeleteAllButton extends ConsumerWidget {
+  final TextEditingController controller;
+  final FocusNode node;
+  final double height;
+  final String route;
+  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
+
+  _GazeKeyboardDeleteAllButton({
+    required this.controller,
+    required this.node,
+    required this.height,
+    required this.route,
+  });
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = ref.watch(controllerTextProvider);
+    return SizedBox(
+      height: height,
+      child: GazeButton(
+        properties: GazeButtonProperties(
+          innerPadding: const EdgeInsets.all(0),
+          backgroundColor: Colors.grey.shade900,
+          borderRadius: BorderRadius.zero,
+          icon: Icon(
+            Icons.delete,
+            color: text == '' ? Colors.grey : Colors.red,
+          ),
+          horizontal: true,
+          route: route,
+          gazeInteractive: text != '',
+        ),
+        onTap: text == ''
+            ? null
+            : () {
+                node.requestFocus();
+                controller.text = '';
+              },
+      ),
+    );
+  }
+}
+
+class _GazeKeyboardDeleteWordButton extends ConsumerWidget {
+  final TextEditingController controller;
+  final FocusNode node;
+  final double height;
+  final String route;
+  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
+
+  _GazeKeyboardDeleteWordButton({
+    required this.controller,
+    required this.node,
+    required this.height,
+    required this.route,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = ref.watch(controllerTextProvider);
+    return SizedBox(
+      height: height,
+      child: GazeButton(
+        properties: GazeButtonProperties(
+          text: 'Word',
+          textColor: text == '' ? Colors.grey : Colors.red,
+          innerPadding: const EdgeInsets.all(0),
+          backgroundColor: Colors.grey.shade900,
+          borderRadius: BorderRadius.zero,
+          icon: Icon(
+            Icons.delete_sweep,
+            color: text == '' ? Colors.grey : Colors.red,
+          ),
+          route: route,
+          gazeInteractive: text != '',
+        ),
+        onTap: text == ''
+            ? null
+            : () {
+                node.requestFocus();
+                if (controller.text[controller.text.length - 1] == ' ') {
+                  final words = controller.text.trim().split(' ');
+                  controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
+                } else {
+                  final words = controller.text.split(' ');
+                  controller.text = words.sublist(0, words.length - 1).join(' ');
+                }
+                controller.moveCursorMostRight();
+              },
+      ),
+    );
+  }
+}
+
+class TextEditingControllerNotifier extends StateNotifier<String> {
+  final TextEditingController controller;
+  TextEditingControllerNotifier({required this.controller}) : super(controller.text) {
+    controller.addListener(_listener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.removeListener(_listener);
+  }
+
+  void _listener() {
+    state = controller.text;
   }
 }

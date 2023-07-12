@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -80,7 +80,7 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
         onGazeEnter: () {
           _active = true;
         },
-        onGazeLeave: (_) {
+        onGazeLeave: () {
           _active = false;
         },
       ),
