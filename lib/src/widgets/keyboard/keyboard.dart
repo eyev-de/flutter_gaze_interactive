@@ -395,6 +395,7 @@ class _GazeKeyboardDeleteButton extends ConsumerWidget {
           horizontal: true,
           route: route,
           gazeInteractive: text != '',
+          reselectable: true,
         ),
         onTap: text == ''
             ? null
@@ -489,6 +490,7 @@ class _GazeKeyboardDeleteWordButton extends ConsumerWidget {
           ),
           route: route,
           gazeInteractive: text != '',
+          reselectable: true,
         ),
         onTap: text == ''
             ? null
