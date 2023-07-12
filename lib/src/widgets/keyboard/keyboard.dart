@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../core/extensions.dart';
 import '../button/button.dart';
 import '../pointer/pointer_view.dart';
 import 'keyboard_key.dart';
@@ -98,7 +97,7 @@ class GazeKeyboard {
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: _GazeKeyboardDeleteButton(
+                                    child: GazeKeyboardUtilityDeleteButton(
                                       controller: state.controller,
                                       node: node,
                                       height: height,
@@ -110,7 +109,7 @@ class GazeKeyboard {
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: _GazeKeyboardDeleteAllButton(
+                                    child: GazeKeyboardUtilityDeleteAllButton(
                                       controller: state.controller,
                                       node: node,
                                       height: height,
@@ -122,7 +121,7 @@ class GazeKeyboard {
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: _GazeKeyboardDeleteWordButton(
+                                    child: GazeKeyboardUtilityDeleteWordButton(
                                       controller: state.controller,
                                       node: node,
                                       height: height,
@@ -361,168 +360,5 @@ class GazeKeyboardWidget extends ConsumerWidget {
           ),
       ],
     );
-  }
-}
-
-class _GazeKeyboardDeleteButton extends ConsumerWidget {
-  final TextEditingController controller;
-  final FocusNode node;
-  final double height;
-  final String route;
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
-
-  _GazeKeyboardDeleteButton({
-    required this.controller,
-    required this.node,
-    required this.height,
-    required this.route,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = ref.watch(controllerTextProvider);
-    return SizedBox(
-      height: height,
-      child: GazeButton(
-        properties: GazeButtonProperties(
-          innerPadding: const EdgeInsets.all(0),
-          backgroundColor: Colors.grey.shade900,
-          borderRadius: BorderRadius.zero,
-          icon: Icon(
-            Icons.keyboard_backspace_rounded,
-            color: text == '' ? Colors.grey : Colors.white,
-          ),
-          horizontal: true,
-          route: route,
-          gazeInteractive: text != '',
-          reselectable: true,
-        ),
-        onTap: text == ''
-            ? null
-            : () {
-                node.requestFocus();
-                final selection = controller.selection;
-                if (controller.text.isNotEmpty) {
-                  var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-                  final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-                  startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
-                  if (startIndex.isNegative) startIndex = 0;
-                  controller.text = controller.text.replaceRange(startIndex, endIndex, '');
-                  controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
-                }
-              },
-      ),
-    );
-  }
-}
-
-class _GazeKeyboardDeleteAllButton extends ConsumerWidget {
-  final TextEditingController controller;
-  final FocusNode node;
-  final double height;
-  final String route;
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
-
-  _GazeKeyboardDeleteAllButton({
-    required this.controller,
-    required this.node,
-    required this.height,
-    required this.route,
-  });
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = ref.watch(controllerTextProvider);
-    return SizedBox(
-      height: height,
-      child: GazeButton(
-        properties: GazeButtonProperties(
-          innerPadding: const EdgeInsets.all(0),
-          backgroundColor: Colors.grey.shade900,
-          borderRadius: BorderRadius.zero,
-          icon: Icon(
-            Icons.delete,
-            color: text == '' ? Colors.grey : Colors.red,
-          ),
-          horizontal: true,
-          route: route,
-          gazeInteractive: text != '',
-        ),
-        onTap: text == ''
-            ? null
-            : () {
-                node.requestFocus();
-                controller.text = '';
-              },
-      ),
-    );
-  }
-}
-
-class _GazeKeyboardDeleteWordButton extends ConsumerWidget {
-  final TextEditingController controller;
-  final FocusNode node;
-  final double height;
-  final String route;
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
-
-  _GazeKeyboardDeleteWordButton({
-    required this.controller,
-    required this.node,
-    required this.height,
-    required this.route,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = ref.watch(controllerTextProvider);
-    return SizedBox(
-      height: height,
-      child: GazeButton(
-        properties: GazeButtonProperties(
-          text: 'Word',
-          textColor: text == '' ? Colors.grey : Colors.red,
-          innerPadding: const EdgeInsets.all(0),
-          backgroundColor: Colors.grey.shade900,
-          borderRadius: BorderRadius.zero,
-          icon: Icon(
-            Icons.delete_sweep,
-            color: text == '' ? Colors.grey : Colors.red,
-          ),
-          route: route,
-          gazeInteractive: text != '',
-          reselectable: true,
-        ),
-        onTap: text == ''
-            ? null
-            : () {
-                node.requestFocus();
-                if (controller.text[controller.text.length - 1] == ' ') {
-                  final words = controller.text.trim().split(' ');
-                  controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
-                } else {
-                  final words = controller.text.split(' ');
-                  controller.text = words.sublist(0, words.length - 1).join(' ');
-                }
-                controller.moveCursorMostRight();
-              },
-      ),
-    );
-  }
-}
-
-class TextEditingControllerNotifier extends StateNotifier<String> {
-  final TextEditingController controller;
-  TextEditingControllerNotifier({required this.controller}) : super(controller.text) {
-    controller.addListener(_listener);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_listener);
-  }
-
-  void _listener() {
-    state = controller.text;
   }
 }
