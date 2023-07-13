@@ -253,37 +253,30 @@ class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = ref.watch(controllerTextProvider);
-    return SizedBox(
-      height: height,
-      child: GazeButton(
-        properties: GazeButtonProperties(
-          innerPadding: const EdgeInsets.all(0),
-          backgroundColor: Colors.grey.shade900,
-          borderRadius: BorderRadius.zero,
-          icon: Icon(
-            Icons.keyboard_backspace_rounded,
-            color: text == '' ? Colors.grey : Colors.white,
-          ),
-          horizontal: true,
-          route: route,
-          gazeInteractive: text != '',
-          reselectable: true,
-        ),
-        onTap: text == ''
-            ? null
-            : () {
-                node.requestFocus();
-                final selection = controller.selection;
-                if (controller.text.isNotEmpty) {
-                  var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-                  final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-                  startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
-                  if (startIndex.isNegative) startIndex = 0;
-                  controller.text = controller.text.replaceRange(startIndex, endIndex, '');
-                  controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
-                }
-              },
-      ),
+    return GazeKeyboardUtilityBaseButton(
+      innerPadding: const EdgeInsets.all(0),
+      backgroundColor: Colors.grey.shade900,
+      borderRadius: BorderRadius.zero,
+      icon: Icons.keyboard_backspace_rounded,
+      iconColor: text == '' ? Colors.grey : Colors.white,
+      horizontal: true,
+      route: route,
+      gazeInteractive: text != '',
+      reselectable: true,
+      onTap: text == ''
+          ? null
+          : () {
+              node.requestFocus();
+              final selection = controller.selection;
+              if (controller.text.isNotEmpty) {
+                var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
+                final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
+                startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
+                if (startIndex.isNegative) startIndex = 0;
+                controller.text = controller.text.replaceRange(startIndex, endIndex, '');
+                controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
+              }
+            },
     );
   }
 }
@@ -305,28 +298,21 @@ class GazeKeyboardUtilityDeleteAllButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = ref.watch(controllerTextProvider);
-    return SizedBox(
-      height: height,
-      child: GazeButton(
-        properties: GazeButtonProperties(
-          innerPadding: const EdgeInsets.all(0),
-          backgroundColor: Colors.grey.shade900,
-          borderRadius: BorderRadius.zero,
-          icon: Icon(
-            Icons.delete,
-            color: text == '' ? Colors.grey : Colors.red,
-          ),
-          horizontal: true,
-          route: route,
-          gazeInteractive: text != '',
-        ),
-        onTap: text == ''
-            ? null
-            : () {
-                node.requestFocus();
-                controller.text = '';
-              },
-      ),
+    return GazeKeyboardUtilityBaseButton(
+      innerPadding: const EdgeInsets.all(0),
+      backgroundColor: Colors.grey.shade900,
+      borderRadius: BorderRadius.zero,
+      icon: Icons.delete,
+      iconColor: text == '' ? Colors.grey : Colors.red,
+      horizontal: true,
+      route: route,
+      gazeInteractive: text != '',
+      onTap: text == ''
+          ? null
+          : () {
+              node.requestFocus();
+              controller.text = '';
+            },
     );
   }
 }
@@ -349,37 +335,30 @@ class GazeKeyboardUtilityDeleteWordButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = ref.watch(controllerTextProvider);
-    return SizedBox(
-      height: height,
-      child: GazeButton(
-        properties: GazeButtonProperties(
-          text: 'Word',
-          textColor: text == '' ? Colors.grey : Colors.red,
-          innerPadding: const EdgeInsets.all(0),
-          backgroundColor: Colors.grey.shade900,
-          borderRadius: BorderRadius.zero,
-          icon: Icon(
-            Icons.delete_sweep,
-            color: text == '' ? Colors.grey : Colors.red,
-          ),
-          route: route,
-          gazeInteractive: text != '',
-          reselectable: true,
-        ),
-        onTap: text == ''
-            ? null
-            : () {
-                node.requestFocus();
-                if (controller.text[controller.text.length - 1] == ' ') {
-                  final words = controller.text.trim().split(' ');
-                  controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
-                } else {
-                  final words = controller.text.split(' ');
-                  controller.text = words.sublist(0, words.length - 1).join(' ');
-                }
-                controller.moveCursorMostRight();
-              },
-      ),
+    return GazeKeyboardUtilityBaseButton(
+      text: 'Word',
+      textStyle: TextStyle(color: text == '' ? Colors.grey : Colors.red),
+      innerPadding: const EdgeInsets.all(0),
+      backgroundColor: Colors.grey.shade900,
+      borderRadius: BorderRadius.zero,
+      icon: Icons.keyboard_backspace_rounded,
+      iconColor: text == '' ? Colors.grey : Colors.red,
+      route: route,
+      gazeInteractive: text != '',
+      reselectable: true,
+      onTap: text == ''
+          ? null
+          : () {
+              node.requestFocus();
+              if (controller.text[controller.text.length - 1] == ' ') {
+                final words = controller.text.trim().split(' ');
+                controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
+              } else {
+                final words = controller.text.split(' ');
+                controller.text = words.sublist(0, words.length - 1).join(' ');
+              }
+              controller.moveCursorMostRight();
+            },
     );
   }
 }
@@ -393,6 +372,10 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   final Function()? onTap;
   final Color? backgroundColor;
   final bool reselectable;
+  final EdgeInsets? innerPadding;
+  final BorderRadius? borderRadius;
+  final bool? horizontal;
+  final bool? gazeInteractive;
 
   const GazeKeyboardUtilityBaseButton({
     super.key,
@@ -404,6 +387,10 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
     this.onTap,
     this.backgroundColor,
     this.reselectable = false,
+    this.innerPadding,
+    this.borderRadius,
+    this.horizontal,
+    this.gazeInteractive,
   });
 
   @override
@@ -416,9 +403,9 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
           properties: GazeButtonProperties(
             text: text,
             textStyle: textStyle,
-            innerPadding: const EdgeInsets.all(0),
+            innerPadding: innerPadding ?? const EdgeInsets.all(0),
             backgroundColor: backgroundColor ?? Colors.grey.shade900,
-            borderRadius: BorderRadius.zero,
+            borderRadius: borderRadius ?? BorderRadius.zero,
             reselectable: reselectable,
             icon: Icon(
               icon,
@@ -426,7 +413,8 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
               size: size,
             ),
             route: route,
-            gazeInteractive: onTap != null,
+            horizontal: horizontal ?? false,
+            gazeInteractive: gazeInteractive ?? onTap != null,
             withSound: true,
           ),
           onTap: onTap,
