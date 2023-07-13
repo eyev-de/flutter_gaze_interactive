@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -97,7 +97,7 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
             });
           }
         },
-        onGazeLeave: (_) {
+        onGazeLeave: () {
           if (mounted) {
             widget.onGazeLeave?.call();
             setState(() {

@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 import 'package:freezed_annotation/freezed_annotation.dart';

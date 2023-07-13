@@ -1,6 +1,6 @@
 //  Gaze Widgets Lib
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../core/extensions.dart';
 import '../button/button.dart';
 import '../pointer/pointer_view.dart';
 import 'keyboard_key.dart';
@@ -98,94 +97,39 @@ class GazeKeyboard {
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
+                                    child: GazeKeyboardUtilityDeleteButton(
+                                      controller: state.controller,
+                                      node: node,
                                       height: height,
-                                      child: GazeButton(
-                                        properties: GazeButtonProperties(
-                                          innerPadding: const EdgeInsets.all(0),
-                                          backgroundColor: Colors.grey.shade900,
-                                          borderRadius: BorderRadius.zero,
-                                          icon: const Icon(
-                                            Icons.keyboard_backspace_rounded,
-                                            color: Colors.white,
-                                          ),
-                                          horizontal: true,
-                                          route: state.route,
-                                        ),
-                                        onTap: () {
-                                          node.requestFocus();
-                                          final selection = state.controller.selection;
-                                          if (state.controller.text.isNotEmpty) {
-                                            var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-                                            final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-                                            startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
-                                            if (startIndex.isNegative) startIndex = 0;
-                                            state.controller.text = state.controller.text.replaceRange(startIndex, endIndex, '');
-                                            state.controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
-                                          }
-                                        },
-                                      ),
+                                      route: state.route,
                                     ),
                                   ),
                                 ),
+                                // Delete Button
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
+                                    child: GazeKeyboardUtilityDeleteAllButton(
+                                      controller: state.controller,
+                                      node: node,
                                       height: height,
-                                      child: GazeButton(
-                                        properties: GazeButtonProperties(
-                                          innerPadding: const EdgeInsets.all(0),
-                                          backgroundColor: Colors.grey.shade900,
-                                          borderRadius: BorderRadius.zero,
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          horizontal: true,
-                                          route: state.route,
-                                        ),
-                                        onTap: () {
-                                          node.requestFocus();
-                                          state.controller.text = '';
-                                        },
-                                      ),
+                                      route: state.route,
                                     ),
                                   ),
                                 ),
+                                // Delete Word Button
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
+                                    child: GazeKeyboardUtilityDeleteWordButton(
+                                      controller: state.controller,
+                                      node: node,
                                       height: height,
-                                      child: GazeButton(
-                                        properties: GazeButtonProperties(
-                                          text: 'Word',
-                                          textColor: Colors.red,
-                                          innerPadding: const EdgeInsets.all(0),
-                                          backgroundColor: Colors.grey.shade900,
-                                          borderRadius: BorderRadius.zero,
-                                          icon: const Icon(
-                                            Icons.delete_sweep,
-                                            color: Colors.red,
-                                          ),
-                                          route: state.route,
-                                        ),
-                                        onTap: () {
-                                          node.requestFocus();
-                                          if (state.controller.text[state.controller.text.length - 1] == ' ') {
-                                            final words = state.controller.text.trim().split(' ');
-                                            state.controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
-                                          } else {
-                                            final words = state.controller.text.split(' ');
-                                            state.controller.text = words.sublist(0, words.length - 1).join(' ');
-                                          }
-                                          state.controller.moveCursorMostRight();
-                                        },
-                                      ),
+                                      route: state.route,
                                     ),
                                   ),
                                 ),
+                                // Submit Button
                                 Flexible(
                                   child: Padding(
                                     padding: const EdgeInsets.all(1),
@@ -226,7 +170,7 @@ class GazeKeyboard {
                             const Spacer(),
                             Flexible(
                               flex: 8,
-                              child: GazeKeyboardUtilityButtons(state: state, node: node),
+                              child: GazeKeyboardUtilityButtons(state: state, node: node, type: state.type),
                             ),
                             const Spacer(),
                           ],

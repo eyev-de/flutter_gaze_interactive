@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by Konstantin Wachendorff.
+//  Created by the eyeV App Dev Team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -30,7 +30,7 @@ export 'src/widgets/keyboard/keyboard_utility_buttons.dart'
         GazeKeyboardUtilityMoveCursorRightButton,
         GazeKeyboardUtilityPasteButton,
         GazeKeyboardUtilitySelectButton;
-export 'src/widgets/keyboard/keyboards.dart' show Language, Keyboards;
+export 'src/widgets/keyboard/keyboards.dart' show Language, Keyboards, KeyboardType;
 export 'src/widgets/pointer/pointer_state.model.dart' show GazePointerState;
 export 'src/widgets/pointer/pointer_type.dart' show GazePointerType;
 export 'src/widgets/pointer/pointer_view.dart' show GazePointerView;
