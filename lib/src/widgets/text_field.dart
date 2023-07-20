@@ -12,6 +12,7 @@ class GazeTextFieldProperties {
   final int? maxLength;
   final bool enabled;
   final EdgeInsetsGeometry padding;
+  final Decoration? decoration;
   final Radius cursorRadius;
   final TextStyle? style;
   final TextInputType? keyboardType;
@@ -20,7 +21,7 @@ class GazeTextFieldProperties {
   final bool autocorrect;
   final bool enableSuggestions;
   final bool obscureText;
-  final InputDecoration? decoration;
+  final InputDecoration? inputDecoration;
   final void Function(String?)? onSaved;
   final void Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator;
@@ -30,6 +31,10 @@ class GazeTextFieldProperties {
     this.maxLength,
     this.enabled = true,
     this.padding = const EdgeInsets.fromLTRB(20, 30, 20, 30),
+    this.decoration = const BoxDecoration(
+      color: Color(0xFF212121),
+      borderRadius: BorderRadius.all(Radius.circular(20)),
+    ),
     this.cursorRadius = const Radius.circular(2),
     this.style,
     this.keyboardType = TextInputType.name,
@@ -37,7 +42,7 @@ class GazeTextFieldProperties {
     this.textAlign = TextAlign.start,
     this.autocorrect = true,
     this.enableSuggestions = true,
-    this.decoration,
+    this.inputDecoration,
     this.onSaved,
     this.validator,
     this.textInputAction,
@@ -82,10 +87,7 @@ class GazeTextField extends StatelessWidget {
         child: Container(
           // margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           padding: properties.padding,
-          decoration: BoxDecoration(
-            color: properties.backgroundColor,
-            borderRadius: BorderRadius.circular(20),
-          ),
+          decoration: properties.decoration,
           child: TextFormField(
             focusNode: focusNode,
             controller: controller,
@@ -100,7 +102,7 @@ class GazeTextField extends StatelessWidget {
             textAlign: properties.textAlign,
             autocorrect: properties.autocorrect,
             enableSuggestions: properties.enableSuggestions,
-            decoration: properties.decoration,
+            decoration: properties.inputDecoration,
             onTap: onFocus?.call,
             onSaved: properties.onSaved,
             onFieldSubmitted: properties.onFieldSubmitted,
