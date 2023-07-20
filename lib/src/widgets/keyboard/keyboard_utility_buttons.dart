@@ -28,23 +28,37 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
       case KeyboardType.editor:
         return Row(
           children: [
-            GazeKeyboardUtilitySelectButton(state: state, node: node),
-            GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
-            GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
-            GazeKeyboardUtilityCopyButton(state: state, node: node),
-            GazeKeyboardUtilityPasteButton(state: state, node: node),
-            GazeKeyboardUtilityCutButton(state: state, node: node),
-            GazeKeyboardUtilityDeleteButton(
-              controller: state.controller,
-              node: node,
-              route: state.route,
-              height: 80,
+            Flexible(
+              child: GazeKeyboardUtilitySelectButton(state: state, node: node),
             ),
-            GazeKeyboardUtilityDeleteWordButton(
-              controller: state.controller,
-              node: node,
-              route: state.route,
-              height: 80,
+            Flexible(
+              child: GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityCopyButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityPasteButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityCutButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityDeleteButton(
+                controller: state.controller,
+                node: node,
+                route: state.route,
+              ),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityDeleteWordButton(
+                controller: state.controller,
+                node: node,
+                route: state.route,
+              ),
             ),
           ],
         );
@@ -52,12 +66,24 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
       case KeyboardType.speak:
         return Row(
           children: [
-            GazeKeyboardUtilitySelectButton(state: state, node: node),
-            GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
-            GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
-            GazeKeyboardUtilityCopyButton(state: state, node: node),
-            GazeKeyboardUtilityPasteButton(state: state, node: node),
-            GazeKeyboardUtilityCutButton(state: state, node: node),
+            Flexible(
+              child: GazeKeyboardUtilitySelectButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityCopyButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityPasteButton(state: state, node: node),
+            ),
+            Flexible(
+              child: GazeKeyboardUtilityCutButton(state: state, node: node),
+            ),
           ],
         );
     }
@@ -238,7 +264,6 @@ class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
 class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
   final TextEditingController controller;
   final FocusNode node;
-  final double height;
   final String route;
   late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
 
@@ -246,7 +271,6 @@ class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
     super.key,
     required this.controller,
     required this.node,
-    required this.height,
     required this.route,
   });
 
@@ -273,8 +297,9 @@ class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
                 final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
                 startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
                 if (startIndex.isNegative) startIndex = 0;
-                controller.text = controller.text.replaceRange(startIndex, endIndex, '');
-                controller.selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
+                controller
+                  ..text = controller.text.replaceRange(startIndex, endIndex, '')
+                  ..selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
               }
             },
     );
@@ -284,7 +309,6 @@ class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
 class GazeKeyboardUtilityDeleteAllButton extends ConsumerWidget {
   final TextEditingController controller;
   final FocusNode node;
-  final double height;
   final String route;
   late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
 
@@ -292,7 +316,6 @@ class GazeKeyboardUtilityDeleteAllButton extends ConsumerWidget {
     super.key,
     required this.controller,
     required this.node,
-    required this.height,
     required this.route,
   });
   @override
@@ -320,7 +343,6 @@ class GazeKeyboardUtilityDeleteAllButton extends ConsumerWidget {
 class GazeKeyboardUtilityDeleteWordButton extends ConsumerWidget {
   final TextEditingController controller;
   final FocusNode node;
-  final double height;
   final String route;
   late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
 
@@ -328,7 +350,6 @@ class GazeKeyboardUtilityDeleteWordButton extends ConsumerWidget {
     super.key,
     required this.controller,
     required this.node,
-    required this.height,
     required this.route,
   });
 
@@ -396,29 +417,27 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double size = 20;
-    return Flexible(
-      child: Padding(
-        padding: const EdgeInsets.all(1),
-        child: GazeButton(
-          properties: GazeButtonProperties(
-            text: text,
-            textStyle: textStyle,
-            innerPadding: innerPadding ?? const EdgeInsets.all(0),
-            backgroundColor: backgroundColor ?? Colors.grey.shade900,
-            borderRadius: borderRadius ?? BorderRadius.zero,
-            reselectable: reselectable,
-            icon: Icon(
-              icon,
-              color: iconColor ?? Colors.white,
-              size: size,
-            ),
-            route: route,
-            horizontal: horizontal ?? false,
-            gazeInteractive: gazeInteractive ?? onTap != null,
-            withSound: true,
+    return Padding(
+      padding: const EdgeInsets.all(1),
+      child: GazeButton(
+        properties: GazeButtonProperties(
+          text: text,
+          textStyle: textStyle,
+          innerPadding: innerPadding ?? const EdgeInsets.all(0),
+          backgroundColor: backgroundColor ?? Colors.grey.shade900,
+          borderRadius: borderRadius ?? BorderRadius.zero,
+          reselectable: reselectable,
+          icon: Icon(
+            icon,
+            color: iconColor ?? Colors.white,
+            size: size,
           ),
-          onTap: onTap,
+          route: route,
+          horizontal: horizontal ?? false,
+          gazeInteractive: gazeInteractive ?? onTap != null,
+          withSound: true,
         ),
+        onTap: onTap,
       ),
     );
   }
