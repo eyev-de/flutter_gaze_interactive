@@ -114,6 +114,18 @@ class _AppState extends State<App> {
                     },
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GazeSwitchButton(
+                    properties: GazeSwitchButtonProperties(
+                      route: '/',
+                      state: GazeSwitchButtonState(toggled: false),
+                    ),
+                    onToggled: (toggled) async {
+                      return true;
+                    },
+                  ),
+                ),
               ],
             ),
           ),
