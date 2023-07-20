@@ -52,32 +52,40 @@ class _AppState extends State<App> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 200,
-                  height: 120,
-                  child: GazeTextField(
-                    controller: _controller,
-                    onChanged: (value) {},
-                    properties: GazeTextFieldProperties(
-                      maxLength: 30,
-                      decoration: const InputDecoration(
-                        hintText: 'Search',
-                        hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: SizedBox(
+                    width: 200,
+                    height: 120,
+                    child: GazeTextField(
+                      controller: _controller,
+                      onChanged: (value) {},
+                      properties: GazeTextFieldProperties(
+                        maxLength: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.blueGrey.shade700,
+                          border: Border.all(color: Colors.pink),
+                        ),
+                        inputDecoration: const InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                        padding: const EdgeInsets.all(20),
+                        style: const TextStyle(fontSize: 20, color: Colors.white),
                       ),
-                      padding: const EdgeInsets.all(20),
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      onFocus: () {
+                        GazeKeyboard().show(
+                          context,
+                          GazeKeyboardState(node: _focusNode, placeholder: 'Search', controller: _controller, route: '/dialog'),
+                          () => GazeInteractive().currentRoute = '/dialog',
+                          (ctx) => Navigator.of(ctx).pop(),
+                          (ctx) => GazeInteractive().currentRoute = '/',
+                        );
+                      },
+                      focusNode: _focusNode,
+                      route: '/',
                     ),
-                    onFocus: () {
-                      GazeKeyboard().show(
-                        context,
-                        GazeKeyboardState(node: _focusNode, placeholder: 'Search', controller: _controller, route: '/dialog'),
-                        () => GazeInteractive().currentRoute = '/dialog',
-                        (ctx) => Navigator.of(ctx).pop(),
-                        (ctx) => GazeInteractive().currentRoute = '/',
-                      );
-                    },
-                    focusNode: _focusNode,
-                    route: '/',
                   ),
                 ),
                 Text(_dateTime.toIso8601String()),
@@ -111,6 +119,18 @@ class _AppState extends State<App> {
                           );
                         },
                       );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GazeSwitchButton(
+                    properties: GazeSwitchButtonProperties(
+                      route: '/',
+                      state: GazeSwitchButtonState(toggled: false),
+                    ),
+                    onToggled: (toggled) async {
+                      return true;
                     },
                   ),
                 ),

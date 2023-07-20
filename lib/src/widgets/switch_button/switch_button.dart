@@ -67,7 +67,6 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
         curve: Curves.elasticInOut,
       ),
     );
-    // widget.properties.state.addListener(_toggle);
     if (widget.properties.state.toggled) {
       _controller.forward();
     }
@@ -76,13 +75,15 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   @override
   void dispose() {
     if (mounted) _controller.dispose();
-    // widget.properties.state.removeListener(_toggle);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final _state = ref.watch(stateProvider);
+    ref.listen(stateProvider, (prev, next) {
+      _toggle(next.toggled);
+    });
     return GazeButton(
       properties: GazeButtonProperties(
         innerPadding: const EdgeInsets.all(0),
@@ -115,13 +116,11 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
       ),
       onTap: widget.properties.enabled
           ? () async {
-              final toggled = widget.properties.state.toggled;
-              // widget.properties.state.toggled = !toggled;
-              ref.read(stateProvider.notifier).state = widget.properties.state.copyWith(toggled: !toggled);
+              final state = ref.read(stateProvider);
+              ref.read(stateProvider.notifier).state = state.copyWith(toggled: !state.toggled);
               if (widget.onToggled != null) {
-                if (!await widget.onToggled!(widget.properties.state.toggled)) {
-                  // widget.properties.state.toggled = toggled;
-                  ref.read(stateProvider.notifier).state = widget.properties.state.copyWith(toggled: toggled);
+                if (!await widget.onToggled!(state.toggled)) {
+                  ref.read(stateProvider.notifier).state = state.copyWith(toggled: state.toggled);
                 }
               }
             }
@@ -129,8 +128,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
     );
   }
 
-  void _toggle() {
-    final toggled = widget.properties.state.toggled;
+  void _toggle(bool toggled) {
     if (!toggled) {
       _controller.reverse();
     } else {

@@ -95,36 +95,33 @@ class GazeKeyboard {
                                   ),
                                 ),
                                 Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(1),
+                                  child: SizedBox(
+                                    height: height + 2, // Compensating the top and bottom padding
                                     child: GazeKeyboardUtilityDeleteButton(
                                       controller: state.controller,
                                       node: node,
-                                      height: height,
                                       route: state.route,
                                     ),
                                   ),
                                 ),
                                 // Delete Button
                                 Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(1),
+                                  child: SizedBox(
+                                    height: height + 2, // Compensating the top and bottom padding
                                     child: GazeKeyboardUtilityDeleteAllButton(
                                       controller: state.controller,
                                       node: node,
-                                      height: height,
                                       route: state.route,
                                     ),
                                   ),
                                 ),
                                 // Delete Word Button
                                 Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(1),
+                                  child: SizedBox(
+                                    height: height + 2, // Compensating the top and bottom padding
                                     child: GazeKeyboardUtilityDeleteWordButton(
                                       controller: state.controller,
                                       node: node,
-                                      height: height,
                                       route: state.route,
                                     ),
                                   ),
