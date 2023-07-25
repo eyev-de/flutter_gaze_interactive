@@ -27,6 +27,7 @@ class GazeTextFieldProperties {
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
   final Color backgroundColor;
+  final bool expands;
   GazeTextFieldProperties({
     this.maxLength,
     this.enabled = true,
@@ -49,6 +50,7 @@ class GazeTextFieldProperties {
     this.onFieldSubmitted,
     this.obscureText = false,
     this.backgroundColor = const Color(0xFF212121), // Colors.grey.shade900
+    this.expands = false,
   });
 }
 
@@ -97,7 +99,7 @@ class GazeTextField extends StatelessWidget {
             cursorRadius: properties.cursorRadius,
             style: properties.style,
             keyboardType: properties.keyboardType,
-            expands: !properties.obscureText,
+            expands: properties.expands,
             textAlignVertical: properties.textAlignVertical,
             textAlign: properties.textAlign,
             autocorrect: properties.autocorrect,
