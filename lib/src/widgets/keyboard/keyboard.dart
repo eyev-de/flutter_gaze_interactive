@@ -38,7 +38,10 @@ class GazeKeyboard {
     if (isShown) throw Exception('Keyboard can only be shown once. Close the open one before calling this again.');
     _isShown = !_isShown;
     if (before != null) before();
-    state.withProvider = false;
+    state
+      ..withProvider = false
+      ..onTabClose = onBack;
+
     return showGeneralDialog(
       context: context,
       barrierColor: Colors.transparent,
@@ -180,14 +183,12 @@ class GazeKeyboard {
                         padding: const EdgeInsets.only(top: 20),
                         child: Row(
                           children: [
-                            _langButton(context, state),
                             Flexible(
                               flex: 8,
                               child: GazeKeyboardWidget(
                                 state: state,
                               ),
                             ),
-                            _closeButton(context, state, onBack),
                           ],
                         ),
                       ),
@@ -204,73 +205,6 @@ class GazeKeyboard {
       _isShown = !_isShown;
       onDismissed?.call(context);
     });
-  }
-
-  static Widget _langButton(
-    BuildContext context,
-    GazeKeyboardState state,
-  ) {
-    return Flexible(
-      child: Column(
-        children: [
-          const Spacer(
-            flex: 3,
-          ),
-          Flexible(
-            child: Container(
-              color: Colors.grey.shade900,
-              child: Padding(
-                padding: const EdgeInsets.all(1),
-                child: Consumer(
-                  builder: (context, ref, child) => GazeButton(
-                    properties: GazeButtonProperties(
-                      borderRadius: BorderRadius.zero,
-                      // innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-                      backgroundColor: ref.read(state.languageStateProvider) == Language.german ? Theme.of(context).primaryColor : Colors.transparent,
-                      text: 'GER',
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                      route: state.route,
-                    ),
-                    onTap: () {
-                      ref.read(state.languageStateProvider.notifier).state = Language.german;
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Flexible(
-            child: Container(
-              color: Colors.grey.shade900,
-              child: Padding(
-                padding: const EdgeInsets.all(1),
-                child: Consumer(
-                  builder: (context, ref, child) => GazeButton(
-                    properties: GazeButtonProperties(
-                      borderRadius: BorderRadius.zero,
-                      // innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-                      backgroundColor: ref.read(state.languageStateProvider) == Language.english ? Theme.of(context).primaryColor : Colors.transparent,
-                      text: 'ENG',
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                      route: state.route,
-                    ),
-                    onTap: () {
-                      ref.read(state.languageStateProvider.notifier).state = Language.english;
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   static Widget _closeButton(
@@ -313,6 +247,7 @@ class GazeKeyboard {
 
 class GazeKeyboardWidget extends ConsumerWidget {
   final GazeKeyboardState state;
+
   GazeKeyboardWidget({
     Key? key,
     required this.state,
@@ -330,7 +265,7 @@ class GazeKeyboardWidget extends ConsumerWidget {
   }
 
   Widget _keyboard(GazeKeyboardState state, WidgetRef ref) {
-    final lang = ref.read(state.languageStateProvider);
+    final lang = state.language;
     final keys = Keyboards.get(lang, state);
     if (!state.withNumbers) keys.removeAt(0);
     if (!state.withAlt) {
