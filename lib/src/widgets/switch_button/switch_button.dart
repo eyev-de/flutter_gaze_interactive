@@ -81,9 +81,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   @override
   Widget build(BuildContext context) {
     final _state = ref.watch(stateProvider);
-    print(_state.toggled);
     ref.listen(stateProvider, (prev, next) {
-      print(next.toggled);
       _toggle(next.toggled);
     });
     return GazeButton(
