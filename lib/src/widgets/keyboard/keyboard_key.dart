@@ -49,7 +49,7 @@ class GazeKey extends ConsumerWidget {
   final double widthRatio;
   final double heightRatio;
 
-  void Function(BuildContext)? onBack;
+  final void Function(BuildContext)? onBack;
 
   GazeKey({
     Key? key,

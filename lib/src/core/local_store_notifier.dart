@@ -22,9 +22,9 @@ class LocalStoreNotifier<T> extends StateNotifier<T> {
     );
   }
 
-  SharedPreferences sharedPreferences;
-  String sharedPreferencesKey;
-  T defaultValue;
+  final SharedPreferences sharedPreferences;
+  final String sharedPreferencesKey;
+  final T defaultValue;
 
   Future<void> update(T value) async {
     if (value is String) {
