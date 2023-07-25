@@ -17,8 +17,9 @@ class GazeKeyboardState {
   final GazeKeyboardController keyboardController = GazeKeyboardController(WidgetsBinding.instance);
   final String route;
   final KeyboardType type;
+  Language language;
+  void Function(BuildContext)? onTabClose;
 
-  final languageStateProvider = StateProvider((ref) => Language.german);
   final shiftStateProvider = StateProvider((ref) => false);
   final capsLockStateProvider = StateProvider((ref) => false);
   final altStateProvider = StateProvider((ref) => false);
@@ -41,5 +42,7 @@ class GazeKeyboardState {
     this.withAlt = true,
     this.withNumbers = true,
     this.type = KeyboardType.extended,
+    this.language = Language.german,
+    this.onTabClose,
   });
 }

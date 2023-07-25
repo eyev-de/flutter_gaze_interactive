@@ -119,7 +119,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
               final state = ref.read(stateProvider);
               ref.read(stateProvider.notifier).state = state.copyWith(toggled: !state.toggled);
               if (widget.onToggled != null) {
-                if (!await widget.onToggled!(state.toggled)) {
+                if (!await widget.onToggled!(!state.toggled)) {
                   ref.read(stateProvider.notifier).state = state.copyWith(toggled: state.toggled);
                 }
               }
@@ -129,7 +129,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   }
 
   void _toggle(bool toggled) {
-    if (!toggled) {
+    if (toggled != widget.properties.state.toggled) {
       _controller.reverse();
     } else {
       _controller.forward();

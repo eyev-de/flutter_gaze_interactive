@@ -22,6 +22,7 @@ enum GazeKeyType {
   enter,
   del,
   tab,
+  close,
 }
 
 class GazeKey extends ConsumerWidget {
@@ -48,6 +49,8 @@ class GazeKey extends ConsumerWidget {
   final double widthRatio;
   final double heightRatio;
 
+  void Function(BuildContext)? onBack;
+
   GazeKey({
     Key? key,
     required this.content,
@@ -64,6 +67,7 @@ class GazeKey extends ConsumerWidget {
     this.listenToCapsLock = false,
     this.listenToAlt = false,
     this.listenToCtrl = false,
+    this.onBack,
   }) : super(key: key);
 
   static Widget _buildContent(BuildContext context, Object content, bool? shift) {
@@ -167,21 +171,21 @@ class GazeKey extends ConsumerWidget {
           ),
           onTap: () {
             if (content is List) {
-              onTap.call((_switchTo ? (content as List)[0] : (content as List)[1]) as String?, type, ref);
+              onTap.call((_switchTo ? (content as List)[0] : (content as List)[1]) as String?, type, ref, context);
             } else if (content is String) {
               if (_switchTo) {
                 if ((content as String).length == 1 && validCharacters.hasMatch(content as String)) {
-                  onTap.call((content as String).toUpperCase(), type, ref);
+                  onTap.call((content as String).toUpperCase(), type, ref, context);
                 } else {
-                  onTap.call(content as String, type, ref);
+                  onTap.call(content as String, type, ref, context);
                 }
               } else {
-                onTap.call(content as String, type, ref);
+                onTap.call(content as String, type, ref, context);
               }
             } else if (content == Icons.space_bar) {
-              onTap.call(' ', type, ref);
+              onTap.call(' ', type, ref, context);
             } else {
-              onTap.call(null, type, ref);
+              onTap.call(null, type, ref, context);
             }
           },
         ),
@@ -189,7 +193,7 @@ class GazeKey extends ConsumerWidget {
     );
   }
 
-  void onTap(String? str, GazeKeyType type, WidgetRef ref) {
+  void onTap(String? str, GazeKeyType type, WidgetRef ref, BuildContext context) {
     final shift = ref.read(keyboardState.shiftStateProvider);
     final alt = ref.read(keyboardState.altStateProvider);
     final ctrl = ref.read(keyboardState.ctrlStateProvider);
@@ -238,6 +242,9 @@ class GazeKey extends ConsumerWidget {
         break;
       case GazeKeyType.alt:
         ref.read(keyboardState.altStateProvider.notifier).state = !alt;
+        break;
+      case GazeKeyType.close:
+        keyboardState.onTabClose?.call(context);
         break;
       case GazeKeyType.win:
         break;
