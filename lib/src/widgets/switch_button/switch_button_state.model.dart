@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by the eyeV App Dev Team.
+//  Created by the eyeV app dev team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 import 'package:freezed_annotation/freezed_annotation.dart';
