@@ -4,6 +4,8 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,11 +20,15 @@ class GazeKeyboardState {
   final String route;
   final KeyboardType type;
   Language language;
+  KeyboardPlatformType keyboardPlatformType;
   void Function(BuildContext)? onTabClose;
 
   final shiftStateProvider = StateProvider((ref) => false);
   final capsLockStateProvider = StateProvider((ref) => false);
   final altStateProvider = StateProvider((ref) => false);
+  // IOS specific button, letters or signs (numbers and special characters)
+  final signsStateProvider = StateProvider((ref) => false);
+
   final ctrlStateProvider = StateProvider((ref) => false);
   final selectingStateProvider = StateProvider((ref) => false);
 
@@ -44,5 +50,8 @@ class GazeKeyboardState {
     this.type = KeyboardType.extended,
     this.language = Language.german,
     this.onTabClose,
-  });
+    KeyboardPlatformType? selectedKeyboardPlatformType,
+  }) : keyboardPlatformType = selectedKeyboardPlatformType ?? getPlatformFromSystem();
+
+  static KeyboardPlatformType getPlatformFromSystem() => Platform.isIOS ? KeyboardPlatformType.iOS : KeyboardPlatformType.desktop;
 }

@@ -72,129 +72,108 @@ class GazeKeyboard {
           color: Colors.black,
           child: Stack(
             children: [
-              Positioned.fill(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Spacer(),
+                  // Utility Buttons
+                  SizedBox(
+                    height: height,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const Spacer(),
+                        Flexible(
+                          flex: 8,
+                          child: GazeKeyboardUtilityButtons(state: state, node: node, type: state.type),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+                  // Text Widget & Utility Buttons
+                  SizedBox(
+                    height: height,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const Spacer(),
+                        Flexible(
+                          flex: 8,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Flexible(
+                                flex: 8,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1),
+                                  child: GazeKeyboardTextWidget(
+                                    state: state,
+                                    node: node,
+                                    minHeight: height,
+                                  ),
+                                ),
+                              ),
+                              // Delete Button
+                              Flexible(
+                                child: SizedBox(
+                                  height: height + 2, // Compensating the top and bottom padding
+                                  child: GazeKeyboardUtilityDeleteAllButton(
+                                    controller: state.controller,
+                                    node: node,
+                                    route: state.route,
+                                  ),
+                                ),
+                              ),
+                              // Submit Button
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1),
+                                  child: SizedBox(
+                                    height: height,
+                                    child: GazeButton(
+                                      properties: GazeButtonProperties(
+                                        innerPadding: const EdgeInsets.all(0),
+                                        backgroundColor: Colors.grey.shade900,
+                                        borderRadius: BorderRadius.zero,
+                                        icon: const Icon(
+                                          Icons.check,
+                                          color: Colors.teal,
+                                        ),
+                                        horizontal: true,
+                                        route: state.route,
+                                      ),
+                                      onTap: () {
+                                        onBack?.call(context);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Spacer(),
                           Flexible(
                             flex: 8,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  flex: 8,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(1),
-                                    child: GazeKeyboardTextWidget(
-                                      state: state,
-                                      node: node,
-                                      minHeight: height,
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  child: SizedBox(
-                                    height: height + 2, // Compensating the top and bottom padding
-                                    child: GazeKeyboardUtilityDeleteButton(
-                                      controller: state.controller,
-                                      node: node,
-                                      route: state.route,
-                                    ),
-                                  ),
-                                ),
-                                // Delete Button
-                                Flexible(
-                                  child: SizedBox(
-                                    height: height + 2, // Compensating the top and bottom padding
-                                    child: GazeKeyboardUtilityDeleteAllButton(
-                                      controller: state.controller,
-                                      node: node,
-                                      route: state.route,
-                                    ),
-                                  ),
-                                ),
-                                // Delete Word Button
-                                Flexible(
-                                  child: SizedBox(
-                                    height: height + 2, // Compensating the top and bottom padding
-                                    child: GazeKeyboardUtilityDeleteWordButton(
-                                      controller: state.controller,
-                                      node: node,
-                                      route: state.route,
-                                    ),
-                                  ),
-                                ),
-                                // Submit Button
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
-                                      height: height,
-                                      child: GazeButton(
-                                        properties: GazeButtonProperties(
-                                          innerPadding: const EdgeInsets.all(0),
-                                          backgroundColor: Colors.grey.shade900,
-                                          borderRadius: BorderRadius.zero,
-                                          icon: const Icon(
-                                            Icons.check,
-                                            color: Colors.teal,
-                                          ),
-                                          horizontal: true,
-                                          route: state.route,
-                                        ),
-                                        onTap: () {
-                                          onBack?.call(context);
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            child: GazeKeyboardWidget(
+                              state: state,
                             ),
                           ),
-                          const Spacer(),
                         ],
                       ),
                     ),
-                    Flexible(
-                      child: SizedBox(
-                        height: height,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const Spacer(),
-                            Flexible(
-                              flex: 8,
-                              child: GazeKeyboardUtilityButtons(state: state, node: node, type: state.type),
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 8,
-                              child: GazeKeyboardWidget(
-                                state: state,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               GazePointerView(),
             ],
