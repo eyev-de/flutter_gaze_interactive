@@ -30,7 +30,7 @@ export 'src/widgets/keyboard/keyboard_utility_buttons.dart'
         GazeKeyboardUtilityMoveCursorRightButton,
         GazeKeyboardUtilityPasteButton,
         GazeKeyboardUtilitySelectButton;
-export 'src/widgets/keyboard/keyboards.dart' show Language, Keyboards, KeyboardType;
+export 'src/widgets/keyboard/keyboards.dart' show Language, Keyboards, KeyboardType, KeyboardPlatformType;
 export 'src/widgets/pointer/pointer_state.model.dart' show GazePointerState;
 export 'src/widgets/pointer/pointer_type.dart' show GazePointerType;
 export 'src/widgets/pointer/pointer_view.dart' show GazePointerView;

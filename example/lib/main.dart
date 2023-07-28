@@ -77,7 +77,13 @@ class _AppState extends State<App> {
                       onFocus: () {
                         GazeKeyboard().show(
                           context,
-                          GazeKeyboardState(node: _focusNode, placeholder: 'Search', controller: _controller, route: '/dialog'),
+                          GazeKeyboardState(
+                            node: _focusNode,
+                            placeholder: 'Search',
+                            controller: _controller,
+                            route: '/dialog',
+                            type: KeyboardType.extended,
+                          ),
                           () => GazeInteractive().currentRoute = '/dialog',
                           (ctx) => Navigator.of(ctx).pop(),
                           (ctx) => GazeInteractive().currentRoute = '/',
