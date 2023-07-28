@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by the eyeV App Dev Team.
+//  Created by the eyeV app dev team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -22,9 +22,9 @@ class LocalStoreNotifier<T> extends StateNotifier<T> {
     );
   }
 
-  SharedPreferences sharedPreferences;
-  String sharedPreferencesKey;
-  T defaultValue;
+  final SharedPreferences sharedPreferences;
+  final String sharedPreferencesKey;
+  final T defaultValue;
 
   Future<void> update(T value) async {
     if (value is String) {

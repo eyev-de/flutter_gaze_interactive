@@ -1,6 +1,6 @@
 //  Gaze Interactive
 //
-//  Created by the eyeV App Dev Team.
+//  Created by the eyeV app dev team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -14,7 +14,7 @@ final clipboardProvider = StateNotifierProvider((ref) => _ClipboardNotifier());
 class _ClipboardNotifier extends StateNotifier<String> {
   late Timer clipboardTriggerTime;
   _ClipboardNotifier() : super('') {
-    clipboardTriggerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
+    clipboardTriggerTime = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
       final content = await Clipboard.getData('text/plain');
       if (content != null && content.text != null && state != content.text) state = content.text!;
     });

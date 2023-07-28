@@ -1,6 +1,6 @@
 //  Gaze Widgets Lib
 //
-//  Created by the eyeV App Dev Team.
+//  Created by the eyeV app dev team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
@@ -24,69 +24,42 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (type!) {
-      case KeyboardType.editor:
-        return Row(
-          children: [
-            Flexible(
-              child: GazeKeyboardUtilitySelectButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityCopyButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityPasteButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityCutButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityDeleteButton(
-                controller: state.controller,
-                node: node,
-                route: state.route,
-              ),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityDeleteWordButton(
-                controller: state.controller,
-                node: node,
-                route: state.route,
-              ),
-            ),
-          ],
-        );
-      case KeyboardType.extended:
-      case KeyboardType.speak:
-        return Row(
-          children: [
-            Flexible(
-              child: GazeKeyboardUtilitySelectButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityCopyButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityPasteButton(state: state, node: node),
-            ),
-            Flexible(
-              child: GazeKeyboardUtilityCutButton(state: state, node: node),
-            ),
-          ],
-        );
-    }
+    return Row(
+      children: [
+        Flexible(
+          child: GazeKeyboardUtilitySelectButton(state: state, node: node),
+        ),
+        Flexible(
+          child: GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
+        ),
+        Flexible(
+          child: GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
+        ),
+        Flexible(
+          child: GazeKeyboardUtilityCopyButton(state: state, node: node),
+        ),
+        Flexible(
+          child: GazeKeyboardUtilityPasteButton(state: state, node: node),
+        ),
+        Flexible(
+          child: GazeKeyboardUtilityCutButton(state: state, node: node),
+        ),
+        Flexible(
+          child: GazeKeyboardUtilityDeleteButton(
+            controller: state.controller,
+            node: node,
+            route: state.route,
+          ),
+        ),
+        Flexible(
+          child: GazeKeyboardUtilityDeleteWordButton(
+            controller: state.controller,
+            node: node,
+            route: state.route,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -282,7 +255,7 @@ class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
       backgroundColor: Colors.grey.shade900,
       borderRadius: BorderRadius.zero,
       icon: Icons.keyboard_backspace_rounded,
-      iconColor: text == '' ? Colors.grey : Colors.white,
+      iconColor: text == '' ? Colors.grey : Colors.red,
       horizontal: true,
       route: route,
       gazeInteractive: text != '',
