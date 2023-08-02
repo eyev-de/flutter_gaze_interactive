@@ -39,28 +39,29 @@ class Keyboards {
         switch (lang) {
           case Language.german:
             if (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS) {
-              return _germanIOS(keyboardState);
+              return germanIOS(keyboardState);
             } else {
-              return _germanDesktop(keyboardState);
+              return germanDesktop(keyboardState);
             }
           case Language.english:
             if (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS) {
-              return _englishIOS(keyboardState);
+              return englishIOS(keyboardState);
             } else {
-              return _englishDesktop(keyboardState);
+              return englishDesktop(keyboardState);
             }
         }
       case KeyboardType.speak:
         switch (lang) {
           case Language.german:
-            return _germanSpeak(keyboardState);
+            return germanSpeak(keyboardState);
           case Language.english:
-            return _englishSpeak(keyboardState);
+            return englishSpeak(keyboardState);
         }
     }
   }
 
-  static List<List<Widget>> _germanDesktop(GazeKeyboardState keyboardState) {
+  @visibleForTesting
+  static List<List<Widget>> germanDesktop(GazeKeyboardState keyboardState) {
     return [
       [
         GazeKey(content: const ['°', '^'], keyboardState: keyboardState),
@@ -139,7 +140,8 @@ class Keyboards {
     ];
   }
 
-  static List<List<Widget>> _germanIOS(GazeKeyboardState keyboardState) {
+  @visibleForTesting
+  static List<List<Widget>> germanIOS(GazeKeyboardState keyboardState) {
     return [
       [
         if (keyboardState.type == KeyboardType.editor)
@@ -205,7 +207,8 @@ class Keyboards {
     ];
   }
 
-  static List<List<Widget>> _englishDesktop(GazeKeyboardState keyboardState) {
+  @visibleForTesting
+  static List<List<Widget>> englishDesktop(GazeKeyboardState keyboardState) {
     return [
       [
         GazeKey(content: const ['~', '`'], keyboardState: keyboardState),
@@ -283,7 +286,8 @@ class Keyboards {
     ];
   }
 
-  static List<List<Widget>> _englishIOS(GazeKeyboardState keyboardState) {
+  @visibleForTesting
+  static List<List<Widget>> englishIOS(GazeKeyboardState keyboardState) {
     return [
       [
         GazeKey(content: Icons.keyboard_tab_rounded, type: GazeKeyType.tab, keyboardState: keyboardState), // widthRatio: 1.7
@@ -342,7 +346,8 @@ class Keyboards {
     ];
   }
 
-  static List<List<Widget>> _germanSpeak(GazeKeyboardState keyboardState) {
+  @visibleForTesting
+  static List<List<Widget>> germanSpeak(GazeKeyboardState keyboardState) {
     return [
       [
         const Spacer(),
@@ -388,7 +393,8 @@ class Keyboards {
     ];
   }
 
-  static List<List<Widget>> _englishSpeak(GazeKeyboardState keyboardState) {
+  @visibleForTesting
+  static List<List<Widget>> englishSpeak(GazeKeyboardState keyboardState) {
     return [
       [
         const Spacer(),
