@@ -101,7 +101,7 @@ class GazeKey extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                  keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS
+                  (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS && keyboardState.type != KeyboardType.speak)
                       ? getIOSKey(list: content, signs: signs, shift: true) as String
                       : content[0] as String,
                   style: textStyle.copyWith(
@@ -118,7 +118,7 @@ class GazeKey extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                  keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS
+                  (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS && keyboardState.type != KeyboardType.speak)
                       ? getIOSKey(list: content, signs: signs, shift: false) as String
                       : content[1] as String,
                   style: textStyle.copyWith(
@@ -199,11 +199,11 @@ class GazeKey extends ConsumerWidget {
           onTap: () {
             if (content is List) {
               // What will be done & inserted in text field on pressed IconData on shift/signs tap
-              if (type == GazeKeyType.shift || type == GazeKeyType.signs) {
+              if (type == GazeKeyType.shift || type == GazeKeyType.signs || type == GazeKeyType.close) {
                 onTap.call(null, type, ref, context);
                 // What will be inserted on pressed normal key (not shift/signs)
               } else {
-                if (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS) {
+                if (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS && keyboardState.type != KeyboardType.speak) {
                   onTap.call(getIOSKey(list: content as List, signs: signsState, shift: shiftState), type, ref, context);
                 } else {
                   onTap.call((_switchTo ? (content as List)[0] : (content as List)[1]) as String?, type, ref, context);
@@ -267,11 +267,14 @@ class GazeKey extends ConsumerWidget {
         }
         break;
       case GazeKeyType.enter:
-        keyboardState.controller.text += r'\n';
-
+        if (keyboardState.type == KeyboardType.editor) {
+          keyboardState.controller.insert('\n');
+        }
         break;
       case GazeKeyType.tab:
-        // widget.controller.text += r'\t';
+        if (keyboardState.type == KeyboardType.editor) {
+          keyboardState.controller.insert('\t');
+        }
         // _controller.sendKeyEvent(LogicalKeyboardKey.tab);
         // widget.node?.requestFocus();
         break;
