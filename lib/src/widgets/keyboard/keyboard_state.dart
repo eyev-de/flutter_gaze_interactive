@@ -15,7 +15,7 @@ import 'keyboards.dart';
 class GazeKeyboardState {
   final TextEditingController controller;
   final String placeholder;
-  final FocusNode? node;
+  FocusNode? node;
   final GazeKeyboardController keyboardController = GazeKeyboardController(WidgetsBinding.instance);
   final String route;
   final KeyboardType type;

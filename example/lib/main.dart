@@ -82,7 +82,7 @@ class _AppState extends State<App> {
                             placeholder: 'Search',
                             controller: _controller,
                             route: '/dialog',
-                            type: KeyboardType.extended,
+                            type: KeyboardType.editor,
                           ),
                           () => GazeInteractive().currentRoute = '/dialog',
                           (ctx) => Navigator.of(ctx).pop(),
