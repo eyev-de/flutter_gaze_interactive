@@ -11,7 +11,7 @@ dependencies:
 
   # For Linux you need to do the following:
   # https://github.com/bluefireteam/audioplayers/blob/main/packages/audioplayers_linux/requirements.md
-  audioplayers: ^4.0.1
+  audioplayers: ^5.1.0
   
   enum_to_string: ^2.0.1
 
@@ -24,9 +24,9 @@ dependencies:
 
   intl: ^0.18.0
   
-  logger: ^1.1.0
+  logger: ^2.0.1
 
-  material_design_icons_flutter: ^6.0.7096
+  material_design_icons_flutter: ^7.0.7296
 
   shared_preferences: ^2.0.3
 
