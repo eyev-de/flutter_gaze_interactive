@@ -4,6 +4,7 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -45,18 +46,10 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
           child: GazeKeyboardUtilityCutButton(state: state, node: node),
         ),
         Flexible(
-          child: GazeKeyboardUtilityDeleteButton(
-            controller: state.controller,
-            node: node,
-            route: state.route,
-          ),
+          child: GazeKeyboardUtilityDeleteButton(controller: state.controller, node: node, route: state.route),
         ),
         Flexible(
-          child: GazeKeyboardUtilityDeleteWordButton(
-            controller: state.controller,
-            node: node,
-            route: state.route,
-          ),
+          child: GazeKeyboardUtilityDeleteWordButton(controller: state.controller, node: node, route: state.route),
         ),
       ],
     );
@@ -68,6 +61,7 @@ abstract class GazeKeyboardUtilityButton extends ConsumerWidget {
   final FocusNode node;
   final String? label;
   final TextStyle? textStyle;
+
   const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label, this.textStyle});
 }
 
@@ -78,31 +72,31 @@ class GazeKeyboardUtilitySelectButton extends GazeKeyboardUtilityButton {
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
     return GazeKeyboardUtilityBaseButton(
+      backgroundColor: selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
       icon: MdiIcons.select,
       route: state.route,
       onTap: () {
         node.requestFocus();
         ref.read(state.selectingStateProvider.notifier).state = !selecting;
       },
-      backgroundColor: selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
-      reselectable: false,
     );
   }
 }
 
 class GazeKeyboardUtilityMoveCursorLeftButton extends GazeKeyboardUtilityButton {
   const GazeKeyboardUtilityMoveCursorLeftButton({super.key, required super.state, required super.node}) : super(label: '');
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
     return GazeKeyboardUtilityBaseButton(
       icon: Icons.arrow_back,
       route: state.route,
+      reselectable: true,
       onTap: () {
         node.requestFocus();
         state.controller.moveCursorRight(selecting: selecting);
       },
-      reselectable: true,
     );
   }
 }
@@ -116,11 +110,11 @@ class GazeKeyboardUtilityMoveCursorRightButton extends GazeKeyboardUtilityButton
     return GazeKeyboardUtilityBaseButton(
       icon: Icons.arrow_forward,
       route: state.route,
+      reselectable: true,
       onTap: () {
         node.requestFocus();
         state.controller.moveCursorLeft(selecting: selecting);
       },
-      reselectable: true,
     );
   }
 }
@@ -171,7 +165,7 @@ class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
     final clipboardContent = ref.watch(clipboardProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
-      textStyle: textStyle?.copyWith(color: clipboardContent != '' ? Colors.white : Colors.grey),
+      textStyle: (textStyle ?? const TextStyle()).copyWith(color: clipboardContent != '' ? Colors.white : Colors.grey),
       icon: Icons.paste,
       iconColor: clipboardContent != '' ? Colors.white : Colors.grey,
       route: state.route,
@@ -235,28 +229,22 @@ class GazeKeyboardUtilityPasteButton extends GazeKeyboardUtilityButton {
 // }
 
 class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
+  GazeKeyboardUtilityDeleteButton({super.key, required this.controller, required this.node, required this.route});
+
   final TextEditingController controller;
   final FocusNode node;
   final String route;
   late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
 
-  GazeKeyboardUtilityDeleteButton({
-    super.key,
-    required this.controller,
-    required this.node,
-    required this.route,
-  });
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = ref.watch(controllerTextProvider);
     return GazeKeyboardUtilityBaseButton(
-      innerPadding: const EdgeInsets.all(0),
+      text: 'Character',
+      textStyle: TextStyle(color: text == '' ? Colors.grey : Colors.red),
       backgroundColor: Colors.grey.shade900,
-      borderRadius: BorderRadius.zero,
-      icon: Icons.keyboard_backspace_rounded,
+      icon: CupertinoIcons.delete_left,
       iconColor: text == '' ? Colors.grey : Colors.red,
-      horizontal: true,
       route: route,
       gazeInteractive: text != '',
       reselectable: true,
@@ -280,24 +268,18 @@ class GazeKeyboardUtilityDeleteButton extends ConsumerWidget {
 }
 
 class GazeKeyboardUtilityDeleteAllButton extends ConsumerWidget {
+  GazeKeyboardUtilityDeleteAllButton({super.key, required this.controller, required this.node, required this.route});
+
   final TextEditingController controller;
   final FocusNode node;
   final String route;
   late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: controller));
 
-  GazeKeyboardUtilityDeleteAllButton({
-    super.key,
-    required this.controller,
-    required this.node,
-    required this.route,
-  });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = ref.watch(controllerTextProvider);
     return GazeKeyboardUtilityBaseButton(
-      innerPadding: const EdgeInsets.all(0),
-      backgroundColor: Colors.grey.shade900,
-      borderRadius: BorderRadius.zero,
+      backgroundColor: Colors.grey.shade800,
       icon: Icons.delete,
       iconColor: text == '' ? Colors.grey : Colors.red,
       horizontal: true,
@@ -332,10 +314,8 @@ class GazeKeyboardUtilityDeleteWordButton extends ConsumerWidget {
     return GazeKeyboardUtilityBaseButton(
       text: 'Word',
       textStyle: TextStyle(color: text == '' ? Colors.grey : Colors.red),
-      innerPadding: const EdgeInsets.all(0),
       backgroundColor: Colors.grey.shade900,
-      borderRadius: BorderRadius.zero,
-      icon: Icons.keyboard_backspace_rounded,
+      icon: CupertinoIcons.delete_left_fill,
       iconColor: text == '' ? Colors.grey : Colors.red,
       route: route,
       gazeInteractive: text != '',
@@ -358,59 +338,57 @@ class GazeKeyboardUtilityDeleteWordButton extends ConsumerWidget {
 }
 
 class GazeKeyboardUtilityBaseButton extends StatelessWidget {
-  final String route;
-  final String? text;
-  final TextStyle? textStyle;
-  final IconData icon;
-  final Color? iconColor;
-  final Function()? onTap;
-  final Color? backgroundColor;
-  final bool reselectable;
-  final EdgeInsets? innerPadding;
-  final BorderRadius? borderRadius;
-  final bool? horizontal;
-  final bool? gazeInteractive;
-
   const GazeKeyboardUtilityBaseButton({
     super.key,
     required this.route,
     required this.icon,
     this.iconColor,
-    this.textStyle,
     this.text,
+    this.textStyle,
     this.onTap,
     this.backgroundColor,
+    this.innerPadding = EdgeInsets.zero,
+    this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.reselectable = false,
-    this.innerPadding,
-    this.borderRadius,
-    this.horizontal,
-    this.gazeInteractive,
+    this.horizontal = false,
+    this.gazeInteractive = true,
   });
+
+  final String route;
+  final IconData icon;
+
+  final Color? iconColor;
+  final String? text;
+  final TextStyle? textStyle;
+  final Function()? onTap;
+  final Color? backgroundColor;
+  final EdgeInsets innerPadding;
+  final BorderRadius borderRadius;
+  final bool reselectable;
+  final bool horizontal;
+  final bool gazeInteractive;
 
   @override
   Widget build(BuildContext context) {
     const double size = 20;
     return Padding(
-      padding: const EdgeInsets.all(1),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
       child: GazeButton(
+        onTap: onTap,
         properties: GazeButtonProperties(
           text: text,
-          textStyle: textStyle,
-          innerPadding: innerPadding ?? const EdgeInsets.all(0),
-          backgroundColor: backgroundColor ?? Colors.grey.shade900,
-          borderRadius: borderRadius ?? BorderRadius.zero,
-          reselectable: reselectable,
-          icon: Icon(
-            icon,
-            color: iconColor ?? Colors.white,
-            size: size,
-          ),
           route: route,
-          horizontal: horizontal ?? false,
-          gazeInteractive: gazeInteractive ?? onTap != null,
           withSound: true,
+          textStyle: textStyle,
+          textColor: textStyle?.color ?? Colors.white,
+          reselectable: reselectable,
+          horizontal: horizontal,
+          borderRadius: borderRadius,
+          innerPadding: innerPadding,
+          gazeInteractive: gazeInteractive,
+          backgroundColor: backgroundColor ?? Colors.grey.shade900,
+          icon: Icon(icon, color: iconColor ?? Colors.white, size: size),
         ),
-        onTap: onTap,
       ),
     );
   }
