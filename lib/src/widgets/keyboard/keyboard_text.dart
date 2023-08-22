@@ -13,13 +13,6 @@ import '../scrollable/scrollable.dart';
 import 'keyboard_state.dart';
 
 class GazeKeyboardTextWidget extends StatelessWidget {
-  final GazeKeyboardState state;
-  final FocusNode node;
-  final controller = ScrollController();
-  final double minHeight;
-  final int maxLines;
-  final void Function()? onTap;
-
   GazeKeyboardTextWidget({
     Key? key,
     required this.state,
@@ -28,10 +21,15 @@ class GazeKeyboardTextWidget extends StatelessWidget {
     this.maxLines = 10,
     this.onTap,
   }) : super(key: key) {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      node.requestFocus();
-    });
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) => node.requestFocus());
   }
+
+  final GazeKeyboardState state;
+  final FocusNode node;
+  final controller = ScrollController();
+  final double minHeight;
+  final int maxLines;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +57,7 @@ class GazeKeyboardTextWidget extends StatelessWidget {
                 showCursor: true,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade900,
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
                 minLines: 1,
                 maxLines: maxLines,

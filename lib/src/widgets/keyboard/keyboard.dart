@@ -18,12 +18,15 @@ import 'keyboards.dart';
 
 class GazeKeyboard {
   static final GazeKeyboard _instance = GazeKeyboard._internal();
+
   factory GazeKeyboard() {
     return _instance;
   }
+
   GazeKeyboard._internal();
 
   bool _isShown = false;
+
   bool get isShown => _isShown;
 
   final FocusNode node = FocusNode();
@@ -58,8 +61,6 @@ class GazeKeyboard {
         );
       },
       pageBuilder: (context, animation, secondaryAnimation) {
-        // state.node?.requestFocus();
-
         // This causes a lot of jank
         // final height = Responsive.getResponsiveValue<double>(
         //   forLargeScreen: 80,
@@ -106,46 +107,32 @@ class GazeKeyboard {
                               Flexible(
                                 flex: 8,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(1),
-                                  child: GazeKeyboardTextWidget(
-                                    state: state,
-                                    node: node,
-                                    minHeight: height,
-                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+                                  child: GazeKeyboardTextWidget(state: state, node: node, minHeight: height),
                                 ),
                               ),
                               // Delete Button
                               Flexible(
                                 child: SizedBox(
                                   height: height + 2, // Compensating the top and bottom padding
-                                  child: GazeKeyboardUtilityDeleteAllButton(
-                                    controller: state.controller,
-                                    node: node,
-                                    route: state.route,
-                                  ),
+                                  child: GazeKeyboardUtilityDeleteAllButton(controller: state.controller, node: node, route: state.route),
                                 ),
                               ),
                               // Submit Button
                               Flexible(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(1),
+                                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
                                   child: SizedBox(
                                     height: height,
                                     child: GazeButton(
+                                      onTap: () => onBack?.call(context),
                                       properties: GazeButtonProperties(
                                         innerPadding: const EdgeInsets.all(0),
-                                        backgroundColor: Colors.grey.shade900,
-                                        borderRadius: BorderRadius.zero,
-                                        icon: const Icon(
-                                          Icons.check,
-                                          color: Colors.teal,
-                                        ),
+                                        backgroundColor: Colors.grey.shade800,
+                                        icon: const Icon(Icons.check, color: Colors.teal),
                                         horizontal: true,
                                         route: state.route,
                                       ),
-                                      onTap: () {
-                                        onBack?.call(context);
-                                      },
                                     ),
                                   ),
                                 ),
@@ -158,16 +145,13 @@ class GazeKeyboard {
                     ),
                   ),
                   Flexible(
-                    flex: 2,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Row(
                         children: [
                           Flexible(
                             flex: 8,
-                            child: GazeKeyboardWidget(
-                              state: state,
-                            ),
+                            child: GazeKeyboardWidget(state: state),
                           ),
                         ],
                       ),
@@ -180,41 +164,27 @@ class GazeKeyboard {
           ),
         );
       },
-    ).then((value) {
-      _isShown = !_isShown;
-      onDismissed?.call(context);
-    });
+    ).then((value) => {_isShown = !_isShown, onDismissed?.call(context)});
   }
 
-  static Widget _closeButton(
-    BuildContext context,
-    GazeKeyboardState state,
-    void Function(BuildContext)? onBack,
-  ) {
+  static Widget _closeButton(BuildContext context, GazeKeyboardState state, void Function(BuildContext)? onBack) {
     return Flexible(
       child: Column(
         children: [
-          const Spacer(
-            flex: 4,
-          ),
+          const Spacer(flex: 4),
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(1),
               child: GazeButton(
                 properties: GazeButtonProperties(
-                  backgroundColor: Colors.grey.shade900,
-                  borderRadius: BorderRadius.zero,
-                  // innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-                  icon: const Icon(
-                    Icons.keyboard_hide_rounded,
-                    color: Colors.white,
-                  ),
                   horizontal: true,
                   route: state.route,
+                  borderRadius: BorderRadius.zero,
+                  backgroundColor: Colors.grey.shade900,
+                  // innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
+                  icon: const Icon(Icons.keyboard_hide_rounded, color: Colors.white),
                 ),
-                onTap: () {
-                  onBack?.call(context);
-                },
+                onTap: () => onBack?.call(context),
               ),
             ),
           ),
@@ -225,40 +195,23 @@ class GazeKeyboard {
 }
 
 class GazeKeyboardWidget extends ConsumerWidget {
-  final GazeKeyboardState state;
+  GazeKeyboardWidget({Key? key, required this.state}) : super(key: key);
 
-  GazeKeyboardWidget({
-    Key? key,
-    required this.state,
-  }) : super(key: key);
+  final GazeKeyboardState state;
 
   late final stateProvider = StateProvider((ref) => state);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (state.withProvider) {
-      final _state = ref.watch(stateProvider);
-      return _keyboard(_state, ref);
-    }
-    return _keyboard(state, ref);
+    return state.withProvider ? _keyboard(ref.watch(stateProvider)) : _keyboard(state);
   }
 
-  Widget _keyboard(GazeKeyboardState state, WidgetRef ref) {
+  Widget _keyboard(GazeKeyboardState state) {
     final lang = state.language;
     final keys = Keyboards.get(lang, state);
     if (!state.withNumbers) keys.removeAt(0);
-    if (!state.withAlt) {
-      keys[keys.length - 1].removeWhere((key) {
-        if (key is GazeKey) return key.type == GazeKeyType.alt;
-        return false;
-      });
-    }
-    if (!state.withCtrl) {
-      keys[keys.length - 1].removeWhere((key) {
-        if (key is GazeKey) return key.type == GazeKeyType.ctrl;
-        return false;
-      });
-    }
+    if (!state.withAlt) keys[keys.length - 1].removeWhere((key) => key is GazeKey && key.type == GazeKeyType.alt);
+    if (!state.withCtrl) keys[keys.length - 1].removeWhere((key) => key is GazeKey && key.type == GazeKeyType.ctrl);
     return Column(
       children: [
         for (var row in keys)
