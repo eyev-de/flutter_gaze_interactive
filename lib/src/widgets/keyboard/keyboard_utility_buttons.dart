@@ -400,6 +400,7 @@ class GazeKeyboardUtilityDeleteWordButton extends ConsumerWidget {
               } else {
                 controller.text += rest;
                 final int newOffset = oldOffset - wordLength;
+
                 node.requestFocus();
                 controller.selection = TextSelection.fromPosition(TextPosition(offset: newOffset));
               }
