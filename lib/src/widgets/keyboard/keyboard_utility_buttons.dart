@@ -33,6 +33,14 @@ class GazeKeyboardUtilityButtons extends StatelessWidget {
         Flexible(
           child: GazeKeyboardUtilityMoveCursorLeftButton(state: state, node: node),
         ),
+        if (state.onMoveCursorUp != null && state.type == KeyboardType.editor)
+          Flexible(
+            child: GazeKeyboardUtilityMoveCursorUpButton(state: state, node: node),
+          ),
+        if (state.onMoveCursorDown != null && state.type == KeyboardType.editor)
+          Flexible(
+            child: GazeKeyboardUtilityMoveCursorDownButton(state: state, node: node),
+          ),
         Flexible(
           child: GazeKeyboardUtilityMoveCursorRightButton(state: state, node: node),
         ),
@@ -115,6 +123,47 @@ class GazeKeyboardUtilityMoveCursorRightButton extends GazeKeyboardUtilityButton
         node.requestFocus();
         state.controller.moveCursorLeft(selecting: selecting);
       },
+    );
+  }
+}
+
+class GazeKeyboardUtilityMoveCursorUpButton extends GazeKeyboardUtilityButton {
+  const GazeKeyboardUtilityMoveCursorUpButton({super.key, required super.state, required super.node}) : super(label: '');
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selecting = ref.watch(state.selectingStateProvider);
+    return GazeKeyboardUtilityBaseButton(
+      icon: Icons.arrow_upward,
+      route: state.route,
+      onTap: () {
+        node.requestFocus();
+        if (state.onMoveCursorUp != null) {
+          state.onMoveCursorUp!(selecting: selecting);
+        }
+        state.controller.moveCursorLeft(selecting: selecting);
+      },
+      reselectable: true,
+    );
+  }
+}
+
+class GazeKeyboardUtilityMoveCursorDownButton extends GazeKeyboardUtilityButton {
+  const GazeKeyboardUtilityMoveCursorDownButton({super.key, required super.state, required super.node}) : super(label: '');
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selecting = ref.watch(state.selectingStateProvider);
+    return GazeKeyboardUtilityBaseButton(
+      icon: Icons.arrow_downward,
+      route: state.route,
+      onTap: () {
+        node.requestFocus();
+        if (state.onMoveCursorDown != null) {
+          state.onMoveCursorDown!(selecting: selecting);
+        }
+      },
+      reselectable: true,
     );
   }
 }
@@ -323,15 +372,38 @@ class GazeKeyboardUtilityDeleteWordButton extends ConsumerWidget {
       onTap: text == ''
           ? null
           : () {
+              final int oldOffset = controller.selection.base.offset;
+              bool cursorAtMostExtend = false;
+              int wordLength = 0;
+              if (controller.text.length == oldOffset || controller.text.trim().length == oldOffset) {
+                cursorAtMostExtend = true;
+              }
               node.requestFocus();
-              if (controller.text[controller.text.length - 1] == ' ') {
-                final words = controller.text.trim().split(' ');
+              String text = controller.text;
+              int originalTextLength = text.length;
+              String rest = '';
+              if (!cursorAtMostExtend) {
+                text = controller.text.substring(0, oldOffset);
+                rest = controller.text.substring(oldOffset, originalTextLength);
+              }
+              if (text[text.length - 1] == ' ') {
+                final words = text.trim().split(' ');
+                wordLength = words[words.length - 1].length + 1;
                 controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
               } else {
-                final words = controller.text.split(' ');
+                final words = text.split(' ');
+                wordLength = words[words.length - 1].length;
                 controller.text = words.sublist(0, words.length - 1).join(' ');
               }
-              controller.moveCursorMostRight();
+              if (cursorAtMostExtend) {
+                controller.moveCursorMostRight();
+              } else {
+                controller.text += rest;
+                final int newOffset = oldOffset - wordLength;
+
+                node.requestFocus();
+                controller.selection = TextSelection.fromPosition(TextPosition(offset: newOffset));
+              }
             },
     );
   }
