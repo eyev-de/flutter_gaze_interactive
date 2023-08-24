@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/extensions.dart';
 import '../button/button.dart';
 import 'keyboard_state.dart';
 import 'keyboards.dart';
@@ -39,6 +40,14 @@ class GazeKeyboardUtilityButtons extends ConsumerWidget {
         Flexible(
           child: MoveCursorRightButton(state: state, node: node),
         ),
+        if (state.onMoveCursorUp != null && state.type == KeyboardType.editor)
+          Flexible(
+            child: GazeKeyboardUtilityMoveCursorUpButton(state: state, node: node),
+          ),
+        if (state.onMoveCursorDown != null && state.type == KeyboardType.editor)
+          Flexible(
+            child: GazeKeyboardUtilityMoveCursorDownButton(state: state, node: node),
+          ),
         Flexible(
           child: CopyButton(state: state, node: node),
         ),
@@ -70,6 +79,47 @@ abstract class GazeKeyboardUtilityButton extends ConsumerWidget {
   final TextStyle? textStyle;
 
   const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label, this.textStyle});
+}
+
+class GazeKeyboardUtilityMoveCursorUpButton extends GazeKeyboardUtilityButton {
+  const GazeKeyboardUtilityMoveCursorUpButton({super.key, required super.state, required super.node}) : super(label: '');
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selecting = ref.watch(state.selectingStateProvider);
+    return GazeKeyboardUtilityBaseButton(
+      icon: Icons.arrow_upward,
+      route: state.route,
+      onTap: () {
+        node.requestFocus();
+        if (state.onMoveCursorUp != null) {
+          state.onMoveCursorUp!(selecting: selecting);
+        }
+        state.controller.moveCursorLeft(selecting: selecting);
+      },
+      reselectable: true,
+    );
+  }
+}
+
+class GazeKeyboardUtilityMoveCursorDownButton extends GazeKeyboardUtilityButton {
+  const GazeKeyboardUtilityMoveCursorDownButton({super.key, required super.state, required super.node}) : super(label: '');
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selecting = ref.watch(state.selectingStateProvider);
+    return GazeKeyboardUtilityBaseButton(
+      icon: Icons.arrow_downward,
+      route: state.route,
+      onTap: () {
+        node.requestFocus();
+        if (state.onMoveCursorDown != null) {
+          state.onMoveCursorDown!(selecting: selecting);
+        }
+      },
+      reselectable: true,
+    );
+  }
 }
 
 class GazeKeyboardUtilityBaseButton extends StatelessWidget {
