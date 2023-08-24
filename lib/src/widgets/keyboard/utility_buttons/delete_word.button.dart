@@ -27,15 +27,38 @@ class DeleteWordButton extends ConsumerWidget {
       onTap: text == ''
           ? null
           : () {
+              final int oldOffset = state.controller.selection.base.offset;
+              bool cursorAtMostExtend = false;
+              int wordLength = 0;
+              if (state.controller.text.length == oldOffset || state.controller.text.trim().length == oldOffset) {
+                cursorAtMostExtend = true;
+              }
               node.requestFocus();
-              if (state.controller.text[state.controller.text.length - 1] == ' ') {
-                final words = state.controller.text.trim().split(r'[ \t\n\r]+');
+              String text = state.controller.text;
+              final originalTextLength = text.length;
+              String rest = '';
+              if (!cursorAtMostExtend) {
+                text = state.controller.text.substring(0, oldOffset);
+                rest = state.controller.text.substring(oldOffset, originalTextLength);
+              }
+              if (text[text.length - 1] == ' ') {
+                final words = text.trim().split(' ');
+                wordLength = words[words.length - 1].length + 1;
                 state.controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
               } else {
-                final words = state.controller.text.split(r'[ \t\n\r]+');
+                final words = text.split(' ');
+                wordLength = words[words.length - 1].length;
                 state.controller.text = words.sublist(0, words.length - 1).join(' ');
               }
-              state.controller.moveCursorMostRight();
+              if (cursorAtMostExtend) {
+                state.controller.moveCursorMostRight();
+              } else {
+                state.controller.text += rest;
+                final int newOffset = oldOffset - wordLength;
+
+                node.requestFocus();
+                state.controller.selection = TextSelection.fromPosition(TextPosition(offset: newOffset));
+              }
             },
     );
   }

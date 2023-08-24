@@ -6,7 +6,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/extensions.dart';
 import '../button/button.dart';
 import 'keyboard_state.dart';
 import 'keyboards.dart';
@@ -14,17 +13,19 @@ import 'utility_buttons/copy.button.dart';
 import 'utility_buttons/cut.button.dart';
 import 'utility_buttons/delete.button.dart';
 import 'utility_buttons/delete_word.button.dart';
+import 'utility_buttons/move_cursor_down.button.dart';
 import 'utility_buttons/move_cursor_left.button.dart';
 import 'utility_buttons/move_cursor_right.button.dart';
+import 'utility_buttons/move_cursor_up.button.dart';
 import 'utility_buttons/paste.button.dart';
 import 'utility_buttons/select.button.dart';
 
 class GazeKeyboardUtilityButtons extends ConsumerWidget {
+  GazeKeyboardUtilityButtons({super.key, required this.state, required this.node, this.type = KeyboardType.extended});
+
   final GazeKeyboardState state;
   final FocusNode node;
   final KeyboardType? type;
-
-  GazeKeyboardUtilityButtons({super.key, required this.state, required this.node, this.type = KeyboardType.extended});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,11 +43,11 @@ class GazeKeyboardUtilityButtons extends ConsumerWidget {
         ),
         if (state.onMoveCursorUp != null && state.type == KeyboardType.editor)
           Flexible(
-            child: GazeKeyboardUtilityMoveCursorUpButton(state: state, node: node),
+            child: MoveCursorUpButton(state: state, node: node),
           ),
         if (state.onMoveCursorDown != null && state.type == KeyboardType.editor)
           Flexible(
-            child: GazeKeyboardUtilityMoveCursorDownButton(state: state, node: node),
+            child: MoveCursorDownButton(state: state, node: node),
           ),
         Flexible(
           child: CopyButton(state: state, node: node),
@@ -73,33 +74,12 @@ class GazeKeyboardUtilityButtons extends ConsumerWidget {
 }
 
 abstract class GazeKeyboardUtilityButton extends ConsumerWidget {
+  const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label, this.textStyle});
+
   final GazeKeyboardState state;
   final FocusNode node;
   final String? label;
   final TextStyle? textStyle;
-
-  const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label, this.textStyle});
-}
-
-class GazeKeyboardUtilityMoveCursorUpButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityMoveCursorUpButton({super.key, required super.state, required super.node}) : super(label: '');
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selecting = ref.watch(state.selectingStateProvider);
-    return GazeKeyboardUtilityBaseButton(
-      icon: Icons.arrow_upward,
-      route: state.route,
-      onTap: () {
-        node.requestFocus();
-        if (state.onMoveCursorUp != null) {
-          state.onMoveCursorUp!(selecting: selecting);
-        }
-        state.controller.moveCursorLeft(selecting: selecting);
-      },
-      reselectable: true,
-    );
-  }
 }
 
 class GazeKeyboardUtilityMoveCursorDownButton extends GazeKeyboardUtilityButton {
