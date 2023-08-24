@@ -19,18 +19,14 @@ export 'src/widgets/keyboard/keyboard.dart' show GazeKeyboard, GazeKeyboardWidge
 export 'src/widgets/keyboard/keyboard_key.dart' show GazeKey, GazeKeyType;
 export 'src/widgets/keyboard/keyboard_state.dart' show GazeKeyboardState;
 export 'src/widgets/keyboard/keyboard_text.dart' show GazeKeyboardTextWidget;
-export 'src/widgets/keyboard/keyboard_utility_buttons.dart'
-    show
-        GazeKeyboardUtilityButtons,
-        GazeKeyboardUtilityBaseButton,
-        GazeKeyboardUtilityButton,
-        GazeKeyboardUtilityCopyButton,
-        GazeKeyboardUtilityCutButton,
-        GazeKeyboardUtilityMoveCursorLeftButton,
-        GazeKeyboardUtilityMoveCursorRightButton,
-        GazeKeyboardUtilityPasteButton,
-        GazeKeyboardUtilitySelectButton;
+export 'src/widgets/keyboard/keyboard_utility_buttons.dart' show GazeKeyboardUtilityButtons, GazeKeyboardUtilityBaseButton, GazeKeyboardUtilityButton;
 export 'src/widgets/keyboard/keyboards.dart' show Language, Keyboards, KeyboardType, KeyboardPlatformType;
+export 'src/widgets/keyboard/utility_buttons/copy.button.dart' show CopyButton;
+export 'src/widgets/keyboard/utility_buttons/cut.button.dart' show CutButton;
+export 'src/widgets/keyboard/utility_buttons/move_cursor_left.button.dart' show MoveCursorLeftButton;
+export 'src/widgets/keyboard/utility_buttons/move_cursor_right.button.dart' show MoveCursorRightButton;
+export 'src/widgets/keyboard/utility_buttons/paste.button.dart' show PasteButton;
+export 'src/widgets/keyboard/utility_buttons/select.button.dart' show SelectButton;
 export 'src/widgets/pointer/pointer_state.model.dart' show GazePointerState;
 export 'src/widgets/pointer/pointer_type.dart' show GazePointerType;
 export 'src/widgets/pointer/pointer_view.dart' show GazePointerView;
