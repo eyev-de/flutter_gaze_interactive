@@ -27,38 +27,29 @@ class DeleteWordButton extends ConsumerWidget {
       onTap: text == ''
           ? null
           : () {
-              final int oldOffset = state.controller.selection.base.offset;
-              bool cursorAtMostExtend = false;
-              int wordLength = 0;
-              if (state.controller.text.length == oldOffset || state.controller.text.trim().length == oldOffset) {
-                cursorAtMostExtend = true;
-              }
               node.requestFocus();
-              String text = state.controller.text;
-              final originalTextLength = text.length;
-              String rest = '';
-              if (!cursorAtMostExtend) {
-                text = state.controller.text.substring(0, oldOffset);
-                rest = state.controller.text.substring(oldOffset, originalTextLength);
+              final selection = state.controller.selection;
+              final textBefore = state.controller.selection.textBefore(state.controller.text);
+              // Check if the cursor is next to nothing, at the beginning of the text -> do nothing
+              if (textBefore.isEmpty) {
+                return;
               }
-              if (text[text.length - 1] == ' ') {
-                final words = text.trim().split(' ');
-                wordLength = words[words.length - 1].length + 1;
-                state.controller.text = '${words.sublist(0, words.length - 1).join(' ')} ';
-              } else {
-                final words = text.split(' ');
-                wordLength = words[words.length - 1].length;
-                state.controller.text = words.sublist(0, words.length - 1).join(' ');
+              // Check if the cursor is next to a space, break or tab -> remove only one character
+              if (textBefore[textBefore.length - 1].contains(RegExp(r'\s+'))) {
+                var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
+                final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
+                startIndex = selection.baseOffset == state.controller.selection.extentOffset ? startIndex - 1 : startIndex;
+                if (startIndex.isNegative) startIndex = 0;
+                state.controller
+                  ..text = state.controller.text.replaceRange(startIndex, endIndex, '')
+                  ..selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
+                return;
               }
-              if (cursorAtMostExtend) {
-                state.controller.moveCursorMostRight();
-              } else {
-                state.controller.text += rest;
-                final int newOffset = oldOffset - wordLength;
-
-                node.requestFocus();
-                state.controller.selection = TextSelection.fromPosition(TextPosition(offset: newOffset));
-              }
+              // Identify the word to be deleted -> remove word
+              final word = textBefore.trim().split(RegExp(r'\s+')).last;
+              state.controller
+                ..text = state.controller.text.replaceRange(selection.baseOffset - word.length, selection.baseOffset, '')
+                ..selection = TextSelection.fromPosition(TextPosition(offset: selection.baseOffset - word.length));
             },
     );
   }
