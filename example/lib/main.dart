@@ -65,6 +65,7 @@ class _AppState extends State<App> {
                     controller: _controller,
                     onChanged: (value) {},
                     properties: GazeTextFieldProperties(
+                      obscureText: true,
                       style: const TextStyle(fontSize: 20, color: Colors.white),
                       inputDecoration: const InputDecoration(
                         hintText: 'Search',
