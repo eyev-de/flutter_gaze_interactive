@@ -5,8 +5,11 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'button/selection_animation.dart';
+import '../../api.dart';
+
+final obscureTextProvider = StateProvider((ref) => true);
 
 class GazeTextFieldProperties {
   GazeTextFieldProperties({
@@ -44,7 +47,7 @@ class GazeTextFieldProperties {
   final bool obscureText;
 }
 
-class GazeTextField extends StatelessWidget {
+class GazeTextField extends ConsumerWidget {
   GazeTextField({
     Key? key,
     required this.controller,
@@ -67,37 +70,58 @@ class GazeTextField extends StatelessWidget {
   final void Function()? onFocus;
 
   @override
-  Widget build(BuildContext context) {
-    return GazeSelectionAnimation(
-      properties: GazeSelectionAnimationProperties(route: route, gazeInteractive: properties.enabled),
-      wrappedKey: GlobalKey(),
-      wrappedWidget: Positioned.directional(
-        textDirection: TextDirection.ltr,
-        child: TextFormField(
-          focusNode: focusNode,
-          controller: controller,
-          keyboardType: TextInputType.none,
-          onTap: onFocus?.call,
-          // GazeTextFieldProperties
-          maxLength: properties.maxLength,
-          style: properties.style,
-          onSaved: properties.onSaved,
-          validator: properties.validator,
-          decoration: properties.inputDecoration,
-          textInputAction: properties.textInputAction,
-          onFieldSubmitted: properties.onFieldSubmitted,
-          textAlignVertical: properties.textAlignVertical,
-          textAlign: properties.textAlign,
-          cursorRadius: properties.cursorRadius,
-          enabled: properties.enabled,
-          autocorrect: properties.autocorrect,
-          enableSuggestions: properties.enableSuggestions,
-          expands: properties.expands,
-          obscureText: properties.obscureText,
-          maxLines: properties.obscureText ? 1 : null,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      children: [
+        Flexible(
+          child: GazeSelectionAnimation(
+            properties: GazeSelectionAnimationProperties(route: route, gazeInteractive: properties.enabled),
+            wrappedKey: GlobalKey(),
+            wrappedWidget: Positioned.directional(
+              textDirection: TextDirection.ltr,
+              child: TextFormField(
+                focusNode: focusNode,
+                controller: controller,
+                keyboardType: TextInputType.none,
+                onTap: onFocus?.call,
+                // GazeTextFieldProperties
+                maxLength: properties.maxLength,
+                style: properties.style,
+                onSaved: properties.onSaved,
+                validator: properties.validator,
+                decoration: properties.inputDecoration,
+                textInputAction: properties.textInputAction,
+                onFieldSubmitted: properties.onFieldSubmitted,
+                textAlignVertical: properties.textAlignVertical,
+                textAlign: properties.textAlign,
+                cursorRadius: properties.cursorRadius,
+                enabled: properties.enabled,
+                autocorrect: properties.autocorrect,
+                enableSuggestions: properties.enableSuggestions,
+                expands: properties.expands,
+                obscureText: properties.obscureText && ref.watch(obscureTextProvider),
+                maxLines: properties.obscureText ? 1 : null,
+              ),
+            ),
+            onGazed: onFocus?.call,
+          ),
         ),
-      ),
-      onGazed: onFocus?.call,
+        if (properties.obscureText) ...[
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 70,
+            child: GazeButton(
+              properties: GazeButtonProperties(
+                backgroundColor: Theme.of(context).primaryColor,
+                icon: Icon(ref.watch(obscureTextProvider) ? Icons.visibility_off : Icons.visibility),
+              ),
+              onTap: () {
+                ref.read(obscureTextProvider.notifier).state = !ref.watch(obscureTextProvider);
+              },
+            ),
+          )
+        ],
+      ],
     );
   }
 }

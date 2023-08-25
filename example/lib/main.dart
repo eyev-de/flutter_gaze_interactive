@@ -65,6 +65,7 @@ class _AppState extends State<App> {
                     controller: _controller,
                     onChanged: (value) {},
                     properties: GazeTextFieldProperties(
+                      obscureText: true,
                       style: const TextStyle(fontSize: 20, color: Colors.white),
                       inputDecoration: const InputDecoration(
                         hintText: 'Search',
@@ -92,11 +93,12 @@ class _AppState extends State<App> {
                 ),
                 const SizedBox(height: 20),
                 Text(_dateTime.toIso8601String()),
+                const SizedBox(height: 20),
                 SizedBox(
                   width: 200,
                   height: 80,
                   child: GazeButton(
-                    properties: GazeButtonProperties(text: 'Button', textColor: Colors.white, route: '/'),
+                    properties: GazeButtonProperties(text: 'Button', textColor: Colors.white, route: '/', backgroundColor: Colors.pink),
                     onTap: () async {
                       await showDialog(
                         context: context,
@@ -121,6 +123,7 @@ class _AppState extends State<App> {
                     },
                   ),
                 ),
+                const SizedBox(height: 20),
                 GazeSwitchButton(
                   properties: GazeSwitchButtonProperties(
                     route: '/',
