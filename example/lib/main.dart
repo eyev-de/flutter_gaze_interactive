@@ -19,6 +19,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.blue,
         primaryTextTheme: const TextTheme(displayLarge: TextStyle(fontSize: 30, color: Colors.white)),
+        inputDecorationTheme: ThemeData.dark().inputDecorationTheme.copyWith(
+              filled: true,
+              fillColor: Colors.black,
+              contentPadding: const EdgeInsets.all(20),
+              border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            ),
       ),
     );
   }
@@ -51,59 +57,48 @@ class _AppState extends State<App> {
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: SizedBox(
-                    width: 200,
-                    height: 120,
-                    child: GazeTextField(
-                      controller: _controller,
-                      onChanged: (value) {},
-                      properties: GazeTextFieldProperties(
-                        maxLength: 30,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blueGrey.shade700,
-                          border: Border.all(color: Colors.pink),
-                        ),
-                        inputDecoration: const InputDecoration(
-                          hintText: 'Search',
-                          hintStyle: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                        padding: const EdgeInsets.all(20),
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  child: GazeTextField(
+                    controller: _controller,
+                    onChanged: (value) {},
+                    properties: GazeTextFieldProperties(
+                      obscureText: true,
+                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      inputDecoration: const InputDecoration(
+                        hintText: 'Search',
+                        prefixIcon: Icon(Icons.search_sharp),
                       ),
-                      onFocus: () {
-                        GazeKeyboard().show(
-                          context,
-                          GazeKeyboardState(
-                            node: _focusNode,
-                            placeholder: 'Search',
-                            controller: _controller,
-                            route: '/dialog',
-                            type: KeyboardType.editor,
-                          ),
-                          () => GazeInteractive().currentRoute = '/dialog',
-                          (ctx) => Navigator.of(ctx).pop(),
-                          (ctx) => GazeInteractive().currentRoute = '/',
-                        );
-                      },
-                      focusNode: _focusNode,
-                      route: '/',
                     ),
+                    onFocus: () {
+                      GazeKeyboard().show(
+                        context,
+                        GazeKeyboardState(
+                          node: _focusNode,
+                          placeholder: 'Search',
+                          controller: _controller,
+                          route: '/dialog',
+                          type: KeyboardType.editor,
+                        ),
+                        () => GazeInteractive().currentRoute = '/dialog',
+                        (ctx) => Navigator.of(ctx).pop(),
+                        (ctx) => GazeInteractive().currentRoute = '/',
+                      );
+                    },
+                    focusNode: _focusNode,
+                    route: '/',
                   ),
                 ),
+                const SizedBox(height: 20),
                 Text(_dateTime.toIso8601String()),
+                const SizedBox(height: 20),
                 SizedBox(
                   width: 200,
                   height: 80,
                   child: GazeButton(
-                    properties: GazeButtonProperties(
-                      text: 'Hallo Was machst du da?',
-                      textColor: Colors.white,
-                      route: '/',
-                    ),
+                    properties: GazeButtonProperties(text: 'Button', textColor: Colors.white, route: '/', backgroundColor: Colors.pink),
                     onTap: () async {
                       await showDialog(
                         context: context,
@@ -128,17 +123,15 @@ class _AppState extends State<App> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: GazeSwitchButton(
-                    properties: GazeSwitchButtonProperties(
-                      route: '/',
-                      state: GazeSwitchButtonState(toggled: false),
-                    ),
-                    onToggled: (toggled) async {
-                      return true;
-                    },
+                const SizedBox(height: 20),
+                GazeSwitchButton(
+                  properties: GazeSwitchButtonProperties(
+                    route: '/',
+                    state: GazeSwitchButtonState(toggled: false),
                   ),
+                  onToggled: (toggled) async {
+                    return true;
+                  },
                 ),
               ],
             ),
