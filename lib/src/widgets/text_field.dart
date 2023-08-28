@@ -5,65 +5,49 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'button/selection_animation.dart';
+import '../../api.dart';
+
+final obscureTextProvider = StateProvider((ref) => true);
 
 class GazeTextFieldProperties {
-  final int? maxLength;
-  final bool enabled;
-  final EdgeInsetsGeometry padding;
-  final Decoration? decoration;
-  final Radius cursorRadius;
-  final TextStyle? style;
-  final TextInputType? keyboardType;
-  final TextAlignVertical? textAlignVertical;
-  final TextAlign textAlign;
-  final bool autocorrect;
-  final bool enableSuggestions;
-  final bool obscureText;
-  final InputDecoration? inputDecoration;
-  final void Function(String?)? onSaved;
-  final void Function(String)? onFieldSubmitted;
-  final String? Function(String?)? validator;
-  final TextInputAction? textInputAction;
-  final Color backgroundColor;
-  final bool expands;
   GazeTextFieldProperties({
     this.maxLength,
-    this.enabled = true,
-    this.padding = const EdgeInsets.fromLTRB(20, 30, 20, 30),
-    this.decoration = const BoxDecoration(
-      color: Color(0xFF212121),
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-    ),
-    this.cursorRadius = const Radius.circular(2),
     this.style,
-    this.keyboardType = TextInputType.name,
-    this.textAlignVertical,
-    this.textAlign = TextAlign.start,
-    this.autocorrect = true,
-    this.enableSuggestions = true,
-    this.inputDecoration,
     this.onSaved,
     this.validator,
+    this.inputDecoration,
     this.textInputAction,
     this.onFieldSubmitted,
-    this.obscureText = false,
-    this.backgroundColor = const Color(0xFF212121), // Colors.grey.shade900
+    this.textAlignVertical,
+    this.textAlign = TextAlign.start,
+    this.cursorRadius = const Radius.circular(2),
+    this.enabled = true,
+    this.autocorrect = true,
+    this.enableSuggestions = true,
     this.expands = false,
+    this.obscureText = false,
   });
+
+  final int? maxLength;
+  final TextStyle? style;
+  final void Function(String?)? onSaved;
+  final String? Function(String?)? validator;
+  final InputDecoration? inputDecoration;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
+  final TextAlignVertical? textAlignVertical;
+  final TextAlign textAlign;
+  final Radius cursorRadius;
+  final bool enabled;
+  final bool autocorrect;
+  final bool enableSuggestions;
+  final bool expands;
+  final bool obscureText;
 }
 
-class GazeTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final String route;
-
-  final GazeTextFieldProperties properties;
-
-  final void Function(String)? onChanged;
-  final void Function()? onFocus;
-
+class GazeTextField extends ConsumerWidget {
   GazeTextField({
     Key? key,
     required this.controller,
@@ -77,44 +61,67 @@ class GazeTextField extends StatelessWidget {
       if (onChanged != null) onChanged!(controller.text);
     });
   }
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final String route;
+  final GazeTextFieldProperties properties;
+  final void Function(String)? onChanged;
+  final void Function()? onFocus;
+
   @override
-  Widget build(BuildContext context) {
-    return GazeSelectionAnimation(
-      properties: GazeSelectionAnimationProperties(
-        route: route,
-        gazeInteractive: properties.enabled,
-      ),
-      wrappedKey: GlobalKey(),
-      wrappedWidget: Positioned.fill(
-        child: Container(
-          // margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          padding: properties.padding,
-          decoration: properties.decoration,
-          child: TextFormField(
-            focusNode: focusNode,
-            controller: controller,
-            maxLength: properties.maxLength,
-            maxLines: properties.obscureText ? 1 : null,
-            enabled: properties.enabled,
-            cursorRadius: properties.cursorRadius,
-            style: properties.style,
-            keyboardType: properties.keyboardType,
-            expands: properties.expands,
-            textAlignVertical: properties.textAlignVertical,
-            textAlign: properties.textAlign,
-            autocorrect: properties.autocorrect,
-            enableSuggestions: properties.enableSuggestions,
-            decoration: properties.inputDecoration,
-            onTap: onFocus?.call,
-            onSaved: properties.onSaved,
-            onFieldSubmitted: properties.onFieldSubmitted,
-            validator: properties.validator,
-            textInputAction: properties.textInputAction,
-            obscureText: properties.obscureText,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      children: [
+        Flexible(
+          child: GazeSelectionAnimation(
+            properties: GazeSelectionAnimationProperties(route: route, gazeInteractive: properties.enabled),
+            wrappedKey: GlobalKey(),
+            wrappedWidget: Positioned.directional(
+              textDirection: TextDirection.ltr,
+              child: TextFormField(
+                focusNode: focusNode,
+                controller: controller,
+                keyboardType: TextInputType.none,
+                onTap: onFocus?.call,
+                // GazeTextFieldProperties
+                maxLength: properties.maxLength,
+                style: properties.style,
+                onSaved: properties.onSaved,
+                validator: properties.validator,
+                decoration: properties.inputDecoration,
+                textInputAction: properties.textInputAction,
+                onFieldSubmitted: properties.onFieldSubmitted,
+                textAlignVertical: properties.textAlignVertical,
+                textAlign: properties.textAlign,
+                cursorRadius: properties.cursorRadius,
+                enabled: properties.enabled,
+                autocorrect: properties.autocorrect,
+                enableSuggestions: properties.enableSuggestions,
+                expands: properties.expands,
+                obscureText: properties.obscureText && ref.watch(obscureTextProvider),
+                maxLines: properties.obscureText ? 1 : null,
+              ),
+            ),
+            onGazed: onFocus?.call,
           ),
         ),
-      ),
-      onGazed: onFocus?.call,
+        if (properties.obscureText) ...[
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 70,
+            child: GazeButton(
+              properties: GazeButtonProperties(
+                backgroundColor: Theme.of(context).primaryColor,
+                icon: Icon(ref.watch(obscureTextProvider) ? Icons.visibility_off : Icons.visibility),
+              ),
+              onTap: () {
+                ref.read(obscureTextProvider.notifier).state = !ref.watch(obscureTextProvider);
+              },
+            ),
+          )
+        ],
+      ],
     );
   }
 }
