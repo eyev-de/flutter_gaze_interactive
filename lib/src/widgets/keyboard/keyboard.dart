@@ -15,6 +15,7 @@ import 'keyboard_state.dart';
 import 'keyboard_text.dart';
 import 'keyboard_utility_buttons.dart';
 import 'keyboards.dart';
+import 'utility_buttons/delete_all.button.dart';
 
 class GazeKeyboard {
   static final GazeKeyboard _instance = GazeKeyboard._internal();
@@ -115,7 +116,7 @@ class GazeKeyboard {
                               Flexible(
                                 child: SizedBox(
                                   height: height + 2, // Compensating the top and bottom padding
-                                  child: GazeKeyboardUtilityDeleteAllButton(controller: state.controller, node: node, route: state.route),
+                                  child: DeleteAllButton(controller: state.controller, node: node, route: state.route),
                                 ),
                               ),
                               // Submit Button

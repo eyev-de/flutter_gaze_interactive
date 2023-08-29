@@ -23,6 +23,9 @@ class GazeKeyboardState {
   KeyboardPlatformType keyboardPlatformType;
   void Function(BuildContext)? onTabClose;
 
+  void Function({bool selecting})? onMoveCursorUp;
+  void Function({bool selecting})? onMoveCursorDown;
+
   final shiftStateProvider = StateProvider((ref) => false);
   final capsLockStateProvider = StateProvider((ref) => false);
   final altStateProvider = StateProvider((ref) => false);
@@ -49,6 +52,8 @@ class GazeKeyboardState {
     this.withNumbers = true,
     this.type = KeyboardType.extended,
     this.language = Language.german,
+    this.onMoveCursorDown,
+    this.onMoveCursorUp,
     this.onTabClose,
     KeyboardPlatformType? selectedKeyboardPlatformType,
   }) : keyboardPlatformType = selectedKeyboardPlatformType ?? getPlatformFromSystem();
