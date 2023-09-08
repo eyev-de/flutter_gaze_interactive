@@ -128,6 +128,7 @@ class GazeKey extends ConsumerWidget {
       GazeKeyType.enter => Colors.grey.shade800,
       GazeKeyType.tab => Colors.grey.shade800,
       GazeKeyType.signs => Colors.grey.shade800,
+      GazeKeyType.close => Theme.of(context).primaryColor,
       _ => Colors.grey.shade900,
     };
 
