@@ -40,10 +40,10 @@ class GazeKey extends ConsumerWidget {
     this.altStr,
     // this.ctrl,
     this.ctrlStr,
-    this.listenToShift = true,
-    this.listenToCapsLock = false,
-    this.listenToAlt = false,
-    this.listenToCtrl = false,
+    // this.listenToShift = true,
+    // this.listenToCapsLock = false,
+    // this.listenToAlt = false,
+    // this.listenToCtrl = false,
     this.onBack,
   }) : super(key: key);
 
@@ -54,10 +54,10 @@ class GazeKey extends ConsumerWidget {
 
   final GazeKeyboardState keyboardState;
 
-  final bool listenToShift;
-  final bool listenToAlt;
-  final bool listenToCtrl;
-  final bool listenToCapsLock;
+  // final bool listenToShift;
+  // final bool listenToAlt;
+  // final bool listenToCtrl;
+  // final bool listenToCapsLock;
 
   // final bool? shift;
 
@@ -72,65 +72,80 @@ class GazeKey extends ConsumerWidget {
 
   final void Function(BuildContext)? onBack;
 
-  static Widget _buildContent(BuildContext context, Object content, bool? shift, GazeKeyboardState keyboardState, bool? signs, GazeKeyType type) {
+  static Widget _buildContent(BuildContext context, Object content, bool shift, GazeKeyboardState keyboardState, bool signs, GazeKeyType type) {
     const textStyle = TextStyle(fontSize: 20);
-    if (content is List) {
-      if (content[0] is IconData) {
-        // Drawing Shift and Sign Button based on current state
-        final IconData icon = getIOSKey(list: content, signs: signs, shift: shift) as IconData;
-        return _SpaceOut(child: Icon(icon, color: Colors.white, size: 25));
-      }
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Row(
+    switch (content) {
+      case final List<dynamic> list:
+        final cntnt = (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak)
+            ? getIOSKey(list: list, signs: signs, shift: shift)
+            : list[shift ? 1 : 0];
+        if (cntnt is String) {
+          if (cntnt == '') return Container();
+          return Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS && keyboardState.type != KeyboardType.speak)
-                    ? getIOSKey(list: content, signs: signs, shift: shift) as String
-                    : content[shift ?? false ? 0 : 1] as String,
-                style: textStyle.copyWith(color: Colors.white),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    cntnt,
+                    style: textStyle.copyWith(color: Colors.white),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
-      );
+          );
+        }
+        return _SpaceOut(child: Icon(cntnt as IconData, color: Colors.white, size: 25));
+      case final String str:
+        final _switchTo = shift && str.length == 1 && validCharacters.hasMatch(content);
+        return _SpaceOut(
+          child: Text(_switchTo ? str.toUpperCase() : str, style: TextStyle(fontSize: textStyle.fontSize, color: Colors.white)),
+        );
+      case final IconData icon:
+        return _SpaceOut(child: Icon(icon, color: Colors.white, size: 25));
+      default:
+        // This is just blank space
+        return Container();
     }
-    if (content is String) {
-      final _switchTo = shift != null && shift && content.length == 1 && validCharacters.hasMatch(content);
-      return _SpaceOut(
-        child: Text(_switchTo ? content.toUpperCase() : content, style: TextStyle(fontSize: textStyle.fontSize, color: Colors.white)),
-      );
-    }
-    if (content is IconData) {
-      return _SpaceOut(child: Icon(content, color: Colors.white, size: 25));
-    }
-    return Container();
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool? shiftState;
-    if (listenToShift) {
-      final shift = ref.watch(keyboardState.shiftStateProvider);
-      final capsLock = ref.watch(keyboardState.capsLockStateProvider);
-      shiftState = shift ^ capsLock;
-    }
+    // Determine if this key should change in appearance according to shift / caps lock state
+    final shift = ref.watch(keyboardState.shiftStateProvider);
+    final capsLock = ref.watch(keyboardState.capsLockStateProvider);
+    // Current shift / caps lock state
+    final shiftState = shift ^ capsLock;
+
     final signsState = ref.watch(keyboardState.signsStateProvider);
-    final _switchTo = shiftState ?? false;
-    final changeColor = _switchTo && (type == GazeKeyType.caps || type == GazeKeyType.shift);
+    // Either shiftState was set or it is false
+    // It can be null
+    final changeColor = type == GazeKeyType.caps && capsLock || type == GazeKeyType.shift && shift;
+    final defaultColor = switch (type) {
+      GazeKeyType.caps => Colors.grey.shade800,
+      GazeKeyType.shift => Colors.grey.shade800,
+      GazeKeyType.enter => Colors.grey.shade800,
+      GazeKeyType.tab => Colors.grey.shade800,
+      GazeKeyType.signs => Colors.grey.shade800,
+      _ => Colors.grey.shade900,
+    };
+
+    final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type);
+    // This is just blank space
+    if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget);
+
     return Flexible(
       flex: widthRatio.round(),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         child: GazeButton(
           properties: GazeButtonProperties(
-            backgroundColor: changeColor ? Theme.of(context).primaryColor : Colors.grey.shade900,
+            backgroundColor: changeColor ? Theme.of(context).primaryColor : defaultColor,
             innerPadding: EdgeInsets.zero,
-            child: _buildContent(context, content, shiftState, keyboardState, signsState, type),
+            child: widget,
             route: keyboardState.route,
-            animationColor: !changeColor ? Theme.of(context).primaryColor : Colors.grey.shade900,
+            animationColor: !changeColor ? Theme.of(context).primaryColor : defaultColor,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
             reselectable: true,
             withSound: true,
@@ -138,30 +153,42 @@ class GazeKey extends ConsumerWidget {
           onTap: () {
             if (content is List) {
               // What will be done & inserted in text field on pressed IconData on shift/signs tap
-              if (type == GazeKeyType.shift || type == GazeKeyType.signs || type == GazeKeyType.close) {
-                onTap.call(null, type, ref, context);
-                // What will be inserted on pressed normal key (not shift/signs)
-              } else {
-                if (keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS && keyboardState.type != KeyboardType.speak) {
-                  onTap.call(getIOSKey(list: content as List, signs: signsState, shift: shiftState), type, ref, context);
-                } else {
-                  onTap.call((_switchTo ? (content as List)[0] : (content as List)[1]) as String?, type, ref, context);
-                }
+              switch (type) {
+                case GazeKeyType.shift:
+                case GazeKeyType.caps:
+                case GazeKeyType.signs:
+                case GazeKeyType.close:
+                  _onTap.call(null, type, ref, context);
+                  break;
+                case GazeKeyType.alt:
+                case GazeKeyType.ctrl:
+                case GazeKeyType.del:
+                case GazeKeyType.enter:
+                case GazeKeyType.tab:
+                case GazeKeyType.win:
+                case GazeKeyType.none:
+                  // What will be inserted on pressed normal key (not shift/signs)
+                  if (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak) {
+                    _onTap.call(getIOSKey(list: content as List, signs: signsState, shift: shiftState), type, ref, context);
+                  } else {
+                    _onTap.call((shiftState ? (content as List)[0] : (content as List)[1]) as String?, type, ref, context);
+                  }
+                  break;
               }
             } else if (content is String) {
-              if (_switchTo) {
+              if (shiftState) {
                 if ((content as String).length == 1 && validCharacters.hasMatch(content as String)) {
-                  onTap.call((content as String).toUpperCase(), type, ref, context);
+                  _onTap.call((content as String).toUpperCase(), type, ref, context);
                 } else {
-                  onTap.call(content as String, type, ref, context);
+                  _onTap.call(content as String, type, ref, context);
                 }
               } else {
-                onTap.call(content as String, type, ref, context);
+                _onTap.call(content as String, type, ref, context);
               }
             } else if (content == Icons.space_bar) {
-              onTap.call(' ', type, ref, context);
+              _onTap.call(' ', type, ref, context);
             } else {
-              onTap.call(null, type, ref, context);
+              _onTap.call(null, type, ref, context);
             }
           },
         ),
@@ -169,7 +196,7 @@ class GazeKey extends ConsumerWidget {
     );
   }
 
-  void onTap(dynamic? str, GazeKeyType type, WidgetRef ref, BuildContext context) {
+  void _onTap(str, GazeKeyType type, WidgetRef ref, BuildContext context) {
     keyboardState.node?.requestFocus();
     final shift = ref.read(keyboardState.shiftStateProvider);
     final alt = ref.read(keyboardState.altStateProvider);
@@ -215,8 +242,9 @@ class GazeKey extends ConsumerWidget {
       case GazeKeyType.win:
         break;
       case GazeKeyType.signs:
-        // shift becomes unselected when signs is pressed
+        // shift / capsLock becomes unselected when signs is pressed
         if (shift) ref.read(keyboardState.shiftStateProvider.notifier).state = false;
+        if (capsLock) ref.read(keyboardState.capsLockStateProvider.notifier).state = false;
         ref.read(keyboardState.signsStateProvider.notifier).state = !signs;
         break;
     }
@@ -225,14 +253,14 @@ class GazeKey extends ConsumerWidget {
 
   /// Based on the shift and signs key the correct ios key will be chosen.
   @visibleForTesting
-  static dynamic getIOSKey({required List<dynamic> list, bool? signs, bool? shift}) {
-    if (signs != null && list.length == 4 && shift != null) return shift ? (signs ? list[3] : list[1]) : (signs ? list[2] : list[0]);
+  static dynamic getIOSKey({required List<dynamic> list, required bool signs, required bool shift}) {
+    if (list.length == 4) return shift ? (signs ? list[3] : list[1]) : (signs ? list[2] : list[0]);
     throw Exception('iOSKey not found, signs or shift key value might be null or key list length != 4');
   }
 }
 
 class _SpaceOut extends StatelessWidget {
-  const _SpaceOut({super.key, required this.child});
+  const _SpaceOut({required this.child});
 
   final Widget child;
 
