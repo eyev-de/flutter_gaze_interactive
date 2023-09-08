@@ -17,6 +17,7 @@ class GazeKeyboardTextWidget extends StatelessWidget {
     Key? key,
     required this.state,
     required this.node,
+    this.bigFont = false,
     this.minHeight = 100,
     this.maxLines = 10,
     this.onTap,
@@ -28,6 +29,8 @@ class GazeKeyboardTextWidget extends StatelessWidget {
   final FocusNode node;
   final controller = ScrollController();
   final double minHeight;
+  final bool bigFont;
+
   final int maxLines;
   final void Function()? onTap;
 
@@ -51,7 +54,7 @@ class GazeKeyboardTextWidget extends StatelessWidget {
                 controller: state.controller,
                 placeholder: state.placeholder,
                 focusNode: node,
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: bigFont ? Theme.of(context).textTheme.headlineSmall : Theme.of(context).textTheme.bodyLarge,
                 enabled: true,
                 cursorColor: Colors.white,
                 showCursor: true,
