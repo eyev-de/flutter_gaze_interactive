@@ -6,7 +6,7 @@ import '../../../core/extensions.dart';
 import '../keyboard_utility_buttons.dart';
 
 class PasteButton extends GazeKeyboardUtilityButton {
-  const PasteButton({super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
+  const PasteButton({super.key, required super.state, required super.node, super.label = 'Paste', super.textStyle});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

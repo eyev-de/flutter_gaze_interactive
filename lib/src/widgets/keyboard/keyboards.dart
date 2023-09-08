@@ -14,7 +14,7 @@ import 'keyboard_state.dart';
 
 enum Language { german, english }
 
-enum KeyboardPlatformType { iOS, desktop }
+enum KeyboardPlatformType { mobile, desktop }
 
 enum KeyboardType { extended, speak, editor }
 
@@ -25,9 +25,9 @@ class Keyboards {
       case KeyboardType.editor:
         switch (lang) {
           case Language.german:
-            return keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS ? germanIOS(keyboardState) : germanDesktop(keyboardState);
+            return keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile ? germanMobile(keyboardState) : germanDesktop(keyboardState);
           case Language.english:
-            return keyboardState.keyboardPlatformType == KeyboardPlatformType.iOS ? englishIOS(keyboardState) : englishDesktop(keyboardState);
+            return keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile ? englishMobile(keyboardState) : englishDesktop(keyboardState);
         }
       case KeyboardType.speak:
         switch (lang) {
@@ -120,10 +120,17 @@ class Keyboards {
   }
 
   @visibleForTesting
-  static List<List<Widget>> germanIOS(GazeKeyboardState keyboardState) {
+  static List<List<Widget>> germanMobile(GazeKeyboardState keyboardState) {
     return [
       [
-        if (keyboardState.type == KeyboardType.editor) GazeKey(content: Icons.keyboard_tab_rounded, type: GazeKeyType.tab, keyboardState: keyboardState),
+        if (keyboardState.type == KeyboardType.extended) const Spacer(),
+        if (keyboardState.type == KeyboardType.editor)
+          GazeKey(
+            content: Icons.keyboard_tab_rounded,
+            widthRatio: 2,
+            type: GazeKeyType.tab,
+            keyboardState: keyboardState,
+          ),
         GazeKey(content: const ['q', 'Q', '1', '['], keyboardState: keyboardState),
         GazeKey(content: const ['w', 'W', '2', ']'], keyboardState: keyboardState),
         GazeKey(content: const ['e', 'E', '3', '{'], keyboardState: keyboardState),
@@ -138,7 +145,8 @@ class Keyboards {
       ],
       [
         GazeKey(
-          content: const [CupertinoIcons.shift, CupertinoIcons.shift_fill, CupertinoIcons.plus, CupertinoIcons.textformat_123],
+          content: const [CupertinoIcons.shift, CupertinoIcons.shift_fill, '#+=', CupertinoIcons.textformat_123],
+          widthRatio: keyboardState.type == KeyboardType.extended ? 1 : 2,
           type: GazeKeyType.shift,
           keyboardState: keyboardState,
         ),
@@ -153,14 +161,15 @@ class Keyboards {
         GazeKey(content: const ['l', 'L', '@', '¥'], keyboardState: keyboardState),
         GazeKey(content: const ['ö', 'Ö', '"', '•'], keyboardState: keyboardState),
         GazeKey(content: const ['ä', 'Ä', '', ''], keyboardState: keyboardState),
-        if (keyboardState.type == KeyboardType.editor) GazeKey(content: 'Enter', widthRatio: 1.5, type: GazeKeyType.enter, keyboardState: keyboardState),
       ],
       [
         GazeKey(
           content: const [CupertinoIcons.textformat_123, CupertinoIcons.textformat_123, CupertinoIcons.textformat_abc, CupertinoIcons.textformat_abc],
+          widthRatio: keyboardState.type == KeyboardType.extended ? 1 : 2,
           type: GazeKeyType.signs,
           keyboardState: keyboardState,
         ),
+        if (keyboardState.type == KeyboardType.extended) const Spacer(),
         GazeKey(content: const ['y', 'Y', '', ''], keyboardState: keyboardState),
         GazeKey(content: const ['x', 'X', '.', '.'], keyboardState: keyboardState),
         GazeKey(content: const ['c', 'C', ',', ','], keyboardState: keyboardState),
@@ -169,7 +178,19 @@ class Keyboards {
         GazeKey(content: const ['b', 'B', '!', '!'], keyboardState: keyboardState),
         GazeKey(content: const ['n', 'N', '´', '`'], keyboardState: keyboardState),
         GazeKey(content: const ['m', 'M', '', ''], keyboardState: keyboardState),
-        if (keyboardState.type == KeyboardType.extended) GazeKey(content: Icons.keyboard_hide, type: GazeKeyType.close, keyboardState: keyboardState),
+        if (keyboardState.type == KeyboardType.extended)
+          GazeKey(
+            content: Icons.keyboard_hide,
+            type: GazeKeyType.close,
+            keyboardState: keyboardState,
+          ),
+        if (keyboardState.type == KeyboardType.editor)
+          GazeKey(
+            content: 'Enter',
+            widthRatio: 2,
+            type: GazeKeyType.enter,
+            keyboardState: keyboardState,
+          ),
       ],
     ];
   }
@@ -254,10 +275,17 @@ class Keyboards {
   }
 
   @visibleForTesting
-  static List<List<Widget>> englishIOS(GazeKeyboardState keyboardState) {
+  static List<List<Widget>> englishMobile(GazeKeyboardState keyboardState) {
     return [
       [
-        GazeKey(content: Icons.keyboard_tab_rounded, type: GazeKeyType.tab, keyboardState: keyboardState), // widthRatio: 1.7
+        if (keyboardState.type == KeyboardType.extended) const Spacer(),
+        if (keyboardState.type == KeyboardType.editor)
+          GazeKey(
+            content: Icons.keyboard_tab_rounded,
+            widthRatio: 2,
+            type: GazeKeyType.tab,
+            keyboardState: keyboardState,
+          ),
         GazeKey(content: const ['q', 'Q', '1', '['], keyboardState: keyboardState),
         GazeKey(content: const ['w', 'W', '2', ']'], keyboardState: keyboardState),
         GazeKey(content: const ['e', 'E', '3', '{'], keyboardState: keyboardState),
@@ -270,12 +298,12 @@ class Keyboards {
         GazeKey(content: const ['p', 'P', '0', '='], keyboardState: keyboardState),
       ],
       [
-        GazeKey(content: const [
-          CupertinoIcons.shift,
-          CupertinoIcons.shift_fill,
-          CupertinoIcons.plus,
-          CupertinoIcons.textformat_123,
-        ], type: GazeKeyType.shift, keyboardState: keyboardState), // , widthRatio: 1.5
+        GazeKey(
+          content: const [CupertinoIcons.shift, CupertinoIcons.shift_fill, '#+=', CupertinoIcons.textformat_123],
+          type: GazeKeyType.shift,
+          widthRatio: keyboardState.type == KeyboardType.extended ? 1 : 2,
+          keyboardState: keyboardState,
+        ),
         GazeKey(content: const ['a', 'A', '-', '_'], keyboardState: keyboardState),
         GazeKey(content: const ['s', 'S', '/', r'\'], keyboardState: keyboardState),
         GazeKey(content: const ['d', 'D', ':', '|'], keyboardState: keyboardState),
@@ -286,15 +314,18 @@ class Keyboards {
         GazeKey(content: const ['k', 'K', '&', '£'], keyboardState: keyboardState),
         GazeKey(content: const ['l', 'L', '@', '¥'], keyboardState: keyboardState),
         GazeKey(content: const ['', '', '"', '•'], keyboardState: keyboardState),
-        GazeKey(content: 'Enter', widthRatio: 1.5, type: GazeKeyType.enter, keyboardState: keyboardState),
       ],
       [
-        GazeKey(content: const [
-          CupertinoIcons.textformat_123,
-          CupertinoIcons.textformat_123,
-          CupertinoIcons.textformat_abc,
-          CupertinoIcons.textformat_abc,
-        ], type: GazeKeyType.signs, keyboardState: keyboardState), // , widthRatio: 1.5
+        GazeKey(
+          content: const [
+            CupertinoIcons.textformat_123,
+            CupertinoIcons.textformat_123,
+            CupertinoIcons.textformat_abc,
+            CupertinoIcons.textformat_abc,
+          ],
+          type: GazeKeyType.signs,
+          keyboardState: keyboardState,
+        ),
         GazeKey(content: const ['z', 'Z', '', ''], keyboardState: keyboardState),
         GazeKey(content: const ['x', 'X', '.', '.'], keyboardState: keyboardState),
         GazeKey(content: const ['c', 'C', ',', ','], keyboardState: keyboardState),
@@ -307,6 +338,13 @@ class Keyboards {
           GazeKey(
             content: Icons.keyboard_hide,
             type: GazeKeyType.close,
+            keyboardState: keyboardState,
+          ),
+        if (keyboardState.type == KeyboardType.editor)
+          GazeKey(
+            content: 'Enter',
+            widthRatio: 2,
+            type: GazeKeyType.enter,
             keyboardState: keyboardState,
           ),
       ],
@@ -331,7 +369,11 @@ class Keyboards {
         GazeKey(content: 'ü', keyboardState: keyboardState),
       ],
       [
-        GazeKey(content: Icons.keyboard_capslock_rounded, type: GazeKeyType.caps, keyboardState: keyboardState),
+        GazeKey(
+          content: const [CupertinoIcons.shift, CupertinoIcons.shift_fill],
+          type: GazeKeyType.shift,
+          keyboardState: keyboardState,
+        ),
         GazeKey(content: 'a', keyboardState: keyboardState),
         GazeKey(content: 's', keyboardState: keyboardState),
         GazeKey(content: 'd', keyboardState: keyboardState),
@@ -345,7 +387,7 @@ class Keyboards {
         GazeKey(content: 'ä', keyboardState: keyboardState),
       ],
       [
-        GazeKey(content: Icons.keyboard_arrow_up_rounded, type: GazeKeyType.shift, keyboardState: keyboardState),
+        const Spacer(),
         GazeKey(content: 'y', keyboardState: keyboardState),
         GazeKey(content: 'x', keyboardState: keyboardState),
         GazeKey(content: 'c', keyboardState: keyboardState),
@@ -377,7 +419,13 @@ class Keyboards {
         GazeKey(content: 'p', keyboardState: keyboardState),
       ],
       [
-        GazeKey(content: Icons.keyboard_capslock_rounded, type: GazeKeyType.caps, keyboardState: keyboardState),
+        // GazeKey(content: Icons.keyboard_capslock_rounded, type: GazeKeyType.caps, keyboardState: keyboardState),
+        GazeKey(
+          content: const [CupertinoIcons.shift, CupertinoIcons.shift_fill],
+          widthRatio: 2,
+          type: GazeKeyType.shift,
+          keyboardState: keyboardState,
+        ),
         GazeKey(content: 'a', keyboardState: keyboardState),
         GazeKey(content: 's', keyboardState: keyboardState),
         GazeKey(content: 'd', keyboardState: keyboardState),
@@ -389,7 +437,7 @@ class Keyboards {
         GazeKey(content: 'l', keyboardState: keyboardState),
       ],
       [
-        GazeKey(content: Icons.keyboard_arrow_up_rounded, type: GazeKeyType.shift, keyboardState: keyboardState),
+        // GazeKey(content: Icons.keyboard_arrow_up_rounded, type: GazeKeyType.shift, keyboardState: keyboardState),
         GazeKey(content: 'z', keyboardState: keyboardState),
         GazeKey(content: 'x', keyboardState: keyboardState),
         GazeKey(content: 'c', keyboardState: keyboardState),

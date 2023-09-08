@@ -137,7 +137,7 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     const double size = 20;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       child: GazeButton(
         onTap: onTap,
         properties: GazeButtonProperties(

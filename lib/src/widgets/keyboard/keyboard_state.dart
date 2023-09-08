@@ -58,5 +58,5 @@ class GazeKeyboardState {
     KeyboardPlatformType? selectedKeyboardPlatformType,
   }) : keyboardPlatformType = selectedKeyboardPlatformType ?? getPlatformFromSystem();
 
-  static KeyboardPlatformType getPlatformFromSystem() => Platform.isIOS ? KeyboardPlatformType.iOS : KeyboardPlatformType.desktop;
+  static KeyboardPlatformType getPlatformFromSystem() => Platform.isIOS ? KeyboardPlatformType.mobile : KeyboardPlatformType.desktop;
 }
