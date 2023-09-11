@@ -172,7 +172,7 @@ class GazeKey extends ConsumerWidget {
                   if (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak) {
                     _onTap.call(getIOSKey(list: content as List, signs: signsState, shift: shiftState), type, ref, context);
                   } else {
-                    _onTap.call((shiftState ? (content as List)[0] : (content as List)[1]) as String?, type, ref, context);
+                    _onTap.call((shiftState ? (content as List)[1] : (content as List)[0]) as String?, type, ref, context);
                   }
                   break;
               }
