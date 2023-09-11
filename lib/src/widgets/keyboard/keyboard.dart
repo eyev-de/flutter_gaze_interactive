@@ -109,7 +109,8 @@ class GazeKeyboard {
                                 flex: 8,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-                                  child: GazeKeyboardTextWidget(state: state, node: node, minHeight: height),
+                                  // Subtract vertical padding from text field size
+                                  child: GazeKeyboardTextWidget(state: state, node: node, minHeight: height - 6),
                                 ),
                               ),
                               // Delete Button
