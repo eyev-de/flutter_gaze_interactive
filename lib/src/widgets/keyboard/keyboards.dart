@@ -406,6 +406,7 @@ class Keyboards {
   static List<List<Widget>> englishSpeak(GazeKeyboardState keyboardState) {
     return [
       [
+        const Spacer(),
         GazeKey(content: 'q', keyboardState: keyboardState),
         GazeKey(content: 'w', keyboardState: keyboardState),
         GazeKey(content: 'e', keyboardState: keyboardState),
@@ -416,13 +417,11 @@ class Keyboards {
         GazeKey(content: 'i', keyboardState: keyboardState),
         GazeKey(content: 'o', keyboardState: keyboardState),
         GazeKey(content: 'p', keyboardState: keyboardState),
-        GazeKey(content: const ['\'', '-'], keyboardState: keyboardState),
       ],
       [
         // GazeKey(content: Icons.keyboard_capslock_rounded, type: GazeKeyType.caps, keyboardState: keyboardState),
         GazeKey(
           content: const [CupertinoIcons.shift, CupertinoIcons.shift_fill],
-          widthRatio: 2,
           type: GazeKeyType.shift,
           keyboardState: keyboardState,
         ),
@@ -435,6 +434,7 @@ class Keyboards {
         GazeKey(content: 'j', keyboardState: keyboardState),
         GazeKey(content: 'k', keyboardState: keyboardState),
         GazeKey(content: 'l', keyboardState: keyboardState),
+        GazeKey(content: const ["'", '-'], keyboardState: keyboardState),
       ],
       [
         // GazeKey(content: Icons.keyboard_arrow_up_rounded, type: GazeKeyType.shift, keyboardState: keyboardState),
