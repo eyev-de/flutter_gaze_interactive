@@ -13,16 +13,6 @@ import '../button/button.dart';
 import 'switch_button_state.model.dart';
 
 class GazeSwitchButtonProperties {
-  final bool enabled;
-
-  final Color disabledColor;
-  final Color unToggledColor;
-  final Color toggledColor;
-  final EdgeInsets innerPadding;
-  final Size size;
-  final EdgeInsets margin;
-  final String route;
-  final GazeSwitchButtonState state;
   GazeSwitchButtonProperties({
     required this.state,
     required this.route,
@@ -34,16 +24,23 @@ class GazeSwitchButtonProperties {
     this.size = const Size(80, 80),
     this.margin = const EdgeInsets.fromLTRB(15, 35, 15, 35),
   });
+
+  final GazeSwitchButtonState state;
+  final String route;
+  final bool enabled;
+  final Color disabledColor;
+  final Color unToggledColor;
+  final Color toggledColor;
+  final EdgeInsets innerPadding;
+  final Size size;
+  final EdgeInsets margin;
 }
 
 class GazeSwitchButton extends ConsumerStatefulWidget {
+  GazeSwitchButton({Key? key, required this.properties, required this.onToggled}) : super(key: key);
+
   final GazeSwitchButtonProperties properties;
   final Future<bool> Function(bool)? onToggled;
-  GazeSwitchButton({
-    Key? key,
-    required this.properties,
-    required this.onToggled,
-  }) : super(key: key);
 
   @override
   _GazeSwitchButtonState createState() => _GazeSwitchButtonState();
@@ -61,15 +58,8 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   void initState() {
     super.initState();
     _controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
-    _animation = Tween<double>(begin: math.pi, end: math.pi / 2).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticInOut,
-      ),
-    );
-    if (widget.properties.state.toggled) {
-      _controller.forward();
-    }
+    _animation = Tween<double>(begin: math.pi, end: math.pi / 2).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticInOut));
+    if (widget.properties.state.toggled) _controller.forward();
   }
 
   @override
@@ -81,9 +71,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   @override
   Widget build(BuildContext context) {
     final _state = ref.watch(stateProvider);
-    ref.listen(stateProvider, (prev, next) {
-      _toggle(next.toggled);
-    });
+    ref.listen(stateProvider, (prev, next) => _toggle(next.toggled));
     return GazeButton(
       properties: GazeButtonProperties(
         innerPadding: const EdgeInsets.all(0),
@@ -96,10 +84,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: _getColor(_state.toggled),
-              width: 3,
-            ),
+            border: Border.all(color: _getColor(_state.toggled), width: 3),
           ),
           child: AnimatedBuilder(
             animation: _animation,
@@ -129,18 +114,17 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   }
 
   void _toggle(bool toggled) {
-    if (toggled != widget.properties.state.toggled) {
+    final status = _controller.status;
+    if (status == AnimationStatus.completed) {
       _controller.reverse();
-    } else {
+    } else if (status == AnimationStatus.dismissed) {
       _controller.forward();
     }
   }
 
   Color _getColor(bool toggled) {
-    return widget.properties.enabled
-        ? toggled
-            ? widget.properties.toggledColor
-            : widget.properties.unToggledColor
-        : widget.properties.disabledColor;
+    if (!widget.properties.enabled) return widget.properties.disabledColor;
+    if (toggled) return widget.properties.toggledColor;
+    return widget.properties.unToggledColor;
   }
 }
