@@ -26,16 +26,19 @@ class GazeInteractive {
   Logger? logger;
   final sharedPreferencesProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
   static final GazeInteractive _instance = GazeInteractive._internal();
+
   factory GazeInteractive() {
     AudioCache.instance.prefix = '';
     unawaited(player.setVolume(1));
     return _instance;
   }
+
   GazeInteractive._internal();
 
   bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate;
 
   String get currentRoute => ref.read(currentRouteStateProvider);
+
   set currentRoute(String value) {
     if (ref.read(currentRouteStateProvider) != value) {
       Future.delayed(const Duration(), () {
@@ -45,6 +48,7 @@ class GazeInteractive {
   }
 
   bool get active => ref.read(activeStateProvider);
+
   set active(bool value) {
     if (ref.read(activeStateProvider) != value) {
       Future.delayed(const Duration(), () {
@@ -252,6 +256,7 @@ class GazeContext extends StatelessWidget {
 
 class _GazeContext extends ConsumerStatefulWidget {
   final Widget child;
+
   const _GazeContext({required this.child});
 
   @override
