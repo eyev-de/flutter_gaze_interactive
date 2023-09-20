@@ -28,8 +28,8 @@ export 'src/widgets/keyboard/utility_buttons/move_cursor_right.button.dart' show
 export 'src/widgets/keyboard/utility_buttons/paste.button.dart' show PasteButton;
 export 'src/widgets/keyboard/utility_buttons/select.button.dart' show SelectButton;
 export 'src/widgets/pointer/pointer_state.model.dart' show GazePointerState;
-export 'src/widgets/pointer/pointer_type.dart' show GazePointerType;
-export 'src/widgets/pointer/pointer_view.dart' show GazePointerView;
+export 'src/widgets/pointer/pointer_type.enum.dart' show GazePointerType;
+export 'src/widgets/pointer/view/pointer_view.dart' show GazePointerView;
 export 'src/widgets/radio_button.dart' show GazeRadioButton;
 export 'src/widgets/scrollable/scrollable.dart' show GazeScrollable;
 export 'src/widgets/scrollable/scrollable_impl.dart' show GazeScrollableImpl, GazeScrollableIndicatorState;

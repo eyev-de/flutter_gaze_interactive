@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../button/button.dart';
-import '../pointer/pointer_view.dart';
+import '../pointer/view/pointer_view.dart';
 import 'keyboard_key.dart';
 import 'keyboard_state.dart';
 import 'keyboard_text.dart';

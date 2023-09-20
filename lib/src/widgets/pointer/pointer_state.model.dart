@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:gaze_interactive/src/core/constants.dart';
 
-import 'pointer_action.dart';
-import 'pointer_type.dart';
+import 'pointer_action.enum.dart';
+import 'pointer_type.enum.dart';
 
 part 'pointer_state.model.freezed.dart';
 

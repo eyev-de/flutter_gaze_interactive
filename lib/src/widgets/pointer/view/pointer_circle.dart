@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../api.dart';
+import '../../../../api.dart';
 
 class PointerCircle extends StatelessWidget {
   const PointerCircle({super.key, required this.type, required this.size, required this.animation});
@@ -22,7 +22,7 @@ class PointerCircle extends StatelessWidget {
               child: AnimatedBuilder(
                 animation: animation,
                 builder: (context, child) => CircularProgressIndicator(
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent.shade100),
                   strokeWidth: 10,
                   value: animation.value,
                 ),
@@ -32,7 +32,7 @@ class PointerCircle extends StatelessWidget {
               child: Container(
                 width: size,
                 height: size,
-                decoration: const BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
+                decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
               ),
             ),
             Positioned(
@@ -42,7 +42,7 @@ class PointerCircle extends StatelessWidget {
                 alignment: Alignment.center,
                 width: _dotSize,
                 height: _dotSize,
-                decoration: const BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
+                decoration: BoxDecoration(color: Colors.redAccent.shade100, shape: BoxShape.circle),
               ),
             ),
           ],
