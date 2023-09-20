@@ -54,7 +54,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
     onFixation: _onFixation,
   );
 
-  // when moving
+  // on moving -> updated gaze data
   void _onGazeData(Offset gaze) {
     if (mounted) {
       ref.read(pointerOpacityProvider.notifier).reset();
@@ -70,7 +70,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
     ref.read(pointerOpacityProvider.notifier).fadeOut();
   }
 
-  // when fixation
+  // on fixation -> user focuses on one point
   void _onFixation() {
     if (mounted && widget.state.type == GazePointerType.active && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
       ref.read(pointerFixationPointProvider.notifier).update(offset: ref.read(pointerOffsetProvider));
@@ -78,12 +78,13 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
     }
   }
 
-  /// ------
-
   @override
   void initState() {
     super.initState();
-    // gaze pointer type = active
+    // fade out gaze pointer
+    ref.read(pointerOpacityProvider.notifier).fadeOut();
+    // gaze pointer type is active -> animate fixation
+    ref.read(pointerAnimationProvider(vsync: this));
     ref.read(pointerAnimationControllerProvider(vsync: this)).addStatusListener(
       (status) {
         if (status == AnimationStatus.completed) {
@@ -94,11 +95,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
         }
       },
     );
-    ref.read(pointerAnimationProvider(vsync: this));
-    // -------
     GazeInteractive().register(gazePointerData);
-    // fade out gaze pointer
-    ref.read(pointerOpacityProvider.notifier).fadeOut();
   }
 
   @override
@@ -109,7 +106,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    final _size = ref.read(pointerSizeProvider(type: widget.state.type));
+    final _size = ref.watch(pointerSizeProvider(type: widget.state.type));
     final _pointerOffset = ref.watch(pointerOffsetProvider);
     final _fixationRadius = ref.watch(pointerFixationRadiusProvider);
     final _opacity = ref.watch(pointerOpacityProvider);

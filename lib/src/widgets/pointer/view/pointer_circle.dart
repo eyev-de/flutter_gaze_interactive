@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../api.dart';
+import 'pointer_view.provider.dart';
 
-class PointerCircle extends StatelessWidget {
+class PointerCircle extends ConsumerWidget {
   const PointerCircle({super.key, required this.type, required this.size, required this.animation});
 
   final GazePointerType type;
@@ -10,9 +12,11 @@ class PointerCircle extends StatelessWidget {
   final Animation<double> animation;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final color = ref.watch(pointerColorProvider(type: type));
     if (type == GazePointerType.active) {
       const _dotSize = 5.0;
+      final _lighterColor = Color.alphaBlend(color.withOpacity(0.6), Colors.white);
       return SizedBox(
         width: size,
         height: size,
@@ -22,7 +26,7 @@ class PointerCircle extends StatelessWidget {
               child: AnimatedBuilder(
                 animation: animation,
                 builder: (context, child) => CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent.shade100),
+                  valueColor: AlwaysStoppedAnimation<Color>(_lighterColor),
                   strokeWidth: 10,
                   value: animation.value,
                 ),
@@ -42,7 +46,7 @@ class PointerCircle extends StatelessWidget {
                 alignment: Alignment.center,
                 width: _dotSize,
                 height: _dotSize,
-                decoration: BoxDecoration(color: Colors.redAccent.shade100, shape: BoxShape.circle),
+                decoration: BoxDecoration(color: _lighterColor, shape: BoxShape.circle),
               ),
             ),
           ],
@@ -54,8 +58,8 @@ class PointerCircle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(
-        color: Colors.yellow,
+      decoration: BoxDecoration(
+        color: color,
         shape: BoxShape.circle,
       ),
     );

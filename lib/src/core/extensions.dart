@@ -148,3 +148,20 @@ extension TextEditingControllerExtension on TextEditingController {
     );
   }
 }
+
+extension ColorExtension on Color {
+  String get hex {
+    final hexString = value.toRadixString(16);
+    return hexString.substring(2, hexString.length);
+  }
+}
+
+extension StringExtension on String {
+  Color get color {
+    final hexString = this;
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+}

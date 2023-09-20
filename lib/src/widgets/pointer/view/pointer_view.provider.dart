@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/extensions.dart';
 import '../../../state.dart';
 import '../pointer_type.enum.dart';
 
@@ -27,11 +28,22 @@ class PointerAnimation extends _$PointerAnimation {
 @riverpod
 class PointerOpacity extends _$PointerOpacity {
   @override
-  double build() => 0.6;
+  double build() => ref.watch(GazeInteractive().pointerOpacity);
 
   void fadeOut() => Future.delayed(const Duration(milliseconds: 1200), () => state = kDebugMode ? 0.6 : 0.0);
 
   void reset() => ref.invalidateSelf();
+}
+
+@riverpod
+class PointerColor extends _$PointerColor {
+  @override
+  Color build({required GazePointerType type}) {
+    return switch (type) {
+      GazePointerType.active => ref.watch(GazeInteractive().pointerColorActive).color,
+      _ => ref.watch(GazeInteractive().pointerColorPassive).color,
+    };
+  }
 }
 
 /// Gaze Pointer Circle Size
@@ -39,8 +51,11 @@ class PointerOpacity extends _$PointerOpacity {
 class PointerSize extends _$PointerSize {
   @override
   double build({required GazePointerType type}) {
-    final _size = ref.watch(GazeInteractive().pointerSize);
-    return type == GazePointerType.active ? _size / 1.5 : _size;
+    final double _size = ref.watch(GazeInteractive().pointerSize);
+    return switch (type) {
+      GazePointerType.active => _size / 1.5,
+      _ => _size,
+    };
   }
 }
 

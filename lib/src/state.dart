@@ -89,6 +89,24 @@ class GazeInteractive {
     return GazeInteractiveScrollFactorLocalNotifier(ref.read(sharedPreferencesProvider));
   });
 
+  /// Pointer Settings
+
+  // GazePointerType: passive (static circle)
+  late final pointerColorPassive = StateNotifierProvider<GazeInteractivePointerColorPassiveLocalNotifier, String>((ref) {
+    return GazeInteractivePointerColorPassiveLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  // GazePointerType: active (static circle)
+  late final pointerColorActive = StateNotifierProvider<GazeInteractivePointerColorActiveLocalNotifier, String>((ref) {
+    return GazeInteractivePointerColorActiveLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  // applied opacity of the circle in specified color
+  late final pointerOpacity = StateNotifierProvider<GazeInteractivePointerOpacityLocalNotifier, double>((ref) {
+    return GazeInteractivePointerOpacityLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  // size of gaze pointer circle (default: 50)
   late final pointerSize = StateNotifierProvider<GazeInteractivePointerSizeLocalNotifier, double>((ref) {
     return GazeInteractivePointerSizeLocalNotifier(ref.read(sharedPreferencesProvider));
   });
