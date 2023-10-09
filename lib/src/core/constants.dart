@@ -19,7 +19,10 @@ const gazeInteractiveMaxRecoverTime = 3000; // Not validated
 /// Gaze Pointer Settings
 const gazeInteractiveDefaultPointerColorPassive = 'FFD740'; // Colors.yellow
 const gazeInteractiveDefaultPointerColorActive = 'FF4433'; // Colors.red
+
 const gazeInteractiveDefaultPointerOpacity = 0.6;
+const gazeInteractiveMinPointerOpacity = 0.2;
+const gazeInteractiveMaxPointerOpacity = 1.0;
 
 const gazeInteractiveDefaultPointerSize = 50.0;
 const gazeInteractiveMinPointerSize = 10.0; // Not validated
