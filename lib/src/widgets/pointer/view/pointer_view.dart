@@ -91,7 +91,9 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
           if (mounted) ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
           final _pointerOffset = ref.read(pointerOffsetProvider);
           final _size = ref.read(pointerSizeProvider(type: widget.state.type));
-          widget.state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
+          // FIXME: incorrect calculation ??
+          // widget.state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
+          widget.state.onAction?.call(_pointerOffset);
         }
       },
     );
@@ -113,8 +115,8 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
     final _controller = ref.watch(pointerAnimationControllerProvider(vsync: this));
     final _animation = ref.watch(pointerAnimationProvider(vsync: this));
     return Positioned(
-      left: _pointerOffset.dx,
-      top: _pointerOffset.dy,
+      left: _pointerOffset.dx - (_size / 2),
+      top: _pointerOffset.dy - (_size / 2),
       child: Builder(
         builder: (context) {
           // ignore gesture on pointer
