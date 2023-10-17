@@ -21,14 +21,18 @@ class PointerCircle extends ConsumerWidget {
         width: size,
         height: size,
         child: Stack(
+          alignment: AlignmentDirectional.center,
           children: [
             Positioned(
-              child: AnimatedBuilder(
-                animation: animation,
-                builder: (context, child) => CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(_lighterColor),
-                  strokeWidth: 10,
-                  value: animation.value,
+              child: SizedBox.square(
+                dimension: size,
+                child: AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, child) => CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(_lighterColor),
+                    strokeWidth: 10,
+                    value: animation.value,
+                  ),
                 ),
               ),
             ),
