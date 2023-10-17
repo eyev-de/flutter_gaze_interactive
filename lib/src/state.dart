@@ -81,6 +81,14 @@ class GazeInteractive {
     return GazeInteractiveRecoverTimeLocalNotifier(ref.read(sharedPreferencesProvider));
   });
 
+  late final reselectionAcceleration = StateNotifierProvider<GazeInteractiveReselectionAccelerationNotifier, double>((ref) {
+    return GazeInteractiveReselectionAccelerationNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final reselectionNumberOfLetterKeys = StateNotifierProvider<GazeInteractiveReselectionNumberOfLetterKeysNotifier, int>((ref) {
+    return GazeInteractiveReselectionNumberOfLetterKeysNotifier(ref.read(sharedPreferencesProvider));
+  });
+
   late final scrollFactor = StateNotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>((ref) {
     return GazeInteractiveScrollFactorLocalNotifier(ref.read(sharedPreferencesProvider));
   });

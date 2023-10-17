@@ -42,6 +42,9 @@ class GazeButtonProperties {
   final Color animationColor;
   final bool reselectable;
   final bool withSound;
+
+  final int? reselectableCount;
+
   GazeButtonProperties({
     this.route = '/',
     this.text,
@@ -64,6 +67,7 @@ class GazeButtonProperties {
     this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
     this.animationColor = Colors.black,
     this.reselectable = false,
+    this.reselectableCount,
     this.withSound = false,
   });
 }
@@ -85,6 +89,7 @@ class GazeButton extends StatelessWidget {
         type: properties.gazeSelectionAnimationType,
         animationColor: properties.animationColor,
         reselectable: properties.reselectable,
+        reselectableCount: properties.reselectableCount,
       ),
       wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
