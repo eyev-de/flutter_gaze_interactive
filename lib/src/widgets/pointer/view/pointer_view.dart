@@ -91,9 +91,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
           if (mounted) ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
           final _pointerOffset = ref.read(pointerOffsetProvider);
           final _size = ref.read(pointerSizeProvider(type: widget.state.type));
-          // FIXME: incorrect calculation ??
-          // widget.state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
-          widget.state.onAction?.call(_pointerOffset);
+          widget.state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
         }
       },
     );
