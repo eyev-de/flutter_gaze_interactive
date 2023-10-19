@@ -8,11 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../api.dart';
-import '../../core/extensions.dart';
-import '../button/button.dart';
-import '../button/selection_animation.dart';
-import 'keyboard_state.dart';
-import 'keyboards.dart';
 
 enum GazeKeyType {
   none,
