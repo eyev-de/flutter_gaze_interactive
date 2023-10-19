@@ -52,3 +52,16 @@ class GazeInteractiveRecoverTimeLocalNotifier extends LocalStoreNotifier<int> {
   GazeInteractiveRecoverTimeLocalNotifier(SharedPreferences sharedPreferences)
       : super(sharedPreferences, 'gazeInteractiveRecoverTime', gazeInteractiveDefaultRecoverTime);
 }
+
+// factor to increase gaze duration on a button when re-selecting by staying on the button (if reselectable = true)
+class GazeInteractiveReselectionAccelerationNotifier extends LocalStoreNotifier<double> {
+  GazeInteractiveReselectionAccelerationNotifier(SharedPreferences sharedPreferences)
+      : super(sharedPreferences, 'gazeInteractiveReselectionAcceleration', gazeInteractiveDefaultReselectionAcceleration);
+}
+
+// How often a letter key is reselected including a gazeInteractiveDefaultReselectionAcceleration - Factor
+// per repeat by staying on this letter with the gaze pointer (if reselectable = true)
+class GazeInteractiveReselectionNumberOfLetterKeysNotifier extends LocalStoreNotifier<int> {
+  GazeInteractiveReselectionNumberOfLetterKeysNotifier(SharedPreferences sharedPreferences)
+      : super(sharedPreferences, 'gazeInteractiveReselectionNumberOfLetterKeys', gazeInteractiveDefaultReselectionNumberOfLetterKeys);
+}
