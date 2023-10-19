@@ -21,6 +21,17 @@ extension GlobalKeyExtension on GlobalKey {
   }
 }
 
+extension GazePointerValidationExtension on BuildContext {
+  Offset validateGazePointer({required Offset offset, required double size}) {
+    final media = MediaQuery.maybeOf(this);
+    if (media != null && offset.dx + size > media.size.width) return Offset(media.size.width - size, offset.dy);
+    if (media != null && offset.dy + size > media.size.height) return Offset(offset.dx, media.size.height - size);
+    if (offset.dx < 0) return Offset(0, offset.dy);
+    if (offset.dy < 0) return Offset(offset.dx, 0);
+    return offset;
+  }
+}
+
 extension TextEditingControllerExtension on TextEditingController {
   void insert(String value) {
     var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
@@ -135,5 +146,22 @@ extension TextEditingControllerExtension on TextEditingController {
         extentOffset: extentOffset,
       ),
     );
+  }
+}
+
+extension ColorExtension on Color {
+  String get hex {
+    final hexString = value.toRadixString(16);
+    return hexString.substring(2, hexString.length);
+  }
+}
+
+extension StringExtension on String {
+  Color get color {
+    final hexString = this;
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
   }
 }
