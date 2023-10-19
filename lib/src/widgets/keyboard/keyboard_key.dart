@@ -7,11 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/extensions.dart';
-import '../button/button.dart';
-import '../button/selection_animation.dart';
-import 'keyboard_state.dart';
-import 'keyboards.dart';
+import '../../../api.dart';
 
 enum GazeKeyType {
   none,
@@ -149,6 +145,7 @@ class GazeKey extends ConsumerWidget {
             animationColor: !changeColor ? Theme.of(context).primaryColor : defaultColor,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
             reselectable: true,
+            reselectableCount: type == GazeKeyType.none ? ref.read(GazeInteractive().reselectionNumberOfLetterKeys) : null,
             withSound: true,
           ),
           onTap: () {

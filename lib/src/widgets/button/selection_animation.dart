@@ -43,6 +43,7 @@ class GazeSelectionAnimationProperties {
   final bool gazeInteractive;
   final GazeSelectionAnimationType type;
   final bool reselectable;
+  final int? reselectableCount;
   GazeSelectionAnimationProperties({
     required this.route,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
@@ -53,6 +54,7 @@ class GazeSelectionAnimationProperties {
     this.gazeInteractive = true,
     this.type = GazeSelectionAnimationType.progress,
     this.reselectable = false,
+    this.reselectableCount,
   });
 }
 
@@ -79,6 +81,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   late int _recoverTime;
   late int _duration;
   bool gazeIn = false;
+  int _reselectionCount = 0;
 
   _GazeSelectionAnimationState();
 
@@ -90,6 +93,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   }
 
   void _initAnimation() {
+    _reselectionCount = 0;
     _recoverTime = ref.read(GazeInteractive().recoverTime);
     _duration = ref.read(GazeInteractive().duration);
     _controller = AnimationController(
@@ -101,11 +105,18 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
           if (mounted) {
             _controller.reset();
             if (widget.properties.reselectable) {
-              final _newDuration = (_duration / 2).round();
-              _duration = max(_newDuration, gazeInteractiveMinDuration);
-              _controller
-                ..duration = Duration(milliseconds: _duration)
-                ..forward();
+              // reselectable count = null means infinite re-selections
+              if (widget.properties.reselectableCount != null && _reselectionCount >= widget.properties.reselectableCount! - 1) {
+                _reselectionCount = 0;
+              } else {
+                final double reselectionAcceleration = ref.read(GazeInteractive().reselectionAcceleration);
+                final _newDuration = (_duration * reselectionAcceleration).round();
+                _reselectionCount += 1;
+                _duration = max(_newDuration, gazeInteractiveMinDuration);
+                _controller
+                  ..duration = Duration(milliseconds: _duration)
+                  ..forward();
+              }
             }
           }
           if (widget.properties.gazeInteractive) widget.onGazed?.call();

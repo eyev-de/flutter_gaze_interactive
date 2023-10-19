@@ -8,26 +8,18 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-
   # For Linux you need to do the following:
   # https://github.com/bluefireteam/audioplayers/blob/main/packages/audioplayers_linux/requirements.md
   audioplayers: ^5.1.0
-  
   enum_to_string: ^2.0.1
-
   flutter:
     sdk: flutter
-
-  flutter_riverpod: ^2.3.6
+  flutter_riverpod: ^2.4.0
   freezed_annotation: ^2.2.0
-  riverpod_annotation: ^2.1.1
-
+  riverpod_annotation: ^2.1.5
   intl: ^0.18.0
-  
   logger: ^2.0.1
-
   material_design_icons_flutter: ^7.0.7296
-
   shared_preferences: ^2.0.3
 
 dev_dependencies:
@@ -35,11 +27,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^2.3.5
-  riverpod_generator: ^2.2.3
+  riverpod_generator: ^2.3.2
   json_serializable: ^6.7.0
-  
+
 
 flutter:
   assets:
-     - lib/assets/
-     - lib/assets/click.mp3
+    - lib/assets/
+    - lib/assets/click.mp3

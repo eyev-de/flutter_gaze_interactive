@@ -26,16 +26,19 @@ class GazeInteractive {
   Logger? logger;
   final sharedPreferencesProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
   static final GazeInteractive _instance = GazeInteractive._internal();
+
   factory GazeInteractive() {
     AudioCache.instance.prefix = '';
     unawaited(player.setVolume(1));
     return _instance;
   }
+
   GazeInteractive._internal();
 
   bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate;
 
   String get currentRoute => ref.read(currentRouteStateProvider);
+
   set currentRoute(String value) {
     if (ref.read(currentRouteStateProvider) != value) {
       Future.delayed(const Duration(), () {
@@ -45,6 +48,7 @@ class GazeInteractive {
   }
 
   bool get active => ref.read(activeStateProvider);
+
   set active(bool value) {
     if (ref.read(activeStateProvider) != value) {
       Future.delayed(const Duration(), () {
@@ -81,10 +85,36 @@ class GazeInteractive {
     return GazeInteractiveRecoverTimeLocalNotifier(ref.read(sharedPreferencesProvider));
   });
 
+  late final reselectionAcceleration = StateNotifierProvider<GazeInteractiveReselectionAccelerationNotifier, double>((ref) {
+    return GazeInteractiveReselectionAccelerationNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final reselectionNumberOfLetterKeys = StateNotifierProvider<GazeInteractiveReselectionNumberOfLetterKeysNotifier, int>((ref) {
+    return GazeInteractiveReselectionNumberOfLetterKeysNotifier(ref.read(sharedPreferencesProvider));
+  });
+
   late final scrollFactor = StateNotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>((ref) {
     return GazeInteractiveScrollFactorLocalNotifier(ref.read(sharedPreferencesProvider));
   });
 
+  /// Pointer Settings
+
+  // GazePointerType: passive (static circle)
+  late final pointerColorPassive = StateNotifierProvider<GazeInteractivePointerColorPassiveLocalNotifier, String>((ref) {
+    return GazeInteractivePointerColorPassiveLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  // GazePointerType: active (static circle)
+  late final pointerColorActive = StateNotifierProvider<GazeInteractivePointerColorActiveLocalNotifier, String>((ref) {
+    return GazeInteractivePointerColorActiveLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  // applied opacity of the circle in specified color
+  late final pointerOpacity = StateNotifierProvider<GazeInteractivePointerOpacityLocalNotifier, double>((ref) {
+    return GazeInteractivePointerOpacityLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  // size of gaze pointer circle (default: 50)
   late final pointerSize = StateNotifierProvider<GazeInteractivePointerSizeLocalNotifier, double>((ref) {
     return GazeInteractivePointerSizeLocalNotifier(ref.read(sharedPreferencesProvider));
   });
@@ -252,6 +282,7 @@ class GazeContext extends StatelessWidget {
 
 class _GazeContext extends ConsumerStatefulWidget {
   final Widget child;
+
   const _GazeContext({required this.child});
 
   @override
