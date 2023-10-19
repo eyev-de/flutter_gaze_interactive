@@ -216,11 +216,11 @@ class GazeKeyboardWidget extends ConsumerWidget {
     if (!state.withCtrl) keys[keys.length - 1].removeWhere((key) => key is GazeKey && key.type == GazeKeyType.ctrl);
     return Column(
       children: [
-        for (var row in keys)
+        for (final row in keys)
           Flexible(
             child: Row(
               children: [
-                for (var element in row) element,
+                for (final element in row) element,
               ],
             ),
           ),
