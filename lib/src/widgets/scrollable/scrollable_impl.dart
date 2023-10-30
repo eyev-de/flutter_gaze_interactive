@@ -285,6 +285,8 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
                         height: widget.indicatorHeight,
                         child: GazeButton(
                           properties: GazeButtonProperties(
+                            // Scrolling should not be snapped to
+                            snappable: false,
                             route: widget.route,
                             gazeInteractive: false,
                             innerPadding: widget.indicatorInnerPadding,
@@ -319,6 +321,8 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
                     height: widget.indicatorHeight,
                     child: GazeButton(
                       properties: GazeButtonProperties(
+                        // Scrolling should not be snapped to
+                        snappable: false,
                         route: widget.route,
                         gazeInteractive: false,
                         innerPadding: widget.indicatorInnerPadding,

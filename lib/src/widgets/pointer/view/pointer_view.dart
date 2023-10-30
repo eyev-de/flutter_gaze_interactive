@@ -4,12 +4,14 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants.dart';
 import '../../../core/element_data.dart';
 import '../../../core/element_type.dart';
 import '../../../core/extensions.dart';
@@ -19,7 +21,7 @@ import '../pointer_type.enum.dart';
 import 'pointer_circle.dart';
 import 'pointer_view.provider.dart';
 
-class GazePointerView extends StatelessWidget {
+class GazePointerView extends ConsumerWidget {
   GazePointerView({Key? key, GazePointerState? state})
       : _state = state ?? GazePointerState(),
         super(key: key);
@@ -27,9 +29,9 @@ class GazePointerView extends StatelessWidget {
   final GazePointerState _state;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // if (_state.type == GazePointerType.passive) return _PointerPassiveView(state: _state);
-    return _PointerView(state: _state);
+    return _PointerView(state: _state.copyWith(ignorePointer: ref.watch(ignorePointerProvider)));
   }
 }
 
@@ -52,11 +54,12 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
     key: _wrappedkey,
     onGaze: _onGazeData,
     onFixation: _onFixation,
+    onSnap: _onSnap,
   );
 
   // on moving -> updated gaze data
   void _onGazeData(Offset gaze) {
-    if (mounted) {
+    if (mounted && !widget.state.ignorePointer) {
       ref.read(pointerOpacityProvider.notifier).reset();
       final _size = ref.read(pointerSizeProvider(type: widget.state.type));
       final Offset temp = context.validateGazePointer(offset: gaze - Offset(_size / 2, _size / 2), size: _size);
@@ -65,6 +68,15 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
       final _fixationPoint = ref.read(pointerFixationPointProvider);
       if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze, _fixationPoint, ref.watch(pointerFixationRadiusProvider))) {
         ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
+      }
+
+      // Calculate if leaving snap radius
+      if (ref.read(snappingStateProvider) == SnapState.inSnapTimer) {
+        if (_leftSnappingRadius(gaze)) {
+          // Test if not in same snap point radius
+          ref.read(snappingStateProvider.notifier).leftWhileSnapping();
+          ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
+        }
       }
     }
     ref.read(pointerOpacityProvider.notifier).fadeOut();
@@ -76,6 +88,35 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
       ref.read(pointerFixationPointProvider.notifier).update(offset: ref.read(pointerOffsetProvider));
       ref.read(pointerAnimationControllerProvider(vsync: this)).forward();
     }
+  }
+
+  // on snap -> whenever user was close enough to a button
+  void _onSnap(Rect snapElement) {
+    // really move the pointer
+    final Offset includingSizeSnapToOffset = _getOffsetWithSizeDeviation(snapElement);
+    if (mounted && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
+      if (ref.read(snappingStateProvider) == SnapState.on) {
+        ref.read(snapElementProvider.notifier).update(snapElement: snapElement);
+        // wait for x milliseconds until snapping can be started
+        ref.read(snappingStateProvider.notifier).startSnapTimer();
+        // really move the pointer
+      }
+      // It has to be in the same snap elements radius when snapping
+      if (ref.read(snappingStateProvider) == SnapState.readyToSnap && ref.read(snapElementProvider).center == snapElement.center) {
+        ref.read(snappingStateProvider.notifier).startSnap();
+        //snap and set snap point (including size deviation due to pointer size)
+        _onGazeData(includingSizeSnapToOffset);
+        // reset ignorePointer after manual moving (snapping) pointer in snapFinished
+        Timer(const Duration(milliseconds: timeToIgnorePointerWhenSnappingMs), () {
+          ref.read(snappingStateProvider.notifier).snapFinished();
+        });
+      }
+    }
+  }
+
+  Offset _getOffsetWithSizeDeviation(Rect snapElement) {
+    final _size = ref.read(pointerSizeProvider(type: widget.state.type));
+    return Offset(snapElement.center.dx + _size / 2, snapElement.center.dy + _size / 2);
   }
 
   @override
@@ -169,5 +210,28 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
 
   bool _leftFixationRadius(Offset gaze, Offset fixationPoint, double fixationRadius) {
     return (gaze - fixationPoint).distanceSquared > pow(fixationRadius, 2);
+  }
+
+  bool _leftSnappingRadius(
+    Offset gaze,
+  ) {
+    final _snapElement = ref.read(snapElementProvider); // including size deviation
+    final _snappingRadius = ref.read(pointerSnappingRadiusProvider);
+    final _size = ref.read(pointerSizeProvider(type: widget.state.type));
+    final _gazeSnapPointerRect = Rect.fromCenter(
+      center: gaze - Offset(_snappingRadius, _snappingRadius),
+      // adding additional radius for snapping
+      width: _size + (ref.watch(GazeInteractive().snappingRadius) * 2),
+      height: _size + (ref.watch(GazeInteractive().snappingRadius) * 2),
+    );
+
+    final intersectionSnap = _snapElement.intersect(_gazeSnapPointerRect);
+    if (intersectionSnap.width.isNegative || intersectionSnap.height.isNegative) {
+      // reset offset since we're not in snapping mode anymore
+      ref.read(snapElementProvider.notifier).refresh();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

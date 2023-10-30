@@ -48,6 +48,21 @@ class GazeInteractiveFixationRadiusLocalNotifier extends LocalStoreNotifier<doub
       : super(sharedPreferences, 'gazeInteractiveFixationRadius', gazeInteractiveDefaultFixationRadius);
 }
 
+class GazeInteractiveSnappingRadiusLocalNotifier extends LocalStoreNotifier<double> {
+  GazeInteractiveSnappingRadiusLocalNotifier(SharedPreferences sharedPreferences)
+      : super(sharedPreferences, 'gazeInteractiveSnappingRadius', gazeInteractiveDefaultSnappingRadius);
+}
+
+class GazeInteractiveAfterSnapPauseLocalNotifier extends LocalStoreNotifier<int> {
+  GazeInteractiveAfterSnapPauseLocalNotifier(SharedPreferences sharedPreferences)
+      : super(sharedPreferences, 'gazeInteractiveAfterSnapPause', gazeInteractiveDefaultAfterSnapPauseMS);
+}
+
+class GazeInteractiveSnappingTimerLocalNotifier extends LocalStoreNotifier<int> {
+  GazeInteractiveSnappingTimerLocalNotifier(SharedPreferences sharedPreferences)
+      : super(sharedPreferences, 'gazeInteractiveSnappingTimer', gazeInteractiveDefaultSnappingTimerMS);
+}
+
 class GazeInteractiveRecoverTimeLocalNotifier extends LocalStoreNotifier<int> {
   GazeInteractiveRecoverTimeLocalNotifier(SharedPreferences sharedPreferences)
       : super(sharedPreferences, 'gazeInteractiveRecoverTime', gazeInteractiveDefaultRecoverTime);

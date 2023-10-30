@@ -35,7 +35,12 @@ class GazeInteractive {
 
   GazeInteractive._internal();
 
-  bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate;
+  bool Function(
+    Rect itemRect,
+    Rect gazePointerRect,
+    String itemRoute,
+    String currentRoute,
+  )? predicate;
 
   String get currentRoute => ref.read(currentRouteStateProvider);
 
@@ -58,6 +63,8 @@ class GazeInteractive {
   }
 
   final activeStateProvider = StateProvider<bool>((ref) => true);
+
+  final snapActivatedProvider = StateProvider<bool>((ref) => true);
 
   final currentRouteStateProvider = StateProvider<String>((ref) => '');
 
@@ -123,6 +130,18 @@ class GazeInteractive {
     return GazeInteractiveFixationRadiusLocalNotifier(ref.read(sharedPreferencesProvider));
   });
 
+  late final snappingRadius = StateNotifierProvider<GazeInteractiveSnappingRadiusLocalNotifier, double>((ref) {
+    return GazeInteractiveSnappingRadiusLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final afterSnapPauseMilliseconds = StateNotifierProvider<GazeInteractiveAfterSnapPauseLocalNotifier, int>((ref) {
+    return GazeInteractiveAfterSnapPauseLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final snappingTimerMilliseconds = StateNotifierProvider<GazeInteractiveSnappingTimerLocalNotifier, int>((ref) {
+    return GazeInteractiveSnappingTimerLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
   void register(GazeElementData data) {
     logger?.i('GazeInteractiveLib: Register GazeInteractive: ${data.type}:');
     if (data.type == GazeElementType.pointer) {
@@ -173,6 +192,15 @@ class GazeInteractive {
     }
   }
 
+  /// API endpoint for signaling a snap.
+  void onSnap(Rect snapElement) {
+    // only snap if in general snapping is on
+    final active = ref.read(snapActivatedProvider);
+    if (active) {
+      _currentGazePointerView?.onSnap?.call(snapElement);
+    }
+  }
+
   /// Internal endpoint
   /// DO NOT USE
   /// TODO(krjw): Change it!!!
@@ -187,11 +215,19 @@ class GazeInteractive {
       width: size.width,
       height: size.height,
     );
+    final snapRect = Rect.fromCenter(
+      center: position - Offset(ref.watch(GazeInteractive().snappingRadius), ref.watch(GazeInteractive().snappingRadius)),
+      // adding additional radius for snapping
+      width: size.width + (ref.watch(GazeInteractive().snappingRadius) * 2),
+      height: size.height + (ref.watch(GazeInteractive().snappingRadius) * 2),
+    );
+
     ref.read(currentRectStateProvider.notifier).state = rect;
     final currentRoute = ref.read(currentRouteStateProvider);
     if (_currentGazePointerView != null) {
       _currentGazeViews = _getNewListOfActiveGazeElements(
         gazePointerRect: rect,
+        gazeSnapPointerRect: snapRect,
         currentElements: _currentGazeViews,
         registeredElements: _registeredGazeViews,
         currentGazePointer: _currentGazePointerView!,
@@ -203,6 +239,7 @@ class GazeInteractive {
 
   static List<GazeElementData> _getNewListOfActiveGazeElements({
     required Rect gazePointerRect,
+    required Rect gazeSnapPointerRect,
     required List<GazeElementData> currentElements,
     required List<GazeElementData> registeredElements,
     required GazeElementData currentGazePointer,
@@ -213,6 +250,7 @@ class GazeInteractive {
       // Remove all that were left by the gaze pointer
       currentElements.removeWhere((element) {
         if (!_determineIfGazeElementIsLookedAt(
+          gazeSnapPointerRect: gazeSnapPointerRect,
           gazePointerRect: gazePointerRect,
           element: element,
           currentGazePointer: currentGazePointer,
@@ -230,6 +268,7 @@ class GazeInteractive {
     // Searching registeredElements for a new element
     for (final element in _registeredElements) {
       if (_determineIfGazeElementIsLookedAt(
+        gazeSnapPointerRect: gazeSnapPointerRect,
         gazePointerRect: gazePointerRect,
         element: element,
         currentGazePointer: currentGazePointer,
@@ -246,25 +285,50 @@ class GazeInteractive {
 
   static bool _determineIfGazeElementIsLookedAt({
     required Rect gazePointerRect,
+    required Rect gazeSnapPointerRect,
     required GazeElementData element,
-    required GazeElementData? currentGazePointer,
+    required GazeElementData currentGazePointer,
     required String currentRoute,
-    bool Function(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute)? predicate,
+    bool Function(
+      Rect itemRect,
+      Rect gazePointerRect,
+      String itemRoute,
+      String currentRoute,
+    )? predicate,
   }) {
     // Get bounds of the element
     final elementRect = element.key.globalPaintBounds;
+    bool returnValue = false;
+
     // Check if bounds and context exist
     if (elementRect != null) {
       // Check in case of supplied custom predicate
-      if (predicate != null) return predicate(elementRect, gazePointerRect, element.route!, currentRoute);
+      if (predicate != null) {
+        returnValue = predicate(elementRect, gazePointerRect, element.route!, currentRoute);
+      }
       // Check if the route is the current one and if the rect of the gaze pointer overlaps the bounds of the element
       // This should be enough in most cases
       // Beware full screen dialogs and multiple navigators
-      if (element.route == currentRoute && elementRect.overlaps(gazePointerRect)) {
+      if (element.route == currentRoute && elementRect.contains(gazePointerRect.topLeft)) {
         return true;
       }
+
+      // only snap snappables
+      if (returnValue != true && element.snappable) {
+        _checkForSnap(elementRect, gazeSnapPointerRect, element.route!, currentRoute);
+      }
     }
-    return false;
+    return returnValue;
+  }
+
+  static void _checkForSnap(Rect elementRect, Rect gazeSnapPointerRect, String elementRoute, String currentRoute) {
+    final intersectionSnap = elementRect.intersect(gazeSnapPointerRect);
+
+    if (intersectionSnap.width.isNegative || intersectionSnap.height.isNegative) return;
+
+    if (elementRoute == currentRoute) {
+      GazeInteractive().onSnap(elementRect);
+    }
   }
 }
 

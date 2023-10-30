@@ -144,17 +144,11 @@ class _AppState extends State<App> {
 }
 
 bool gazeInteractionPredicate(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute) {
-  // gazePointerRect.center
-  final intersection = itemRect.intersect(gazePointerRect);
-  if (intersection.width.isNegative || intersection.height.isNegative) return false;
-  // final intersectionArea = intersection.width * intersection.height;
-  // final gazePointerArea = gazePointerRect.width * gazePointerRect.height;
-  // itemRect.overlaps(gazePointerRect)
-  // Check in case of Dialog
-  // && intersectionArea >= gazePointerArea / 2
-  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.center)) {
+  // Check in case of Dialog (maybe todo but only example here so no dialog yet)
+
+  // Check in case of Regular Route
+  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.topLeft)) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }

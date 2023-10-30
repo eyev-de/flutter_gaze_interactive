@@ -12,12 +12,14 @@ final class GazeElementData {
   final GlobalKey key;
   final String? route;
   final GazeElementType type;
+  final bool snappable;
 
   final void Function()? onGazeEnter;
   final void Function()? onGazeLeave;
   final void Function(Offset)? onGaze;
   final void Function()? onScroll;
   final void Function()? onFixation;
+  final void Function(Rect snapElement)? onSnap;
 
   const GazeElementData({
     required this.key,
@@ -27,7 +29,9 @@ final class GazeElementData {
     this.onGazeLeave,
     this.onGaze,
     this.onScroll,
+    this.onSnap,
     this.onFixation,
+    this.snappable = true,
   });
 }
 
@@ -37,6 +41,7 @@ final class GazeSelectableData extends GazeElementData {
     required super.route,
     required super.onGazeEnter,
     required super.onGazeLeave,
+    required super.snappable,
   }) : super(type: GazeElementType.selectable);
 }
 
@@ -54,6 +59,7 @@ final class GazePointerData extends GazeElementData {
   GazePointerData({
     required super.key,
     required super.onGaze,
+    super.onSnap,
     super.onFixation,
   }) : super(type: GazeElementType.pointer);
 }

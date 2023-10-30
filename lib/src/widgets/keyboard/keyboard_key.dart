@@ -147,6 +147,8 @@ class GazeKey extends ConsumerWidget {
             reselectable: true,
             reselectableCount: type == GazeKeyType.none ? ref.read(GazeInteractive().reselectionNumberOfLetterKeys) : null,
             withSound: true,
+            // All keyboard keys should not be snapped to
+            snappable: false,
           ),
           onTap: () {
             if (content is List) {

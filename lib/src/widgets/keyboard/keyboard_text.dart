@@ -70,6 +70,8 @@ class GazeKeyboardTextWidget extends StatelessWidget {
               ),
             ),
             gazeInteractive: onTap != null,
+            // Keyboard Textfield should be snapped to
+            snappable: true,
           ),
           onTap: onTap,
         ),

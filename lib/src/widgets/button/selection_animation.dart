@@ -44,6 +44,8 @@ class GazeSelectionAnimationProperties {
   final GazeSelectionAnimationType type;
   final bool reselectable;
   final int? reselectableCount;
+  final bool snappable;
+
   GazeSelectionAnimationProperties({
     required this.route,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
@@ -55,6 +57,7 @@ class GazeSelectionAnimationProperties {
     this.type = GazeSelectionAnimationType.progress,
     this.reselectable = false,
     this.reselectableCount,
+    this.snappable = true,
   });
 }
 
@@ -227,6 +230,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
       GazeSelectableData(
         key: widget.wrappedKey,
         route: widget.properties.route,
+        snappable: widget.properties.snappable,
         onGazeEnter: () {
           _timer?.cancel();
           if (mounted) {
