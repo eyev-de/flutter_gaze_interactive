@@ -9,64 +9,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../api.dart';
 
-enum GazeKeyType {
-  none,
-  ctrl,
-  alt,
-  win,
-  shift,
-  caps,
-  enter,
-  del,
-  tab,
-  close,
-  signs,
-}
-
 class GazeKey extends ConsumerWidget {
   GazeKey({
-    Key? key,
+    super.key,
     required this.content,
     required this.keyboardState,
     this.type = GazeKeyType.none,
     this.widthRatio = 1,
     this.heightRatio = 1,
-    // this.shift,
-    // this.alt,
     this.altStr,
-    // this.ctrl,
     this.ctrlStr,
-    // this.listenToShift = true,
-    // this.listenToCapsLock = false,
-    // this.listenToAlt = false,
-    // this.listenToCtrl = false,
     this.onBack,
-  }) : super(key: key);
-
-  static final validCharacters = RegExp(r'^[a-zA-Zäöü]+$');
+    this.colors = const [],
+    Color? color,
+  }) : _color = color ?? Colors.grey.shade900;
 
   final Object content;
   final GazeKeyType type;
-
   final GazeKeyboardState keyboardState;
-
-  // final bool listenToShift;
-  // final bool listenToAlt;
-  // final bool listenToCtrl;
-  // final bool listenToCapsLock;
-
-  // final bool? shift;
-
-  // final bool? alt;
   final String? altStr;
-
-  // final bool? ctrl;
   final String? ctrlStr;
-
   final double widthRatio;
   final double heightRatio;
-
   final void Function(BuildContext)? onBack;
+  final List<Color?> colors;
+  final Color _color;
+
+  static final validCharacters = RegExp(r'^[a-zA-Zäöü]+$');
 
   static Widget _buildContent(BuildContext context, Object content, bool shift, GazeKeyboardState keyboardState, bool signs, GazeKeyType type) {
     const textStyle = TextStyle(fontSize: 20);
@@ -76,21 +45,12 @@ class GazeKey extends ConsumerWidget {
             ? getIOSKey(list: list, signs: signs, shift: shift)
             : list[shift ? 1 : 0];
         if (cntnt is String) {
-          if (cntnt == '') return Container();
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    cntnt,
-                    style: textStyle.copyWith(color: Colors.white),
-                  ),
-                ],
-              ),
-            ],
-          );
+          if (cntnt.isEmpty) return Container();
+          return Center(child: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white), child: Text(cntnt)));
+        }
+        if (cntnt is Text) {
+          if (cntnt.data?.isEmpty ?? true) return Container();
+          return Center(child: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white), child: cntnt));
         }
         return _SpaceOut(child: Icon(cntnt as IconData, color: Colors.white, size: 25));
       case final String str:
@@ -113,24 +73,15 @@ class GazeKey extends ConsumerWidget {
     final capsLock = ref.watch(keyboardState.capsLockStateProvider);
     // Current shift / caps lock state
     final shiftState = shift ^ capsLock;
-
     final signsState = ref.watch(keyboardState.signsStateProvider);
     // Either shiftState was set or it is false
     // It can be null
     final changeColor = type == GazeKeyType.caps && capsLock || type == GazeKeyType.shift && shift;
-    final defaultColor = switch (type) {
-      GazeKeyType.caps => Colors.grey.shade800,
-      GazeKeyType.shift => Colors.grey.shade800,
-      GazeKeyType.enter => Colors.grey.shade800,
-      GazeKeyType.tab => Colors.grey.shade800,
-      GazeKeyType.signs => Colors.grey.shade800,
-      GazeKeyType.close => Theme.of(context).primaryColor,
-      _ => Colors.grey.shade900,
-    };
+    final widgetColor = getIOSKeyColor(colors: colors, signs: signsState, shift: shiftState);
+    final defaultColor = type.defaultColor(Theme.of(context).primaryColor, widgetColor ?? _color);
 
     final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type);
-    // This is just blank space
-    if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget);
+    if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget); // This is just blank space
 
     return Flexible(
       flex: widthRatio.round(),
@@ -254,6 +205,13 @@ class GazeKey extends ConsumerWidget {
   static dynamic getIOSKey({required List<dynamic> list, required bool signs, required bool shift}) {
     if (list.length == 4) return shift ? (signs ? list[3] : list[1]) : (signs ? list[2] : list[0]);
     throw Exception('iOSKey not found, signs or shift key value might be null or key list length != 4');
+  }
+
+  /// Based on the shift and signs key the correct ios key will be chosen.
+  @visibleForTesting
+  static Color? getIOSKeyColor({required List<Color?> colors, required bool signs, required bool shift}) {
+    if (colors.length == 4) return shift ? (signs ? colors[3] : colors[1]) : (signs ? colors[2] : colors[0]);
+    return null;
   }
 }
 
