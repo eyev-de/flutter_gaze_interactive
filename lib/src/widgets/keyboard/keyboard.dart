@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../button/button.dart';
 import '../pointer/view/pointer_view.dart';
 import 'keyboard_key.dart';
+import 'keyboard_key_type.enum.dart';
 import 'keyboard_state.dart';
 import 'keyboard_text.dart';
 import 'keyboard_utility_buttons.dart';
