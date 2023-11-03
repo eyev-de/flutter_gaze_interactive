@@ -19,7 +19,7 @@ final class GazeElementData {
   final void Function(Offset)? onGaze;
   final void Function()? onScroll;
   final void Function()? onFixation;
-  final void Function(Rect snapElement)? onSnap;
+  final void Function(GazeElementData snapElement)? onSnap;
 
   const GazeElementData({
     required this.key,

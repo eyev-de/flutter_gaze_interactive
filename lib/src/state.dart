@@ -11,12 +11,14 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'core/element_data.dart';
-import 'core/element_type.dart';
+import '../api.dart';
 import 'core/extensions.dart';
 import 'core/local_store_notifiers.dart';
+
+part 'state.g.dart';
 
 final clickSoundSource = AssetSource('packages/gaze_interactive/lib/assets/click.mp3');
 final player = AudioPlayer()..setSource(clickSoundSource);
@@ -35,9 +37,10 @@ class GazeInteractive {
 
   GazeInteractive._internal();
 
-  bool Function(
+  PredicateReturnState Function(
     Rect itemRect,
     Rect gazePointerRect,
+    Rect gazeSnapPointerRect,
     String itemRoute,
     String currentRoute,
   )? predicate;
@@ -63,8 +66,6 @@ class GazeInteractive {
   }
 
   final activeStateProvider = StateProvider<bool>((ref) => true);
-
-  final snapActivatedProvider = StateProvider<bool>((ref) => true);
 
   final currentRouteStateProvider = StateProvider<String>((ref) => '');
 
@@ -193,9 +194,9 @@ class GazeInteractive {
   }
 
   /// API endpoint for signaling a snap.
-  void onSnap(Rect snapElement) {
+  void onSnap(GazeElementData snapElement) {
     // only snap if in general snapping is on
-    final active = ref.read(snapActivatedProvider);
+    final active = ref.read(snapActiveStateProvider);
     if (active) {
       _currentGazePointerView?.onSnap?.call(snapElement);
     }
@@ -226,37 +227,38 @@ class GazeInteractive {
     final currentRoute = ref.read(currentRouteStateProvider);
     if (_currentGazePointerView != null) {
       _currentGazeViews = _getNewListOfActiveGazeElements(
-        gazePointerRect: rect,
-        gazeSnapPointerRect: snapRect,
-        currentElements: _currentGazeViews,
-        registeredElements: _registeredGazeViews,
-        currentGazePointer: _currentGazePointerView!,
-        currentRoute: currentRoute,
-        predicate: predicate,
-      );
+          ref: ref,
+          gazePointerRect: rect,
+          gazeSnapPointerRect: snapRect,
+          currentElements: _currentGazeViews,
+          registeredElements: _registeredGazeViews,
+          currentGazePointer: _currentGazePointerView!,
+          currentRoute: currentRoute,
+          predicate: predicate);
     }
   }
 
   static List<GazeElementData> _getNewListOfActiveGazeElements({
+    required WidgetRef ref,
     required Rect gazePointerRect,
     required Rect gazeSnapPointerRect,
     required List<GazeElementData> currentElements,
     required List<GazeElementData> registeredElements,
     required GazeElementData currentGazePointer,
     required String currentRoute,
-    bool Function(Rect elementRect, Rect gazePointerRect, String elementRoute, String currentRoute)? predicate,
+    PredicateReturnState Function(Rect elementRect, Rect gazePointerRect, Rect gazeSnapPointerRect, String elementRoute, String currentRoute)? predicate,
   }) {
     if (currentElements.isNotEmpty) {
       // Remove all that were left by the gaze pointer
       currentElements.removeWhere((element) {
         if (!_determineIfGazeElementIsLookedAt(
-          gazeSnapPointerRect: gazeSnapPointerRect,
-          gazePointerRect: gazePointerRect,
-          element: element,
-          currentGazePointer: currentGazePointer,
-          currentRoute: currentRoute,
-          predicate: predicate,
-        )) {
+            ref: ref,
+            gazePointerRect: gazePointerRect,
+            gazeSnapPointerRect: gazeSnapPointerRect,
+            element: element,
+            currentGazePointer: currentGazePointer,
+            currentRoute: currentRoute,
+            predicate: predicate)) {
           element.onGazeLeave?.call();
           return true;
         }
@@ -268,13 +270,13 @@ class GazeInteractive {
     // Searching registeredElements for a new element
     for (final element in _registeredElements) {
       if (_determineIfGazeElementIsLookedAt(
-        gazeSnapPointerRect: gazeSnapPointerRect,
-        gazePointerRect: gazePointerRect,
-        element: element,
-        currentGazePointer: currentGazePointer,
-        currentRoute: currentRoute,
-        predicate: predicate,
-      )) {
+          ref: ref,
+          gazePointerRect: gazePointerRect,
+          gazeSnapPointerRect: gazeSnapPointerRect,
+          element: element,
+          currentGazePointer: currentGazePointer,
+          currentRoute: currentRoute,
+          predicate: predicate)) {
         // New element was found
         element.onGazeEnter?.call();
         currentElements.add(element);
@@ -284,51 +286,90 @@ class GazeInteractive {
   }
 
   static bool _determineIfGazeElementIsLookedAt({
+    required WidgetRef ref,
     required Rect gazePointerRect,
     required Rect gazeSnapPointerRect,
     required GazeElementData element,
     required GazeElementData currentGazePointer,
     required String currentRoute,
-    bool Function(
+    PredicateReturnState Function(
       Rect itemRect,
       Rect gazePointerRect,
+      Rect gazeSnapPointerRect,
       String itemRoute,
       String currentRoute,
     )? predicate,
   }) {
     // Get bounds of the element
     final elementRect = element.key.globalPaintBounds;
-    bool returnValue = false;
+    PredicateReturnState predicateState = PredicateReturnState.none;
 
     // Check if bounds and context exist
     if (elementRect != null) {
       // Check in case of supplied custom predicate
       if (predicate != null) {
-        returnValue = predicate(elementRect, gazePointerRect, element.route!, currentRoute);
-      }
-      // Check if the route is the current one and if the rect of the gaze pointer overlaps the bounds of the element
-      // This should be enough in most cases
-      // Beware full screen dialogs and multiple navigators
-      if (element.route == currentRoute && elementRect.contains(gazePointerRect.topLeft)) {
-        return true;
-      }
+        predicateState = predicate(elementRect, gazePointerRect, gazeSnapPointerRect, element.route!, currentRoute);
 
-      // only snap snappables
-      if (returnValue != true && element.snappable) {
-        _checkForSnap(elementRect, gazeSnapPointerRect, element.route!, currentRoute);
+        switch (predicateState) {
+          case PredicateReturnState.gaze:
+            return true;
+          case PredicateReturnState.snap:
+            if (element.snappable) {
+              GazeInteractive().onSnap(element);
+            }
+            return false;
+          case PredicateReturnState.none:
+            ref.read(snappingStateProvider.notifier).cancelSnap(element);
+            return false;
+        }
+      } else {
+        if (_checkForGaze(ref, elementRect, gazePointerRect, element.route!, currentRoute)) {
+          return true;
+        }
+        if (_checkForSnap(ref, element, elementRect, gazeSnapPointerRect, currentRoute)) {
+          GazeInteractive().onSnap(element);
+          return false;
+        }
+        ref.read(snappingStateProvider.notifier).cancelSnap(element);
       }
     }
-    return returnValue;
+    return false;
   }
 
-  static void _checkForSnap(Rect elementRect, Rect gazeSnapPointerRect, String elementRoute, String currentRoute) {
-    final intersectionSnap = elementRect.intersect(gazeSnapPointerRect);
-
-    if (intersectionSnap.width.isNegative || intersectionSnap.height.isNegative) return;
-
-    if (elementRoute == currentRoute) {
-      GazeInteractive().onSnap(elementRect);
+  static bool _checkForGaze(WidgetRef ref, Rect elementRect, Rect gazePointerRect, String elementRoute, String currentRoute) {
+    // Check if the route is the current one and if the rect of the gaze pointer overlaps the bounds of the element
+    // This should be enough in most cases
+    // Beware full screen dialogs and multiple navigators
+    if (elementRoute == currentRoute && elementRect.contains(gazePointerRect.topLeft)) {
+      return true;
     }
+    return false;
+  }
+
+  static bool _checkForSnap(WidgetRef ref, GazeElementData element, Rect elementRect, Rect gazeSnapPointerRect, String currentRoute) {
+    final intersectionSnap = elementRect.intersect(gazeSnapPointerRect);
+    if (intersectionSnap.width.isNegative || intersectionSnap.height.isNegative) return false;
+
+    if (element.route == currentRoute && element.snappable) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+@riverpod
+class SnapActiveState extends _$SnapActiveState {
+  @override
+  bool build() => true;
+
+  void update({required bool active}) {
+    if (active) {
+      ref.read(snappingStateProvider.notifier).reset();
+    } else {
+      ref.read(snappingStateProvider.notifier).turnOff();
+    }
+    state = active;
   }
 }
 
@@ -372,3 +413,5 @@ class _GazeContextState extends ConsumerState<_GazeContext> {
     return ProviderScope(child: widget.child);
   }
 }
+
+enum PredicateReturnState { gaze, snap, none }

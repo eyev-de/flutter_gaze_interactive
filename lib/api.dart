@@ -12,7 +12,7 @@ export 'src/core/element_type.dart' show GazeElementType;
 export 'src/core/extensions.dart' show TextEditingControllerExtension;
 export 'src/core/scroll_direction.dart' show GazeScrollDirection;
 export 'src/core/text_part_style_controller.dart' show StyleableTextFieldController, TextPartStyleDefinition, TextPartStyleDefinitions;
-export 'src/state.dart' show GazeInteractive, GazeContext;
+export 'src/state.dart';
 export 'src/widgets/button/button.dart' show GazeButton, GazeButtonProperties, GazeButtonTapTypes;
 export 'src/widgets/button/selection_animation.dart' show GazeSelectionAnimation, GazeSelectionAnimationProperties, GazeSelectionAnimationType;
 export 'src/widgets/date_picker/date_picker.dart' show GazeDatePicker;
