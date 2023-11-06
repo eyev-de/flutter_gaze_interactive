@@ -154,7 +154,7 @@ class GazeKey extends ConsumerWidget {
     final capsLock = ref.read(keyboardState.capsLockStateProvider);
     switch (type) {
       case GazeKeyType.none:
-        if (str != null) keyboardState.controller.insert(str as String);
+        if (str != null) keyboardState.controller.insert(str is Text ? str.data ?? '' : str as String);
         if (shift) ref.read(keyboardState.shiftStateProvider.notifier).state = false;
         if (alt) ref.read(keyboardState.altStateProvider.notifier).state = false;
         if (ctrl) ref.read(keyboardState.ctrlStateProvider.notifier).state = false;
