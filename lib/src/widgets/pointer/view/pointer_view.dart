@@ -62,8 +62,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
       final Offset temp = context.validateGazePointer(offset: gaze - Offset(_size / 2, _size / 2), size: _size);
       ref.read(pointerOffsetProvider.notifier).update(offset: temp);
       gazePointerData.onPointerMove?.call(temp + Offset(_size / 2, _size / 2), Size(_size, _size));
-      final _fixationPoint = ref.read(pointerFixationPointProvider);
-      if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze, _fixationPoint, ref.watch(pointerFixationRadiusProvider))) {
+      if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze)) {
         ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
       }
     }
@@ -108,7 +107,6 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
   Widget build(BuildContext context) {
     final _size = ref.watch(pointerSizeProvider(type: widget.state.type));
     final _pointerOffset = ref.watch(pointerOffsetProvider);
-    final _fixationRadius = ref.watch(pointerFixationRadiusProvider);
     final _opacity = ref.watch(pointerOpacityProvider);
     final _controller = ref.watch(pointerAnimationControllerProvider(vsync: this));
     final _animation = ref.watch(pointerAnimationProvider(vsync: this));
@@ -128,7 +126,11 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {},
-            onTapDown: (details) {},
+            onTapDown: (details) {
+              if (mounted && kDebugMode) {
+                GazeInteractive().onFixation();
+              }
+            },
             onTapUp: (details) {
               if (kDebugMode && widget.state.type == GazePointerType.active && !_controller.isAnimating) {
                 _controller.forward();
@@ -136,24 +138,12 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
             },
             onPanStart: (details) {
               if (mounted) {
-                final RenderBox? getBox = context.findRenderObject() as RenderBox?;
-                final Offset local = getBox?.globalToLocal(details.globalPosition) ?? const Offset(0, 0);
-                final Offset temp = context.validateGazePointer(offset: details.globalPosition - local, size: _size);
-                ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-                ref.read(pointerLocalOffsetProvider.notifier).update(offset: local);
-                GazeInteractive().onGaze(temp + Offset(_size / 2, _size / 2));
+                callOnGazeNormalized(context, details.globalPosition, _size);
               }
             },
             onPanUpdate: (details) {
               if (mounted) {
-                final _localPointerOffset = ref.read(pointerLocalOffsetProvider);
-                final Offset temp = context.validateGazePointer(offset: details.globalPosition - _localPointerOffset, size: _size);
-                ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-                GazeInteractive().onGaze(temp + Offset(_size / 2, _size / 2));
-                final _fixationPoint = ref.read(pointerFixationPointProvider);
-                if (kDebugMode && widget.state.type == GazePointerType.active && _leftFixationRadius(temp, _fixationPoint, _fixationRadius)) {
-                  _controller.reset();
-                }
+                callOnGazeNormalized(context, details.globalPosition, _size);
               }
             },
             child: AnimatedOpacity(
@@ -167,7 +157,15 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
     );
   }
 
-  bool _leftFixationRadius(Offset gaze, Offset fixationPoint, double fixationRadius) {
-    return (gaze - fixationPoint).distanceSquared > pow(fixationRadius, 2);
+  void callOnGazeNormalized(BuildContext context, Offset globalPosition, double _size) {
+    final Offset temp = context.validateGazePointer(offset: globalPosition, size: _size);
+    ref.read(pointerOffsetProvider.notifier).update(offset: temp);
+    GazeInteractive().onGaze(temp + Offset(_size / 2, _size / 2));
+  }
+
+  bool _leftFixationRadius(Offset gaze) {
+    final _fixationPoint = ref.read(pointerFixationPointProvider);
+    final _fixationRadius = ref.read(pointerFixationRadiusProvider);
+    return (gaze - _fixationPoint).distanceSquared > pow(_fixationRadius, 2);
   }
 }
