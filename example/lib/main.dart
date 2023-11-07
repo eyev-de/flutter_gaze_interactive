@@ -154,7 +154,8 @@ bool gazeInteractionPredicate(Rect itemRect, Rect gazePointerRect, String itemRo
   // itemRect.overlaps(gazePointerRect)
   // Check in case of Dialog
   // && intersectionArea >= gazePointerArea / 2
-  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.center)) {
+  // top left of rect is center of pointer
+  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.topLeft)) {
     return true;
   } else {
     return false;
