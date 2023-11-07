@@ -51,6 +51,7 @@ final class GazeScrollableData extends GazeElementData {
     required super.route,
     required super.onGazeEnter,
     required super.onGazeLeave,
+    super.snappable = false,
   }) : super(type: GazeElementType.scrollable);
 }
 
