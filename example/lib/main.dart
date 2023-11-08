@@ -156,6 +156,7 @@ PredicateReturnState gazeInteractionPredicate(Rect itemRect, Rect gazePointerRec
   if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.topLeft)) {
     return PredicateReturnState.gaze;
   }
+
   final intersectionSnap = itemRect.intersect(snapPointerRect);
 
   if (intersectionSnap.width.isNegative || intersectionSnap.height.isNegative) return PredicateReturnState.none;

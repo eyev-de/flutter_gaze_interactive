@@ -98,17 +98,8 @@ class PointerOffset extends _$PointerOffset {
   void update({required Offset offset}) => state = offset;
 }
 
-/// Gaze Pointer Local Offset
-@riverpod
-class PointerLocalOffset extends _$PointerLocalOffset {
-  @override
-  Offset build() => const Offset(0, 0);
-
-  void update({required Offset offset}) => state = offset;
-}
-
 /// Gaze Pointer Fixation Point
-@riverpod
+@Riverpod(keepAlive: true)
 class PointerFixationPoint extends _$PointerFixationPoint {
   @override
   Offset build() => const Offset(0, 0);
@@ -217,7 +208,7 @@ class SnappingState extends _$SnappingState {
 }
 
 /// Gaze Pointer Fixation Radius
-@riverpod
+@Riverpod(keepAlive: true)
 class PointerFixationRadius extends _$PointerFixationRadius {
   @override
   double build() => ref.watch(GazeInteractive().fixationRadius);
