@@ -360,8 +360,9 @@ class GazeInteractive {
 
 @riverpod
 class SnapActiveState extends _$SnapActiveState {
+  // TODO: Set default true, now for testing reasons false
   @override
-  bool build() => true;
+  bool build() => false;
 
   void update({required bool active}) {
     if (active) {

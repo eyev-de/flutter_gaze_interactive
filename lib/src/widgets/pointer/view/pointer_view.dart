@@ -115,7 +115,6 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
 
   Offset _getOffsetWithSizeDeviation(Rect snapElement) {
     final _size = ref.read(pointerSizeProvider(type: widget.state.type));
-
     return Offset(snapElement.center.dx + _size / 2, snapElement.center.dy + _size / 2);
   }
 
