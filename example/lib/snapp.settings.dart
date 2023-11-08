@@ -23,7 +23,6 @@ class Snapping extends ConsumerWidget {
             size: const Size(80, 80),
           ),
           onToggled: (toggled) async {
-            print('toggle: $toggled');
             ref.read(snapActiveStateProvider.notifier).update(active: toggled);
             return true;
           },

@@ -358,7 +358,7 @@ class GazeInteractive {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class SnapActiveState extends _$SnapActiveState {
   // TODO: Set default true, now for testing reasons false
   @override

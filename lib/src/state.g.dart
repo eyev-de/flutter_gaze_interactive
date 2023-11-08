@@ -6,12 +6,12 @@ part of 'state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$snapActiveStateHash() => r'182e05e30881f9225b4ca1525e7af5ad641b6d3c';
+String _$snapActiveStateHash() => r'0ba78c6a0da56e78bf57e560e759113c94e72461';
 
 /// See also [SnapActiveState].
 @ProviderFor(SnapActiveState)
 final snapActiveStateProvider =
-    AutoDisposeNotifierProvider<SnapActiveState, bool>.internal(
+    NotifierProvider<SnapActiveState, bool>.internal(
   SnapActiveState.new,
   name: r'snapActiveStateProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final snapActiveStateProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$SnapActiveState = AutoDisposeNotifier<bool>;
+typedef _$SnapActiveState = Notifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
