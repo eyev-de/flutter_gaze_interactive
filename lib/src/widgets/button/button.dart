@@ -41,6 +41,8 @@ class GazeButtonProperties {
   final GazeSelectionAnimationType gazeSelectionAnimationType;
   final Color animationColor;
   final bool reselectable;
+  final bool snappable;
+
   final bool withSound;
 
   final int? reselectableCount;
@@ -69,6 +71,7 @@ class GazeButtonProperties {
     this.reselectable = false,
     this.reselectableCount,
     this.withSound = false,
+    this.snappable = true,
   });
 }
 
@@ -81,16 +84,16 @@ class GazeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GazeSelectionAnimation(
       properties: GazeSelectionAnimationProperties(
-        route: properties.route,
-        borderRadius: properties.borderRadius,
-        borderWidth: properties.borderWidth,
-        backgroundColor: properties.backgroundColor,
-        gazeInteractive: properties.gazeInteractive,
-        type: properties.gazeSelectionAnimationType,
-        animationColor: properties.animationColor,
-        reselectable: properties.reselectable,
-        reselectableCount: properties.reselectableCount,
-      ),
+          route: properties.route,
+          borderRadius: properties.borderRadius,
+          borderWidth: properties.borderWidth,
+          backgroundColor: properties.backgroundColor,
+          gazeInteractive: properties.gazeInteractive,
+          type: properties.gazeSelectionAnimationType,
+          animationColor: properties.animationColor,
+          reselectable: properties.reselectable,
+          reselectableCount: properties.reselectableCount,
+          snappable: properties.snappable),
       wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
       onGazed: _tap,

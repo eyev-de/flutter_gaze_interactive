@@ -1,3 +1,4 @@
+import 'package:example/snapp.settings.dart';
 import 'package:flutter/material.dart';
 import 'package:gaze_interactive/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,7 +46,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    GazeInteractive().predicate = gazeInteractionPredicate;
+    //GazeInteractive().predicate = gazeInteractionPredicate;
     GazeInteractive().currentRoute = '/';
   }
 
@@ -135,6 +136,9 @@ class _AppState extends State<App> {
                     return true;
                   },
                 ),
+                Snapping(
+                  route: '/',
+                ),
               ],
             ),
           ),
@@ -145,19 +149,21 @@ class _AppState extends State<App> {
   }
 }
 
-bool gazeInteractionPredicate(Rect itemRect, Rect gazePointerRect, String itemRoute, String currentRoute) {
-  // gazePointerRect.center
-  final intersection = itemRect.intersect(gazePointerRect);
-  if (intersection.width.isNegative || intersection.height.isNegative) return false;
-  // final intersectionArea = intersection.width * intersection.height;
-  // final gazePointerArea = gazePointerRect.width * gazePointerRect.height;
-  // itemRect.overlaps(gazePointerRect)
-  // Check in case of Dialog
-  // && intersectionArea >= gazePointerArea / 2
-  // top left of rect is center of pointer
+PredicateReturnState gazeInteractionPredicate(Rect itemRect, Rect gazePointerRect, Rect snapPointerRect, String itemRoute, String currentRoute) {
+  // Check in case of Dialog (maybe todo but only example here so no dialog yet)
+
+  // Check in case of Regular Route
   if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.topLeft)) {
-    return true;
-  } else {
-    return false;
+    return PredicateReturnState.gaze;
   }
+
+  final intersectionSnap = itemRect.intersect(snapPointerRect);
+
+  if (intersectionSnap.width.isNegative || intersectionSnap.height.isNegative) return PredicateReturnState.none;
+
+  if (itemRoute == currentRoute) {
+    return PredicateReturnState.snap;
+  }
+
+  return PredicateReturnState.none;
 }

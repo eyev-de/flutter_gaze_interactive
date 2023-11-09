@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
 import '../../../../api.dart';
 import 'pointer_view.provider.dart';
@@ -57,15 +59,33 @@ class PointerCircle extends ConsumerWidget {
         ),
       );
     }
-
+    final snapState = ref.watch(snappingStateProvider);
     // GazePointerType.passive
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-    );
+    if (snapState == SnapState.inSnapTimer) {
+      return ShakeWidget(
+          duration: Duration(milliseconds: ref.read(GazeInteractive().snappingTimerMilliseconds)),
+          shakeConstant: ShakeDefaultConstant1(),
+          autoPlay: true,
+          enableWebMouseHover: true,
+          child: Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+            child: kDebugMode ? Text(' ${snapState.toString()}', style: const TextStyle(fontSize: 30)) : null,
+          ));
+    } else {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+        ),
+        child: kDebugMode ? Text(' ${snapState.toString()}', style: const TextStyle(fontSize: 30)) : null,
+      );
+    }
   }
 }

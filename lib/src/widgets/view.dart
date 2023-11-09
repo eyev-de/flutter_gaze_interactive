@@ -16,6 +16,7 @@ import '../state.dart';
 class GazeView extends StatelessWidget {
   final Widget child;
   final String route;
+  final bool snappable;
   final void Function()? onGazeEnter;
   final void Function()? onGazeLeave;
   final void Function(Offset)? onGaze;
@@ -29,6 +30,8 @@ class GazeView extends StatelessWidget {
     this.onGazeLeave,
     this.onGaze,
     this.onScroll,
+    // GazeViews are in general not snappable
+    this.snappable = false,
   });
 
   @override
@@ -41,6 +44,7 @@ class GazeView extends StatelessWidget {
       onGaze: onGaze,
       onScroll: onScroll,
       child: child,
+      snappable: snappable,
     );
   }
 }
@@ -49,21 +53,23 @@ class GazeViewImpl extends ConsumerStatefulWidget {
   final GlobalKey wrappedKey;
   final Widget child;
   final String route;
+  final bool snappable;
 
   final void Function()? onGazeEnter;
   final void Function()? onGazeLeave;
   final void Function(Offset)? onGaze;
   final void Function(GazeScrollDirection, double)? onScroll;
 
-  const GazeViewImpl({
-    required this.wrappedKey,
-    required this.child,
-    required this.route,
-    this.onGazeEnter,
-    this.onGazeLeave,
-    this.onGaze,
-    this.onScroll,
-  }) : super(key: wrappedKey);
+  const GazeViewImpl(
+      {required this.wrappedKey,
+      required this.child,
+      required this.route,
+      this.onGazeEnter,
+      this.onGazeLeave,
+      this.onGaze,
+      this.onScroll,
+      required this.snappable})
+      : super(key: wrappedKey);
 
   @override
   _GazeViewImplState createState() => _GazeViewImplState();
@@ -90,6 +96,7 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
       GazeElementData(
         key: widget.wrappedKey,
         route: widget.route,
+        snappable: widget.snappable,
         onGazeEnter: () {
           if (mounted) {
             widget.onGazeEnter?.call();
