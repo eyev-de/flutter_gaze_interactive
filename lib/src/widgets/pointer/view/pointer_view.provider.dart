@@ -6,8 +6,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../api.dart';
 import '../../../core/extensions.dart';
-import '../../../state.dart';
-import '../pointer_type.enum.dart';
 
 part 'pointer_view.provider.g.dart';
 
@@ -23,7 +21,7 @@ enum SnapState {
   String toString() {
     switch (this) {
       case SnapState.off:
-        return '🔴';
+        return '';
       case SnapState.on:
         return '🟢';
       case SnapState.inSnapTimer:
