@@ -20,29 +20,17 @@ enum GazeScrollableIndicatorState {
   active;
 
   double get opacity {
-    switch (this) {
-      case GazeScrollableIndicatorState.hidden:
-        return 0;
-      case GazeScrollableIndicatorState.visible:
-        return 0.15;
-      case GazeScrollableIndicatorState.active:
-        return 1;
-    }
+    return switch (this) {
+      GazeScrollableIndicatorState.hidden => 0,
+      GazeScrollableIndicatorState.visible => 0.15,
+      GazeScrollableIndicatorState.active => 1,
+    };
   }
 
-  bool get isVisible {
-    return opacity > GazeScrollableIndicatorState.hidden.opacity;
-  }
+  bool get isVisible => opacity > GazeScrollableIndicatorState.hidden.opacity;
 }
 
 class GazeScrollableImpl extends ConsumerStatefulWidget {
-  final GlobalKey wrappedKey;
-  final Widget child;
-  final ScrollController controller;
-  final String route;
-  final double indicatorWidth;
-  final double indicatorHeight;
-  final EdgeInsets indicatorInnerPadding;
   GazeScrollableImpl({
     required this.wrappedKey,
     required this.child,
@@ -52,6 +40,15 @@ class GazeScrollableImpl extends ConsumerStatefulWidget {
     required this.indicatorHeight,
     required this.indicatorInnerPadding,
   }) : super(key: wrappedKey);
+
+  final GlobalKey wrappedKey;
+  final Widget child;
+  final ScrollController controller;
+  final String route;
+  final double indicatorWidth;
+  final double indicatorHeight;
+  final EdgeInsets indicatorInnerPadding;
+
   @override
   _GazeScrollableImplState createState() => _GazeScrollableImplState();
 }
@@ -59,9 +56,8 @@ class GazeScrollableImpl extends ConsumerStatefulWidget {
 class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
   bool _active = false;
   bool _animating = false;
-  // GazeScrollableIndicatorState _upIndicatorState = GazeScrollableIndicatorState.hidden;
+
   final _upIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
-  // GazeScrollableIndicatorState _downIndicatorState = GazeScrollableIndicatorState.hidden;
   final _downIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
 
   _GazeScrollableImplState();
@@ -77,12 +73,8 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
       GazeScrollableData(
         key: widget.wrappedKey,
         route: widget.route,
-        onGazeEnter: () {
-          _active = true;
-        },
-        onGazeLeave: () {
-          _active = false;
-        },
+        onGazeEnter: () => _active = true,
+        onGazeLeave: () => _active = false,
       ),
     );
     widget.controller.addListener(_scrollListener);
@@ -253,17 +245,11 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
   Widget build(BuildContext context) {
     final _upIndicatorState = ref.watch(_upIndicatorProvider);
     final _downIndicatorState = ref.watch(_downIndicatorProvider);
-    ref.listen(GazeInteractive().currentRectStateProvider, (previous, next) {
-      _listener(next);
-    });
+    ref.listen(GazeInteractive().currentRectStateProvider, (_, next) => _listener(next));
     return MouseRegion(
       onHover: (event) {
         if (!_active) {
-          final rect = Rect.fromCenter(
-            center: event.position,
-            width: 10,
-            height: 10,
-          );
+          final rect = Rect.fromCenter(center: event.position, width: 10, height: 10);
           _listener(rect, active: true);
         }
       },
@@ -287,19 +273,13 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
                           properties: GazeButtonProperties(
                             // Scrolling should not be snapped to
                             snappable: false,
+                            horizontal: true,
                             route: widget.route,
                             gazeInteractive: false,
                             innerPadding: widget.indicatorInnerPadding,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(100),
-                              topRight: Radius.circular(100),
-                            ),
-                            icon: Icon(
-                              Icons.arrow_downward,
-                              color: Theme.of(context).primaryColor,
-                            ),
                             backgroundColor: Colors.white.withOpacity(_downIndicatorState.opacity),
-                            horizontal: true,
+                            icon: Icon(Icons.arrow_downward, color: Theme.of(context).primaryColor),
+                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(100), topRight: Radius.circular(100)),
                           ),
                         ),
                       ),
@@ -323,19 +303,13 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
                       properties: GazeButtonProperties(
                         // Scrolling should not be snapped to
                         snappable: false,
+                        horizontal: true,
                         route: widget.route,
                         gazeInteractive: false,
                         innerPadding: widget.indicatorInnerPadding,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(100),
-                          bottomRight: Radius.circular(100),
-                        ),
-                        icon: Icon(
-                          Icons.arrow_upward,
-                          color: Theme.of(context).primaryColor,
-                        ),
                         backgroundColor: Colors.white.withOpacity(_upIndicatorState.opacity),
-                        horizontal: true,
+                        icon: Icon(Icons.arrow_upward, color: Theme.of(context).primaryColor),
+                        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(100), bottomRight: Radius.circular(100)),
                       ),
                     ),
                   ),
