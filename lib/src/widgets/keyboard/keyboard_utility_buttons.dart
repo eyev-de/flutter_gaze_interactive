@@ -153,6 +153,9 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
           gazeInteractive: gazeInteractive,
           backgroundColor: backgroundColor ?? Colors.grey.shade900,
           icon: Icon(icon, color: iconColor ?? Colors.white, size: size),
+          // Gaze Keyboard Utility Buttons should be snapped to
+          // This includes (copy, cut, delete_all, delete_word, delete, move cursors, paste, select)
+          snappable: true,
         ),
       ),
     );

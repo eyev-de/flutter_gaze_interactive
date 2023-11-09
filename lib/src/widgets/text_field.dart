@@ -28,6 +28,8 @@ class GazeTextFieldProperties {
     this.enableSuggestions = true,
     this.expands = false,
     this.obscureText = false,
+    // Textfields are snappable by default
+    this.snappable = true,
   });
 
   final int? maxLength;
@@ -45,6 +47,7 @@ class GazeTextFieldProperties {
   final bool enableSuggestions;
   final bool expands;
   final bool obscureText;
+  final bool snappable;
 }
 
 class GazeTextField extends ConsumerWidget {
@@ -75,7 +78,11 @@ class GazeTextField extends ConsumerWidget {
       children: [
         Flexible(
           child: GazeSelectionAnimation(
-            properties: GazeSelectionAnimationProperties(route: route, gazeInteractive: properties.enabled),
+            properties: GazeSelectionAnimationProperties(
+              route: route,
+              gazeInteractive: properties.enabled,
+              snappable: this.properties.snappable,
+            ),
             wrappedKey: GlobalKey(),
             wrappedWidget: Positioned.directional(
               textDirection: TextDirection.ltr,

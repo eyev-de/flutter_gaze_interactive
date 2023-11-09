@@ -682,6 +682,41 @@ final pointerFixationPointProvider =
 );
 
 typedef _$PointerFixationPoint = Notifier<Offset>;
+String _$snapElementHash() => r'a111b876829fe178b4dc947c065cbeedf6ee9e84';
+
+/// Gaze Pointer Snapping Point
+///
+/// Copied from [SnapElement].
+@ProviderFor(SnapElement)
+final snapElementProvider =
+    NotifierProvider<SnapElement, GazeElementData?>.internal(
+  SnapElement.new,
+  name: r'snapElementProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$snapElementHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$SnapElement = Notifier<GazeElementData?>;
+String _$snappingStateHash() => r'6a669efc382259950722a3ddf3b1bac0814a2039';
+
+/// Gaze Pointer in snapp mode Point
+///
+/// Copied from [SnappingState].
+@ProviderFor(SnappingState)
+final snappingStateProvider =
+    NotifierProvider<SnappingState, SnapState>.internal(
+  SnappingState.new,
+  name: r'snappingStateProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$snappingStateHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$SnappingState = Notifier<SnapState>;
 String _$pointerFixationRadiusHash() =>
     r'cb3a8a4204caa0e05d5c01d3415317553325f5ba';
 
@@ -701,5 +736,43 @@ final pointerFixationRadiusProvider =
 );
 
 typedef _$PointerFixationRadius = Notifier<double>;
+String _$pointerSnappingRadiusHash() =>
+    r'1ccf0729b21b413d0e8070565d9424aa8c670b78';
+
+/// Gaze Pointer Snapping Radius
+///
+/// Copied from [PointerSnappingRadius].
+@ProviderFor(PointerSnappingRadius)
+final pointerSnappingRadiusProvider =
+    AutoDisposeNotifierProvider<PointerSnappingRadius, double>.internal(
+  PointerSnappingRadius.new,
+  name: r'pointerSnappingRadiusProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$pointerSnappingRadiusHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$PointerSnappingRadius = AutoDisposeNotifier<double>;
+String _$ignorePointerStateHash() =>
+    r'e98f034e6d53c3d7550dd55eab7df87a35a6a775';
+
+/// Indicates if recently snapped and pointer is ignored by mouse
+///
+/// Copied from [IgnorePointerState].
+@ProviderFor(IgnorePointerState)
+final ignorePointerStateProvider =
+    AutoDisposeNotifierProvider<IgnorePointerState, bool>.internal(
+  IgnorePointerState.new,
+  name: r'ignorePointerStateProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$ignorePointerStateHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$IgnorePointerState = AutoDisposeNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
