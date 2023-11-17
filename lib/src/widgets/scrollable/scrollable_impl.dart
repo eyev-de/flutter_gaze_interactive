@@ -32,19 +32,19 @@ enum GazeScrollableIndicatorState {
 
 class GazeScrollableImpl extends ConsumerStatefulWidget {
   GazeScrollableImpl({
-    required this.wrappedKey,
-    required this.child,
-    required this.controller,
     required this.route,
+    required this.child,
+    required this.wrappedKey,
+    required this.controller,
     required this.indicatorWidth,
     required this.indicatorHeight,
     required this.indicatorInnerPadding,
   }) : super(key: wrappedKey);
 
-  final GlobalKey wrappedKey;
-  final Widget child;
-  final ScrollController controller;
   final String route;
+  final Widget child;
+  final GlobalKey wrappedKey;
+  final ScrollController controller;
   final double indicatorWidth;
   final double indicatorHeight;
   final EdgeInsets indicatorInnerPadding;
@@ -67,8 +67,6 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
   @override
   void initState() {
     super.initState();
-    // addlistener to the GazeInteractive instance
-    // widget.gazeInteractive.addListener(_listener);
     GazeInteractive().register(
       GazeScrollableData(
         key: widget.wrappedKey,
@@ -84,9 +82,6 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
         if (!_downIndicatorState.isVisible) {
           ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
         }
-        // setState(() {
-        //   _downIndicatorState = GazeScrollableIndicatorState.visible;
-        // });
       }
     });
   }
@@ -108,40 +103,24 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
       if (widget.controller.position.pixels == 0) {
         if (_upIndicatorState.isVisible) {
           ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
-          // setState(() {
-          //   _upIndicatorState = GazeScrollableIndicatorState.hidden;
-          // });
         }
       } else {
         if (_downIndicatorState.isVisible) {
           ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
-          // setState(() {
-          //   _downIndicatorState = GazeScrollableIndicatorState.hidden;
-          // });
         }
       }
     } else {
       if (!_upIndicatorState.isVisible) {
         ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
-        // setState(() {
-        //   _upIndicatorState = GazeScrollableIndicatorState.visible;
-        // });
       }
       if (!_downIndicatorState.isVisible) {
         ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
-        // setState(() {
-        //   _downIndicatorState = GazeScrollableIndicatorState.visible;
-        // });
       }
     }
     if (widget.controller.position.extentBefore == 0.0 && widget.controller.position.extentAfter == 0.0) {
       if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
-        // setState(() {
-        // _downIndicatorState = GazeScrollableIndicatorState.hidden;
         ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
-        // _upIndicatorState = GazeScrollableIndicatorState.hidden;
         ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
-        // });
       }
     }
   }
@@ -157,10 +136,6 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
       if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
         ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
         ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
-        // setState(() {
-        //   _downIndicatorState = GazeScrollableIndicatorState.hidden;
-        //   _upIndicatorState = GazeScrollableIndicatorState.hidden;
-        // });
       }
       return;
     }
@@ -169,82 +144,60 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
 
   Future<void> _calculate(Rect rect) async {
     final bounds = widget.wrappedKey.globalPaintBounds;
-    if (bounds != null) {
-      // calculate top area in which scrolling happens
-      final tempTop = Rect.fromLTRB(
-        bounds.left,
-        bounds.top,
-        bounds.right,
-        bounds.top + bounds.height * scrollArea,
-      );
-      // calculate bottom area in which scrolling happens
-      final tempBottom = Rect.fromLTRB(
-        bounds.left,
-        bounds.bottom - bounds.height * scrollArea,
-        bounds.right,
-        bounds.bottom,
-      );
+    if (bounds == null) return;
+    // calculate top area in which scrolling happens
+    final tempTop = Rect.fromLTRB(bounds.left, bounds.top, bounds.right, bounds.top + bounds.height * scrollArea);
+    // calculate bottom area in which scrolling happens
+    final tempBottom = Rect.fromLTRB(bounds.left, bounds.bottom - bounds.height * scrollArea, bounds.right, bounds.bottom);
 
-      final double maxScrollSpeed = ref.read(GazeInteractive().scrollFactor);
-      // final double maxScrollSpeed = widget.gazeInteractive.scrollFactor;
-      final _upIndicatorState = ref.read(_upIndicatorProvider);
-      final _downIndicatorState = ref.read(_downIndicatorProvider);
-      if (tempTop.overlaps(rect)) {
-        // In top area
-        if (widget.controller.offset == 0) return;
-        if (_downIndicatorState != GazeScrollableIndicatorState.visible || _upIndicatorState != GazeScrollableIndicatorState.active) {
-          ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
-          ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
-          // setState(() {
-          //   _upIndicatorState = GazeScrollableIndicatorState.active;
-          //   _downIndicatorState = GazeScrollableIndicatorState.visible;
-          // });
-        }
-        // calculate scrolling factor
-        final double factor = (tempTop.bottom - rect.topCenter.dy) / tempTop.height * maxScrollSpeed;
-        // calculate new scrolling offset
-        final double offset = widget.controller.offset - factor < 0 ? 0 : widget.controller.offset - factor;
-        _animating = true;
-        await widget.controller.position.animateTo(
-          offset,
-          duration: const Duration(milliseconds: 60),
-          curve: Curves.ease,
-        );
-        _animating = false;
-      } else if (tempBottom.overlaps(rect)) {
-        // In bottom area;
-        if (widget.controller.position.atEdge && widget.controller.position.pixels > 0) return;
-        if (_downIndicatorState != GazeScrollableIndicatorState.active || _upIndicatorState != GazeScrollableIndicatorState.visible) {
-          ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
-          ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
-          // setState(() {
-          //   _downIndicatorState = GazeScrollableIndicatorState.active;
-          //   _upIndicatorState = GazeScrollableIndicatorState.visible;
-          // });
-        }
-        // calculate scrolling factor
-        final double factor = (rect.bottomCenter.dy - tempBottom.top) / tempTop.height * maxScrollSpeed;
-        // calculate new scrolling offset
-        final double offset = widget.controller.offset + factor > widget.controller.position.maxScrollExtent
-            ? widget.controller.position.maxScrollExtent
-            : widget.controller.offset + factor;
-        _animating = true;
-        await widget.controller.position.animateTo(
-          offset,
-          duration: const Duration(milliseconds: 60),
-          curve: Curves.ease,
-        );
-        _animating = false;
+    final double maxScrollSpeed = ref.read(GazeInteractive().scrollFactor);
+    // final double maxScrollSpeed = widget.gazeInteractive.scrollFactor;
+    final _upIndicatorState = ref.read(_upIndicatorProvider);
+    final _downIndicatorState = ref.read(_downIndicatorProvider);
+    if (tempTop.overlaps(rect)) {
+      // In top area
+      if (widget.controller.offset == 0) return;
+      if (_downIndicatorState != GazeScrollableIndicatorState.visible || _upIndicatorState != GazeScrollableIndicatorState.active) {
+        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
       }
-      // Hides the indicators if they are at the edge at the end of scrolling
-      _scrollListener();
+      // calculate scrolling factor
+      final double factor = (tempTop.bottom - rect.topCenter.dy) / tempTop.height * maxScrollSpeed;
+      // calculate new scrolling offset
+      final double offset = widget.controller.offset - factor < 0 ? 0 : widget.controller.offset - factor;
+      _animating = true;
+      await widget.controller.position.animateTo(offset, duration: const Duration(milliseconds: 60), curve: Curves.ease);
+      _animating = false;
+    } else if (tempBottom.overlaps(rect)) {
+      // In bottom area;
+      if (widget.controller.position.atEdge && widget.controller.position.pixels > 0) return;
+      if (_downIndicatorState != GazeScrollableIndicatorState.active || _upIndicatorState != GazeScrollableIndicatorState.visible) {
+        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
+        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+      }
+      // calculate scrolling factor
+      final double factor = (rect.bottomCenter.dy - tempBottom.top) / tempTop.height * maxScrollSpeed;
+      // calculate new scrolling offset
+      final double offset = widget.controller.offset + factor > widget.controller.position.maxScrollExtent
+          ? widget.controller.position.maxScrollExtent
+          : widget.controller.offset + factor;
+      _animating = true;
+      await widget.controller.position.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 60),
+        curve: Curves.ease,
+      );
+      _animating = false;
     }
+    // Hides the indicators if they are at the edge at the end of scrolling
+    _scrollListener();
   }
 
   @override
   Widget build(BuildContext context) {
-    final _upIndicatorState = ref.watch(_upIndicatorProvider);
-    final _downIndicatorState = ref.watch(_downIndicatorProvider);
+    final upIndicatorState = ref.watch(_upIndicatorProvider);
+    final downIndicatorState = ref.watch(_downIndicatorProvider);
+    final size = Size(widget.indicatorWidth, widget.indicatorHeight);
     ref.listen(GazeInteractive().currentRectStateProvider, (_, next) => _listener(next));
     return MouseRegion(
       onHover: (event) {
@@ -254,70 +207,83 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
         }
       },
       child: Stack(
+        alignment: AlignmentDirectional.topCenter,
         children: [
           widget.child,
-          IgnorePointer(
-            child: Opacity(
-              opacity: _downIndicatorState.isVisible ? 1.0 : 0.0,
-              // duration: const Duration(milliseconds: 150),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: widget.indicatorWidth,
-                        height: widget.indicatorHeight,
-                        child: GazeButton(
-                          properties: GazeButtonProperties(
-                            // Scrolling should not be snapped to
-                            snappable: false,
-                            horizontal: true,
-                            route: widget.route,
-                            gazeInteractive: false,
-                            innerPadding: widget.indicatorInnerPadding,
-                            backgroundColor: Colors.white.withOpacity(_downIndicatorState.opacity),
-                            icon: Icon(Icons.arrow_downward, color: Theme.of(context).primaryColor),
-                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(100), topRight: Radius.circular(100)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+          Positioned(
+            bottom: 0,
+            child: _ArrowButton(
+              size: size,
+              type: ArrowButtonType.down,
+              state: downIndicatorState,
+              route: widget.route,
+              padding: widget.indicatorInnerPadding,
             ),
           ),
-          IgnorePointer(
-            child: Opacity(
-              opacity: _upIndicatorState.isVisible ? 1.0 : 0.0,
-              // duration: const Duration(milliseconds: 150),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: widget.indicatorWidth,
-                    height: widget.indicatorHeight,
-                    child: GazeButton(
-                      properties: GazeButtonProperties(
-                        // Scrolling should not be snapped to
-                        snappable: false,
-                        horizontal: true,
-                        route: widget.route,
-                        gazeInteractive: false,
-                        innerPadding: widget.indicatorInnerPadding,
-                        backgroundColor: Colors.white.withOpacity(_upIndicatorState.opacity),
-                        icon: Icon(Icons.arrow_upward, color: Theme.of(context).primaryColor),
-                        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(100), bottomRight: Radius.circular(100)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          _ArrowButton(
+            size: size,
+            type: ArrowButtonType.up,
+            state: upIndicatorState,
+            route: widget.route,
+            padding: widget.indicatorInnerPadding,
           ),
         ],
+      ),
+    );
+  }
+}
+
+enum ArrowButtonType {
+  up,
+  down;
+
+  IconData get icon => switch (this) { ArrowButtonType.up => Icons.arrow_upward, ArrowButtonType.down => Icons.arrow_downward };
+
+  BorderRadius get borderRadius {
+    return switch (this) {
+      ArrowButtonType.up => const BorderRadius.only(bottomLeft: Radius.circular(100), bottomRight: Radius.circular(100)),
+      ArrowButtonType.down => const BorderRadius.only(topLeft: Radius.circular(100), topRight: Radius.circular(100)),
+    };
+  }
+}
+
+class _ArrowButton extends StatelessWidget {
+  const _ArrowButton({
+    required this.route,
+    required this.type,
+    required this.size,
+    required this.state,
+    required this.padding,
+  });
+
+  final String route;
+  final ArrowButtonType type;
+  final Size size;
+  final GazeScrollableIndicatorState state;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Opacity(
+        opacity: state.isVisible ? 1.0 : 0.0,
+        child: SizedBox(
+          width: size.width,
+          height: size.height,
+          child: GazeButton(
+            properties: GazeButtonProperties(
+              // Scrolling should not be snapped to
+              snappable: false,
+              horizontal: true,
+              route: route,
+              gazeInteractive: false,
+              innerPadding: padding,
+              backgroundColor: Colors.white.withOpacity(state.opacity),
+              icon: Icon(type.icon, color: Theme.of(context).primaryColor),
+              borderRadius: type.borderRadius,
+            ),
+          ),
+        ),
       ),
     );
   }
