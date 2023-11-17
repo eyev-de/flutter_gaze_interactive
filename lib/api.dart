@@ -23,6 +23,7 @@ export 'src/widgets/keyboard/keyboard_state.dart' show GazeKeyboardState;
 export 'src/widgets/keyboard/keyboard_text.dart' show GazeKeyboardTextWidget;
 export 'src/widgets/keyboard/keyboard_utility_buttons.dart' show GazeKeyboardUtilityButtons, GazeKeyboardUtilityBaseButton, GazeKeyboardUtilityButton;
 export 'src/widgets/keyboard/keyboards.dart' show Language, Keyboards, KeyboardType, KeyboardPlatformType;
+export 'src/widgets/keyboard/scroll_calculator.dart' show ScrollCalculator;
 export 'src/widgets/keyboard/utility_buttons/copy.button.dart' show CopyButton;
 export 'src/widgets/keyboard/utility_buttons/cut.button.dart' show CutButton;
 export 'src/widgets/keyboard/utility_buttons/move_cursor_left.button.dart' show MoveCursorLeftButton;
