@@ -84,34 +84,29 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
       indicatorInnerPadding: const EdgeInsets.all(5),
       route: widget.state.route,
       controller: controller,
-      child: Positioned(
-        bottom: 0,
-        left: 0,
-        right: 0,
-        child: GazeButton(
-          onTap: widget.onTap,
-          properties: GazeButtonProperties(
-            gazeInteractive: widget.onTap != null,
-            // Keyboard Text field should be snapped to
-            snappable: true,
-            child: Container(
-              constraints: BoxConstraints(minHeight: widget.minHeight),
-              child: CupertinoTextField(
-                key: cupertinoTextFieldKey,
-                enabled: true,
-                showCursor: true,
-                minLines: 1,
-                maxLines: widget.maxLines,
-                style: scrollCalculator.textStyle,
-                padding: scrollCalculator.textFieldPadding,
-                focusNode: widget.node,
-                scrollController: controller,
-                controller: widget.state.controller,
-                placeholder: widget.state.placeholder,
-                cursorColor: Colors.white,
-                keyboardType: TextInputType.none,
-                decoration: BoxDecoration(color: Colors.grey.shade900, borderRadius: const BorderRadius.all(Radius.circular(20))),
-              ),
+      child: GazeButton(
+        onTap: widget.onTap,
+        properties: GazeButtonProperties(
+          // Keyboard Text field should be snapped to
+          snappable: true,
+          gazeInteractive: widget.onTap != null,
+          child: Container(
+            constraints: BoxConstraints(minHeight: widget.minHeight),
+            child: CupertinoTextField(
+              key: cupertinoTextFieldKey,
+              enabled: true,
+              showCursor: true,
+              minLines: 1,
+              maxLines: widget.maxLines,
+              style: scrollCalculator.textStyle,
+              padding: scrollCalculator.textFieldPadding,
+              focusNode: widget.node,
+              scrollController: controller,
+              controller: widget.state.controller,
+              placeholder: widget.state.placeholder,
+              cursorColor: Colors.white,
+              keyboardType: TextInputType.none,
+              decoration: BoxDecoration(color: Colors.grey.shade900, borderRadius: const BorderRadius.all(Radius.circular(20))),
             ),
           ),
         ),
