@@ -33,7 +33,7 @@ const gazeInteractiveMinFixationRadius = 80.0; // Not validated
 const gazeInteractiveMaxFixationRadius = 120.0; // Not validated
 
 const gazeInteractiveDefaultSnappingRadius = 20.0;
-const gazeInteractiveMinSnappingRadius = 10.0; // Not validated
+const gazeInteractiveMinSnappingRadius = 2.0; // Not validated
 const gazeInteractiveMaxSnappingRadius = 60.0; // Not validated
 
 const gazeInteractiveDefaultAfterSnapPauseMS = 2000;
