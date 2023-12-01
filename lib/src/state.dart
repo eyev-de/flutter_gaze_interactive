@@ -374,6 +374,16 @@ class SnapActiveState extends _$SnapActiveState {
   }
 }
 
+@Riverpod(keepAlive: true)
+class SnapIconState extends _$SnapIconState {
+  @override
+  bool build() => false;
+
+  void toggle() {
+    state = !state;
+  }
+}
+
 class GazeContext extends StatelessWidget {
   final Widget child;
   final SharedPreferences sharedPreferences;

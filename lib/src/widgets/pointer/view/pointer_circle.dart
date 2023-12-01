@@ -84,7 +84,7 @@ class PointerCircle extends ConsumerWidget {
           color: color,
           shape: BoxShape.circle,
         ),
-        child: kDebugMode ? Text(' ${snapState.toString()}', style: const TextStyle(fontSize: 30)) : null,
+        child: kDebugMode || ref.watch(snapIconStateProvider) ? Text(' ${snapState.toString()}', style: const TextStyle(fontSize: 30)) : null,
       );
     }
   }
