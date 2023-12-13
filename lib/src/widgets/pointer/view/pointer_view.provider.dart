@@ -130,7 +130,7 @@ class SnappingState extends _$SnappingState {
       // Timer to wait
       Timer(Duration(milliseconds: ref.read(GazeInteractive().snappingTimerMilliseconds)), () {
         if (state == SnapState.inSnapTimer && ref.read(snapElementProvider)?.key == snapElement.key) {
-          print('ready for ${ref.read(snapElementProvider)}');
+          //print('ready for ${ref.read(snapElementProvider)}');
           state = SnapState.readyToSnap;
           // if not snapped after 1 second -> rest
           Timer(const Duration(seconds: 1), () {
@@ -148,12 +148,11 @@ class SnappingState extends _$SnappingState {
   void startSnap(GazeElementData snapElement) {
     if (state == SnapState.readyToSnap && ref.read(snapElementProvider)?.key == snapElement.key) {
       state = SnapState.snapping;
-      print('stat snap');
       ref.read(ignorePointerStateProvider.notifier).update(ignore: true);
     }
   }
 
-  // After snap movement is done -> snapFinished
+  // When leaving snap radius while inSnapTimer or readyToSnap for specificElement
   void cancelSnap(GazeElementData snapElement) {
     // Only running snappscan be finished
     if ((state == SnapState.inSnapTimer || state == SnapState.readyToSnap) && ref.read(snapElementProvider)?.key == snapElement.key) {
@@ -171,10 +170,8 @@ class SnappingState extends _$SnappingState {
     }
   }
 
-// when not in snap radius while state = SnapState.inSnapTimer
-// -> stop being ready to snap
+// programmatically on Click
   void endSnap(GazeElementData snapElement) {
-    print('end snap');
     // Only running snappscan be finished
     if (state != SnapState.off && ref.read(snapElementProvider)?.key == snapElement.key) {
       // user can move the pointer again
@@ -230,7 +227,7 @@ class IgnorePointerState extends _$IgnorePointerState {
   bool build() => false;
 
   void update({required bool ignore}) {
-    print('--> ignore $ignore');
+    //print('--> ignore $ignore');
     state = ignore;
   }
 

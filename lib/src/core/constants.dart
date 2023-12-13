@@ -32,17 +32,23 @@ const gazeInteractiveDefaultFixationRadius = 100.0;
 const gazeInteractiveMinFixationRadius = 80.0; // Not validated
 const gazeInteractiveMaxFixationRadius = 120.0; // Not validated
 
+// Snapping
+
 const gazeInteractiveDefaultSnappingRadius = 20.0;
 const gazeInteractiveMinSnappingRadius = 2.0; // Not validated
 const gazeInteractiveMaxSnappingRadius = 60.0; // Not validated
 
-const gazeInteractiveDefaultAfterSnapPauseMS = 2000;
-const gazeInteractiveMinAfterSnapPauseMS = 0; // Not validated
-const gazeInteractiveMaxAfterSnapPauseMS = 40000; // Not validated
+const gazeInteractiveDefaultAfterSnapPauseMS = 1000;
+const gazeInteractiveMinAfterSnapPauseMS = 200; // Not validated
+const gazeInteractiveMaxAfterSnapPauseMS = 2000; // Not validated
 
-const gazeInteractiveDefaultSnappingTimerMS = 2000;
-const gazeInteractiveMinSnappingTimerMS = 0; // Not validated
-const gazeInteractiveMaxSnappingTimerMS = 40000; // Not validated
+const gazeInteractiveDefaultSnappingTimerMS = 1000;
+const gazeInteractiveMinSnappingTimerMS = 200; // Not validated
+const gazeInteractiveMaxSnappingTimerMS = 2000; // Not validated
+
+const timeToIgnorePointerWhenSnappingMs = 200; // needed especially for mouse usage
+
+// Keys
 
 const gazeInteractiveDefaultReselectionAcceleration = 0.75;
 const gazeInteractiveReselectionMinAcceleration = 0.4; // Not validated
@@ -52,4 +58,3 @@ const gazeInteractiveDefaultReselectionNumberOfLetterKeys = 2;
 const gazeInteractiveMinReselectionNumberOfLetterKeys = 1; // Not validated
 const gazeInteractiveMaxReselectionNumberOfLetterKeys = 5; // Not validated
 
-const timeToIgnorePointerWhenSnappingMs = 200; // needed especially for mouse usage
