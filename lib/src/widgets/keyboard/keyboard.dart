@@ -12,6 +12,7 @@ import '../button/button.dart';
 import '../pointer/view/pointer_view.dart';
 import 'keyboard_key.dart';
 import 'keyboard_key_type.enum.dart';
+import 'keyboard_mail_completions.dart';
 import 'keyboard_state.dart';
 import 'keyboard_text.dart';
 import 'keyboard_utility_buttons.dart';
@@ -147,6 +148,12 @@ class GazeKeyboard {
                       ],
                     ),
                   ),
+                  // Mail proposals
+                  if (state.type == KeyboardType.email)
+                    SizedBox(
+                      height: height,
+                      child: KeyboardMailCompletions(state: state, node: node),
+                    ),
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 20),
@@ -184,7 +191,6 @@ class GazeKeyboard {
                   route: state.route,
                   borderRadius: BorderRadius.zero,
                   backgroundColor: Colors.grey.shade900,
-                  // innerPadding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
                   icon: const Icon(Icons.keyboard_hide_rounded, color: Colors.white),
                 ),
                 onTap: () => onBack?.call(context),
