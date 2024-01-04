@@ -131,6 +131,7 @@ class _AppState extends State<App> {
                   properties: GazeSwitchButtonProperties(
                     route: '/',
                     enabled: true,
+                    labelTextStyle: const TextStyle(fontSize: 10),
                     state: GazeSwitchButtonState(toggled: true, gazeInteractive: true),
                   ),
                   onToggled: (toggled) async {

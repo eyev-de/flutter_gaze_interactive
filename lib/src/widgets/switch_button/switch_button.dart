@@ -34,6 +34,7 @@ class GazeSwitchButtonProperties {
     required this.route,
     this.enabled = true,
     this.showLabel = true,
+    this.labelTextStyle,
     this.disabledColor = Colors.grey,
     this.unToggledColor = Colors.grey,
     this.toggledColor = Colors.blue,
@@ -46,6 +47,7 @@ class GazeSwitchButtonProperties {
   final String route;
   final bool enabled;
   final bool showLabel;
+  final TextStyle? labelTextStyle;
   final Color disabledColor;
   final Color unToggledColor;
   final Color toggledColor;
@@ -104,7 +106,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Color.alphaBlend(Colors.black.withOpacity(.85), _getColor(_state.toggled)),
-            border: Border.all(color: _getColor(_state.toggled), width: 4),
+            border: Border.all(color: _getColor(_state.toggled), width: 3),
           ),
           child: AnimatedBuilder(
             animation: _animation,
@@ -132,7 +134,11 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
                           padding: EdgeInsets.all(_state.toggled ? 0 : 2),
                           child: Text(
                             _state.toggled ? 'ON' : 'OFF',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: _getColor(_state.toggled)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(fontWeight: FontWeight.bold, color: _getColor(_state.toggled))
+                                .merge(widget.properties.labelTextStyle),
                           ),
                         ),
                       ),
@@ -166,7 +172,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   }
 
   Color _getColor(bool toggled) {
-    if (!widget.properties.enabled) return widget.properties.disabledColor;
+    if (!widget.properties.enabled) return widget.properties.disabledColor.withOpacity(0.5);
     if (toggled) return widget.properties.toggledColor;
     return widget.properties.unToggledColor;
   }
