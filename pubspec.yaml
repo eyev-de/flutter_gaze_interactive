@@ -1,7 +1,6 @@
 name: gaze_interactive
 description: Gaze Interaction implements the interaction of eye-trackers (or pointer other devices) with specifically designed gaze interactive widgets.
 version: 0.0.1
-homepage:
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -28,7 +27,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^2.3.5
-  riverpod_generator: ^2.3.2
+  riverpod_generator: ^2.3.5
   json_serializable: ^6.7.0
 
 
