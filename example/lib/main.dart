@@ -130,15 +130,14 @@ class _AppState extends State<App> {
                 GazeSwitchButton(
                   properties: GazeSwitchButtonProperties(
                     route: '/',
-                    state: GazeSwitchButtonState(toggled: false),
+                    enabled: true,
+                    state: GazeSwitchButtonState(toggled: true, gazeInteractive: true),
                   ),
                   onToggled: (toggled) async {
                     return true;
                   },
                 ),
-                Snapping(
-                  route: '/',
-                ),
+                const Snapping(route: '/'),
               ],
             ),
           ),

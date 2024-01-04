@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gaze_interactive/api.dart';
 
 class Snapping extends ConsumerWidget {
+  const Snapping({super.key, required this.route});
+
   final String route;
-  Snapping({Key? key, required this.route}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,11 +16,11 @@ class Snapping extends ConsumerWidget {
         child: GazeSwitchButton(
           key: GlobalKey(),
           properties: GazeSwitchButtonProperties(
+            enabled: true,
             route: route,
             state: GazeSwitchButtonState(toggled: ref.read(snapActiveStateProvider), gazeInteractive: true),
             toggledColor: Colors.green,
             unToggledColor: Colors.pink,
-            margin: const EdgeInsets.fromLTRB(15, 35, 15, 35),
             size: const Size(80, 80),
           ),
           onToggled: (toggled) async {
@@ -33,7 +34,7 @@ class Snapping extends ConsumerWidget {
 }
 
 class SettingsRow extends StatelessWidget {
-  SettingsRow({Key? key, required this.title, required this.child}) : super(key: key);
+  const SettingsRow({super.key, required this.title, required this.child});
 
   final String title;
   final Widget child;
@@ -43,14 +44,7 @@ class SettingsRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(40, 20, 0, 20),
-            child: Text(
-              title,
-            ),
-          ),
-        ),
+        Flexible(child: Container(padding: const EdgeInsets.fromLTRB(40, 20, 0, 20), child: Text(title))),
         child,
       ],
     );
