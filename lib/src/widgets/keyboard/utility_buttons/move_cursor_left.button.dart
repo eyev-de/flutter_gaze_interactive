@@ -5,7 +5,7 @@ import '../../../core/extensions.dart';
 import '../keyboard_utility_buttons.dart';
 
 class MoveCursorLeftButton extends GazeKeyboardUtilityButton {
-  const MoveCursorLeftButton({super.key, required super.state, required super.node}) : super(label: '');
+  const MoveCursorLeftButton({super.key, required super.state, required super.node, super.label = 'Cursor'});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -14,6 +14,7 @@ class MoveCursorLeftButton extends GazeKeyboardUtilityButton {
       icon: Icons.arrow_back,
       route: state.route,
       reselectable: true,
+      text: label,
       onTap: () {
         node.requestFocus();
         state.controller.moveCursorRight(selecting: selecting);

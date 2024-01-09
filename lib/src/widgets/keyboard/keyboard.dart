@@ -18,6 +18,8 @@ import 'keyboard_text.dart';
 import 'keyboard_utility_buttons.dart';
 import 'keyboards.dart';
 import 'utility_buttons/delete_all.button.dart';
+import 'utility_buttons/redo.button.dart';
+import 'utility_buttons/undo.button.dart';
 
 class GazeKeyboard {
   static final GazeKeyboard _instance = GazeKeyboard._internal();
@@ -108,7 +110,19 @@ class GazeKeyboard {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Flexible(
-                                flex: 8,
+                                child: SizedBox(
+                                  height: height + 2, // Compensating the top and bottom padding
+                                  child: UndoButton(state: state, node: node),
+                                ),
+                              ),
+                              Flexible(
+                                child: SizedBox(
+                                  height: height + 2, // Compensating the top and bottom padding
+                                  child: RedoButton(state: state, node: node),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 6,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
                                   // Subtract vertical padding from text field size
@@ -119,7 +133,7 @@ class GazeKeyboard {
                               Flexible(
                                 child: SizedBox(
                                   height: height + 2, // Compensating the top and bottom padding
-                                  child: DeleteAllButton(controller: state.controller, node: node, route: state.route),
+                                  child: DeleteAllButton(controller: state.controller, node: node, route: state.route, label: ''),
                                 ),
                               ),
                               // Submit Button
@@ -132,8 +146,8 @@ class GazeKeyboard {
                                       onTap: () => onBack?.call(context),
                                       properties: GazeButtonProperties(
                                         innerPadding: const EdgeInsets.all(0),
-                                        backgroundColor: Colors.grey.shade800,
-                                        icon: const Icon(Icons.check, color: Colors.teal),
+                                        backgroundColor: Color.alphaBlend(Theme.of(context).primaryColor.withOpacity(0.5), Colors.grey.shade800),
+                                        icon: const Icon(Icons.check, color: Colors.white),
                                         horizontal: true,
                                         route: state.route,
                                       ),

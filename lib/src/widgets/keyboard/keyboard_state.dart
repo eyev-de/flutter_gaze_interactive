@@ -14,6 +14,7 @@ import 'keyboards.dart';
 
 class GazeKeyboardState {
   final TextEditingController controller;
+  final UndoHistoryController? undoHistoryController;
   final String placeholder;
   FocusNode? node;
   final GazeKeyboardController keyboardController = GazeKeyboardController(WidgetsBinding.instance);
@@ -29,9 +30,9 @@ class GazeKeyboardState {
   final shiftStateProvider = StateProvider((ref) => false);
   final capsLockStateProvider = StateProvider((ref) => false);
   final altStateProvider = StateProvider((ref) => false);
+
   // IOS specific button, letters or signs (numbers and special characters)
   final signsStateProvider = StateProvider((ref) => false);
-
   final ctrlStateProvider = StateProvider((ref) => false);
   final selectingStateProvider = StateProvider((ref) => false);
 
@@ -43,6 +44,7 @@ class GazeKeyboardState {
 
   GazeKeyboardState({
     required this.controller,
+    this.undoHistoryController,
     this.placeholder = '',
     this.withProvider = true,
     this.node,
