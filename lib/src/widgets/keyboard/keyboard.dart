@@ -109,18 +109,20 @@ class GazeKeyboard {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Flexible(
-                                child: SizedBox(
-                                  height: height + 2, // Compensating the top and bottom padding
-                                  child: UndoButton(state: state, node: node),
+                              if (state.undoHistoryController != null) ...[
+                                Flexible(
+                                  child: SizedBox(
+                                    height: height + 2, // Compensating the top and bottom padding
+                                    child: UndoButton(state: state, node: node),
+                                  ),
                                 ),
-                              ),
-                              Flexible(
-                                child: SizedBox(
-                                  height: height + 2, // Compensating the top and bottom padding
-                                  child: RedoButton(state: state, node: node),
+                                Flexible(
+                                  child: SizedBox(
+                                    height: height + 2, // Compensating the top and bottom padding
+                                    child: RedoButton(state: state, node: node),
+                                  ),
                                 ),
-                              ),
+                              ],
                               Flexible(
                                 flex: 6,
                                 child: Padding(
