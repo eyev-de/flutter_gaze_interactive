@@ -82,26 +82,6 @@ abstract class GazeKeyboardUtilityButton extends ConsumerWidget {
   final TextStyle? textStyle;
 }
 
-class GazeKeyboardUtilityMoveCursorDownButton extends GazeKeyboardUtilityButton {
-  const GazeKeyboardUtilityMoveCursorDownButton({super.key, required super.state, required super.node}) : super(label: '');
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selecting = ref.watch(state.selectingStateProvider);
-    return GazeKeyboardUtilityBaseButton(
-      icon: Icons.arrow_downward,
-      route: state.route,
-      onTap: () {
-        node.requestFocus();
-        if (state.onMoveCursorDown != null) {
-          state.onMoveCursorDown!(selecting: selecting);
-        }
-      },
-      reselectable: true,
-    );
-  }
-}
-
 class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   const GazeKeyboardUtilityBaseButton({
     super.key,
