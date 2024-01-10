@@ -13,6 +13,7 @@ class SelectButton extends GazeKeyboardUtilityButton {
     return GazeKeyboardUtilityBaseButton(
       backgroundColor: selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
       icon: MdiIcons.select,
+      text: label,
       route: state.route,
       onTap: () {
         node.requestFocus();

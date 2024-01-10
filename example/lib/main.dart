@@ -40,6 +40,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final TextEditingController _controller = TextEditingController();
+  final UndoHistoryController _undoHistoryController = UndoHistoryController();
   final FocusNode _focusNode = FocusNode();
   DateTime _dateTime = DateTime.now();
 
@@ -80,6 +81,7 @@ class _AppState extends State<App> {
                           node: _focusNode,
                           placeholder: 'Search',
                           controller: _controller,
+                          undoHistoryController: _undoHistoryController,
                           route: '/dialog',
                           type: KeyboardType.extended,
                           language: Language.english,
