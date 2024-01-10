@@ -37,7 +37,7 @@ export 'src/widgets/pointer/pointer_type.enum.dart' show GazePointerType;
 export 'src/widgets/pointer/view/pointer_view.dart' show GazePointerView;
 export 'src/widgets/pointer/view/pointer_view.provider.dart';
 export 'src/widgets/radio_button.dart' show GazeRadioButton;
-export 'src/widgets/scrollable/scrollable.dart' show GazeScrollable;
+export 'src/widgets/scrollable/scrollable.dart' show GazeScrollable, GazeScrollableIndicatorSize;
 export 'src/widgets/scrollable/scrollable_impl.dart' show GazeScrollableImpl, GazeScrollableIndicatorState;
 export 'src/widgets/switch_button/switch_button.dart' show GazeSwitchButton, GazeSwitchButtonProperties;
 export 'src/widgets/switch_button/switch_button_state.model.dart' show GazeSwitchButtonState;
