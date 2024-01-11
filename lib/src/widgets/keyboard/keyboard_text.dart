@@ -79,9 +79,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
   @override
   Widget build(BuildContext context) {
     return GazeScrollable(
-      indicatorHeight: 40,
-      indicatorWidth: 40,
-      indicatorInnerPadding: const EdgeInsets.all(5),
+      indicatorSize: GazeScrollableIndicatorSize.small,
       route: widget.state.route,
       controller: controller,
       child: GazeButton(

@@ -8,23 +8,41 @@ import 'package:flutter/material.dart';
 
 import 'scrollable_impl.dart';
 
+enum GazeScrollableIndicatorSize {
+  small,
+  medium,
+  large;
+
+  Size get size {
+    return switch (this) {
+      GazeScrollableIndicatorSize.small => const Size(40, 32),
+      GazeScrollableIndicatorSize.medium => const Size(50, 45),
+      GazeScrollableIndicatorSize.large => const Size(200, 60),
+    };
+  }
+
+  EdgeInsets get padding {
+    return switch (this) {
+      GazeScrollableIndicatorSize.small => const EdgeInsets.all(3),
+      GazeScrollableIndicatorSize.medium => const EdgeInsets.all(5),
+      GazeScrollableIndicatorSize.large => const EdgeInsets.all(10),
+    };
+  }
+}
+
 class GazeScrollable extends StatelessWidget {
   GazeScrollable({
     Key? key,
     required this.route,
     required this.child,
     required this.controller,
-    this.indicatorWidth = 300,
-    this.indicatorHeight = 60,
-    this.indicatorInnerPadding = const EdgeInsets.all(10),
+    this.indicatorSize = GazeScrollableIndicatorSize.medium,
   }) : super(key: key);
 
   final String route;
   final Widget child;
   final ScrollController controller;
-  final double indicatorWidth;
-  final double indicatorHeight;
-  final EdgeInsets indicatorInnerPadding;
+  final GazeScrollableIndicatorSize indicatorSize;
 
   final GlobalKey gazeInteractiveKey = GlobalKey();
 
@@ -34,9 +52,9 @@ class GazeScrollable extends StatelessWidget {
       route: route,
       controller: controller,
       wrappedKey: gazeInteractiveKey,
-      indicatorWidth: indicatorWidth,
-      indicatorHeight: indicatorHeight,
-      indicatorInnerPadding: indicatorInnerPadding,
+      indicatorWidth: indicatorSize.size.width,
+      indicatorHeight: indicatorSize.size.height,
+      indicatorInnerPadding: indicatorSize.padding,
       child: child,
     );
   }
