@@ -30,6 +30,7 @@ class GazeButtonProperties {
   final Color backgroundColor;
   final EdgeInsets innerPadding;
   final bool horizontal;
+  final bool fill;
 
   final MainAxisAlignment horizontalAlignment;
   final MainAxisAlignment verticalAlignment;
@@ -59,6 +60,7 @@ class GazeButtonProperties {
     this.backgroundColor = Colors.transparent,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.horizontal = false,
+    this.fill = false,
     this.horizontalAlignment = MainAxisAlignment.center,
     this.verticalAlignment = MainAxisAlignment.center,
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -142,8 +144,20 @@ class GazeButton extends StatelessWidget {
                     : null,
               ),
         duration: const Duration(milliseconds: 150),
-        child: properties.child ?? (properties.horizontal ? _buildHorizontal(context) : _buildVertical(context)),
+        child: properties.child ??
+            (properties.fill
+                ? _buildFill(context)
+                : properties.horizontal
+                    ? _buildHorizontal(context)
+                    : _buildVertical(context)),
       ),
+    );
+  }
+
+  Widget _buildFill(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 0, 0, properties.text != null ? 10 : 0),
+      child: properties.icon,
     );
   }
 
