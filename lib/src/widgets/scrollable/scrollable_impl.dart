@@ -23,7 +23,15 @@ enum GazeScrollableIndicatorState {
     return switch (this) {
       GazeScrollableIndicatorState.hidden => 0,
       GazeScrollableIndicatorState.visible => 0.15,
-      GazeScrollableIndicatorState.active => 1,
+      GazeScrollableIndicatorState.active => 0.5,
+    };
+  }
+
+  Color get iconColor {
+    return switch (this) {
+      GazeScrollableIndicatorState.hidden => Colors.transparent,
+      GazeScrollableIndicatorState.visible => Colors.grey,
+      GazeScrollableIndicatorState.active => Colors.black,
     };
   }
 
@@ -279,7 +287,7 @@ class _ArrowButton extends StatelessWidget {
               gazeInteractive: false,
               innerPadding: padding,
               backgroundColor: Colors.white.withOpacity(state.opacity),
-              icon: Icon(type.icon, color: Theme.of(context).primaryColor),
+              icon: Icon(type.icon, color: state.iconColor),
               borderRadius: type.borderRadius,
             ),
           ),
