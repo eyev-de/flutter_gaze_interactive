@@ -25,6 +25,7 @@ class GazeTextFieldProperties {
     this.cursorRadius = const Radius.circular(2),
     this.enabled = true,
     this.autocorrect = true,
+    this.autofocus = false,
     this.enableSuggestions = true,
     this.expands = false,
     this.obscureText = false,
@@ -44,6 +45,7 @@ class GazeTextFieldProperties {
   final Radius cursorRadius;
   final bool enabled;
   final bool autocorrect;
+  final bool autofocus;
   final bool enableSuggestions;
   final bool expands;
   final bool obscureText;
@@ -75,13 +77,14 @@ class GazeTextField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Flexible(
           child: GazeSelectionAnimation(
             properties: GazeSelectionAnimationProperties(
               route: route,
               gazeInteractive: properties.enabled,
-              snappable: this.properties.snappable,
+              snappable: properties.snappable,
             ),
             wrappedKey: GlobalKey(),
             wrappedWidget: Positioned.directional(
@@ -104,6 +107,7 @@ class GazeTextField extends ConsumerWidget {
                 cursorRadius: properties.cursorRadius,
                 enabled: properties.enabled,
                 autocorrect: properties.autocorrect,
+                autofocus: properties.autofocus,
                 enableSuggestions: properties.enableSuggestions,
                 expands: properties.expands,
                 obscureText: properties.obscureText && ref.watch(obscureTextProvider),
@@ -119,7 +123,9 @@ class GazeTextField extends ConsumerWidget {
             width: 70,
             child: GazeButton(
               properties: GazeButtonProperties(
-                backgroundColor: Theme.of(context).primaryColor,
+                innerPadding: const EdgeInsets.symmetric(vertical: 24),
+                gazeInteractive: properties.enabled,
+                backgroundColor: properties.enabled ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
                 icon: Icon(ref.watch(obscureTextProvider) ? Icons.visibility_off : Icons.visibility),
               ),
               onTap: () {
