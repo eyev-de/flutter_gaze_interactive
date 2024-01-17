@@ -202,7 +202,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
           animation: _colorTween,
           builder: (context, child) {
             return Material(
-              color: _colorTween.value,
+              color: !widget.properties.gazeInteractive ? widget.properties.backgroundColor : _colorTween.value,
               borderRadius: widget.properties.borderRadius,
               child: widget.wrappedWidget,
             );
