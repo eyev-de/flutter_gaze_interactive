@@ -63,19 +63,20 @@ class PointerCircle extends ConsumerWidget {
     // GazePointerType.passive
     if (snapState == SnapState.inSnapTimer) {
       return ShakeWidget(
-          duration: Duration(milliseconds: ref.read(GazeInteractive().snappingTimerMilliseconds)),
-          shakeConstant: ShakeDefaultConstant1(),
-          autoPlay: true,
-          enableWebMouseHover: true,
-          child: Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-            child: kDebugMode ? Text(' ${snapState.toString()}', style: const TextStyle(fontSize: 30)) : null,
-          ));
+        duration: Duration(milliseconds: ref.read(GazeInteractive().snappingTimerMilliseconds)),
+        shakeConstant: ShakeDefaultConstant1(),
+        autoPlay: true,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          child: kDebugMode
+              ? Center(
+                  child: Text(snapState.icon, style: const TextStyle(fontSize: 30)),
+                )
+              : null,
+        ),
+      );
     } else {
       return Container(
         width: size,
@@ -84,7 +85,11 @@ class PointerCircle extends ConsumerWidget {
           color: color,
           shape: BoxShape.circle,
         ),
-        child: kDebugMode || ref.watch(snapIconStateProvider) ? Text(' ${snapState.toString()}', style: const TextStyle(fontSize: 30)) : null,
+        child: kDebugMode || ref.watch(snapIconStateProvider)
+            ? Center(
+                child: Text(snapState.icon, style: const TextStyle(fontSize: 30)),
+              )
+            : null,
       );
     }
   }
