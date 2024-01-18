@@ -80,25 +80,27 @@ class GazeButtonProperties {
 class GazeButton extends StatelessWidget {
   final GazeButtonProperties properties;
   final void Function()? onTap;
+
   GazeButton({Key? key, required this.properties, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GazeSelectionAnimation(
-      properties: GazeSelectionAnimationProperties(
-          route: properties.route,
-          borderRadius: properties.borderRadius,
-          borderWidth: properties.borderWidth,
-          backgroundColor: properties.backgroundColor,
-          gazeInteractive: properties.gazeInteractive,
-          type: properties.gazeSelectionAnimationType,
-          animationColor: properties.animationColor,
-          reselectable: properties.reselectable,
-          reselectableCount: properties.reselectableCount,
-          snappable: properties.snappable),
+      onGazed: _tap,
       wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
-      onGazed: _tap,
+      properties: GazeSelectionAnimationProperties(
+        route: properties.route,
+        borderRadius: properties.borderRadius,
+        borderWidth: properties.borderWidth,
+        backgroundColor: properties.backgroundColor,
+        gazeInteractive: properties.gazeInteractive,
+        type: properties.gazeSelectionAnimationType,
+        animationColor: properties.animationColor,
+        reselectable: properties.reselectable,
+        reselectableCount: properties.reselectableCount,
+        snappable: properties.snappable,
+      ),
     );
   }
 

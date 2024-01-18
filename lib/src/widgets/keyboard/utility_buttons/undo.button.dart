@@ -17,7 +17,8 @@ class UndoButton extends GazeKeyboardUtilityButton {
   Widget build(BuildContext context, WidgetRef ref) {
     final canUndo = ref.watch(undoControllerProvider);
     final selecting = ref.watch(state.selectingStateProvider);
-    final enable = selecting == false && canUndo == true;
+    final disabled = ref.watch(state.disableStateProvider);
+    final enable = selecting == false && canUndo == true && disabled == false;
     return GazeKeyboardUtilityBaseButton(
       text: label,
       route: state.route,

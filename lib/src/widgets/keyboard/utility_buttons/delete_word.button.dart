@@ -14,17 +14,17 @@ class DeleteWordButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final text = ref.watch(controllerTextProvider);
+    final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
       text: 'Word',
-      textStyle: TextStyle(color: text == '' ? Colors.grey : Colors.red),
+      textStyle: TextStyle(color: disabled ? Colors.grey : Colors.red),
       backgroundColor: Colors.grey.shade900,
       icon: CupertinoIcons.delete_left_fill,
-      iconColor: text == '' ? Colors.grey : Colors.red,
+      iconColor: disabled ? Colors.grey : Colors.red,
       route: state.route,
-      gazeInteractive: text != '',
+      gazeInteractive: disabled == false,
       reselectable: true,
-      onTap: text == ''
+      onTap: disabled
           ? null
           : () {
               node.requestFocus();
