@@ -17,7 +17,8 @@ class RedoButton extends GazeKeyboardUtilityButton {
   Widget build(BuildContext context, WidgetRef ref) {
     final canRedo = ref.watch(redoControllerProvider);
     final selecting = ref.watch(state.selectingStateProvider);
-    final enable = selecting == false && canRedo == true;
+    final disabled = ref.watch(state.disableStateProvider);
+    final enable = selecting == false && canRedo == true && disabled == false;
     return GazeKeyboardUtilityBaseButton(
       text: label,
       route: state.route,

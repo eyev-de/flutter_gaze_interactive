@@ -11,13 +11,15 @@ class PasteButton extends GazeKeyboardUtilityButton {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final clipboardContent = ref.watch(clipboardProvider);
+    final disabled = ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
-      textStyle: (textStyle ?? const TextStyle()).copyWith(color: clipboardContent != '' ? Colors.white : Colors.grey),
+      gazeInteractive: clipboardContent != '' && disabled == false,
+      textStyle: (textStyle ?? const TextStyle()).copyWith(color: clipboardContent != '' && disabled == false ? null : Colors.grey),
       icon: Icons.paste,
-      iconColor: clipboardContent != '' ? Colors.white : Colors.grey,
+      iconColor: clipboardContent != '' && !disabled ? null : Colors.grey,
       route: state.route,
-      onTap: clipboardContent != ''
+      onTap: clipboardContent != '' && !disabled
           ? () async {
               node.requestFocus();
               await state.controller.paste();

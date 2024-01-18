@@ -80,6 +80,9 @@ class GazeKey extends ConsumerWidget {
     final widgetColor = getIOSKeyColor(colors: colors, signs: signsState, shift: shiftState);
     final defaultColor = type.defaultColor(Theme.of(context).primaryColor, widgetColor ?? _color);
 
+    // if disabled -> keyboard buttons should not be clickable (gaze interactive)
+    final disabled = ref.watch(keyboardState.disableStateProvider);
+
     final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type);
     if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget); // This is just blank space
 
@@ -97,51 +100,54 @@ class GazeKey extends ConsumerWidget {
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
             reselectable: true,
             reselectableCount: type == GazeKeyType.none ? ref.read(GazeInteractive().reselectionNumberOfLetterKeys) : null,
+            gazeInteractive: disabled == false,
             withSound: true,
             // All keyboard keys should not be snapped to
             snappable: false,
           ),
-          onTap: () {
-            if (content is List) {
-              // What will be done & inserted in text field on pressed IconData on shift/signs tap
-              switch (type) {
-                case GazeKeyType.shift:
-                case GazeKeyType.caps:
-                case GazeKeyType.signs:
-                case GazeKeyType.close:
-                  _onTap.call(null, type, ref, context);
-                  break;
-                case GazeKeyType.alt:
-                case GazeKeyType.ctrl:
-                case GazeKeyType.del:
-                case GazeKeyType.enter:
-                case GazeKeyType.tab:
-                case GazeKeyType.win:
-                case GazeKeyType.none:
-                  // What will be inserted on pressed normal key (not shift/signs)
-                  if (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak) {
-                    _onTap.call(getIOSKey(list: content as List, signs: signsState, shift: shiftState), type, ref, context);
+          onTap: disabled
+              ? null
+              : () {
+                  if (content is List) {
+                    // What will be done & inserted in text field on pressed IconData on shift/signs tap
+                    switch (type) {
+                      case GazeKeyType.shift:
+                      case GazeKeyType.caps:
+                      case GazeKeyType.signs:
+                      case GazeKeyType.close:
+                        _onTap.call(null, type, ref, context);
+                        break;
+                      case GazeKeyType.alt:
+                      case GazeKeyType.ctrl:
+                      case GazeKeyType.del:
+                      case GazeKeyType.enter:
+                      case GazeKeyType.tab:
+                      case GazeKeyType.win:
+                      case GazeKeyType.none:
+                        // What will be inserted on pressed normal key (not shift/signs)
+                        if (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak) {
+                          _onTap.call(getIOSKey(list: content as List, signs: signsState, shift: shiftState), type, ref, context);
+                        } else {
+                          _onTap.call((shiftState ? (content as List)[1] : (content as List)[0]) as String?, type, ref, context);
+                        }
+                        break;
+                    }
+                  } else if (content is String) {
+                    if (shiftState) {
+                      if ((content as String).length == 1 && validCharacters.hasMatch(content as String)) {
+                        _onTap.call((content as String).toUpperCase(), type, ref, context);
+                      } else {
+                        _onTap.call(content as String, type, ref, context);
+                      }
+                    } else {
+                      _onTap.call(content as String, type, ref, context);
+                    }
+                  } else if (content == Icons.space_bar) {
+                    _onTap.call(' ', type, ref, context);
                   } else {
-                    _onTap.call((shiftState ? (content as List)[1] : (content as List)[0]) as String?, type, ref, context);
+                    _onTap.call(null, type, ref, context);
                   }
-                  break;
-              }
-            } else if (content is String) {
-              if (shiftState) {
-                if ((content as String).length == 1 && validCharacters.hasMatch(content as String)) {
-                  _onTap.call((content as String).toUpperCase(), type, ref, context);
-                } else {
-                  _onTap.call(content as String, type, ref, context);
-                }
-              } else {
-                _onTap.call(content as String, type, ref, context);
-              }
-            } else if (content == Icons.space_bar) {
-              _onTap.call(' ', type, ref, context);
-            } else {
-              _onTap.call(null, type, ref, context);
-            }
-          },
+                },
         ),
       ),
     );
