@@ -58,7 +58,6 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
   // on moving -> updated gaze data
   void _onGazeData(Offset gaze) {
     if (mounted && !widget.state.ignorePointer) {
-      ref.read(pointerOpacityProvider.notifier).reset();
       final _size = ref.read(pointerSizeProvider(type: widget.state.type));
       final Offset temp = context.validateGazePointer(offset: gaze - Offset(_size / 2, _size / 2), size: _size);
       ref.read(pointerOffsetProvider.notifier).update(offset: temp);

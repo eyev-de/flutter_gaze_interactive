@@ -53,14 +53,30 @@ class PointerAnimation extends _$PointerAnimation {
 }
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
-@riverpod
+@Riverpod(keepAlive: true)
 class PointerOpacity extends _$PointerOpacity {
+  Timer? timer;
+
   @override
   double build() => ref.watch(GazeInteractive().pointerOpacity);
 
-  void fadeOut() => Future.delayed(const Duration(milliseconds: 1200), () => state = kDebugMode ? 0.6 : 0.0);
+  void fadeOut() {
+    if (timer != null) {
+      timer!.cancel();
+      state = ref.watch(GazeInteractive().pointerOpacity);
+    }
+    // only if no movements get registered and we're in release mode fade out
+    timer = Timer(const Duration(milliseconds: 1200), () {
+      if (!kDebugMode) state = 0.0;
+      ref.onDispose(() {
+        if (timer != null) {
+          timer!.cancel();
+        }
+      });
+    });
+  }
 
-  void reset() => ref.invalidateSelf();
+//  void reset() => ref.invalidateSelf();
 }
 
 @riverpod
@@ -91,7 +107,7 @@ class PointerSize extends _$PointerSize {
 @riverpod
 class PointerOffset extends _$PointerOffset {
   @override
-  Offset build() => kDebugMode ? const Offset(100, 100) : const Offset(0, 0);
+  Offset build() => kDebugMode ? const Offset(200, 200) : const Offset(200, 200);
 
   void update({required Offset offset}) => state = offset;
 }

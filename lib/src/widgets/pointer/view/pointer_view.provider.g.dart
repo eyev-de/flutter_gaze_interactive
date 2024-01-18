@@ -331,14 +331,14 @@ class _PointerAnimationProviderElement
   TickerProvider get vsync => (origin as PointerAnimationProvider).vsync;
 }
 
-String _$pointerOpacityHash() => r'8681baf475839373e12c956f5d5ceb1e8d5e74ac';
+String _$pointerOpacityHash() => r'99392c018e7e31799fbc2ef92ccbb3e87b2ef6b8';
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
 ///
 /// Copied from [PointerOpacity].
 @ProviderFor(PointerOpacity)
 final pointerOpacityProvider =
-    AutoDisposeNotifierProvider<PointerOpacity, double>.internal(
+    NotifierProvider<PointerOpacity, double>.internal(
   PointerOpacity.new,
   name: r'pointerOpacityProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -348,7 +348,7 @@ final pointerOpacityProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$PointerOpacity = AutoDisposeNotifier<double>;
+typedef _$PointerOpacity = Notifier<double>;
 String _$pointerColorHash() => r'2a932c21f10c317d29204a849a0ce2c0b8311deb';
 
 abstract class _$PointerColor extends BuildlessAutoDisposeNotifier<Color> {
@@ -645,7 +645,7 @@ class _PointerSizeProviderElement
   GazePointerType get type => (origin as PointerSizeProvider).type;
 }
 
-String _$pointerOffsetHash() => r'33915cd230c31cbafa77f82d294aa2e6d2876067';
+String _$pointerOffsetHash() => r'7a1bdcac8bf969b231b19b7e0675b628782d7d86';
 
 /// Gaze Pointer Offset
 ///
