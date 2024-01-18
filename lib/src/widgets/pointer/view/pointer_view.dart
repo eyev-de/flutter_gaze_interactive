@@ -8,6 +8,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/element_data.dart';
@@ -58,6 +59,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
   // on moving -> updated gaze data
   void _onGazeData(Offset gaze) {
     if (mounted && !widget.state.ignorePointer) {
+      ref.read(pointerIsMovingProvider.notifier).move();
       final _size = ref.read(pointerSizeProvider(type: widget.state.type));
       final Offset temp = context.validateGazePointer(offset: gaze - Offset(_size / 2, _size / 2), size: _size);
       ref.read(pointerOffsetProvider.notifier).update(offset: temp);
@@ -75,7 +77,6 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
       //   }
       // }
     }
-    ref.read(pointerOpacityProvider.notifier).fadeOut();
   }
 
   // on fixation -> user focuses on one point
@@ -118,7 +119,9 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
   void initState() {
     super.initState();
     // fade out gaze pointer
-    ref.read(pointerOpacityProvider.notifier).fadeOut();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) ref.read(pointerIsMovingProvider.notifier).move();
+    });
     // gaze pointer type is active -> animate fixation
     ref.read(pointerAnimationProvider(vsync: this));
     ref.read(pointerAnimationControllerProvider(vsync: this)).addStatusListener(

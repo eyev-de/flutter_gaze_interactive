@@ -76,65 +76,154 @@ class GazeTextField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final obscureText = ref.watch(obscureTextProvider);
+    return FormField(
+      validator: properties.validator,
+      onSaved: properties.onSaved,
+      builder: (state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _GazeTextField(
+              textField: _TextFieldGazeAnimation(
+                route: route,
+                onTap: onFocus?.call,
+                properties: properties,
+                controller: controller,
+                focusNode: focusNode,
+                obscureText: obscureText,
+              ),
+              obscureText: properties.obscureText,
+              obscureButton: _TextFieldObscureTextGazeButton(
+                enabled: properties.enabled,
+                icon: ref.watch(obscureTextProvider) ? Icons.visibility_off : Icons.visibility,
+                onTap: () => ref.read(obscureTextProvider.notifier).state = !ref.watch(obscureTextProvider),
+              ),
+            ),
+            if (state.hasError)
+              _TextFieldValidationError(
+                text: state.errorText ?? ' - ',
+                style: properties.inputDecoration?.errorStyle,
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _GazeTextField extends StatelessWidget {
+  const _GazeTextField({required this.textField, required this.obscureText, required this.obscureButton});
+
+  final _TextFieldGazeAnimation textField;
+  final bool obscureText;
+  final _TextFieldObscureTextGazeButton obscureButton;
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Flexible(
-          child: GazeSelectionAnimation(
-            properties: GazeSelectionAnimationProperties(
-              route: route,
-              gazeInteractive: properties.enabled,
-              snappable: properties.snappable,
-            ),
-            wrappedKey: GlobalKey(),
-            wrappedWidget: Positioned.directional(
-              textDirection: TextDirection.ltr,
-              child: TextFormField(
-                focusNode: focusNode,
-                controller: controller,
-                keyboardType: TextInputType.none,
-                onTap: onFocus?.call,
-                // GazeTextFieldProperties
-                maxLength: properties.maxLength,
-                style: properties.style,
-                onSaved: properties.onSaved,
-                validator: properties.validator,
-                decoration: properties.inputDecoration,
-                textInputAction: properties.textInputAction,
-                onFieldSubmitted: properties.onFieldSubmitted,
-                textAlignVertical: properties.textAlignVertical,
-                textAlign: properties.textAlign,
-                cursorRadius: properties.cursorRadius,
-                enabled: properties.enabled,
-                autocorrect: properties.autocorrect,
-                autofocus: properties.autofocus,
-                enableSuggestions: properties.enableSuggestions,
-                expands: properties.expands,
-                obscureText: properties.obscureText && ref.watch(obscureTextProvider),
-                maxLines: properties.obscureText ? 1 : null,
-              ),
-            ),
-            onGazed: onFocus?.call,
+        textField,
+        if (obscureText) ...[const SizedBox(width: 10), obscureButton],
+      ],
+    );
+  }
+}
+
+class _TextFieldGazeAnimation extends StatelessWidget {
+  const _TextFieldGazeAnimation({
+    required this.route,
+    required this.properties,
+    required this.controller,
+    required this.focusNode,
+    required this.obscureText,
+    required this.onTap,
+  });
+
+  final String route;
+  final GazeTextFieldProperties properties;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final bool obscureText;
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: GazeSelectionAnimation(
+        onGazed: onTap,
+        wrappedKey: GlobalKey(),
+        properties: GazeSelectionAnimationProperties(
+          route: route,
+          gazeInteractive: properties.enabled,
+          snappable: properties.snappable,
+        ),
+        wrappedWidget: Positioned.directional(
+          textDirection: TextDirection.ltr,
+          child: TextField(
+            focusNode: focusNode,
+            controller: controller,
+            keyboardType: TextInputType.none,
+            onTap: onTap,
+            // GazeTextFieldProperties
+            maxLength: properties.maxLength,
+            style: properties.style,
+            decoration: properties.inputDecoration,
+            textInputAction: properties.textInputAction,
+            onSubmitted: properties.onFieldSubmitted,
+            textAlignVertical: properties.textAlignVertical,
+            textAlign: properties.textAlign,
+            cursorRadius: properties.cursorRadius,
+            enabled: properties.enabled,
+            autocorrect: properties.autocorrect,
+            autofocus: properties.autofocus,
+            enableSuggestions: properties.enableSuggestions,
+            expands: properties.expands,
+            obscureText: properties.obscureText && obscureText,
+            maxLines: properties.obscureText ? 1 : null,
           ),
         ),
-        if (properties.obscureText) ...[
-          const SizedBox(width: 10),
-          SizedBox(
-            width: 70,
-            child: GazeButton(
-              properties: GazeButtonProperties(
-                innerPadding: const EdgeInsets.symmetric(vertical: 24),
-                gazeInteractive: properties.enabled,
-                backgroundColor: properties.enabled ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
-                icon: Icon(ref.watch(obscureTextProvider) ? Icons.visibility_off : Icons.visibility),
-              ),
-              onTap: () {
-                ref.read(obscureTextProvider.notifier).state = !ref.watch(obscureTextProvider);
-              },
-            ),
-          )
-        ],
-      ],
+      ),
+    );
+  }
+}
+
+class _TextFieldObscureTextGazeButton extends StatelessWidget {
+  const _TextFieldObscureTextGazeButton({required this.icon, required this.enabled, required this.onTap});
+
+  final IconData icon;
+  final bool enabled;
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 70,
+      child: GazeButton(
+        onTap: onTap,
+        properties: GazeButtonProperties(
+          innerPadding: const EdgeInsets.symmetric(vertical: 24),
+          gazeInteractive: enabled,
+          backgroundColor: enabled ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
+          icon: Icon(icon),
+        ),
+      ),
+    );
+  }
+}
+
+class _TextFieldValidationError extends StatelessWidget {
+  const _TextFieldValidationError({required this.style, required this.text});
+
+  final TextStyle? style;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+      child: Text(text, style: style, maxLines: 1, overflow: TextOverflow.ellipsis),
     );
   }
 }
