@@ -7,7 +7,7 @@ part of 'pointer_view.provider.dart';
 // **************************************************************************
 
 String _$pointerAnimationControllerHash() =>
-    r'703fdf8e370b8ffd2b2c33df2ae67ffdfc4ca181';
+    r'ed5780ae4a596257bd0c145f2b5fc6937f52acd6';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -187,7 +187,7 @@ class _PointerAnimationControllerProviderElement
       (origin as PointerAnimationControllerProvider).vsync;
 }
 
-String _$pointerAnimationHash() => r'6fe5d0eb36ebee84c3f6ca48b855d1307748af69';
+String _$pointerAnimationHash() => r'334d78d535c1a588bea85cd0f06f81c3597d0e4e';
 
 abstract class _$PointerAnimation
     extends BuildlessAutoDisposeNotifier<Animation<double>> {
@@ -331,14 +331,30 @@ class _PointerAnimationProviderElement
   TickerProvider get vsync => (origin as PointerAnimationProvider).vsync;
 }
 
-String _$pointerOpacityHash() => r'99392c018e7e31799fbc2ef92ccbb3e87b2ef6b8';
+String _$pointerIsMovingHash() => r'835c8beea2014703bea9af72bfbd9b246bf5cd1a';
+
+/// See also [PointerIsMoving].
+@ProviderFor(PointerIsMoving)
+final pointerIsMovingProvider =
+    AutoDisposeNotifierProvider<PointerIsMoving, bool>.internal(
+  PointerIsMoving.new,
+  name: r'pointerIsMovingProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$pointerIsMovingHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$PointerIsMoving = AutoDisposeNotifier<bool>;
+String _$pointerOpacityHash() => r'20fb379b1a3b7db46eb9a12335bc3cee533ad6b1';
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
 ///
 /// Copied from [PointerOpacity].
 @ProviderFor(PointerOpacity)
 final pointerOpacityProvider =
-    NotifierProvider<PointerOpacity, double>.internal(
+    AutoDisposeNotifierProvider<PointerOpacity, double>.internal(
   PointerOpacity.new,
   name: r'pointerOpacityProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -348,7 +364,7 @@ final pointerOpacityProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$PointerOpacity = Notifier<double>;
+typedef _$PointerOpacity = AutoDisposeNotifier<double>;
 String _$pointerColorHash() => r'2a932c21f10c317d29204a849a0ce2c0b8311deb';
 
 abstract class _$PointerColor extends BuildlessAutoDisposeNotifier<Color> {
@@ -699,7 +715,7 @@ final snapElementProvider =
 );
 
 typedef _$SnapElement = Notifier<GazeElementData?>;
-String _$snappingStateHash() => r'6a669efc382259950722a3ddf3b1bac0814a2039';
+String _$snappingStateHash() => r'a7a304f469bef13f422513f5a20d9f8bd68f2fce';
 
 /// Gaze Pointer in snapp mode Point
 ///
@@ -756,7 +772,7 @@ final pointerSnappingRadiusProvider =
 
 typedef _$PointerSnappingRadius = AutoDisposeNotifier<double>;
 String _$ignorePointerStateHash() =>
-    r'e98f034e6d53c3d7550dd55eab7df87a35a6a775';
+    r'c44e590e846ae76f62162d00fdceede62c89c7a8';
 
 /// Indicates if recently snapped and pointer is ignored by mouse
 ///

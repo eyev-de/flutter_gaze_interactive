@@ -17,22 +17,15 @@ enum SnapState {
   snapping,
   snapPaused;
 
-  @override
-  String toString() {
-    switch (this) {
-      case SnapState.off:
-        return '';
-      case SnapState.on:
-        return '🟢';
-      case SnapState.inSnapTimer:
-        return '⏱️';
-      case SnapState.readyToSnap:
-        return '🏁';
-      case SnapState.snapping:
-        return '🔥';
-      case SnapState.snapPaused:
-        return '⏸️';
-    }
+  String get icon {
+    return switch (this) {
+      SnapState.off => '',
+      SnapState.on => '🟢',
+      SnapState.inSnapTimer => '⏱️',
+      SnapState.readyToSnap => '🏁',
+      SnapState.snapping => '🔥',
+      SnapState.snapPaused => '⏸️',
+    };
   }
 }
 
@@ -40,43 +33,55 @@ enum SnapState {
 @riverpod
 class PointerAnimationController extends _$PointerAnimationController {
   @override
-  AnimationController build({required TickerProvider vsync}) =>
-      AnimationController(vsync: vsync, duration: Duration(milliseconds: ref.watch(GazeInteractive().duration)));
+  AnimationController build({required TickerProvider vsync}) {
+    return AnimationController(vsync: vsync, duration: Duration(milliseconds: ref.watch(GazeInteractive().duration)));
+  }
 }
 
 // Animation
 @riverpod
 class PointerAnimation extends _$PointerAnimation {
   @override
-  Animation<double> build({required TickerProvider vsync}) =>
-      Tween<double>(begin: 0, end: 1).animate(ref.watch(pointerAnimationControllerProvider(vsync: vsync)));
+  Animation<double> build({required TickerProvider vsync}) {
+    return Tween<double>(begin: 0, end: 1).animate(ref.watch(pointerAnimationControllerProvider(vsync: vsync)));
+  }
 }
 
-/// Gaze Pointer appears shortly and is then faded out -> current opacity
-@Riverpod(keepAlive: true)
-class PointerOpacity extends _$PointerOpacity {
+@riverpod
+class PointerIsMoving extends _$PointerIsMoving {
   Timer? timer;
 
   @override
-  double build() => ref.watch(GazeInteractive().pointerOpacity);
+  bool build() => true;
 
-  void fadeOut() {
+  void move() {
     if (timer != null) {
-      timer!.cancel();
-      state = ref.watch(GazeInteractive().pointerOpacity);
+      timer?.cancel();
+      state = true;
     }
-    // only if no movements get registered and we're in release mode fade out
-    timer = Timer(const Duration(milliseconds: 1200), () {
-      if (!kDebugMode) state = 0.0;
-      ref.onDispose(() {
-        if (timer != null) {
-          timer!.cancel();
-        }
-      });
-    });
+    // time delay when no more movement is detected
+    timer = Timer(
+      const Duration(milliseconds: 1200),
+      () => {state = false, ref.onDispose(() => timer?.cancel())},
+    );
+  }
+}
+
+/// Gaze Pointer appears shortly and is then faded out -> current opacity
+@riverpod
+class PointerOpacity extends _$PointerOpacity {
+  @override
+  double build() {
+    final defaultOpacity = ref.watch(GazeInteractive().pointerOpacity);
+    final isMoving = ref.watch(pointerIsMovingProvider);
+    // Hide gaze pointer if no movements have been registered
+    // -> debug: still visible to move
+    // -> release: no longer visible
+    if (isMoving == false) return kDebugMode ? 0.2 : 0.0;
+    return defaultOpacity;
   }
 
-//  void reset() => ref.invalidateSelf();
+  void reset() => ref.invalidateSelf();
 }
 
 @riverpod
@@ -136,7 +141,7 @@ class SnapElement extends _$SnapElement {
 @Riverpod(keepAlive: true)
 class SnappingState extends _$SnappingState {
   @override
-  SnapState build() => SnapState.on;
+  SnapState build() => SnapState.off;
 
   // When in snap radius for the first time when SnapState.on
   void startSnapTimer(GazeElementData snapElement) {
@@ -146,7 +151,7 @@ class SnappingState extends _$SnappingState {
       // Timer to wait
       Timer(Duration(milliseconds: ref.read(GazeInteractive().snappingTimerMilliseconds)), () {
         if (state == SnapState.inSnapTimer && ref.read(snapElementProvider)?.key == snapElement.key) {
-          print('ready for ${ref.read(snapElementProvider)}');
+          debugPrint('ready for ${ref.read(snapElementProvider)}');
           state = SnapState.readyToSnap;
           // if not snapped after 1 second -> rest
           Timer(const Duration(seconds: 1), () {
@@ -164,7 +169,7 @@ class SnappingState extends _$SnappingState {
   void startSnap(GazeElementData snapElement) {
     if (state == SnapState.readyToSnap && ref.read(snapElementProvider)?.key == snapElement.key) {
       state = SnapState.snapping;
-      print('stat snap');
+      debugPrint('start snap');
       ref.read(ignorePointerStateProvider.notifier).update(ignore: true);
     }
   }
@@ -190,7 +195,7 @@ class SnappingState extends _$SnappingState {
 // when not in snap radius while state = SnapState.inSnapTimer
 // -> stop being ready to snap
   void endSnap(GazeElementData snapElement) {
-    print('end snap');
+    debugPrint('end snap');
     // Only running snappscan be finished
     if (state != SnapState.off && ref.read(snapElementProvider)?.key == snapElement.key) {
       // user can move the pointer again
@@ -245,10 +250,7 @@ class IgnorePointerState extends _$IgnorePointerState {
   @override
   bool build() => false;
 
-  void update({required bool ignore}) {
-    print('--> ignore $ignore');
-    state = ignore;
-  }
+  void update({required bool ignore}) => state = ignore;
 
   void deactivate() => state = false;
 }
