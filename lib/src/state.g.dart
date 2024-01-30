@@ -37,5 +37,22 @@ final snapIconStateProvider = NotifierProvider<SnapIconState, bool>.internal(
 );
 
 typedef _$SnapIconState = Notifier<bool>;
+String _$gazePointerAlwaysVisibleHash() =>
+    r'16c3bafa58e3b043d438094a8c20d45ce82038fe';
+
+/// See also [GazePointerAlwaysVisible].
+@ProviderFor(GazePointerAlwaysVisible)
+final gazePointerAlwaysVisibleProvider =
+    NotifierProvider<GazePointerAlwaysVisible, bool>.internal(
+  GazePointerAlwaysVisible.new,
+  name: r'gazePointerAlwaysVisibleProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$gazePointerAlwaysVisibleHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$GazePointerAlwaysVisible = Notifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

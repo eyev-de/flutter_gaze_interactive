@@ -65,6 +65,16 @@ class GazeInteractive {
     }
   }
 
+  bool get gazePointerAlwaysVisible => ref.read(gazePointerAlwaysVisibleProvider);
+
+  set gazePointerAlwaysVisible(bool value) {
+    if (ref.read(gazePointerAlwaysVisibleProvider) != value) {
+      Future.delayed(const Duration(), () {
+        ref.read(gazePointerAlwaysVisibleProvider.notifier).state = value;
+      });
+    }
+  }
+
   final activeStateProvider = StateProvider<bool>((ref) => true);
 
   final currentRouteStateProvider = StateProvider<String>((ref) => '');
@@ -376,6 +386,16 @@ class SnapActiveState extends _$SnapActiveState {
 
 @Riverpod(keepAlive: true)
 class SnapIconState extends _$SnapIconState {
+  @override
+  bool build() => false;
+
+  void toggle() {
+    state = !state;
+  }
+}
+
+@Riverpod(keepAlive: true)
+class GazePointerAlwaysVisible extends _$GazePointerAlwaysVisible {
   @override
   bool build() => false;
 
