@@ -79,7 +79,7 @@ class PointerOpacity extends _$PointerOpacity {
     // Hide gaze pointer if no movements have been registered
     // -> debug: still visible to move
     // -> release: no longer visible
-    if (isMoving == false) return (kDebugMode || pointerAlwaysVisible) ? 0.2 : 0.0;
+    if (isMoving == false) return pointerAlwaysVisible ? 0.2 : 0.0;
     return defaultOpacity;
   }
 

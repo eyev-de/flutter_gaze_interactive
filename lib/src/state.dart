@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
@@ -61,16 +62,6 @@ class GazeInteractive {
     if (ref.read(activeStateProvider) != value) {
       Future.delayed(const Duration(), () {
         ref.read(activeStateProvider.notifier).state = value;
-      });
-    }
-  }
-
-  bool get gazePointerAlwaysVisible => ref.read(gazePointerAlwaysVisibleProvider);
-
-  set gazePointerAlwaysVisible(bool value) {
-    if (ref.read(gazePointerAlwaysVisibleProvider) != value) {
-      Future.delayed(const Duration(), () {
-        ref.read(gazePointerAlwaysVisibleProvider.notifier).state = value;
       });
     }
   }
@@ -397,10 +388,11 @@ class SnapIconState extends _$SnapIconState {
 @Riverpod(keepAlive: true)
 class GazePointerAlwaysVisible extends _$GazePointerAlwaysVisible {
   @override
-  bool build() => false;
+  bool build() => kDebugMode;
 
   void toggle() {
     state = !state;
+    if (kDebugMode) state = true;
   }
 }
 
