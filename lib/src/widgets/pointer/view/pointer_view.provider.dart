@@ -74,10 +74,12 @@ class PointerOpacity extends _$PointerOpacity {
   double build() {
     final defaultOpacity = ref.watch(GazeInteractive().pointerOpacity);
     final isMoving = ref.watch(pointerIsMovingProvider);
+    final pointerAlwaysVisible = ref.watch(gazePointerAlwaysVisibleProvider);
+
     // Hide gaze pointer if no movements have been registered
     // -> debug: still visible to move
     // -> release: no longer visible
-    if (isMoving == false) return kDebugMode ? 0.2 : 0.0;
+    if (isMoving == false) return pointerAlwaysVisible ? 0.2 : 0.0;
     return defaultOpacity;
   }
 

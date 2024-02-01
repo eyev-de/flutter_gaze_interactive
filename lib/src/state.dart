@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
@@ -381,6 +382,17 @@ class SnapIconState extends _$SnapIconState {
 
   void toggle() {
     state = !state;
+  }
+}
+
+@Riverpod(keepAlive: true)
+class GazePointerAlwaysVisible extends _$GazePointerAlwaysVisible {
+  @override
+  bool build() => kDebugMode;
+
+  void toggle() {
+    state = !state;
+    if (kDebugMode) state = true;
   }
 }
 
