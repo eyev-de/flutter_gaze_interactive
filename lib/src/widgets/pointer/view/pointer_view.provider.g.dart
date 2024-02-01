@@ -347,7 +347,7 @@ final pointerIsMovingProvider =
 );
 
 typedef _$PointerIsMoving = AutoDisposeNotifier<bool>;
-String _$pointerOpacityHash() => r'20fb379b1a3b7db46eb9a12335bc3cee533ad6b1';
+String _$pointerOpacityHash() => r'6b46b8dd40a107f40c3fdf9d26b7fd7e15a6ccbe';
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
 ///
