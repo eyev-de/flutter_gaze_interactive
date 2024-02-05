@@ -21,7 +21,21 @@ class CopyButton extends GazeKeyboardUtilityButton {
       iconColor: disabled ? Colors.grey : null,
       gazeInteractive: disabled == false,
       route: state.route,
-      onTap: disabled ? null : () => {node.requestFocus(), state.controller.copy()},
+      onTap: disabled
+          ? null
+          : () => {
+                node.requestFocus(),
+                state.controller.copy(),
+                // change selection state after copy of selection
+                if (selecting)
+                  {
+                    state.controller.selection = TextSelection(
+                      baseOffset: state.controller.selection.extentOffset,
+                      extentOffset: state.controller.selection.extentOffset,
+                    ),
+                    ref.read(state.selectingStateProvider.notifier).state = false,
+                  }
+              },
     );
   }
 }

@@ -22,7 +22,6 @@ class ScrollCalculator {
   double? calcScrollOffset() {
     // do not try to scroll if already at max scroll extent
     final double scrollOffset = scrollController.offset;
-    if (scrollOffset == scrollController.position.maxScrollExtent && !controller.text.endsWith('\n')) return null;
 
     double? textFieldWidth = textFieldGlobalKey.currentContext?.size?.width;
     double? textFieldHeight = textFieldGlobalKey.currentContext?.size?.height;
@@ -54,6 +53,11 @@ class ScrollCalculator {
     if (numLinesToCursor > linesBeforeView && numLinesToCursor <= linesInView + linesBeforeView) return null;
 
     // scroll to cursor on the bottom of view
-    return (numLinesToCursor * lineHeight) - textFieldHeight;
+    final double ret = (numLinesToCursor * lineHeight) - textFieldHeight;
+    if (ret > 0) {
+      return ret;
+    } else {
+      return 0;
+    }
   }
 }
