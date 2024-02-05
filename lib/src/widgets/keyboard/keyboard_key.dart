@@ -154,7 +154,6 @@ class GazeKey extends ConsumerWidget {
   }
 
   void _onTap(str, GazeKeyType type, WidgetRef ref, BuildContext context) {
-    keyboardState.node?.requestFocus();
     final shift = ref.read(keyboardState.shiftStateProvider);
     final alt = ref.read(keyboardState.altStateProvider);
     final signs = ref.read(keyboardState.signsStateProvider);
@@ -205,7 +204,6 @@ class GazeKey extends ConsumerWidget {
         ref.read(keyboardState.signsStateProvider.notifier).state = !signs;
         break;
     }
-    keyboardState.node?.requestFocus();
   }
 
   /// Based on the shift and signs key the correct ios key will be chosen.

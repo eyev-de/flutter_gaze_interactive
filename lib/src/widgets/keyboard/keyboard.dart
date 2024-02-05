@@ -23,6 +23,7 @@ import 'utility_buttons/undo.button.dart';
 
 class GazeKeyboard {
   static final GazeKeyboard _instance = GazeKeyboard._internal();
+  final _scrollController = ScrollController();
 
   factory GazeKeyboard() {
     return _instance;
@@ -128,7 +129,12 @@ class GazeKeyboard {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
                                   // Subtract vertical padding from text field size
-                                  child: GazeKeyboardTextWidget(state: state, node: node, minHeight: height - 6),
+                                  child: GazeKeyboardTextWidget(
+                                    state: state,
+                                    node: node,
+                                    minHeight: height - 6,
+                                    scrollController: _scrollController,
+                                  ),
                                 ),
                               ),
                               // Delete Button
