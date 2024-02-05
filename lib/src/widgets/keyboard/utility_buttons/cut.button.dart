@@ -21,7 +21,21 @@ class CutButton extends GazeKeyboardUtilityButton {
       iconColor: disabled ? Colors.grey : null,
       gazeInteractive: disabled == false,
       route: state.route,
-      onTap: disabled ? null : () => {node.requestFocus(), state.controller.cut()},
+      onTap: disabled
+          ? null
+          : () => {
+                node.requestFocus(),
+                state.controller.cut(),
+                // change selection state after cut of selection
+                if (selecting)
+                  {
+                    state.controller.selection = TextSelection(
+                      baseOffset: state.controller.selection.extentOffset,
+                      extentOffset: state.controller.selection.extentOffset,
+                    ),
+                    ref.read(state.selectingStateProvider.notifier).state = false,
+                  }
+              },
     );
   }
 }

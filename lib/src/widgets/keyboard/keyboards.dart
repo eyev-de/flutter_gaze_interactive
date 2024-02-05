@@ -169,12 +169,7 @@ class Keyboards {
         GazeKey(content: const ['b', 'B', '!', '!'], keyboardState: state),
         GazeKey(content: const ['n', 'N', '´', '`'], keyboardState: state),
         GazeKey(content: const ['m', 'M', '', ''], keyboardState: state),
-        if (state.type == KeyboardType.email)
-          GazeKey(
-            content: const [Text('@', style: TextStyle(fontWeight: FontWeight.bold)), Text('.', style: TextStyle(fontWeight: FontWeight.bold)), '', ''],
-            keyboardState: state,
-            color: Colors.grey.shade800,
-          ),
+        if (state.type == KeyboardType.email) GazeKey(content: const ['@', '.', '', ''], color: Colors.grey.shade800, keyboardState: state, stacked: true),
         if ([KeyboardType.extended, KeyboardType.email].contains(state.type))
           GazeKey(content: Icons.keyboard_hide, type: GazeKeyType.close, keyboardState: state),
         if (state.type == KeyboardType.editor) GazeKey(content: 'Enter', widthRatio: 2, type: GazeKeyType.enter, keyboardState: state),
@@ -288,11 +283,7 @@ class Keyboards {
         GazeKey(content: const ['k', 'K', '&', '£'], keyboardState: state),
         GazeKey(content: const ['l', 'L', '@', '¥'], keyboardState: state),
         if (state.type == KeyboardType.email)
-          GazeKey(
-            content: const [Text('@', style: TextStyle(fontWeight: FontWeight.bold)), Text('.', style: TextStyle(fontWeight: FontWeight.bold)), '"', '•'],
-            colors: [Colors.grey.shade800, Colors.grey.shade800, null, null],
-            keyboardState: state,
-          )
+          GazeKey(content: const ['@', '.', '"', '•'], colors: [Colors.grey.shade800, Colors.grey.shade800, null, null], keyboardState: state, stacked: true)
         else
           GazeKey(content: const ['', '', '"', '•'], keyboardState: state),
       ],
@@ -335,7 +326,6 @@ class Keyboards {
         GazeKey(content: 'ü', keyboardState: state),
       ],
       [
-        const Spacer(),
         GazeKey(content: const [CupertinoIcons.shift, CupertinoIcons.shift_fill], type: GazeKeyType.shift, keyboardState: state),
         GazeKey(content: 'a', keyboardState: state),
         GazeKey(content: 's', keyboardState: state),
@@ -359,8 +349,8 @@ class Keyboards {
         GazeKey(content: 'b', keyboardState: state),
         GazeKey(content: 'n', keyboardState: state),
         GazeKey(content: 'm', keyboardState: state),
-        GazeKey(content: const ['.', ','], keyboardState: state),
-        GazeKey(content: const ['?', '!'], keyboardState: state),
+        GazeKey(content: const ['.', ','], keyboardState: state, color: Colors.grey.shade800, stacked: true),
+        GazeKey(content: const ['?', '!'], keyboardState: state, color: Colors.grey.shade800, stacked: true),
       ],
     ];
   }
@@ -392,7 +382,7 @@ class Keyboards {
         GazeKey(content: 'j', keyboardState: state),
         GazeKey(content: 'k', keyboardState: state),
         GazeKey(content: 'l', keyboardState: state),
-        GazeKey(content: const ["'", '-'], keyboardState: state),
+        GazeKey(content: const ["'", '-'], keyboardState: state, color: Colors.grey.shade800, stacked: true),
       ],
       [
         GazeKey(content: 'z', keyboardState: state),
@@ -403,8 +393,8 @@ class Keyboards {
         GazeKey(content: 'b', keyboardState: state),
         GazeKey(content: 'n', keyboardState: state),
         GazeKey(content: 'm', keyboardState: state),
-        GazeKey(content: const ['.', ','], keyboardState: state),
-        GazeKey(content: const ['?', '!'], keyboardState: state),
+        GazeKey(content: const ['.', ','], keyboardState: state, color: Colors.grey.shade800, stacked: true),
+        GazeKey(content: const ['?', '!'], keyboardState: state, color: Colors.grey.shade800, stacked: true),
       ],
     ];
   }

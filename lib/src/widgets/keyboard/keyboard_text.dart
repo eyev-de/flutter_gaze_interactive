@@ -6,7 +6,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import '../button/button.dart';
 import '../scrollable/scrollable.dart';
@@ -18,25 +17,24 @@ class GazeKeyboardTextWidget extends StatefulWidget {
     Key? key,
     required this.node,
     required this.state,
+    required this.scrollController,
     this.onTap,
     this.maxLines = 10,
     this.minHeight = 100,
-  }) : super(key: key) {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) => node.requestFocus());
-  }
+  }) : super(key: key);
 
   final FocusNode node;
   final GazeKeyboardState state;
   final void Function()? onTap;
   final int maxLines;
   final double minHeight;
+  final ScrollController scrollController;
 
   @override
   State<GazeKeyboardTextWidget> createState() => _GazeKeyboardTextWidgetState();
 }
 
 class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
-  final controller = ScrollController();
   final cupertinoTextFieldKey = GlobalKey();
 
   late ScrollCalculator scrollCalculator;
@@ -47,7 +45,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
     widget.state.controller.addListener(_autoScroll);
     scrollCalculator = ScrollCalculator(
       controller: widget.state.controller,
-      scrollController: controller,
+      scrollController: widget.scrollController,
       textFieldGlobalKey: cupertinoTextFieldKey,
       textFieldPadding: const EdgeInsets.all(20),
       textStyle: const TextStyle(
@@ -69,11 +67,15 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
   }
 
   void _autoScroll() {
-    final textOffset = widget.state.controller.selection.baseOffset;
-    if (textOffset <= 0) return;
-    final offset = scrollCalculator.calcScrollOffset();
-    if (offset == null) return;
-    controller.animateTo(offset, duration: const Duration(milliseconds: 60), curve: Curves.ease);
+    // delay necessary since the listener is called multiple times
+    Future.delayed(const Duration(milliseconds: 200), () {
+      final textOffset = widget.state.controller.selection.baseOffset;
+      if (textOffset <= 0) return;
+      final offset = scrollCalculator.calcScrollOffset();
+      if (offset != null) {
+        widget.scrollController.animateTo(offset, duration: const Duration(milliseconds: 200), curve: Curves.fastOutSlowIn);
+      }
+    });
   }
 
   @override
@@ -81,7 +83,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
     return GazeScrollable(
       indicatorSize: GazeScrollableIndicatorSize.small,
       route: widget.state.route,
-      controller: controller,
+      controller: widget.scrollController,
       child: GazeButton(
         onTap: widget.onTap,
         properties: GazeButtonProperties(
@@ -99,7 +101,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
               style: scrollCalculator.textStyle,
               padding: scrollCalculator.textFieldPadding,
               focusNode: widget.node,
-              scrollController: controller,
+              scrollController: widget.scrollController,
               controller: widget.state.controller,
               placeholder: widget.state.placeholder,
               cursorColor: Colors.white,
