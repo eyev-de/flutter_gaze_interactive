@@ -13,7 +13,7 @@ enum GazeKeyType {
   close,
   signs;
 
-  Color defaultColor(Color primaryColor, Color customColor) {
+  Color defaultColor({required Color primaryColor, required Color customColor}) {
     return switch (this) {
       GazeKeyType.caps => Colors.grey.shade800,
       GazeKeyType.shift => Colors.grey.shade800,

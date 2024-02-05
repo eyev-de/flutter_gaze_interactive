@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../api.dart';
+import 'keyboard_key_stacked.dart';
 
 class GazeKey extends ConsumerWidget {
   GazeKey({
@@ -21,6 +22,7 @@ class GazeKey extends ConsumerWidget {
     this.ctrlStr,
     this.onBack,
     this.colors = const [],
+    this.stacked = false,
     Color? color,
   }) : _color = color ?? Colors.grey.shade900;
 
@@ -32,15 +34,22 @@ class GazeKey extends ConsumerWidget {
   final double widthRatio;
   final double heightRatio;
   final void Function(BuildContext)? onBack;
+  /// color of the tile depending on the respective content (same index)
   final List<Color?> colors;
+  /// color of the tile regardless of the state
   final Color _color;
+  /// Enables the content of the first two characters to be displayed on top of each other on a tile (no signs)
+  final bool stacked;
 
   static final validCharacters = RegExp(r'^[a-zA-Zäöü]+$');
 
-  static Widget _buildContent(BuildContext context, Object content, bool shift, GazeKeyboardState keyboardState, bool signs, GazeKeyType type) {
+  static Widget _buildContent(BuildContext context, Object content, bool shift, GazeKeyboardState keyboardState, bool signs, GazeKeyType type, bool stacked) {
     const textStyle = TextStyle(fontSize: 20);
     switch (content) {
       case final List<dynamic> list:
+        if (stacked && !signs) {
+          return _GazeKeyStacked(characters: list, textStyle: textStyle, shift: shift);
+        }
         final cntnt = (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak)
             ? getIOSKey(list: list, signs: signs, shift: shift)
             : list[shift ? 1 : 0];
@@ -78,12 +87,12 @@ class GazeKey extends ConsumerWidget {
     // It can be null
     final changeColor = type == GazeKeyType.caps && capsLock || type == GazeKeyType.shift && shift;
     final widgetColor = getIOSKeyColor(colors: colors, signs: signsState, shift: shiftState);
-    final defaultColor = type.defaultColor(Theme.of(context).primaryColor, widgetColor ?? _color);
+    final defaultColor = type.defaultColor(primaryColor: Theme.of(context).primaryColor, customColor: widgetColor ?? _color);
 
     // if disabled -> keyboard buttons should not be clickable (gaze interactive)
     final disabled = ref.watch(keyboardState.disableStateProvider);
 
-    final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type);
+    final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type, stacked);
     if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget); // This is just blank space
 
     return Flexible(
@@ -219,7 +228,29 @@ class GazeKey extends ConsumerWidget {
   @visibleForTesting
   static Color? getIOSKeyColor({required List<Color?> colors, required bool signs, required bool shift}) {
     if (colors.length == 4) return shift ? (signs ? colors[3] : colors[1]) : (signs ? colors[2] : colors[0]);
+    if (colors.length == 2) return shift ? colors[1] : colors[0];
     return null;
+  }
+}
+
+class _GazeKeyStacked extends StatelessWidget {
+  const _GazeKeyStacked({
+    required this.characters,
+    required this.textStyle,
+    this.shift = false,
+  });
+
+  final List<dynamic> characters;
+  final TextStyle textStyle;
+  final bool shift;
+
+  @override
+  Widget build(BuildContext context) {
+    if (characters.isEmpty) return Container();
+    if (characters.first is String) return KeyboardKeyStackedString(characters: characters as List<String>, shift: shift);
+    if (characters.first is Text) return KeyboardKeyStackedText(texts: List<Text>.from(characters), shift: shift);
+    if (characters.first is IconData) return KeyboardKeyStackedIcon(icons: characters as List<IconData>, shift: shift);
+    return Container();
   }
 }
 
