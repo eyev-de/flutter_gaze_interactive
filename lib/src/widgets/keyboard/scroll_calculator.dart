@@ -54,10 +54,6 @@ class ScrollCalculator {
 
     // scroll to cursor on the bottom of view
     final double ret = (numLinesToCursor * lineHeight) - textFieldHeight;
-    if (ret > 0) {
-      return ret;
-    } else {
-      return 0;
-    }
+    return ret > 0 ? ret : 0;
   }
 }
