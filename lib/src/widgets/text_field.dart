@@ -95,6 +95,7 @@ class GazeTextField extends ConsumerWidget {
               ),
               obscureText: properties.obscureText,
               obscureButton: _TextFieldObscureTextGazeButton(
+                route: route,
                 enabled: properties.enabled,
                 icon: ref.watch(obscureTextProvider) ? Icons.visibility_off : Icons.visibility,
                 onTap: () => ref.read(obscureTextProvider.notifier).state = !ref.watch(obscureTextProvider),
@@ -190,8 +191,14 @@ class _TextFieldGazeAnimation extends StatelessWidget {
 }
 
 class _TextFieldObscureTextGazeButton extends StatelessWidget {
-  const _TextFieldObscureTextGazeButton({required this.icon, required this.enabled, required this.onTap});
+  const _TextFieldObscureTextGazeButton({
+    required this.route,
+    required this.icon,
+    required this.enabled,
+    required this.onTap,
+  });
 
+  final String route;
   final IconData icon;
   final bool enabled;
   final void Function()? onTap;
@@ -203,6 +210,7 @@ class _TextFieldObscureTextGazeButton extends StatelessWidget {
       child: GazeButton(
         onTap: onTap,
         properties: GazeButtonProperties(
+          route: route,
           innerPadding: const EdgeInsets.symmetric(vertical: 24),
           gazeInteractive: enabled,
           backgroundColor: enabled ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),

@@ -49,7 +49,7 @@ class GazeButtonProperties {
   final int? reselectableCount;
 
   GazeButtonProperties({
-    this.route = '/',
+    required this.route,
     this.text,
     this.textColor = Colors.white,
     this.textAlign = TextAlign.center,
