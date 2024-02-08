@@ -82,11 +82,12 @@ abstract class GazeKeyboardUtilityButton extends ConsumerWidget {
   final TextStyle? textStyle;
 }
 
-class GazeKeyboardUtilityBaseButton extends StatelessWidget {
+class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
   const GazeKeyboardUtilityBaseButton({
     super.key,
     required this.route,
     required this.icon,
+    this.state,
     this.iconColor,
     this.text,
     this.textStyle,
@@ -97,10 +98,13 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
     this.reselectable = false,
     this.horizontal = false,
     this.gazeInteractive = true,
+    // disable selected letters after onTap is finished
+    this.disablesSelection = false,
   });
 
   final String route;
   final IconData icon;
+  final GazeKeyboardState? state;
 
   final Color? iconColor;
   final String? text;
@@ -112,14 +116,27 @@ class GazeKeyboardUtilityBaseButton extends StatelessWidget {
   final bool reselectable;
   final bool horizontal;
   final bool gazeInteractive;
+  final bool disablesSelection;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     const double size = 20;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       child: GazeButton(
-        onTap: onTap,
+        onTap: () {
+          onTap!.call();
+          if (disablesSelection && state != null) {
+            final selecting = ref.read(state!.selectingStateProvider);
+            if (selecting) {
+              state!.controller.selection = TextSelection(
+                baseOffset: state!.controller.selection.extentOffset,
+                extentOffset: state!.controller.selection.extentOffset,
+              );
+              ref.read(state!.selectingStateProvider.notifier).state = false;
+            }
+          }
+        },
         properties: GazeButtonProperties(
           text: text,
           route: route,

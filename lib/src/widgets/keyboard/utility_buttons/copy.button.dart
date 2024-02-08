@@ -15,26 +15,20 @@ class CopyButton extends GazeKeyboardUtilityButton {
     final selecting = ref.watch(state.selectingStateProvider);
     final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
+      state: state,
       text: selecting ? 'Copy' : 'Copy All',
       textStyle: (textStyle ?? const TextStyle()).copyWith(color: disabled ? Colors.grey : null),
       icon: Icons.copy,
       iconColor: disabled ? Colors.grey : null,
       gazeInteractive: disabled == false,
       route: state.route,
+      // change selection state after copy of selection
+      disablesSelection: true,
       onTap: disabled
           ? null
           : () => {
                 node.requestFocus(),
                 state.controller.copy(),
-                // change selection state after copy of selection
-                if (selecting)
-                  {
-                    state.controller.selection = TextSelection(
-                      baseOffset: state.controller.selection.extentOffset,
-                      extentOffset: state.controller.selection.extentOffset,
-                    ),
-                    ref.read(state.selectingStateProvider.notifier).state = false,
-                  }
               },
     );
   }
