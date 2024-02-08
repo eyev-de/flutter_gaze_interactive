@@ -87,6 +87,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
       child: GazeButton(
         onTap: widget.onTap,
         properties: GazeButtonProperties(
+          route: widget.state.route,
           // Keyboard Text field should be snapped to
           snappable: true,
           gazeInteractive: widget.onTap != null,

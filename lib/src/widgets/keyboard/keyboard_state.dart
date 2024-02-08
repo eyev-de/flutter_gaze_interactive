@@ -17,7 +17,7 @@ class GazeKeyboardState {
     required this.controller,
     this.undoHistoryController,
     this.node,
-    this.route = '/',
+    required this.route,
     this.placeholder = '',
     this.withProvider = true,
     this.withCtrl = true,

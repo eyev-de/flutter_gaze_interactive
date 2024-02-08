@@ -60,16 +60,16 @@ class GazeViewImpl extends ConsumerStatefulWidget {
   final void Function(Offset)? onGaze;
   final void Function(GazeScrollDirection, double)? onScroll;
 
-  const GazeViewImpl(
-      {required this.wrappedKey,
-      required this.child,
-      required this.route,
-      this.onGazeEnter,
-      this.onGazeLeave,
-      this.onGaze,
-      this.onScroll,
-      required this.snappable})
-      : super(key: wrappedKey);
+  const GazeViewImpl({
+    required this.wrappedKey,
+    required this.child,
+    required this.route,
+    this.onGazeEnter,
+    this.onGazeLeave,
+    this.onGaze,
+    this.onScroll,
+    required this.snappable,
+  }) : super(key: wrappedKey);
 
   @override
   _GazeViewImplState createState() => _GazeViewImplState();

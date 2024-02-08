@@ -14,6 +14,7 @@ class GazeRadioButton extends StatelessWidget {
   final double size;
   final void Function() onTap;
   final String route;
+
   GazeRadioButton({
     Key? key,
     required this.selected,
@@ -21,8 +22,9 @@ class GazeRadioButton extends StatelessWidget {
     this.innerPadding = const EdgeInsets.fromLTRB(60, 60, 60, 60),
     this.size = 30,
     required this.onTap,
-    this.route = '/',
+    required this.route,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GazeButton(
