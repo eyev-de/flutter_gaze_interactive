@@ -341,7 +341,7 @@ class GazeInteractive {
     // Check if the route is the current one and if the rect of the gaze pointer overlaps the bounds of the element
     // This should be enough in most cases
     // Beware full screen dialogs and multiple navigators
-    if (elementRoute == currentRoute && elementRect.contains(gazePointerRect.topLeft)) {
+    if (elementRoute == currentRoute && elementRect.contains(gazePointerRect.center)) {
       return true;
     }
     return false;
