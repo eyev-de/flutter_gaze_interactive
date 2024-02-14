@@ -151,8 +151,8 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
     final _controller = ref.watch(pointerAnimationControllerProvider(vsync: this));
     final _animation = ref.watch(pointerAnimationProvider(vsync: this));
     return Positioned(
-      left: _pointerOffset.dx - (_size / 2),
-      top: _pointerOffset.dy - (_size / 2),
+      left: _pointerOffset.dx,
+      top: _pointerOffset.dy,
       child: Builder(
         builder: (context) {
           // ignore gesture on pointer
@@ -210,7 +210,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerPro
   void callOnGazeNormalized(BuildContext context, Offset globalPosition, double _size) {
     final Offset temp = context.validateGazePointer(offset: globalPosition, size: _size);
     ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-    GazeInteractive().onGaze(temp + Offset(_size / 2, _size / 2));
+    GazeInteractive().onGaze(temp);
   }
 
   bool _leftFixationRadius(Offset gaze) {

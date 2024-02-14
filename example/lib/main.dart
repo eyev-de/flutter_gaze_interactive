@@ -155,7 +155,7 @@ PredicateReturnState gazeInteractionPredicate(Rect itemRect, Rect gazePointerRec
   // Check in case of Dialog (maybe todo but only example here so no dialog yet)
 
   // Check in case of Regular Route
-  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.topLeft)) {
+  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.center)) {
     return PredicateReturnState.gaze;
   }
 
