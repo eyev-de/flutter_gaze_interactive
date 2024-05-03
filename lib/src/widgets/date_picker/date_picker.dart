@@ -170,7 +170,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                       properties: GazeButtonProperties(
                         route: widget.route,
                         backgroundColor: _current.year == thisYear ? Theme.of(context).primaryColor : Colors.transparent,
-                        text: '$thisYear',
+                        text: Text('$thisYear'),
                       ),
                       onTap: () {
                         setState(() {
@@ -346,7 +346,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
               child: GazeButton(
                 properties: GazeButtonProperties(
                   route: widget.route,
-                  text: widget.cancelLabel,
+                  text: Text(widget.cancelLabel),
                 ),
                 onTap: () {
                   if (widget.cancelled != null) widget.cancelled!(context);
@@ -361,7 +361,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
               child: GazeButton(
                 properties: GazeButtonProperties(
                   route: widget.route,
-                  text: widget.selectLabel,
+                  text: Text(widget.selectLabel),
                   backgroundColor: Theme.of(context).primaryColor,
                 ),
                 onTap: () {
@@ -437,8 +437,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
           child: GazeButton(
             properties: GazeButtonProperties(
               route: widget.route,
-              text: '$day',
-              textColor: tooEaryOrTooLate ? Colors.white54 : Colors.white,
+              text: Text('$day', style: TextStyle(color: tooEaryOrTooLate ? Colors.white54 : Colors.white)),
               borderColor: isToday ? Theme.of(context).primaryColor : Colors.transparent,
               backgroundColor: _current.day == day ? Theme.of(context).primaryColor : Colors.transparent,
               gazeInteractive: actionable,

@@ -59,14 +59,12 @@ class _KeyboardMailCompletion extends ConsumerWidget {
         padding: const EdgeInsets.only(left: 2, right: 2),
         child: GazeButton(
           properties: GazeButtonProperties(
-            text: completion,
             route: state.route,
             gazeInteractive: !usable,
+            backgroundColor: Colors.grey.shade800,
             innerPadding: const EdgeInsets.all(0),
             borderRadius: BorderRadius.circular(15),
-            textColor: usable ? Colors.red : Colors.white,
-            backgroundColor: Colors.grey.shade800,
-            textStyle: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: usable ? Colors.grey : Colors.white),
+            text: Text(completion, style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: usable ? Colors.grey : Colors.white)),
           ),
           onTap: usable
               ? null

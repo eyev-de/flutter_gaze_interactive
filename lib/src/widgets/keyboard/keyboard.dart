@@ -196,7 +196,10 @@ class GazeKeyboard {
           ),
         );
       },
-    ).then((value) => {_isShown = !_isShown, onDismissed?.call(context)});
+    ).then((value) {
+      _isShown = !_isShown;
+      onDismissed?.call(context);
+    });
   }
 
   static Widget _closeButton(BuildContext context, GazeKeyboardState state, void Function(BuildContext)? onBack) {

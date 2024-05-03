@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../button/button.dart';
 import 'keyboard_state.dart';
 import 'keyboards.dart';
@@ -138,11 +139,9 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
           }
         },
         properties: GazeButtonProperties(
-          text: text,
+          text: text != null ? Text(text!, style: textStyle) : null,
           route: route,
           withSound: true,
-          textStyle: textStyle,
-          textColor: textStyle?.color ?? Colors.white,
           reselectable: reselectable,
           horizontal: horizontal,
           borderRadius: borderRadius,
