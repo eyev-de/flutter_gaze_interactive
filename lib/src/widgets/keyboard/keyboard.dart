@@ -156,7 +156,7 @@ class GazeKeyboard {
                                       properties: GazeButtonProperties(
                                         innerPadding: const EdgeInsets.all(0),
                                         icon: const Icon(Icons.check, color: Colors.white),
-                                        horizontal: true,
+                                        direction: Axis.horizontal,
                                         route: state.route,
                                       ),
                                     ),
@@ -214,7 +214,7 @@ class GazeKeyboard {
                 color: Colors.grey.shade900,
                 onTap: () => onBack?.call(context),
                 properties: GazeButtonProperties(
-                  horizontal: true,
+                  direction: Axis.horizontal,
                   route: state.route,
                   borderRadius: BorderRadius.zero,
                   icon: const Icon(Icons.keyboard_hide_rounded, color: Colors.white),

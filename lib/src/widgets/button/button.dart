@@ -19,20 +19,21 @@ class GazeButtonProperties {
     required this.route,
     this.text,
     this.icon,
+    this.iconPadding,
     this.borderColor,
     this.borderWidth = 3,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
-    this.horizontal = false,
-    this.horizontalAlignment = MainAxisAlignment.center,
-    this.verticalAlignment = MainAxisAlignment.center,
+    this.direction = Axis.vertical,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.alignment = Alignment.center,
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
-    this.iconPadding,
     this.gazeInteractive = true,
     this.tapType = GazeButtonTapTypes.single,
     this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
     this.animationColor = Colors.black,
-    this.reselectable = false,
     this.reselectableCount,
+    this.reselectable = false,
     this.withSound = false,
     this.snappable = true,
   });
@@ -44,9 +45,10 @@ class GazeButtonProperties {
   final double borderWidth;
   final BorderRadius borderRadius;
   final EdgeInsets innerPadding;
-  final bool horizontal;
-  final MainAxisAlignment horizontalAlignment;
-  final MainAxisAlignment verticalAlignment;
+  final Axis direction;
+  final Alignment alignment;
+  final MainAxisAlignment mainAxisAlignment;
+  final CrossAxisAlignment crossAxisAlignment;
   final bool gazeInteractive;
   final String route;
   final GazeButtonTapTypes tapType;
@@ -72,16 +74,17 @@ class GazeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final disabledColor = color == Colors.transparent ? color : color.withOpacity(0.3);
     return GazeSelectionAnimation(
-      onGazed: _tap,
+      onGazed: onTap != null ? () => {unawaited(_maybePlaySound()), onTap!()} : null,
       wrappedKey: GlobalKey(),
-      wrappedWidget: _buildButton(context),
+      wrappedWidget: _Button(properties: properties, onTap: onTap != null ? () => {unawaited(_maybePlaySound()), onTap!()} : null, child: child),
       properties: GazeSelectionAnimationProperties(
-        backgroundColor: color,
+        backgroundColor: onTap != null ? color : disabledColor,
         route: properties.route,
         borderRadius: properties.borderRadius,
         borderWidth: properties.borderWidth,
-        gazeInteractive: properties.gazeInteractive,
+        gazeInteractive: onTap != null && properties.gazeInteractive,
         type: properties.gazeSelectionAnimationType,
         animationColor: properties.animationColor,
         reselectable: properties.reselectable,
@@ -91,35 +94,33 @@ class GazeButton extends StatelessWidget {
     );
   }
 
-  void Function()? _determineTap(GazeButtonTapTypes type) {
-    if (properties.tapType == type && onTap != null) {
-      return _tap;
-    }
-    return null;
-  }
-
-  void _tap() {
-    if (onTap != null) unawaited(_maybePlaySound());
-    return onTap?.call();
-  }
-
   Future<void> _maybePlaySound() async {
-    if (properties.withSound) {
-      if (player.state == PlayerState.playing) await player.stop();
-      await player.play(clickSoundSource);
-    }
+    if (properties.withSound == false) return;
+    if (player.state == PlayerState.playing) await player.stop();
+    await player.play(clickSoundSource);
   }
+}
 
-  Widget _buildButton(BuildContext context) {
+class _Button extends StatelessWidget {
+  const _Button({required this.properties, required this.onTap, required this.child});
+
+  final GazeButtonProperties properties;
+  final void Function()? onTap;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
     final textColor = properties.text?.style?.color ?? Colors.white;
+    final disabled = onTap != null;
     return InkWell(
       borderRadius: properties.borderRadius,
       hoverColor: textColor.withAlpha(20),
-      splashColor: textColor.withAlpha(60),
       focusColor: textColor.withAlpha(20),
+      splashColor: textColor.withAlpha(60),
       highlightColor: textColor.withAlpha(20),
-      onTap: _determineTap(GazeButtonTapTypes.single),
-      onDoubleTap: _determineTap(GazeButtonTapTypes.double),
+      splashFactory: disabled ? null : NoSplash.splashFactory,
+      onTap: disabled && properties.tapType == GazeButtonTapTypes.single ? onTap : null,
+      onDoubleTap: disabled && properties.tapType == GazeButtonTapTypes.double ? onTap : null,
       child: child != null
           ? AnimatedContainer(duration: const Duration(milliseconds: 150), child: child)
           : AnimatedContainer(
@@ -127,77 +128,44 @@ class GazeButton extends StatelessWidget {
               padding: properties.innerPadding,
               decoration: BoxDecoration(
                 borderRadius: properties.borderRadius,
-                border: properties.borderColor != null ? Border.all(color: properties.borderColor!, width: properties.borderWidth) : null,
+                border: properties.borderColor != null
+                    ? Border.all(
+                        color: disabled ? properties.borderColor! : properties.borderColor!.withOpacity(0.3),
+                        width: properties.borderWidth,
+                      )
+                    : null,
               ),
-              child: properties.horizontal ? _buildHorizontal(context) : _buildVertical(context),
+              child: _ButtonChild(properties: properties),
             ),
     );
   }
+}
 
-  Widget _buildVertical(BuildContext context) {
-    return Column(
-      mainAxisAlignment: properties.verticalAlignment,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (properties.icon != null)
-          Row(
-            mainAxisAlignment: properties.horizontalAlignment,
-            children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 0, 0, properties.text != null ? 10 : 0),
-                child: properties.icon,
-              )
-            ],
-          ),
-        if (properties.text != null)
-          Row(
-            mainAxisAlignment: properties.horizontalAlignment,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _text(context),
-            ],
-          )
-      ],
-    );
-  }
+class _ButtonChild extends StatelessWidget {
+  const _ButtonChild({required this.properties});
 
-  Widget _buildHorizontal(BuildContext context) {
-    // final rightInnerPadding = properties.text == null ? 0.0 : 20.0;
-    final iconPadding = properties.iconPadding ?? (properties.text == null ? const EdgeInsets.all(0) : const EdgeInsets.fromLTRB(0, 0, 20, 0));
+  final GazeButtonProperties properties;
 
-    return Row(
-      mainAxisAlignment: properties.horizontalAlignment,
-      children: [
-        if (properties.icon != null)
-          Column(
-            mainAxisAlignment: properties.verticalAlignment,
-            children: [
-              Container(
-                padding: iconPadding,
-                child: properties.icon,
-              )
-            ],
-          ),
-        if (properties.text != null)
-          Flexible(
-            child: Column(
-              mainAxisAlignment: properties.verticalAlignment,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _text(context),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _text(BuildContext context) {
-    return Flexible(
-      child: DefaultTextStyle.merge(
-        style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
-        textAlign: TextAlign.center,
-        child: properties.text!,
+  @override
+  Widget build(BuildContext context) {
+    final padding = properties.text == null
+        ? EdgeInsets.zero
+        : EdgeInsets.only(right: properties.direction == Axis.horizontal ? 10 : 0, bottom: properties.direction == Axis.vertical ? 5 : 0);
+    return Align(
+      alignment: properties.alignment,
+      child: Flex(
+        direction: properties.direction,
+        mainAxisAlignment: properties.mainAxisAlignment,
+        crossAxisAlignment: properties.crossAxisAlignment,
+        children: [
+          if (properties.icon != null) Padding(padding: properties.iconPadding ?? padding, child: properties.icon),
+          if (properties.text != null)
+            DefaultTextStyle.merge(
+              style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+              child: properties.text!,
+            )
+        ],
       ),
     );
   }

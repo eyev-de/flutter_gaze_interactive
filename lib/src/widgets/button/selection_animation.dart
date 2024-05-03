@@ -34,18 +34,6 @@ enum GazeSelectionAnimationType {
 // }
 
 class GazeSelectionAnimationProperties {
-  final String route;
-  final BorderRadius borderRadius;
-  final double borderWidth;
-  final Color? backgroundColor;
-  final Color? animationColor;
-  final Color color;
-  final bool gazeInteractive;
-  final GazeSelectionAnimationType type;
-  final bool reselectable;
-  final int? reselectableCount;
-  final bool snappable;
-
   GazeSelectionAnimationProperties({
     required this.route,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
@@ -59,25 +47,39 @@ class GazeSelectionAnimationProperties {
     this.reselectableCount,
     this.snappable = true,
   });
+
+  final String route;
+  final BorderRadius borderRadius;
+  final double borderWidth;
+  final Color? backgroundColor;
+  final Color? animationColor;
+  final Color color;
+  final bool gazeInteractive;
+  final GazeSelectionAnimationType type;
+  final bool reselectable;
+  final int? reselectableCount;
+  final bool snappable;
 }
 
 class GazeSelectionAnimation extends ConsumerStatefulWidget {
-  final GazeSelectionAnimationProperties properties;
-  final GlobalKey wrappedKey;
-  final Widget wrappedWidget;
-  final void Function()? onGazed;
   GazeSelectionAnimation({
     required this.wrappedKey,
     required this.properties,
     required this.wrappedWidget,
     this.onGazed,
   }) : super(key: wrappedKey);
+  final GazeSelectionAnimationProperties properties;
+  final GlobalKey wrappedKey;
+  final Widget wrappedWidget;
+  final void Function()? onGazed;
 
   @override
   _GazeSelectionAnimationState createState() => _GazeSelectionAnimationState();
 }
 
 class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation> with SingleTickerProviderStateMixin {
+  _GazeSelectionAnimationState();
+
   late AnimationController _controller;
   late Animation<Color?> _colorTween;
   Timer? _timer;
@@ -85,8 +87,6 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   late int _duration;
   bool gazeIn = false;
   int _reselectionCount = 0;
-
-  _GazeSelectionAnimationState();
 
   @override
   void initState() {

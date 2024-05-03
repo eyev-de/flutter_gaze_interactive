@@ -283,7 +283,7 @@ class _ArrowButton extends StatelessWidget {
             properties: GazeButtonProperties(
               // Scrolling should not be snapped to
               snappable: false,
-              horizontal: true,
+              direction: Axis.horizontal,
               route: route,
               gazeInteractive: false,
               innerPadding: padding,
