@@ -34,10 +34,13 @@ class GazeKey extends ConsumerWidget {
   final double widthRatio;
   final double heightRatio;
   final void Function(BuildContext)? onBack;
+
   /// color of the tile depending on the respective content (same index)
   final List<Color?> colors;
+
   /// color of the tile regardless of the state
   final Color _color;
+
   /// Enables the content of the first two characters to be displayed on top of each other on a tile (no signs)
   final bool stacked;
 
@@ -100,10 +103,9 @@ class GazeKey extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         child: GazeButton(
+          color: changeColor ? Theme.of(context).primaryColor : defaultColor,
           properties: GazeButtonProperties(
-            backgroundColor: changeColor ? Theme.of(context).primaryColor : defaultColor,
             innerPadding: EdgeInsets.zero,
-            child: widget,
             route: keyboardState.route,
             animationColor: !changeColor ? Theme.of(context).primaryColor : defaultColor,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
@@ -157,6 +159,7 @@ class GazeKey extends ConsumerWidget {
                     _onTap.call(null, type, ref, context);
                   }
                 },
+          child: widget,
         ),
       ),
     );

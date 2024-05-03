@@ -18,11 +18,9 @@ class GazeButtonProperties {
   GazeButtonProperties({
     required this.route,
     this.text,
-    this.textAlign = TextAlign.center,
     this.icon,
     this.borderColor,
     this.borderWidth = 3,
-    this.backgroundColor = Colors.transparent,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.horizontal = false,
     this.horizontalAlignment = MainAxisAlignment.center,
@@ -30,7 +28,6 @@ class GazeButtonProperties {
     this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.iconPadding,
     this.gazeInteractive = true,
-    this.child,
     this.tapType = GazeButtonTapTypes.single,
     this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
     this.animationColor = Colors.black,
@@ -41,20 +38,17 @@ class GazeButtonProperties {
   });
 
   final Text? text;
-  final TextAlign textAlign;
   final Icon? icon;
   final EdgeInsets? iconPadding;
   final Color? borderColor;
   final double borderWidth;
   final BorderRadius borderRadius;
-  final Color backgroundColor;
   final EdgeInsets innerPadding;
   final bool horizontal;
   final MainAxisAlignment horizontalAlignment;
   final MainAxisAlignment verticalAlignment;
   final bool gazeInteractive;
   final String route;
-  final Widget? child;
   final GazeButtonTapTypes tapType;
   final GazeSelectionAnimationType gazeSelectionAnimationType;
   final Color animationColor;
@@ -65,8 +59,15 @@ class GazeButtonProperties {
 }
 
 class GazeButton extends StatelessWidget {
-  GazeButton({Key? key, required this.properties, this.onTap}) : super(key: key);
+  GazeButton({super.key, required this.properties, this.child, this.color = Colors.transparent, this.onTap})
+      : assert(
+          (child == null || properties.text == null) && (child == null || properties.icon == null),
+          'You cannot specify a child widget as well as a text or icon. The child widget replaces all previously specified properties',
+        );
+
   final GazeButtonProperties properties;
+  final Widget? child;
+  final Color color;
   final void Function()? onTap;
 
   @override
@@ -76,10 +77,10 @@ class GazeButton extends StatelessWidget {
       wrappedKey: GlobalKey(),
       wrappedWidget: _buildButton(context),
       properties: GazeSelectionAnimationProperties(
+        backgroundColor: color,
         route: properties.route,
         borderRadius: properties.borderRadius,
         borderWidth: properties.borderWidth,
-        backgroundColor: properties.backgroundColor,
         gazeInteractive: properties.gazeInteractive,
         type: properties.gazeSelectionAnimationType,
         animationColor: properties.animationColor,
@@ -119,8 +120,8 @@ class GazeButton extends StatelessWidget {
       highlightColor: textColor.withAlpha(20),
       onTap: _determineTap(GazeButtonTapTypes.single),
       onDoubleTap: _determineTap(GazeButtonTapTypes.double),
-      child: properties.child != null
-          ? AnimatedContainer(duration: const Duration(milliseconds: 150), child: properties.child)
+      child: child != null
+          ? AnimatedContainer(duration: const Duration(milliseconds: 150), child: child)
           : AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               padding: properties.innerPadding,

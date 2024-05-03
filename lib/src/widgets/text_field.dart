@@ -208,12 +208,12 @@ class _TextFieldObscureTextGazeButton extends StatelessWidget {
     return SizedBox(
       width: 70,
       child: GazeButton(
+        color: enabled ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
         onTap: onTap,
         properties: GazeButtonProperties(
           route: route,
           innerPadding: const EdgeInsets.symmetric(vertical: 24),
           gazeInteractive: enabled,
-          backgroundColor: enabled ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
           icon: Icon(icon),
         ),
       ),

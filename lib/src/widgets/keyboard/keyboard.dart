@@ -152,9 +152,9 @@ class GazeKeyboard {
                                     height: height,
                                     child: GazeButton(
                                       onTap: () => onBack?.call(context),
+                                      color: Color.alphaBlend(Theme.of(context).primaryColor.withOpacity(0.5), Colors.grey.shade800),
                                       properties: GazeButtonProperties(
                                         innerPadding: const EdgeInsets.all(0),
-                                        backgroundColor: Color.alphaBlend(Theme.of(context).primaryColor.withOpacity(0.5), Colors.grey.shade800),
                                         icon: const Icon(Icons.check, color: Colors.white),
                                         horizontal: true,
                                         route: state.route,
@@ -211,14 +211,14 @@ class GazeKeyboard {
             child: Padding(
               padding: const EdgeInsets.all(1),
               child: GazeButton(
+                color: Colors.grey.shade900,
+                onTap: () => onBack?.call(context),
                 properties: GazeButtonProperties(
                   horizontal: true,
                   route: state.route,
                   borderRadius: BorderRadius.zero,
-                  backgroundColor: Colors.grey.shade900,
                   icon: const Icon(Icons.keyboard_hide_rounded, color: Colors.white),
                 ),
-                onTap: () => onBack?.call(context),
               ),
             ),
           ),

@@ -138,6 +138,7 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
             }
           }
         },
+        color: backgroundColor ?? Colors.grey.shade900,
         properties: GazeButtonProperties(
           text: text != null ? Text(text!, style: textStyle) : null,
           route: route,
@@ -147,7 +148,6 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
           borderRadius: borderRadius,
           innerPadding: innerPadding,
           gazeInteractive: gazeInteractive,
-          backgroundColor: backgroundColor ?? Colors.grey.shade900,
           icon: Icon(icon, color: iconColor ?? Colors.white, size: size),
           // Gaze Keyboard Utility Buttons should be snapped to
           // This includes (copy, cut, delete_all, delete_word, delete, move cursors, paste, select)
