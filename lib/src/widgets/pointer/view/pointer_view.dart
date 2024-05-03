@@ -43,7 +43,7 @@ class _PointerView extends ConsumerStatefulWidget {
   _PointerViewState createState() => _PointerViewState();
 }
 
-class _PointerViewState extends ConsumerState<_PointerView> with SingleTickerProviderStateMixin {
+class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderStateMixin {
   _PointerViewState();
 
   final GlobalKey _wrappedkey = GlobalKey();
