@@ -10,7 +10,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../../state.dart';
-import 'selection_animation.dart';
+import 'button_selection_animation.dart';
 
 enum GazeButtonTapTypes { single, double }
 
@@ -23,11 +23,11 @@ class GazeButtonProperties {
     this.borderColor,
     this.borderWidth = 3,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.innerPadding = const EdgeInsets.all(20),
     this.direction = Axis.vertical,
+    this.alignment = Alignment.center,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-    this.alignment = Alignment.center,
-    this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.gazeInteractive = true,
     this.tapType = GazeButtonTapTypes.single,
     this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
@@ -38,6 +38,7 @@ class GazeButtonProperties {
     this.snappable = true,
   });
 
+  final String route;
   final Text? text;
   final Icon? icon;
   final EdgeInsets? iconPadding;
@@ -50,14 +51,13 @@ class GazeButtonProperties {
   final MainAxisAlignment mainAxisAlignment;
   final CrossAxisAlignment crossAxisAlignment;
   final bool gazeInteractive;
-  final String route;
   final GazeButtonTapTypes tapType;
   final GazeSelectionAnimationType gazeSelectionAnimationType;
   final Color animationColor;
+  final int? reselectableCount;
   final bool reselectable;
   final bool snappable;
   final bool withSound;
-  final int? reselectableCount;
 }
 
 class GazeButton extends StatelessWidget {

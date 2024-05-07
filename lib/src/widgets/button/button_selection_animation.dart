@@ -15,23 +15,7 @@ import '../../core/element_data.dart';
 import '../../core/element_type.dart';
 import '../../state.dart';
 
-enum GazeSelectionAnimationType {
-  progress,
-  fade,
-}
-
-// class GazeSelectionAnimatable extends StatefulWidget {
-//   const GazeSelectionAnimatable({Key? key}) : super(key: key);
-
-//   @override
-//   State<StatefulWidget> createState() => _GazeSelectionAnimatableState();
-// }
-
-// class _GazeSelectionAnimatableState extends State<GazeSelectionAnimatable> {
-//   @override
-//   Widget build(BuildContext context) {
-//   }
-// }
+enum GazeSelectionAnimationType { progress, fade }
 
 class GazeSelectionAnimationProperties {
   GazeSelectionAnimationProperties({
@@ -62,12 +46,8 @@ class GazeSelectionAnimationProperties {
 }
 
 class GazeSelectionAnimation extends ConsumerStatefulWidget {
-  GazeSelectionAnimation({
-    required this.wrappedKey,
-    required this.properties,
-    required this.wrappedWidget,
-    this.onGazed,
-  }) : super(key: wrappedKey);
+  GazeSelectionAnimation({required this.wrappedKey, required this.properties, required this.wrappedWidget, this.onGazed}) : super(key: wrappedKey);
+
   final GazeSelectionAnimationProperties properties;
   final GlobalKey wrappedKey;
   final Widget wrappedWidget;
@@ -164,9 +144,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
             child: IgnorePointer(
               child: Container(
                 clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: widget.properties.borderRadius,
-                ),
+                decoration: BoxDecoration(borderRadius: widget.properties.borderRadius),
                 child: AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {
@@ -177,9 +155,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
                       child: child,
                     );
                   },
-                  child: Container(
-                    color: widget.properties.color.withOpacity(0.5),
-                  ),
+                  child: Container(color: widget.properties.color.withOpacity(0.5)),
                 ),
               ),
             ),
@@ -234,17 +210,13 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
         onGazeEnter: () {
           _timer?.cancel();
           if (mounted) {
-            setState(() {
-              gazeIn = true;
-            });
+            setState(() => gazeIn = true);
             _controller.forward();
           }
         },
         onGazeLeave: () {
           if (mounted) {
-            setState(() {
-              gazeIn = false;
-            });
+            setState(() => gazeIn = false);
             _controller.stop();
             _duration = ref.read(GazeInteractive().duration);
             _controller.duration = Duration(milliseconds: _duration);
