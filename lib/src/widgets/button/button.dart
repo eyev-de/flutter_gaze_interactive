@@ -111,16 +111,16 @@ class _Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = properties.text?.style?.color ?? Colors.white;
-    final disabled = onTap != null;
+    final disabled = onTap == null;
     return InkWell(
       borderRadius: properties.borderRadius,
       hoverColor: textColor.withAlpha(20),
       focusColor: textColor.withAlpha(20),
       splashColor: textColor.withAlpha(60),
       highlightColor: textColor.withAlpha(20),
-      splashFactory: disabled ? null : NoSplash.splashFactory,
-      onTap: disabled && properties.tapType == GazeButtonTapTypes.single ? onTap : null,
-      onDoubleTap: disabled && properties.tapType == GazeButtonTapTypes.double ? onTap : null,
+      splashFactory: disabled ? NoSplash.splashFactory : null,
+      onTap: !disabled && properties.tapType == GazeButtonTapTypes.single ? onTap : null,
+      onDoubleTap: !disabled && properties.tapType == GazeButtonTapTypes.double ? onTap : null,
       child: child != null
           ? AnimatedContainer(duration: const Duration(milliseconds: 150), child: child)
           : AnimatedContainer(
@@ -128,16 +128,18 @@ class _Button extends StatelessWidget {
               padding: properties.innerPadding,
               decoration: BoxDecoration(
                 borderRadius: properties.borderRadius,
-                border: properties.borderColor != null
-                    ? Border.all(
-                        color: disabled ? properties.borderColor! : properties.borderColor!.withOpacity(0.3),
-                        width: properties.borderWidth,
-                      )
-                    : null,
+                border: _getBorder(),
               ),
               child: _ButtonChild(properties: properties),
             ),
     );
+  }
+
+  Border? _getBorder() {
+    if (properties.borderColor == null) return null;
+    if (onTap == null && properties.borderColor == Colors.transparent) return Border.all(color: Colors.transparent, width: properties.borderWidth);
+    if (onTap == null) return Border.all(color: properties.borderColor!.withOpacity(0.3), width: properties.borderWidth);
+    return Border.all(color: properties.borderColor!, width: properties.borderWidth);
   }
 }
 
@@ -160,10 +162,12 @@ class _ButtonChild extends StatelessWidget {
         children: [
           if (properties.icon != null) Padding(padding: properties.iconPadding ?? padding, child: properties.icon),
           if (properties.text != null)
-            DefaultTextStyle.merge(
-              style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
-              textAlign: TextAlign.center,
-              child: properties.text!,
+            Flexible(
+              child: DefaultTextStyle.merge(
+                style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
+                textAlign: TextAlign.center,
+                child: properties.text!,
+              ),
             )
         ],
       ),

@@ -144,7 +144,7 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
           route: route,
           withSound: true,
           reselectable: reselectable,
-          direction: Axis.horizontal,
+          direction: horizontal ? Axis.horizontal : Axis.vertical,
           borderRadius: borderRadius,
           innerPadding: innerPadding,
           gazeInteractive: gazeInteractive,

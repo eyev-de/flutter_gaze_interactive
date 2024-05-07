@@ -103,7 +103,8 @@ class _AppState extends State<App> {
                   width: 200,
                   height: 80,
                   child: GazeButton(
-                    properties: GazeButtonProperties(text: 'Button', textColor: Colors.white, route: '/', backgroundColor: Colors.pink),
+                    color: Colors.pink,
+                    properties: GazeButtonProperties(text: const Text('Button'), route: '/'),
                     onTap: () async {
                       await showDialog(
                         context: context,
