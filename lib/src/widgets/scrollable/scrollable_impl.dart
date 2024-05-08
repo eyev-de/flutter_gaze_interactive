@@ -279,14 +279,14 @@ class _ArrowButton extends StatelessWidget {
           width: size.width,
           height: size.height,
           child: GazeButton(
+            color: Colors.white.withOpacity(state.opacity),
             properties: GazeButtonProperties(
               // Scrolling should not be snapped to
               snappable: false,
-              horizontal: true,
+              direction: Axis.horizontal,
               route: route,
               gazeInteractive: false,
               innerPadding: padding,
-              backgroundColor: Colors.white.withOpacity(state.opacity),
               icon: Icon(type.icon, color: state.iconColor),
               borderRadius: type.borderRadius,
             ),

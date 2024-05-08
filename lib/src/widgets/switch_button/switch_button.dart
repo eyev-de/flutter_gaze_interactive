@@ -95,59 +95,9 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
     ref.listen(stateProvider, (prev, next) => _toggle(next.toggled));
     return GazeButton(
       properties: GazeButtonProperties(
-        innerPadding: const EdgeInsets.all(0),
         route: widget.properties.route,
+        innerPadding: EdgeInsets.zero,
         gazeInteractive: widget.properties.enabled == false ? false : _state.gazeInteractive,
-        child: AnimatedContainer(
-          width: widget.properties.size.width,
-          height: widget.properties.size.height,
-          duration: const Duration(milliseconds: 300),
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Color.alphaBlend(Colors.black.withOpacity(.85), _getColor(_state.toggled)),
-            border: Border.all(color: _getColor(_state.toggled), width: 3),
-          ),
-          child: AnimatedBuilder(
-            animation: _animation,
-            builder: (context, child) {
-              return Stack(
-                children: [
-                  Transform.rotate(
-                    angle: _animation.value,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: widget.properties.margin,
-                      decoration: BoxDecoration(
-                        color: _getColor(_state.toggled),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                  ),
-                  if (widget.properties.showLabel)
-                    AnimatedOpacity(
-                      opacity: ref.watch(switchButtonToggleWithDelayProvider(key: globalKey)) ? 1 : 0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Center(
-                        child: Container(
-                          color: Color.alphaBlend(Colors.black.withOpacity(.85), _getColor(_state.toggled)),
-                          padding: EdgeInsets.all(_state.toggled ? 0 : 2),
-                          child: Text(
-                            _state.toggled ? 'ON' : 'OFF',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(fontWeight: FontWeight.bold, color: _getColor(_state.toggled))
-                                .merge(widget.properties.labelTextStyle),
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-        ),
       ),
       onTap: widget.properties.enabled
           ? () async {
@@ -159,6 +109,56 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
               ref.read(switchButtonToggleWithDelayProvider(key: globalKey).notifier).toggle();
             }
           : null,
+      child: AnimatedContainer(
+        width: widget.properties.size.width,
+        height: widget.properties.size.height,
+        duration: const Duration(milliseconds: 300),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Color.alphaBlend(Colors.black.withOpacity(.85), _getColor(_state.toggled)),
+          border: Border.all(color: _getColor(_state.toggled), width: 3),
+        ),
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return Stack(
+              children: [
+                Transform.rotate(
+                  angle: _animation.value,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: widget.properties.margin,
+                    decoration: BoxDecoration(
+                      color: _getColor(_state.toggled),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                ),
+                if (widget.properties.showLabel)
+                  AnimatedOpacity(
+                    opacity: ref.watch(switchButtonToggleWithDelayProvider(key: globalKey)) ? 1 : 0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Center(
+                      child: Container(
+                        color: Color.alphaBlend(Colors.black.withOpacity(.85), _getColor(_state.toggled)),
+                        padding: EdgeInsets.all(_state.toggled ? 0 : 2),
+                        child: Text(
+                          _state.toggled ? 'ON' : 'OFF',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(fontWeight: FontWeight.bold, color: _getColor(_state.toggled))
+                              .merge(widget.properties.labelTextStyle),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
