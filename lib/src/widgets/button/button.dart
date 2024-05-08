@@ -10,91 +10,81 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../../state.dart';
-import 'selection_animation.dart';
+import 'button_selection_animation.dart';
 
 enum GazeButtonTapTypes { single, double }
 
 class GazeButtonProperties {
-  final String? text;
-  final Color textColor;
-  final TextAlign textAlign;
-  final TextStyle? textStyle;
-
-  final Icon? icon;
-  final EdgeInsets? iconPadding;
-
-  final Color? borderColor;
-  final double borderWidth;
-  final BorderRadius borderRadius;
-
-  final Color backgroundColor;
-  final EdgeInsets innerPadding;
-  final bool horizontal;
-  final bool fill;
-
-  final MainAxisAlignment horizontalAlignment;
-  final MainAxisAlignment verticalAlignment;
-
-  final bool gazeInteractive;
-  final String route;
-  final Widget? child;
-  final GazeButtonTapTypes tapType;
-  final GazeSelectionAnimationType gazeSelectionAnimationType;
-  final Color animationColor;
-  final bool reselectable;
-  final bool snappable;
-
-  final bool withSound;
-
-  final int? reselectableCount;
-
   GazeButtonProperties({
     required this.route,
     this.text,
-    this.textColor = Colors.white,
-    this.textAlign = TextAlign.center,
-    this.textStyle,
     this.icon,
+    this.iconPadding,
     this.borderColor,
     this.borderWidth = 3,
-    this.backgroundColor = Colors.transparent,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
-    this.horizontal = false,
-    this.fill = false,
-    this.horizontalAlignment = MainAxisAlignment.center,
-    this.verticalAlignment = MainAxisAlignment.center,
-    this.innerPadding = const EdgeInsets.fromLTRB(20, 20, 20, 20),
-    this.iconPadding,
+    this.innerPadding = const EdgeInsets.all(20),
+    this.direction = Axis.vertical,
+    this.alignment = Alignment.center,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
     this.gazeInteractive = true,
-    this.child,
     this.tapType = GazeButtonTapTypes.single,
     this.gazeSelectionAnimationType = GazeSelectionAnimationType.progress,
     this.animationColor = Colors.black,
-    this.reselectable = false,
     this.reselectableCount,
+    this.reselectable = false,
     this.withSound = false,
     this.snappable = true,
   });
+
+  final String route;
+  final Text? text;
+  final Icon? icon;
+  final EdgeInsets? iconPadding;
+  final Color? borderColor;
+  final double borderWidth;
+  final BorderRadius borderRadius;
+  final EdgeInsets innerPadding;
+  final Axis direction;
+  final Alignment alignment;
+  final MainAxisAlignment mainAxisAlignment;
+  final CrossAxisAlignment crossAxisAlignment;
+  final bool gazeInteractive;
+  final GazeButtonTapTypes tapType;
+  final GazeSelectionAnimationType gazeSelectionAnimationType;
+  final Color animationColor;
+  final int? reselectableCount;
+  final bool reselectable;
+  final bool snappable;
+  final bool withSound;
 }
 
 class GazeButton extends StatelessWidget {
-  final GazeButtonProperties properties;
-  final void Function()? onTap;
+  GazeButton({super.key, required this.properties, this.child, this.color = Colors.transparent, this.onTap})
+      : assert(
+          (child == null || properties.text == null) && (child == null || properties.icon == null),
+          'You cannot specify a child widget as well as a text or icon. The child widget replaces all previously specified properties',
+        );
 
-  GazeButton({Key? key, required this.properties, this.onTap}) : super(key: key);
+  final GazeButtonProperties properties;
+  final Widget? child;
+  final Color color;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final disabledColor = color == Colors.transparent ? color : color.withOpacity(0.3);
     return GazeSelectionAnimation(
-      onGazed: _tap,
+      onGazed: onTap != null ? () => {unawaited(_maybePlaySound()), onTap!()} : null,
       wrappedKey: GlobalKey(),
-      wrappedWidget: _buildButton(context),
+      wrappedWidget: _Button(properties: properties, onTap: onTap != null ? () => {unawaited(_maybePlaySound()), onTap!()} : null, child: child),
       properties: GazeSelectionAnimationProperties(
+        backgroundColor: onTap != null ? color : disabledColor,
         route: properties.route,
         borderRadius: properties.borderRadius,
         borderWidth: properties.borderWidth,
-        backgroundColor: properties.backgroundColor,
-        gazeInteractive: properties.gazeInteractive,
+        gazeInteractive: onTap != null && properties.gazeInteractive,
         type: properties.gazeSelectionAnimationType,
         animationColor: properties.animationColor,
         reselectable: properties.reselectable,
@@ -104,134 +94,82 @@ class GazeButton extends StatelessWidget {
     );
   }
 
-  void Function()? _determineTap(GazeButtonTapTypes type) {
-    if (properties.tapType == type && onTap != null) {
-      return _tap;
-    }
-    return null;
-  }
-
-  void _tap() {
-    if (onTap != null) unawaited(_maybePlaySound());
-    return onTap?.call();
-  }
-
   Future<void> _maybePlaySound() async {
-    if (properties.withSound) {
-      if (player.state == PlayerState.playing) await player.stop();
-      await player.play(clickSoundSource);
-    }
+    if (properties.withSound == false) return;
+    if (player.state == PlayerState.playing) await player.stop();
+    await player.play(clickSoundSource);
   }
+}
 
-  Widget _buildButton(BuildContext context) {
+class _Button extends StatelessWidget {
+  const _Button({required this.properties, required this.onTap, required this.child});
+
+  final GazeButtonProperties properties;
+  final void Function()? onTap;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = properties.text?.style?.color ?? Colors.white;
+    final disabled = onTap == null;
     return InkWell(
       borderRadius: properties.borderRadius,
-      hoverColor: properties.textColor.withAlpha(20),
-      splashColor: properties.textColor.withAlpha(60),
-      focusColor: properties.textColor.withAlpha(20),
-      highlightColor: properties.textColor.withAlpha(20),
-      onTap: _determineTap(GazeButtonTapTypes.single),
-      onDoubleTap: _determineTap(GazeButtonTapTypes.double),
-      child: AnimatedContainer(
-        padding: properties.child != null ? null : properties.innerPadding,
-        decoration: properties.child != null
-            ? null
-            : BoxDecoration(
+      hoverColor: textColor.withAlpha(20),
+      focusColor: textColor.withAlpha(20),
+      splashColor: textColor.withAlpha(60),
+      highlightColor: textColor.withAlpha(20),
+      splashFactory: disabled ? NoSplash.splashFactory : null,
+      onTap: !disabled && properties.tapType == GazeButtonTapTypes.single ? onTap : null,
+      onDoubleTap: !disabled && properties.tapType == GazeButtonTapTypes.double ? onTap : null,
+      child: child != null
+          ? AnimatedContainer(duration: const Duration(milliseconds: 150), child: child)
+          : AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: properties.innerPadding,
+              decoration: BoxDecoration(
                 borderRadius: properties.borderRadius,
-                border: properties.borderColor != null
-                    ? Border.all(
-                        color: properties.borderColor!,
-                        width: properties.borderWidth,
-                      )
-                    : null,
+                border: _getBorder(),
               ),
-        duration: const Duration(milliseconds: 150),
-        child: properties.child ??
-            (properties.fill
-                ? _buildFill(context)
-                : properties.horizontal
-                    ? _buildHorizontal(context)
-                    : _buildVertical(context)),
-      ),
-    );
-  }
-
-  Widget _buildFill(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 0, properties.text != null ? 10 : 0),
-      child: properties.icon,
-    );
-  }
-
-  Widget _buildVertical(BuildContext context) {
-    return Column(
-      mainAxisAlignment: properties.verticalAlignment,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (properties.icon != null)
-          Row(
-            mainAxisAlignment: properties.horizontalAlignment,
-            children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 0, 0, properties.text != null ? 10 : 0),
-                child: properties.icon,
-              )
-            ],
-          ),
-        if (properties.text != null)
-          Row(
-            mainAxisAlignment: properties.horizontalAlignment,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _text(context),
-            ],
-          )
-      ],
-    );
-  }
-
-  Widget _buildHorizontal(BuildContext context) {
-    // final rightInnerPadding = properties.text == null ? 0.0 : 20.0;
-    final iconPadding = properties.iconPadding ?? (properties.text == null ? const EdgeInsets.all(0) : const EdgeInsets.fromLTRB(0, 0, 20, 0));
-
-    return Row(
-      mainAxisAlignment: properties.horizontalAlignment,
-      children: [
-        if (properties.icon != null)
-          Column(
-            mainAxisAlignment: properties.verticalAlignment,
-            children: [
-              Container(
-                padding: iconPadding,
-                child: properties.icon,
-              )
-            ],
-          ),
-        if (properties.text != null)
-          Flexible(
-            child: Column(
-              mainAxisAlignment: properties.verticalAlignment,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _text(context),
-              ],
+              child: _ButtonChild(properties: properties),
             ),
-          ),
-      ],
     );
   }
 
-  Widget _text(BuildContext context) {
-    return Flexible(
-      child: Text(
-        properties.text!,
-        textAlign: properties.textAlign,
-        // maxLines: 1,
-        style: properties.textStyle ??
-            TextStyle(
-              color: properties.textColor,
-              fontSize: Theme.of(context).primaryTextTheme.bodyLarge!.fontSize,
-            ),
+  Border? _getBorder() {
+    if (properties.borderColor == null) return null;
+    if (onTap == null && properties.borderColor == Colors.transparent) return Border.all(color: Colors.transparent, width: properties.borderWidth);
+    if (onTap == null) return Border.all(color: properties.borderColor!.withOpacity(0.3), width: properties.borderWidth);
+    return Border.all(color: properties.borderColor!, width: properties.borderWidth);
+  }
+}
+
+class _ButtonChild extends StatelessWidget {
+  const _ButtonChild({required this.properties});
+
+  final GazeButtonProperties properties;
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = properties.text == null
+        ? EdgeInsets.zero
+        : EdgeInsets.only(right: properties.direction == Axis.horizontal ? 10 : 0, bottom: properties.direction == Axis.vertical ? 5 : 0);
+    return Align(
+      alignment: properties.alignment,
+      child: Flex(
+        direction: properties.direction,
+        mainAxisAlignment: properties.mainAxisAlignment,
+        crossAxisAlignment: properties.crossAxisAlignment,
+        children: [
+          if (properties.icon != null) Padding(padding: properties.iconPadding ?? padding, child: properties.icon),
+          if (properties.text != null)
+            Flexible(
+              child: DefaultTextStyle.merge(
+                style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
+                textAlign: TextAlign.center,
+                child: properties.text!,
+              ),
+            )
+        ],
       ),
     );
   }

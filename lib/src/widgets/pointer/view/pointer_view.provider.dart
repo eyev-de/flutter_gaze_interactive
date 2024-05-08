@@ -62,7 +62,10 @@ class PointerIsMoving extends _$PointerIsMoving {
     // time delay when no more movement is detected
     timer = Timer(
       const Duration(milliseconds: 1200),
-      () => {state = false, ref.onDispose(() => timer?.cancel())},
+      () {
+        state = false;
+        ref.onDispose(() => timer?.cancel());
+      },
     );
   }
 }

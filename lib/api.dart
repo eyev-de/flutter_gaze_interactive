@@ -14,7 +14,7 @@ export 'src/core/scroll_direction.dart' show GazeScrollDirection;
 export 'src/core/text_part_style_controller.dart' show StyleableTextFieldController, TextPartStyleDefinition, TextPartStyleDefinitions;
 export 'src/state.dart';
 export 'src/widgets/button/button.dart' show GazeButton, GazeButtonProperties, GazeButtonTapTypes;
-export 'src/widgets/button/selection_animation.dart' show GazeSelectionAnimation, GazeSelectionAnimationProperties, GazeSelectionAnimationType;
+export 'src/widgets/button/button_selection_animation.dart' show GazeSelectionAnimation, GazeSelectionAnimationProperties, GazeSelectionAnimationType;
 export 'src/widgets/date_picker/date_picker.dart' show GazeDatePicker;
 export 'src/widgets/keyboard/keyboard.dart' show GazeKeyboard, GazeKeyboardWidget;
 export 'src/widgets/keyboard/keyboard_key.dart' show GazeKey;
@@ -42,4 +42,5 @@ export 'src/widgets/scrollable/scrollable_impl.dart' show GazeScrollableImpl, Ga
 export 'src/widgets/switch_button/switch_button.dart' show GazeSwitchButton, GazeSwitchButtonProperties;
 export 'src/widgets/switch_button/switch_button_state.model.dart' show GazeSwitchButtonState;
 export 'src/widgets/text_field.dart' show GazeTextField, GazeTextFieldProperties;
+export 'src/widgets/toggle_buttons/toggle_button.dart' show GazeToggleButtons, GazeToggleButton;
 export 'src/widgets/view.dart' show GazeView;
