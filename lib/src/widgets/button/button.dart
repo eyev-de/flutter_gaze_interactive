@@ -162,12 +162,12 @@ class _ButtonChild extends StatelessWidget {
         children: [
           if (properties.icon != null) Padding(padding: properties.iconPadding ?? padding, child: properties.icon),
           if (properties.text != null)
-            Flexible(
-              child: DefaultTextStyle.merge(
-                style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
-                textAlign: TextAlign.center,
-                child: properties.text!,
-              ),
+            DefaultTextStyle.merge(
+              style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              child: properties.text!,
             )
         ],
       ),

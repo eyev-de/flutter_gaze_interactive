@@ -64,6 +64,8 @@ class _AppState extends State<App> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.5,
                   child: GazeTextField(
+                    route: '/',
+                    focusNode: _focusNode,
                     controller: _controller,
                     onChanged: (value) {},
                     properties: GazeTextFieldProperties(
@@ -92,8 +94,6 @@ class _AppState extends State<App> {
                         (ctx) => GazeInteractive().currentRoute = '/',
                       );
                     },
-                    focusNode: _focusNode,
-                    route: '/',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -110,18 +110,14 @@ class _AppState extends State<App> {
                         context: context,
                         builder: (context) {
                           return GazeDatePicker(
-                            firstDate: DateTime.parse('2012-12-12'),
-                            initialDate: DateTime.now(),
                             route: '/',
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.parse('2012-12-12'),
                             lastDate: DateTime.parse('2025-12-12'),
+                            cancelled: (context) => Navigator.of(context).pop(),
                             selected: (value, context) {
                               Navigator.of(context).pop();
-                              setState(() {
-                                _dateTime = value;
-                              });
-                            },
-                            cancelled: (context) {
-                              Navigator.of(context).pop();
+                              setState(() => _dateTime = value);
                             },
                           );
                         },
@@ -131,15 +127,13 @@ class _AppState extends State<App> {
                 ),
                 const SizedBox(height: 20),
                 GazeSwitchButton(
+                  onToggled: (toggled) async => true,
                   properties: GazeSwitchButtonProperties(
                     route: '/',
                     enabled: true,
                     labelTextStyle: const TextStyle(fontSize: 10),
                     state: GazeSwitchButtonState(toggled: true, gazeInteractive: true),
                   ),
-                  onToggled: (toggled) async {
-                    return true;
-                  },
                 ),
                 const Snapping(route: '/'),
               ],
