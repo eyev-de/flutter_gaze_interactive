@@ -1,5 +1,5 @@
-import 'package:example/snapp.settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gaze_interactive/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,90 +53,47 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width / 1.8;
     return Scaffold(
       body: Stack(
         children: [
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.5,
-                  child: GazeTextField(
-                    route: '/',
+            child: SizedBox(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _SearchTextField(
                     focusNode: _focusNode,
                     controller: _controller,
-                    onChanged: (value) {},
-                    properties: GazeTextFieldProperties(
-                      obscureText: true,
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
-                      inputDecoration: const InputDecoration(
-                        hintText: 'Search',
-                        prefixIcon: Icon(Icons.search_sharp),
-                      ),
+                    undoController: _undoHistoryController,
+                  ),
+                  const SizedBox(height: 20),
+                  ContentRow(
+                    subtitle: 'Date',
+                    title: _dateTime.toString(),
+                    child: _DateButton(selected: ({required DateTime value}) => setState(() => _dateTime = value)),
+                  ),
+                  const SizedBox(height: 25),
+                  ContentRow(
+                    title: 'Example Switch Button',
+                    subtitle: 'Clickable without value change',
+                    child: GazeSwitchButton(
+                      route: '/',
+                      value: true,
+                      onChanged: (_) {},
+                      properties: GazeSwitchButtonProperties(gazeInteractive: true, labelTextStyle: const TextStyle(fontSize: 10)),
                     ),
-                    onFocus: () {
-                      GazeKeyboard().show(
-                        context,
-                        GazeKeyboardState(
-                          node: _focusNode,
-                          placeholder: 'Search',
-                          controller: _controller,
-                          undoHistoryController: _undoHistoryController,
-                          route: '/dialog',
-                          type: KeyboardType.extended,
-                          language: Language.english,
-                          selectedKeyboardPlatformType: KeyboardPlatformType.mobile,
-                        ),
-                        () => GazeInteractive().currentRoute = '/dialog',
-                        (ctx) => Navigator.of(ctx).pop(),
-                        (ctx) => GazeInteractive().currentRoute = '/',
-                      );
-                    },
                   ),
-                ),
-                const SizedBox(height: 20),
-                Text(_dateTime.toIso8601String()),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: 200,
-                  height: 80,
-                  child: GazeButton(
-                    color: Colors.pink,
-                    properties: GazeButtonProperties(text: const Text('Button'), route: '/'),
-                    onTap: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return GazeDatePicker(
-                            route: '/',
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.parse('2012-12-12'),
-                            lastDate: DateTime.parse('2025-12-12'),
-                            cancelled: (context) => Navigator.of(context).pop(),
-                            selected: (value, context) {
-                              Navigator.of(context).pop();
-                              setState(() => _dateTime = value);
-                            },
-                          );
-                        },
-                      );
-                    },
+                  const SizedBox(height: 20),
+                  const ContentRow(
+                    title: 'Snapping',
+                    subtitle: 'Toggles between snapping mode',
+                    child: _SnapSwitchButton(route: '/'),
                   ),
-                ),
-                const SizedBox(height: 20),
-                GazeSwitchButton(
-                  onToggled: (toggled) async => true,
-                  properties: GazeSwitchButtonProperties(
-                    route: '/',
-                    enabled: true,
-                    labelTextStyle: const TextStyle(fontSize: 10),
-                    state: GazeSwitchButtonState(toggled: true, gazeInteractive: true),
-                  ),
-                ),
-                const Snapping(route: '/'),
-              ],
+                ],
+              ),
             ),
           ),
           GazePointerView(),
@@ -146,21 +103,141 @@ class _AppState extends State<App> {
   }
 }
 
+// Check in case of Dialog (maybe todo but only example here so no dialog yet)
 PredicateReturnState gazeInteractionPredicate(Rect itemRect, Rect gazePointerRect, Rect snapPointerRect, String itemRoute, String currentRoute) {
-  // Check in case of Dialog (maybe todo but only example here so no dialog yet)
-
   // Check in case of Regular Route
-  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.center)) {
-    return PredicateReturnState.gaze;
-  }
-
+  if (itemRoute == currentRoute && itemRect.contains(gazePointerRect.center)) return PredicateReturnState.gaze;
   final intersectionSnap = itemRect.intersect(snapPointerRect);
-
   if (intersectionSnap.width.isNegative || intersectionSnap.height.isNegative) return PredicateReturnState.none;
-
-  if (itemRoute == currentRoute) {
-    return PredicateReturnState.snap;
-  }
-
+  if (itemRoute == currentRoute) return PredicateReturnState.snap;
   return PredicateReturnState.none;
+}
+
+class ContentRow extends StatelessWidget {
+  const ContentRow({super.key, required this.title, this.subtitle = '', required this.child});
+
+  final String title;
+  final String subtitle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleMedium),
+              Text(subtitle, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey)),
+            ],
+          ),
+        ),
+        child,
+      ],
+    );
+  }
+}
+
+class _SearchTextField extends StatelessWidget {
+  const _SearchTextField({required this.focusNode, required this.controller, required this.undoController});
+
+  final FocusNode focusNode;
+  final TextEditingController controller;
+  final UndoHistoryController undoController;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.8,
+      child: GazeTextField(
+        route: '/',
+        focusNode: focusNode,
+        controller: controller,
+        onChanged: (value) {},
+        properties: GazeTextFieldProperties(
+          obscureText: true,
+          style: const TextStyle(fontSize: 20, color: Colors.white),
+          inputDecoration: const InputDecoration(hintText: 'Search', prefixIcon: Icon(Icons.search_sharp)),
+        ),
+        onFocus: () {
+          GazeKeyboard().show(
+            context,
+            GazeKeyboardState(
+              node: focusNode,
+              route: '/dialog',
+              placeholder: 'Search',
+              language: Language.english,
+              type: KeyboardType.extended,
+              controller: controller,
+              undoHistoryController: undoController,
+              selectedKeyboardPlatformType: KeyboardPlatformType.mobile,
+            ),
+            () => GazeInteractive().currentRoute = '/dialog',
+            (ctx) => Navigator.of(ctx).pop(),
+            (ctx) => GazeInteractive().currentRoute = '/',
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DateButton extends StatelessWidget {
+  const _DateButton({required this.selected});
+
+  final void Function({required DateTime value}) selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      height: 80,
+      child: GazeButton(
+        color: Colors.pink,
+        properties: GazeButtonProperties(text: const Text('Select'), route: '/'),
+        onTap: () async {
+          await showDialog(
+            context: context,
+            builder: (context) {
+              return GazeDatePicker(
+                route: '/',
+                initialDate: DateTime.now(),
+                firstDate: DateTime.parse('2012-12-12'),
+                lastDate: DateTime.parse('2025-12-12'),
+                cancelled: (context) => Navigator.of(context).pop(),
+                selected: (value, context) {
+                  Navigator.of(context).pop();
+                  selected(value: value);
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SnapSwitchButton extends ConsumerWidget {
+  const _SnapSwitchButton({required this.route});
+
+  final String route;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return GazeSwitchButton(
+      route: route,
+      value: ref.watch(snapActiveStateProvider),
+      onChanged: (value) => ref.read(snapActiveStateProvider.notifier).update(active: value),
+      properties: GazeSwitchButtonProperties(
+        gazeInteractive: true,
+        activeColor: Colors.green,
+        inactiveColor: Colors.pink,
+        size: const Size(80, 80),
+      ),
+    );
+  }
 }
