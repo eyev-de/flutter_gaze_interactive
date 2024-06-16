@@ -7,20 +7,18 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../button/button.dart';
-import 'switch_button_state.model.dart';
 
 part 'switch_button.g.dart';
 
 @riverpod
 class SwitchButtonToggleWithDelay extends _$SwitchButtonToggleWithDelay {
   @override
-  bool build({required GlobalKey key}) {
-    return true;
-  }
+  bool build({required GlobalKey key}) => true;
 
   void toggle() {
     state = false;
@@ -28,59 +26,71 @@ class SwitchButtonToggleWithDelay extends _$SwitchButtonToggleWithDelay {
   }
 }
 
+@riverpod
+class SwitchButtonChanged extends _$SwitchButtonChanged {
+  @override
+  bool? build({required GlobalKey key}) => false;
+
+  void update({required bool? value}) => state = value;
+}
+
 class GazeSwitchButtonProperties {
   GazeSwitchButtonProperties({
-    required this.state,
-    required this.route,
-    this.enabled = true,
+    this.gazeInteractive = true,
     this.showLabel = true,
     this.labelTextStyle,
+    this.activeColor = Colors.blue,
+    this.inactiveColor = Colors.red,
     this.disabledColor = Colors.grey,
-    this.unToggledColor = Colors.grey,
-    this.toggledColor = Colors.blue,
-    this.innerPadding = const EdgeInsets.all(20),
     this.size = const Size(80, 80),
+    this.innerPadding = const EdgeInsets.all(20),
     this.margin = const EdgeInsets.fromLTRB(10, 33, 10, 33),
   });
 
-  final GazeSwitchButtonState state;
-  final String route;
-  final bool enabled;
+  final bool gazeInteractive;
   final bool showLabel;
   final TextStyle? labelTextStyle;
   final Color disabledColor;
-  final Color unToggledColor;
-  final Color toggledColor;
-  final EdgeInsets innerPadding;
+  final Color inactiveColor;
+  final Color activeColor;
   final Size size;
+  final EdgeInsets innerPadding;
   final EdgeInsets margin;
 }
 
 class GazeSwitchButton extends ConsumerStatefulWidget {
-  GazeSwitchButton({Key? key, required this.properties, required this.onToggled}) : super(key: key);
+  GazeSwitchButton({super.key, required this.route, required this.value, required this.onChanged, required this.properties});
 
+  final String route;
+  final bool value;
+  final ValueChanged<bool>? onChanged;
   final GazeSwitchButtonProperties properties;
-  final Future<bool> Function(bool)? onToggled;
 
   @override
   _GazeSwitchButtonState createState() => _GazeSwitchButtonState();
 }
 
 class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with SingleTickerProviderStateMixin {
+  _GazeSwitchButtonState();
+
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
-  late final stateProvider = StateProvider((ref) => widget.properties.state);
   final GlobalKey globalKey = GlobalKey();
-
-  _GazeSwitchButtonState();
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _animation = Tween<double>(begin: math.pi, end: math.pi / 2).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticInOut));
-    if (widget.properties.state.toggled) _controller.forward();
+    if (widget.value) _controller.forward();
+    // // Change to initial value if value has not changed
+    _controller.addStatusListener((status) {
+      final changed = ref.watch(switchButtonChangedProvider(key: globalKey));
+      if (changed == true) return;
+      if (status == AnimationStatus.dismissed && widget.value == true) _controller.forward();
+      if (status == AnimationStatus.completed && widget.value == false) _controller.reverse();
+    });
   }
 
   @override
@@ -90,25 +100,32 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   }
 
   @override
+  void didUpdateWidget(covariant GazeSwitchButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      ref.read(switchButtonChangedProvider(key: globalKey).notifier).update(value: oldWidget.value != widget.value);
+    });
+    // toggle if value changed
+    if (oldWidget.value != widget.value) {
+      _toggle();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final _state = ref.watch(stateProvider);
-    ref.listen(stateProvider, (prev, next) => _toggle(next.toggled));
     return GazeButton(
       properties: GazeButtonProperties(
-        route: widget.properties.route,
+        route: widget.route,
         innerPadding: EdgeInsets.zero,
-        gazeInteractive: widget.properties.enabled == false ? false : _state.gazeInteractive,
+        gazeInteractive: widget.onChanged != null && widget.properties.gazeInteractive,
       ),
-      onTap: widget.properties.enabled
-          ? () async {
-              final state = ref.read(stateProvider);
-              ref.read(stateProvider.notifier).state = state.copyWith(toggled: !state.toggled);
-              if (widget.onToggled != null && !await widget.onToggled!(!state.toggled)) {
-                ref.read(stateProvider.notifier).state = state.copyWith(toggled: state.toggled);
-              }
+      onTap: widget.onChanged == null
+          ? null
+          : () async {
+              _toggle();
               ref.read(switchButtonToggleWithDelayProvider(key: globalKey).notifier).toggle();
-            }
-          : null,
+              widget.onChanged!(!widget.value);
+            },
       child: AnimatedContainer(
         width: widget.properties.size.width,
         height: widget.properties.size.height,
@@ -116,8 +133,8 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Color.alphaBlend(Colors.black.withOpacity(.85), _getColor(_state.toggled)),
-          border: Border.all(color: _getColor(_state.toggled), width: 3),
+          color: Color.alphaBlend(Colors.black.withOpacity(.85), _color(widget.value)),
+          border: Border.all(color: _color(widget.value), width: 3),
         ),
         child: AnimatedBuilder(
           animation: _animation,
@@ -130,29 +147,17 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
                     duration: const Duration(milliseconds: 300),
                     margin: widget.properties.margin,
                     decoration: BoxDecoration(
-                      color: _getColor(_state.toggled),
+                      color: _color(widget.value),
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                 ),
                 if (widget.properties.showLabel)
-                  AnimatedOpacity(
+                  _GazeSwitchButtonLabel(
                     opacity: ref.watch(switchButtonToggleWithDelayProvider(key: globalKey)) ? 1 : 0,
-                    duration: const Duration(milliseconds: 300),
-                    child: Center(
-                      child: Container(
-                        color: Color.alphaBlend(Colors.black.withOpacity(.85), _getColor(_state.toggled)),
-                        padding: EdgeInsets.all(_state.toggled ? 0 : 2),
-                        child: Text(
-                          _state.toggled ? 'ON' : 'OFF',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall
-                              ?.copyWith(fontWeight: FontWeight.bold, color: _getColor(_state.toggled))
-                              .merge(widget.properties.labelTextStyle),
-                        ),
-                      ),
-                    ),
+                    value: widget.value,
+                    color: _color(widget.value),
+                    style: widget.properties.labelTextStyle,
                   ),
               ],
             );
@@ -162,18 +167,46 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
     );
   }
 
-  void _toggle(bool toggled) {
-    final status = _controller.status;
-    if (status == AnimationStatus.completed) {
+  void _toggle() {
+    if (_controller.status == AnimationStatus.completed) {
       _controller.reverse();
-    } else if (status == AnimationStatus.dismissed) {
+    } else if (_controller.status == AnimationStatus.dismissed) {
       _controller.forward();
     }
   }
 
-  Color _getColor(bool toggled) {
-    if (!widget.properties.enabled) return widget.properties.disabledColor.withOpacity(0.5);
-    if (toggled) return widget.properties.toggledColor;
-    return widget.properties.unToggledColor;
+  Color _color(bool toggled) {
+    if (widget.onChanged == null) return widget.properties.disabledColor.withOpacity(0.5);
+    if (toggled) return widget.properties.activeColor;
+    return widget.properties.inactiveColor;
+  }
+}
+
+class _GazeSwitchButtonLabel extends StatelessWidget {
+  const _GazeSwitchButtonLabel({required this.value, required this.color, this.opacity = 1.0, this.style});
+
+  final bool value;
+  final Color color;
+  final double opacity;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      opacity: opacity,
+      duration: const Duration(milliseconds: 300),
+      child: Center(
+        child: Container(
+          color: Color.alphaBlend(Colors.black.withOpacity(.85), color),
+          padding: EdgeInsets.all(value ? 0 : 2),
+          child: FittedBox(
+            child: Text(
+              value ? 'ON' : 'OFF',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: color).merge(style),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
