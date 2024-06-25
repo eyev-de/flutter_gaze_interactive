@@ -38,7 +38,7 @@ final snapIconStateProvider = NotifierProvider<SnapIconState, bool>.internal(
 
 typedef _$SnapIconState = Notifier<bool>;
 String _$gazePointerAlwaysVisibleHash() =>
-    r'16c3bafa58e3b043d438094a8c20d45ce82038fe';
+    r'5c00d0ee6c8ec9b094e12e1d1459227b1e09fd34';
 
 /// See also [GazePointerAlwaysVisible].
 @ProviderFor(GazePointerAlwaysVisible)

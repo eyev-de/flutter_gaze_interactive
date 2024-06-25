@@ -331,7 +331,7 @@ class _PointerAnimationProviderElement
   TickerProvider get vsync => (origin as PointerAnimationProvider).vsync;
 }
 
-String _$pointerIsMovingHash() => r'835c8beea2014703bea9af72bfbd9b246bf5cd1a';
+String _$pointerIsMovingHash() => r'2f14ac6f693bf5ca4d189d8420afc84ec2657791';
 
 /// See also [PointerIsMoving].
 @ProviderFor(PointerIsMoving)
@@ -347,7 +347,7 @@ final pointerIsMovingProvider =
 );
 
 typedef _$PointerIsMoving = AutoDisposeNotifier<bool>;
-String _$pointerOpacityHash() => r'6b46b8dd40a107f40c3fdf9d26b7fd7e15a6ccbe';
+String _$pointerOpacityHash() => r'5636a53ae27c38e0ef9bbb378b41ca8e07553ce4';
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
 ///
