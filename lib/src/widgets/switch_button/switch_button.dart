@@ -103,7 +103,9 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   void didUpdateWidget(covariant GazeSwitchButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      ref.read(switchButtonChangedProvider(key: globalKey).notifier).update(value: oldWidget.value != widget.value);
+      if (mounted) {
+        ref.read(switchButtonChangedProvider(key: globalKey).notifier).update(value: oldWidget.value != widget.value);
+      }
     });
     // toggle if value changed
     if (oldWidget.value != widget.value) {
