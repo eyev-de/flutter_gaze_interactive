@@ -148,7 +148,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
     final _size = ref.watch(pointerSizeProvider(type: widget.state.type));
     final _pointerOffset = ref.watch(pointerOffsetProvider);
     final _opacity = ref.watch(pointerOpacityProvider);
-    final calculatedOpacity = widget.state.invisible ? 0.1 * _opacity : _opacity;
+    final calculatedOpacity = widget.state.absoluteOpacityValue != null ? widget.state.absoluteOpacityValue! : _opacity;
     final _controller = ref.watch(pointerAnimationControllerProvider(vsync: this));
     final _animation = ref.watch(pointerAnimationProvider(vsync: this));
     return Positioned(

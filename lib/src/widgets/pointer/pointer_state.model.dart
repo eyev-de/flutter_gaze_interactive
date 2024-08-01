@@ -19,7 +19,7 @@ class GazePointerState with _$GazePointerState {
     // ignore gesture on pointer
     @Default(false) bool ignorePointer,
     // ignore gesture on pointer
-    @Default(false) bool invisible,
+    @Default(null) double? absoluteOpacityValue,
     // action on pointer
     @Default(GazePointerAction.click) GazePointerAction action,
     Function(Offset)? onAction,
