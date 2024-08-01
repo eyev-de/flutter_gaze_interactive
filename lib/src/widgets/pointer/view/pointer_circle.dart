@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
 import '../../../../api.dart';
-import 'pointer_view.provider.dart';
 
 class PointerCircle extends ConsumerWidget {
   const PointerCircle({super.key, required this.type, required this.size, required this.animation});
