@@ -273,12 +273,15 @@ class _ArrowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: Opacity(
+      child: AnimatedOpacity(
         opacity: state.isVisible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 150),
         child: SizedBox(
           width: size.width,
           height: size.height,
           child: GazeButton(
+            // onTap must be specified here -> displayed button not as disabled
+            onTap: () {},
             color: Colors.white.withOpacity(state.opacity),
             properties: GazeButtonProperties(
               // Scrolling should not be snapped to
