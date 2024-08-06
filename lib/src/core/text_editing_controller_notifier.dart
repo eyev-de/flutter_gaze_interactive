@@ -7,56 +7,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TextEditingControllerNotifier extends StateNotifier<String> {
-  final TextEditingController controller;
-
-  TextEditingControllerNotifier({required this.controller}) : super(controller.text) {
+class TextEditingControllerTextNotifier extends StateNotifier<String> {
+  TextEditingControllerTextNotifier({required this.controller}) : super(controller.text) {
     controller.addListener(_listener);
   }
+  final TextEditingController controller;
 
   @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_listener);
-  }
+  void dispose() => {super.dispose(), controller.removeListener(_listener)};
 
-  void _listener() {
-    state = controller.text;
-  }
+  void _listener() => state = controller.text;
 }
 
 class UndoHistoryControllerNotifier extends StateNotifier<bool> {
-  final UndoHistoryController controller;
-
   UndoHistoryControllerNotifier({required this.controller}) : super(controller.value.canUndo) {
     controller.addListener(_listener);
   }
+  final UndoHistoryController controller;
 
   @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_listener);
-  }
+  void dispose() => {super.dispose(), controller.removeListener(_listener)};
 
-  void _listener() {
-    state = controller.value.canUndo;
-  }
+  void _listener() => state = controller.value.canUndo;
 }
 
 class RedoHistoryControllerNotifier extends StateNotifier<bool> {
-  final UndoHistoryController controller;
-
   RedoHistoryControllerNotifier({required this.controller}) : super(controller.value.canRedo) {
     controller.addListener(_listener);
   }
+  final UndoHistoryController controller;
 
   @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_listener);
-  }
+  void dispose() => {super.dispose(), controller.removeListener(_listener)};
 
-  void _listener() {
-    state = controller.value.canRedo;
-  }
+  void _listener() => state = controller.value.canRedo;
 }

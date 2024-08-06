@@ -13,15 +13,14 @@ class PasteButton extends GazeKeyboardUtilityButton {
     final clipboardContent = ref.watch(clipboardProvider);
     final disabled = ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
-      state: state,
       text: label,
-      gazeInteractive: clipboardContent != '' && disabled == false,
-      textStyle: (textStyle ?? const TextStyle()).copyWith(color: clipboardContent != '' && disabled == false ? null : Colors.grey),
+      state: state,
       icon: Icons.paste,
-      iconColor: clipboardContent != '' && !disabled ? null : Colors.grey,
       route: state.route,
-      // change selection state after paste when before selection
-      disablesSelection: true,
+      disablesSelection: true, // change selection state after paste when before selection
+      gazeInteractive: clipboardContent != '' && disabled == false,
+      iconColor: clipboardContent != '' && !disabled ? null : Colors.grey,
+      textStyle: (textStyle ?? const TextStyle()).copyWith(color: clipboardContent != '' && disabled == false ? null : Colors.grey),
       onTap: clipboardContent != '' && !disabled
           ? () async {
               node.requestFocus();

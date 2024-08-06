@@ -48,7 +48,7 @@ class _KeyboardMailCompletion extends ConsumerWidget {
   final GazeKeyboardState state;
   final FocusNode node;
 
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: state.controller));
+  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

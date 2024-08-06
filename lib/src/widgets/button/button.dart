@@ -39,7 +39,7 @@ class GazeButtonProperties {
   });
 
   final String route;
-  final Text? text;
+  final Widget? text;
   final Icon? icon;
   final EdgeInsets? iconPadding;
   final Color? borderColor;
@@ -110,7 +110,7 @@ class _Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = properties.text?.style?.color ?? Colors.white;
+    final textColor = properties.text != null && properties.text is Text ? (properties.text! as Text).style?.color ?? Colors.white : Colors.white;
     final disabled = onTap == null;
     return InkWell(
       borderRadius: properties.borderRadius,
