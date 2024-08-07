@@ -59,5 +59,6 @@ class GazeKeyboardState {
   final signsStateProvider = StateProvider((ref) => false);
   final ctrlStateProvider = StateProvider((ref) => false);
   final selectingStateProvider = StateProvider((ref) => false);
+  final selectingWordStateProvider = StateProvider((ref) => false);
   final disableStateProvider = StateProvider((ref) => false);
 }

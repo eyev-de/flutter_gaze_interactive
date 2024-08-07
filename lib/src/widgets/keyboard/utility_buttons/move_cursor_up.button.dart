@@ -8,19 +8,19 @@ import '../keyboard_utility_buttons.dart';
 class MoveCursorUpButton extends GazeKeyboardUtilityButton {
   MoveCursorUpButton({super.key, required super.state, required super.node, super.label = 'Cursor'});
 
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: state.controller));
+  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
     final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
-      icon: Icons.arrow_upward,
-      iconColor: disabled ? Colors.grey : null,
-      gazeInteractive: disabled == false,
-      reselectable: true,
-      route: state.route,
       text: label,
+      route: state.route,
+      reselectable: true,
+      icon: Icons.arrow_upward,
+      gazeInteractive: disabled == false,
+      iconColor: disabled ? Colors.grey : null,
       textStyle: TextStyle(color: disabled ? Colors.grey : null),
       onTap: disabled
           ? null

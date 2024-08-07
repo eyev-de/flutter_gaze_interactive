@@ -8,20 +8,26 @@ import '../keyboard_utility_buttons.dart';
 class SelectButton extends GazeKeyboardUtilityButton {
   SelectButton({super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
 
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: state.controller));
+  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
     final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
+
+    // Disable select button if text is empty
+    ref.listen(controllerTextProvider, (prev, next) {
+      if (next == '' && selecting) ref.read(state.selectingStateProvider.notifier).state = false;
+    });
+
     return GazeKeyboardUtilityBaseButton(
-      backgroundColor: selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
-      gazeInteractive: disabled == false,
-      icon: MdiIcons.select,
-      iconColor: disabled ? Colors.grey : null,
       text: label,
-      textStyle: TextStyle(color: disabled ? Colors.grey : null),
       route: state.route,
+      icon: MdiIcons.select,
+      gazeInteractive: disabled == false,
+      iconColor: disabled ? Colors.grey : null,
+      textStyle: TextStyle(color: disabled ? Colors.grey : null),
+      backgroundColor: selecting ? Theme.of(context).primaryColor : Colors.grey.shade900,
       onTap: disabled
           ? null
           : () {
@@ -34,6 +40,7 @@ class SelectButton extends GazeKeyboardUtilityButton {
                 );
               }
               ref.read(state.selectingStateProvider.notifier).state = !selecting;
+              ref.read(state.selectingWordStateProvider.notifier).state = state.controller.selection.textInside(state.controller.text).isNotEmpty;
             },
     );
   }

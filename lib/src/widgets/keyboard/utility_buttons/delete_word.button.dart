@@ -5,25 +5,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../api.dart';
 import '../../../core/text_editing_controller_notifier.dart';
 
-class DeleteWordButton extends ConsumerWidget {
-  DeleteWordButton({super.key, required this.state, required this.node});
+class DeleteWordButton extends GazeKeyboardUtilityButton {
+  DeleteWordButton({super.key, required super.state, required super.node, super.label = 'Word', super.textStyle});
 
-  final GazeKeyboardState state;
-  final FocusNode node;
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: state.controller));
+  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
-      text: 'Word',
-      textStyle: TextStyle(color: disabled ? Colors.grey : Colors.red),
-      backgroundColor: Colors.grey.shade900,
-      icon: CupertinoIcons.delete_left_fill,
-      iconColor: disabled ? Colors.grey : Colors.red,
+      text: label,
+      reselectable: true,
       route: state.route,
       gazeInteractive: disabled == false,
-      reselectable: true,
+      icon: CupertinoIcons.delete_left_fill,
+      backgroundColor: Colors.grey.shade900,
+      textStyle: TextStyle(color: disabled ? Colors.grey : Colors.red),
+      iconColor: disabled ? Colors.grey : Colors.red,
       onTap: disabled
           ? null
           : () {

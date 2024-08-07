@@ -3,23 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/text_editing_controller_notifier.dart';
-import '../keyboard_state.dart';
 import '../keyboard_utility_buttons.dart';
 
-class DeleteButton extends ConsumerWidget {
-  DeleteButton({super.key, required this.state, required this.node});
+class DeleteButton extends GazeKeyboardUtilityButton {
+  DeleteButton({super.key, required super.state, required super.node, super.label = 'Character'});
 
-  final GazeKeyboardState state;
-  final FocusNode node;
-
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerNotifier(controller: state.controller));
+  late final controllerProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
-    final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
+    final wordSelected = ref.watch(state.selectingWordStateProvider);
+    final disabled = (selecting && !wordSelected) || (ref.watch(controllerProvider) == '' || ref.watch(state.disableStateProvider));
     return GazeKeyboardUtilityBaseButton(
-      text: selecting ? 'Select' : 'Character',
+      text: label,
       textStyle: TextStyle(color: disabled ? Colors.grey : Colors.red),
       backgroundColor: Colors.grey.shade900,
       icon: CupertinoIcons.delete_left,
@@ -45,6 +42,7 @@ class DeleteButton extends ConsumerWidget {
                   ..text = state.controller.text.replaceRange(startIndex, endIndex, '')
                   ..selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
               }
+              ref.read(state.selectingWordStateProvider.notifier).state = state.controller.selection.textInside(state.controller.text).isNotEmpty;
             },
     );
   }
