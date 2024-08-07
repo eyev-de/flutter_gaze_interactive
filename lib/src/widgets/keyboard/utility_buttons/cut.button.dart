@@ -12,17 +12,23 @@ class CutButton extends GazeKeyboardUtilityButton {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
+    final selecting = ref.watch(state.selectingStateProvider);
+    final wordSelected = ref.watch(state.selectingWordStateProvider);
+    final disabled = (selecting && !wordSelected) || ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
       state: state,
       icon: Icons.cut,
       route: state.route,
-      disablesSelection: true, // change selection state after cut of selection
       gazeInteractive: disabled == false,
       iconColor: disabled ? Colors.grey : null,
       textStyle: (textStyle ?? const TextStyle()).copyWith(color: disabled ? Colors.grey : null),
-      onTap: disabled ? null : () => {node.requestFocus(), state.controller.cut()},
+      onTap: disabled
+          ? null
+          : () {
+              node.requestFocus();
+              state.controller.cut();
+            },
     );
   }
 }

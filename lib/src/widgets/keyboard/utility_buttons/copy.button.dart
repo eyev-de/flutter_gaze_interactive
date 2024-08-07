@@ -12,7 +12,9 @@ class CopyButton extends GazeKeyboardUtilityButton {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
+    final selecting = ref.watch(state.selectingStateProvider);
+    final wordSelected = ref.watch(state.selectingWordStateProvider);
+    final disabled = (selecting && !wordSelected) || ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
       state: state,
@@ -21,8 +23,12 @@ class CopyButton extends GazeKeyboardUtilityButton {
       gazeInteractive: disabled == false,
       iconColor: disabled ? Colors.grey : null,
       textStyle: (textStyle ?? const TextStyle()).copyWith(color: disabled ? Colors.grey : null),
-      disablesSelection: true, // change selection state after copy of selection
-      onTap: disabled ? null : () => {node.requestFocus(), state.controller.copy()},
+      onTap: disabled
+          ? null
+          : () {
+              node.requestFocus();
+              state.controller.copy();
+            },
     );
   }
 }

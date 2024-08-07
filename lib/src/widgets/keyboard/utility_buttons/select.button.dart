@@ -14,6 +14,12 @@ class SelectButton extends GazeKeyboardUtilityButton {
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
     final disabled = ref.watch(controllerTextProvider) == '' || ref.watch(state.disableStateProvider);
+
+    // Disable select button if text is empty
+    ref.listen(controllerTextProvider, (prev, next) {
+      if (next == '' && selecting) ref.read(state.selectingStateProvider.notifier).state = false;
+    });
+
     return GazeKeyboardUtilityBaseButton(
       text: label,
       route: state.route,
@@ -34,6 +40,7 @@ class SelectButton extends GazeKeyboardUtilityButton {
                 );
               }
               ref.read(state.selectingStateProvider.notifier).state = !selecting;
+              ref.read(state.selectingWordStateProvider.notifier).state = state.controller.selection.textInside(state.controller.text).isNotEmpty;
             },
     );
   }
