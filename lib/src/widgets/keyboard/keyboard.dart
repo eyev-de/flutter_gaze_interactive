@@ -22,14 +22,11 @@ import 'utility_buttons/redo.button.dart';
 import 'utility_buttons/undo.button.dart';
 
 class GazeKeyboard {
-  static final GazeKeyboard _instance = GazeKeyboard._internal();
-  final _scrollController = ScrollController();
-
-  factory GazeKeyboard() {
-    return _instance;
-  }
+  factory GazeKeyboard() => _instance;
 
   GazeKeyboard._internal();
+  static final GazeKeyboard _instance = GazeKeyboard._internal();
+  final _scrollController = ScrollController();
 
   bool _isShown = false;
 
@@ -67,14 +64,7 @@ class GazeKeyboard {
         );
       },
       pageBuilder: (context, animation, secondaryAnimation) {
-        // This causes a lot of jank
-        // final height = Responsive.getResponsiveValue<double>(
-        //   forLargeScreen: 80,
-        //   forMediumScreen: 60,
-        //   context: context,
-        // );
         const double height = 80;
-
         return Container(
           color: Colors.black,
           child: Stack(
@@ -141,7 +131,7 @@ class GazeKeyboard {
                               Flexible(
                                 child: SizedBox(
                                   height: height + 2, // Compensating the top and bottom padding
-                                  child: DeleteAllButton(controller: state.controller, node: node, route: state.route, label: ''),
+                                  child: DeleteAllButton(controller: state.controller, node: node, route: state.route, label: '', state: state),
                                 ),
                               ),
                               // Submit Button

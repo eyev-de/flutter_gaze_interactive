@@ -33,47 +33,27 @@ class GazeKeyboardUtilityButtons extends ConsumerWidget {
     final selecting = ref.watch(state.selectingStateProvider);
     return Row(
       children: [
-        Flexible(
-          child: SelectButton(state: state, node: node),
-        ),
-        Flexible(
-          child: MoveCursorLeftButton(state: state, node: node),
-        ),
-        Flexible(
-          child: MoveCursorRightButton(state: state, node: node),
-        ),
-        if (state.onMoveCursorUp != null && state.type == KeyboardType.editor)
-          Flexible(
-            child: MoveCursorUpButton(state: state, node: node),
-          ),
-        if (state.onMoveCursorDown != null && state.type == KeyboardType.editor)
-          Flexible(
-            child: MoveCursorDownButton(state: state, node: node),
-          ),
-        Flexible(
-          child: CopyButton(state: state, node: node),
-        ),
-        Flexible(
-          child: PasteButton(state: state, node: node),
-        ),
-        Flexible(
-          child: CutButton(state: state, node: node),
-        ),
+        Flexible(child: SelectButton(state: state, node: node)),
+        Flexible(child: MoveCursorLeftButton(state: state, node: node)),
+        Flexible(child: MoveCursorRightButton(state: state, node: node)),
+        if (state.onMoveCursorUp != null && state.type == KeyboardType.editor) Flexible(child: MoveCursorUpButton(state: state, node: node)),
+        if (state.onMoveCursorDown != null && state.type == KeyboardType.editor) Flexible(child: MoveCursorDownButton(state: state, node: node)),
+        Flexible(child: CopyButton(state: state, node: node, label: selecting ? 'Copy' : 'Copy All')),
+        Flexible(child: PasteButton(state: state, node: node)),
+        Flexible(child: CutButton(state: state, node: node, label: selecting ? 'Cut' : 'Cut All')),
         if (selecting)
-          Flexible(flex: 2, child: DeleteButton(state: state, node: node))
+          Flexible(flex: 2, child: DeleteButton(state: state, node: node, label: 'Select'))
         else ...[
-          Flexible(
-            child: DeleteButton(state: state, node: node),
-          ),
-          Flexible(
-            child: DeleteWordButton(state: state, node: node),
-          ),
+          Flexible(child: DeleteButton(state: state, node: node)),
+          Flexible(child: DeleteWordButton(state: state, node: node)),
         ]
       ],
     );
   }
 }
 
+// Gaze Keyboard Utility Buttons should be snapped to
+// This includes (copy, cut, delete_all, delete_word, delete, move cursors, paste, select)
 abstract class GazeKeyboardUtilityButton extends ConsumerWidget {
   const GazeKeyboardUtilityButton({super.key, required this.state, required this.node, required this.label, this.textStyle});
 
@@ -99,8 +79,6 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
     this.reselectable = false,
     this.horizontal = false,
     this.gazeInteractive = true,
-    // disable selected letters after onTap is finished
-    this.disablesSelection = false,
   });
 
   final String route;
@@ -117,7 +95,6 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
   final bool reselectable;
   final bool horizontal;
   final bool gazeInteractive;
-  final bool disablesSelection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -125,33 +102,23 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       child: GazeButton(
-        onTap: () {
-          onTap!.call();
-          if (disablesSelection && state != null) {
-            final selecting = ref.read(state!.selectingStateProvider);
-            if (selecting) {
-              state!.controller.selection = TextSelection(
-                baseOffset: state!.controller.selection.extentOffset,
-                extentOffset: state!.controller.selection.extentOffset,
-              );
-              ref.read(state!.selectingStateProvider.notifier).state = false;
-            }
-          }
-        },
+        onTap: () => onTap?.call(), // should not be null -> avoid disabled state
         color: backgroundColor ?? Colors.grey.shade900,
         properties: GazeButtonProperties(
-          text: text != null ? Text(text!, style: textStyle) : null,
           route: route,
           withSound: true,
           reselectable: reselectable,
-          direction: horizontal ? Axis.horizontal : Axis.vertical,
           borderRadius: borderRadius,
           innerPadding: innerPadding,
           gazeInteractive: gazeInteractive,
+          direction: horizontal ? Axis.horizontal : Axis.vertical,
           icon: Icon(icon, color: iconColor ?? Colors.white, size: size),
-          // Gaze Keyboard Utility Buttons should be snapped to
-          // This includes (copy, cut, delete_all, delete_word, delete, move cursors, paste, select)
-          snappable: true,
+          text: text != null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: FittedBox(fit: BoxFit.fitHeight, child: Text(text!, style: textStyle)),
+                )
+              : null,
         ),
       ),
     );

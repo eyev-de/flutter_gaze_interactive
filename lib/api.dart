@@ -26,8 +26,13 @@ export 'src/widgets/keyboard/keyboards.dart' show Language, Keyboards, KeyboardT
 export 'src/widgets/keyboard/scroll_calculator.dart' show ScrollCalculator;
 export 'src/widgets/keyboard/utility_buttons/copy.button.dart' show CopyButton;
 export 'src/widgets/keyboard/utility_buttons/cut.button.dart' show CutButton;
+export 'src/widgets/keyboard/utility_buttons/delete.button.dart' show DeleteButton;
+export 'src/widgets/keyboard/utility_buttons/delete_all.button.dart' show DeleteAllButton;
+export 'src/widgets/keyboard/utility_buttons/delete_word.button.dart' show DeleteWordButton;
+export 'src/widgets/keyboard/utility_buttons/move_cursor_down.button.dart' show MoveCursorDownButton;
 export 'src/widgets/keyboard/utility_buttons/move_cursor_left.button.dart' show MoveCursorLeftButton;
 export 'src/widgets/keyboard/utility_buttons/move_cursor_right.button.dart' show MoveCursorRightButton;
+export 'src/widgets/keyboard/utility_buttons/move_cursor_up.button.dart' show MoveCursorUpButton;
 export 'src/widgets/keyboard/utility_buttons/paste.button.dart' show PasteButton;
 export 'src/widgets/keyboard/utility_buttons/redo.button.dart' show RedoButton;
 export 'src/widgets/keyboard/utility_buttons/select.button.dart' show SelectButton;

@@ -56,21 +56,18 @@ extension TextEditingControllerExtension on TextEditingController {
     selection = TextSelection.fromPosition(TextPosition(offset: min(startIndex + 1, text.length)));
   }
 
-  Future<void> paste() async {
+  Future<void> paste({bool selecting = false}) async {
     final data = await Clipboard.getData(Clipboard.kTextPlain) ?? const ClipboardData(text: '');
     final pasteText = data.text ?? '';
-    var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-    var endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-    startIndex = selection.baseOffset == selection.extentOffset ? startIndex : startIndex;
-    if (startIndex.isNegative) startIndex = 0;
-    if (endIndex.isNegative) endIndex = 0;
-    text = text.replaceRange(startIndex, endIndex, pasteText);
-    endIndex = endIndex > 0
-        ? endIndex + pasteText.length <= text.length
-            ? endIndex + pasteText.length
-            : text.length
-        : text.length;
-    selection = TextSelection.fromPosition(TextPosition(offset: endIndex));
+    if (selecting) {
+      final start = selection.start;
+      text = text.replaceRange(start, selection.end, pasteText);
+      selection = TextSelection.fromPosition(TextPosition(offset: start + pasteText.length));
+    } else {
+      final cursorPosition = selection.baseOffset;
+      text = text.replaceRange(cursorPosition, cursorPosition, pasteText);
+      selection = TextSelection.fromPosition(TextPosition(offset: cursorPosition + pasteText.length));
+    }
   }
 
   void cut() {
