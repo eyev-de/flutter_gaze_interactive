@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../api.dart';
 import '../../../core/extensions.dart';
+import '../../../core/limited_queue.dart';
 
 part 'pointer_view.provider.g.dart';
 
@@ -119,7 +121,21 @@ class PointerOffset extends _$PointerOffset {
   @override
   Offset build() => kDebugMode ? const Offset(200, 200) : const Offset(200, 200);
 
-  void update({required Offset offset}) => state = offset;
+  void update({required Offset offset}) {
+    state = offset;
+    ref.read(pointerHistoryProvider.notifier).addLimited(offset: offset);
+  }
+}
+
+@riverpod
+class PointerHistory extends _$PointerHistory {
+  @override
+  Queue<Offset> build() => Queue();
+
+  void addLimited({required Offset offset}) {
+    final limit = ref.read(gazePointerHistoryNumberProvider);
+    state.addWithLimit(offset, limit);
+  }
 }
 
 /// Gaze Pointer Fixation Point

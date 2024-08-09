@@ -396,6 +396,14 @@ class GazePointerAlwaysVisible extends _$GazePointerAlwaysVisible {
   }
 }
 
+@Riverpod(keepAlive: true)
+class GazePointerHistoryNumber extends _$GazePointerHistoryNumber {
+  @override
+  int build() => 50;
+
+  void set(int limit) {}
+}
+
 class GazeContext extends StatelessWidget {
   final Widget child;
   final SharedPreferences sharedPreferences;

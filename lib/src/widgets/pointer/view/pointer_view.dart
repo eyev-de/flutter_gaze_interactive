@@ -147,64 +147,82 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   Widget build(BuildContext context) {
     final _size = ref.watch(pointerSizeProvider(type: widget.state.type));
     final _pointerOffset = ref.watch(pointerOffsetProvider);
+    final _pointerHistory = ref.watch(pointerHistoryProvider);
+
     final _opacity = ref.watch(pointerOpacityProvider);
     final calculatedOpacity = widget.state.absoluteOpacityValue != null ? widget.state.absoluteOpacityValue! : _opacity;
     final _controller = ref.watch(pointerAnimationControllerProvider(vsync: this));
     final _animation = ref.watch(pointerAnimationProvider(vsync: this));
-    return Positioned(
-      left: _pointerOffset.dx,
-      top: _pointerOffset.dy,
-      child: Builder(
-        builder: (context) {
-          // ignore gesture on pointer
-          if (widget.state.ignorePointer) {
-            return GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {},
-              onTapDown: (details) {
-                if (mounted) {
-                  final element = ref.read(snapElementProvider);
-                  if (element != null) ref.read(snappingStateProvider.notifier).endSnap(element);
-                }
+    return Stack(
+      children: [
+        if (widget.state.type == GazePointerType.history)
+          ...List.from(
+            _pointerHistory.toList().map(
+              (offset) {
+                return Positioned(
+                  left: _size / 2 + offset.dx - _size / 5 / 2,
+                  top: _size / 2 + offset.dy - _size / 5 / 2,
+                  child: PointerCircle(type: widget.state.type, size: _size / 5, animation: _animation),
+                );
               },
-              child: AnimatedOpacity(
-                opacity: calculatedOpacity,
-                duration: const Duration(milliseconds: 150),
-                child: PointerCircle(type: widget.state.type, size: _size, animation: _animation),
-              ),
-            );
-          }
-          return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {},
-            onTapDown: (details) {
-              if (mounted && kDebugMode) {
-                GazeInteractive().onFixation();
-              }
-            },
-            onTapUp: (details) {
-              if (kDebugMode && widget.state.type == GazePointerType.active && !_controller.isAnimating) {
-                _controller.forward();
-              }
-            },
-            onPanStart: (details) {
-              if (mounted) {
-                callOnGazeNormalized(context, details.globalPosition, _size);
-              }
-            },
-            onPanUpdate: (details) {
-              if (mounted) {
-                callOnGazeNormalized(context, details.globalPosition, _size);
-              }
-            },
-            child: AnimatedOpacity(
-              opacity: calculatedOpacity,
-              duration: const Duration(milliseconds: 150),
-              child: PointerCircle(type: widget.state.type, size: _size, animation: _animation),
             ),
-          );
-        },
-      ),
+          ),
+        Positioned(
+          left: _pointerOffset.dx,
+          top: _pointerOffset.dy,
+          child: Builder(
+            builder: (context) {
+              // ignore gesture on pointer
+              if (widget.state.ignorePointer) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {},
+                  onTapDown: (details) {
+                    if (mounted) {
+                      final element = ref.read(snapElementProvider);
+                      if (element != null) ref.read(snappingStateProvider.notifier).endSnap(element);
+                    }
+                  },
+                  child: AnimatedOpacity(
+                    opacity: calculatedOpacity,
+                    duration: const Duration(milliseconds: 150),
+                    child: PointerCircle(type: widget.state.type, size: _size, animation: _animation),
+                  ),
+                );
+              }
+              return GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {},
+                onTapDown: (details) {
+                  if (mounted && kDebugMode) {
+                    GazeInteractive().onFixation();
+                  }
+                },
+                onTapUp: (details) {
+                  if (kDebugMode && widget.state.type == GazePointerType.active && !_controller.isAnimating) {
+                    _controller.forward();
+                  }
+                },
+                onPanStart: (details) {
+                  if (mounted) {
+                    callOnGazeNormalized(context, details.globalPosition, _size);
+                  }
+                },
+                onPanUpdate: (details) {
+                  if (mounted) {
+                    callOnGazeNormalized(context, details.globalPosition, _size);
+                  }
+                },
+                child: AnimatedOpacity(
+                  opacity: calculatedOpacity,
+                  duration: const Duration(milliseconds: 150),
+                  child: PointerCircle(type: widget.state.type, size: _size, animation: _animation),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
