@@ -679,7 +679,7 @@ final pointerOffsetProvider =
 );
 
 typedef _$PointerOffset = AutoDisposeNotifier<Offset>;
-String _$pointerHistoryHash() => r'7ef098c8d7df5ce77d9eef11cc1a4fa5e5c1ad9e';
+String _$pointerHistoryHash() => r'd52b74d9e4c48d42f5a8cd8465398445827a4d8b';
 
 /// See also [PointerHistory].
 @ProviderFor(PointerHistory)

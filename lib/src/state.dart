@@ -401,7 +401,10 @@ class GazePointerHistoryNumber extends _$GazePointerHistoryNumber {
   @override
   int build() => 50;
 
-  void set(int limit) {}
+  // ignore: use_setters_to_change_properties
+  void set(int limit) {
+    state = limit;
+  }
 }
 
 class GazeContext extends StatelessWidget {

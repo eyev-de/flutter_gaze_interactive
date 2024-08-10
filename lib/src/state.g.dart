@@ -55,7 +55,7 @@ final gazePointerAlwaysVisibleProvider =
 
 typedef _$GazePointerAlwaysVisible = Notifier<bool>;
 String _$gazePointerHistoryNumberHash() =>
-    r'3aa2a5031e038a26da5fd81c1f79f8103fd5c138';
+    r'8872f13512cdbcaa4bd698272692384592b6ad70';
 
 /// See also [GazePointerHistoryNumber].
 @ProviderFor(GazePointerHistoryNumber)
