@@ -133,7 +133,7 @@ class PointerHistory extends _$PointerHistory {
   Queue<Offset> build() => Queue();
 
   void addLimited({required Offset offset}) {
-    final limit = ref.read(gazePointerHistoryNumberProvider);
+    final limit = ref.watch(gazePointerHistoryNumberProvider);
     state.addWithLimit(offset, limit);
   }
 }
