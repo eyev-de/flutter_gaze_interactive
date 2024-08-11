@@ -130,11 +130,15 @@ class PointerOffset extends _$PointerOffset {
 @riverpod
 class PointerHistory extends _$PointerHistory {
   @override
-  Queue<Offset> build() => Queue();
+  Queue<(GlobalKey key, Offset offset)> build() => Queue();
 
   void addLimited({required Offset offset}) {
     final limit = ref.watch(gazePointerHistoryNumberProvider);
-    state.addWithLimit(offset, limit);
+    state.addWithLimit((GlobalKey(), offset), limit);
+  }
+
+  void removeLast() {
+    state.removeLast();
   }
 }
 

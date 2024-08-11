@@ -679,12 +679,12 @@ final pointerOffsetProvider =
 );
 
 typedef _$PointerOffset = AutoDisposeNotifier<Offset>;
-String _$pointerHistoryHash() => r'ea4b4dedaef4caa5c6842faf2bff7603c075db7a';
+String _$pointerHistoryHash() => r'e9f847dbc056dad738965cd7e47a078c470790f8';
 
 /// See also [PointerHistory].
 @ProviderFor(PointerHistory)
-final pointerHistoryProvider =
-    AutoDisposeNotifierProvider<PointerHistory, Queue<Offset>>.internal(
+final pointerHistoryProvider = AutoDisposeNotifierProvider<PointerHistory,
+    Queue<(GlobalKey key, Offset offset)>>.internal(
   PointerHistory.new,
   name: r'pointerHistoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -694,7 +694,8 @@ final pointerHistoryProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$PointerHistory = AutoDisposeNotifier<Queue<Offset>>;
+typedef _$PointerHistory
+    = AutoDisposeNotifier<Queue<(GlobalKey key, Offset offset)>>;
 String _$pointerFixationPointHash() =>
     r'f46a0a2eda2db84cc179dc2eb436781c520f71d3';
 
