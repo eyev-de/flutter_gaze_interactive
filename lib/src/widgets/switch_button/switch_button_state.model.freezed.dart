@@ -12,14 +12,16 @@ part of 'switch_button_state.model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$GazeSwitchButtonState {
   bool get toggled => throw _privateConstructorUsedError;
   bool get gazeInteractive => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GazeSwitchButtonState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $GazeSwitchButtonStateCopyWith<GazeSwitchButtonState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -44,6 +46,8 @@ class _$GazeSwitchButtonStateCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of GazeSwitchButtonState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -64,31 +68,35 @@ class _$GazeSwitchButtonStateCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_GazeSwitchButtonStateCopyWith<$Res>
+abstract class _$$GazeSwitchButtonStateImplCopyWith<$Res>
     implements $GazeSwitchButtonStateCopyWith<$Res> {
-  factory _$$_GazeSwitchButtonStateCopyWith(_$_GazeSwitchButtonState value,
-          $Res Function(_$_GazeSwitchButtonState) then) =
-      __$$_GazeSwitchButtonStateCopyWithImpl<$Res>;
+  factory _$$GazeSwitchButtonStateImplCopyWith(
+          _$GazeSwitchButtonStateImpl value,
+          $Res Function(_$GazeSwitchButtonStateImpl) then) =
+      __$$GazeSwitchButtonStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool toggled, bool gazeInteractive});
 }
 
 /// @nodoc
-class __$$_GazeSwitchButtonStateCopyWithImpl<$Res>
-    extends _$GazeSwitchButtonStateCopyWithImpl<$Res, _$_GazeSwitchButtonState>
-    implements _$$_GazeSwitchButtonStateCopyWith<$Res> {
-  __$$_GazeSwitchButtonStateCopyWithImpl(_$_GazeSwitchButtonState _value,
-      $Res Function(_$_GazeSwitchButtonState) _then)
+class __$$GazeSwitchButtonStateImplCopyWithImpl<$Res>
+    extends _$GazeSwitchButtonStateCopyWithImpl<$Res,
+        _$GazeSwitchButtonStateImpl>
+    implements _$$GazeSwitchButtonStateImplCopyWith<$Res> {
+  __$$GazeSwitchButtonStateImplCopyWithImpl(_$GazeSwitchButtonStateImpl _value,
+      $Res Function(_$GazeSwitchButtonStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GazeSwitchButtonState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? toggled = null,
     Object? gazeInteractive = null,
   }) {
-    return _then(_$_GazeSwitchButtonState(
+    return _then(_$GazeSwitchButtonStateImpl(
       toggled: null == toggled
           ? _value.toggled
           : toggled // ignore: cast_nullable_to_non_nullable
@@ -103,8 +111,8 @@ class __$$_GazeSwitchButtonStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_GazeSwitchButtonState extends _GazeSwitchButtonState {
-  _$_GazeSwitchButtonState(
+class _$GazeSwitchButtonStateImpl extends _GazeSwitchButtonState {
+  _$GazeSwitchButtonStateImpl(
       {required this.toggled, this.gazeInteractive = false})
       : super._();
 
@@ -120,10 +128,10 @@ class _$_GazeSwitchButtonState extends _GazeSwitchButtonState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_GazeSwitchButtonState &&
+            other is _$GazeSwitchButtonStateImpl &&
             (identical(other.toggled, toggled) || other.toggled == toggled) &&
             (identical(other.gazeInteractive, gazeInteractive) ||
                 other.gazeInteractive == gazeInteractive));
@@ -132,26 +140,31 @@ class _$_GazeSwitchButtonState extends _GazeSwitchButtonState {
   @override
   int get hashCode => Object.hash(runtimeType, toggled, gazeInteractive);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GazeSwitchButtonState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_GazeSwitchButtonStateCopyWith<_$_GazeSwitchButtonState> get copyWith =>
-      __$$_GazeSwitchButtonStateCopyWithImpl<_$_GazeSwitchButtonState>(
-          this, _$identity);
+  _$$GazeSwitchButtonStateImplCopyWith<_$GazeSwitchButtonStateImpl>
+      get copyWith => __$$GazeSwitchButtonStateImplCopyWithImpl<
+          _$GazeSwitchButtonStateImpl>(this, _$identity);
 }
 
 abstract class _GazeSwitchButtonState extends GazeSwitchButtonState {
   factory _GazeSwitchButtonState(
       {required final bool toggled,
-      final bool gazeInteractive}) = _$_GazeSwitchButtonState;
+      final bool gazeInteractive}) = _$GazeSwitchButtonStateImpl;
   _GazeSwitchButtonState._() : super._();
 
   @override
   bool get toggled;
   @override
   bool get gazeInteractive;
+
+  /// Create a copy of GazeSwitchButtonState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
-  _$$_GazeSwitchButtonStateCopyWith<_$_GazeSwitchButtonState> get copyWith =>
-      throw _privateConstructorUsedError;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GazeSwitchButtonStateImplCopyWith<_$GazeSwitchButtonStateImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

@@ -661,7 +661,7 @@ class _PointerSizeProviderElement
   GazePointerType get type => (origin as PointerSizeProvider).type;
 }
 
-String _$pointerOffsetHash() => r'7a1bdcac8bf969b231b19b7e0675b628782d7d86';
+String _$pointerOffsetHash() => r'9c2380ceffaca19b02e16732672c8126b77abffd';
 
 /// Gaze Pointer Offset
 ///
@@ -679,6 +679,23 @@ final pointerOffsetProvider =
 );
 
 typedef _$PointerOffset = AutoDisposeNotifier<Offset>;
+String _$pointerHistoryHash() => r'e9f847dbc056dad738965cd7e47a078c470790f8';
+
+/// See also [PointerHistory].
+@ProviderFor(PointerHistory)
+final pointerHistoryProvider = AutoDisposeNotifierProvider<PointerHistory,
+    Queue<(GlobalKey key, Offset offset)>>.internal(
+  PointerHistory.new,
+  name: r'pointerHistoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$pointerHistoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$PointerHistory
+    = AutoDisposeNotifier<Queue<(GlobalKey key, Offset offset)>>;
 String _$pointerFixationPointHash() =>
     r'f46a0a2eda2db84cc179dc2eb436781c520f71d3';
 

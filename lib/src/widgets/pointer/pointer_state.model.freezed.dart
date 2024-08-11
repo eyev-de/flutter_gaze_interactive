@@ -12,7 +12,7 @@ part of 'pointer_state.model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$GazePointerState {
@@ -26,7 +26,9 @@ mixin _$GazePointerState {
   GazePointerAction get action => throw _privateConstructorUsedError;
   dynamic Function(Offset)? get onAction => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GazePointerState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $GazePointerStateCopyWith<GazePointerState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -55,6 +57,8 @@ class _$GazePointerStateCopyWithImpl<$Res, $Val extends GazePointerState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of GazePointerState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -90,11 +94,11 @@ class _$GazePointerStateCopyWithImpl<$Res, $Val extends GazePointerState>
 }
 
 /// @nodoc
-abstract class _$$_GazePointerStateCopyWith<$Res>
+abstract class _$$GazePointerStateImplCopyWith<$Res>
     implements $GazePointerStateCopyWith<$Res> {
-  factory _$$_GazePointerStateCopyWith(
-          _$_GazePointerState value, $Res Function(_$_GazePointerState) then) =
-      __$$_GazePointerStateCopyWithImpl<$Res>;
+  factory _$$GazePointerStateImplCopyWith(_$GazePointerStateImpl value,
+          $Res Function(_$GazePointerStateImpl) then) =
+      __$$GazePointerStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -106,13 +110,15 @@ abstract class _$$_GazePointerStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_GazePointerStateCopyWithImpl<$Res>
-    extends _$GazePointerStateCopyWithImpl<$Res, _$_GazePointerState>
-    implements _$$_GazePointerStateCopyWith<$Res> {
-  __$$_GazePointerStateCopyWithImpl(
-      _$_GazePointerState _value, $Res Function(_$_GazePointerState) _then)
+class __$$GazePointerStateImplCopyWithImpl<$Res>
+    extends _$GazePointerStateCopyWithImpl<$Res, _$GazePointerStateImpl>
+    implements _$$GazePointerStateImplCopyWith<$Res> {
+  __$$GazePointerStateImplCopyWithImpl(_$GazePointerStateImpl _value,
+      $Res Function(_$GazePointerStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GazePointerState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -122,7 +128,7 @@ class __$$_GazePointerStateCopyWithImpl<$Res>
     Object? action = null,
     Object? onAction = freezed,
   }) {
-    return _then(_$_GazePointerState(
+    return _then(_$GazePointerStateImpl(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -149,8 +155,8 @@ class __$$_GazePointerStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_GazePointerState extends _GazePointerState {
-  _$_GazePointerState(
+class _$GazePointerStateImpl extends _GazePointerState {
+  _$GazePointerStateImpl(
       {this.type = GazePointerType.passive,
       this.ignorePointer = false,
       this.absoluteOpacityValue = null,
@@ -183,10 +189,10 @@ class _$_GazePointerState extends _GazePointerState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_GazePointerState &&
+            other is _$GazePointerStateImpl &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.ignorePointer, ignorePointer) ||
                 other.ignorePointer == ignorePointer) &&
@@ -201,11 +207,14 @@ class _$_GazePointerState extends _GazePointerState {
   int get hashCode => Object.hash(
       runtimeType, type, ignorePointer, absoluteOpacityValue, action, onAction);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GazePointerState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_GazePointerStateCopyWith<_$_GazePointerState> get copyWith =>
-      __$$_GazePointerStateCopyWithImpl<_$_GazePointerState>(this, _$identity);
+  _$$GazePointerStateImplCopyWith<_$GazePointerStateImpl> get copyWith =>
+      __$$GazePointerStateImplCopyWithImpl<_$GazePointerStateImpl>(
+          this, _$identity);
 }
 
 abstract class _GazePointerState extends GazePointerState {
@@ -214,21 +223,25 @@ abstract class _GazePointerState extends GazePointerState {
       final bool ignorePointer,
       final double? absoluteOpacityValue,
       final GazePointerAction action,
-      final dynamic Function(Offset)? onAction}) = _$_GazePointerState;
+      final dynamic Function(Offset)? onAction}) = _$GazePointerStateImpl;
   _GazePointerState._() : super._();
 
-  @override // type: passive (static circle), active (circle with animation on fixation)
-  GazePointerType get type;
-  @override // ignore gesture on pointer
-  bool get ignorePointer;
-  @override // ignore gesture on pointer
-  double? get absoluteOpacityValue;
-  @override // action on pointer
+// type: passive (static circle), active (circle with animation on fixation)
+  @override
+  GazePointerType get type; // ignore gesture on pointer
+  @override
+  bool get ignorePointer; // ignore gesture on pointer
+  @override
+  double? get absoluteOpacityValue; // action on pointer
+  @override
   GazePointerAction get action;
   @override
   dynamic Function(Offset)? get onAction;
+
+  /// Create a copy of GazePointerState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
-  _$$_GazePointerStateCopyWith<_$_GazePointerState> get copyWith =>
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GazePointerStateImplCopyWith<_$GazePointerStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
