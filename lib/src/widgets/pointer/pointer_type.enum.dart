@@ -5,6 +5,7 @@
 //
 
 enum GazePointerType {
+  history,
   passive,
   active;
 }

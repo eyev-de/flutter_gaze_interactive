@@ -54,5 +54,22 @@ final gazePointerAlwaysVisibleProvider =
 );
 
 typedef _$GazePointerAlwaysVisible = Notifier<bool>;
+String _$gazePointerHistoryNumberHash() =>
+    r'8872f13512cdbcaa4bd698272692384592b6ad70';
+
+/// See also [GazePointerHistoryNumber].
+@ProviderFor(GazePointerHistoryNumber)
+final gazePointerHistoryNumberProvider =
+    NotifierProvider<GazePointerHistoryNumber, int>.internal(
+  GazePointerHistoryNumber.new,
+  name: r'gazePointerHistoryNumberProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$gazePointerHistoryNumberHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$GazePointerHistoryNumber = Notifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
