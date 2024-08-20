@@ -91,6 +91,7 @@ class GazeKey extends ConsumerWidget {
     final changeColor = type == GazeKeyType.caps && capsLock || type == GazeKeyType.shift && shift;
     final widgetColor = getIOSKeyColor(colors: colors, signs: signsState, shift: shiftState);
     final defaultColor = type.defaultColor(primaryColor: Theme.of(context).primaryColor, customColor: widgetColor ?? _color);
+    final animationColor = type == GazeKeyType.close ? Colors.white.withOpacity(0.5) : Theme.of(context).primaryColor;
 
     // if disabled -> keyboard buttons should not be clickable (gaze interactive)
     final disabled = ref.watch(keyboardState.disableStateProvider);
@@ -107,12 +108,12 @@ class GazeKey extends ConsumerWidget {
           properties: GazeButtonProperties(
             innerPadding: EdgeInsets.zero,
             route: keyboardState.route,
-            animationColor: !changeColor ? Theme.of(context).primaryColor : defaultColor,
+            animationColor: !changeColor ? animationColor : defaultColor,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
             reselectable: true,
             reselectableCount: type == GazeKeyType.none ? ref.read(GazeInteractive().reselectionNumberOfLetterKeys) : null,
             gazeInteractive: disabled == false,
-            withSound: true,
+            withSound: type != GazeKeyType.close,
             // All keyboard keys should not be snapped to
             snappable: false,
           ),
