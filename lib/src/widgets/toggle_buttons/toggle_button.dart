@@ -4,12 +4,13 @@ import '../../../api.dart';
 import '../../core/extensions.dart';
 
 class GazeToggleButton {
-  GazeToggleButton({required this.label, this.icon, this.onTap, this.active = false});
+  GazeToggleButton({required this.label, this.icon, this.onTap, this.active = false, this.onButtonColor});
 
   final Text label;
   final IconData? icon;
   final void Function()? onTap;
   final bool active;
+  final Color? onButtonColor;
 }
 
 class GazeToggleButtons extends StatelessWidget {
@@ -34,6 +35,7 @@ class GazeToggleButtons extends StatelessWidget {
             button: button,
             route: route,
             color: _color,
+            onButtonColor: button.onButtonColor,
             borderRadius: _getBorder(index: index, length: buttons.length, axis: axis),
           ),
         )
@@ -61,21 +63,31 @@ class GazeToggleButtons extends StatelessWidget {
 }
 
 class _GazeToggleButton extends StatelessWidget {
-  const _GazeToggleButton({required this.button, required this.route, this.color, this.borderRadius = const BorderRadius.all(Radius.circular(20))});
+  const _GazeToggleButton({
+    required this.button,
+    required this.route,
+    this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.color,
+    this.onButtonColor,
+  });
 
   final GazeToggleButton button;
   final String route;
   final Color? color;
+  final Color? onButtonColor;
   final BorderRadius borderRadius;
 
   @override
   Widget build(BuildContext context) {
-    final buttonColor = color ?? Theme.of(context).primaryColor;
+    final _buttonColor = color ?? Theme.of(context).primaryColor;
+    final _onButtonColor = onButtonColor ?? Theme.of(context).colorScheme.onPrimary;
     return Flexible(
       child: GazeButton(
         onTap: button.onTap,
-        color: button.active ? buttonColor : buttonColor.withOpacity(0.1),
+        color: button.active ? _buttonColor : _buttonColor.withOpacity(0.1),
         properties: GazeButtonProperties(
+          gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
+          animationColor: color ?? Theme.of(context).primaryColor,
           route: route,
           gazeInteractive: button.active != true,
           direction: Axis.horizontal,
@@ -86,9 +98,9 @@ class _GazeToggleButton extends StatelessWidget {
             maxLines: button.label.maxLines,
             softWrap: button.label.softWrap,
             textAlign: button.label.textAlign,
-            style: TextStyle(color: button.active ? Colors.white : Colors.white54).merge(button.label.style),
+            style: TextStyle(color: button.active ? _onButtonColor : _onButtonColor.withOpacity(0.5)).merge(button.label.style),
           ),
-          icon: button.icon != null ? Icon(button.icon, color: button.active ? Colors.white : Colors.white38) : null,
+          icon: button.icon != null ? Icon(button.icon, color: button.active ? _onButtonColor : _onButtonColor.withOpacity(0.5)) : null,
           borderColor: Colors.transparent,
         ),
       ),

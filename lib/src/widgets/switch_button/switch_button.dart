@@ -42,6 +42,7 @@ class GazeSwitchButtonProperties {
     this.activeColor = Colors.blue,
     this.inactiveColor = Colors.red,
     this.disabledColor = Colors.grey,
+    this.backgroundColor,
     this.size = const Size(80, 80),
     this.innerPadding = const EdgeInsets.all(20),
     this.margin = const EdgeInsets.fromLTRB(10, 33, 10, 33),
@@ -53,6 +54,7 @@ class GazeSwitchButtonProperties {
   final Color disabledColor;
   final Color inactiveColor;
   final Color activeColor;
+  final Color? backgroundColor;
   final Size size;
   final EdgeInsets innerPadding;
   final EdgeInsets margin;
@@ -115,6 +117,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
 
   @override
   Widget build(BuildContext context) {
+    final color = Color.alphaBlend(_color(widget.value).withOpacity(0.1), widget.properties.backgroundColor ?? Colors.black);
     return GazeButton(
       properties: GazeButtonProperties(
         route: widget.route,
@@ -135,7 +138,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Color.alphaBlend(Colors.black.withOpacity(.85), _color(widget.value)),
+          color: color,
           border: Border.all(color: _color(widget.value), width: 3),
         ),
         child: AnimatedBuilder(
@@ -156,10 +159,10 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
                 ),
                 if (widget.properties.showLabel)
                   _GazeSwitchButtonLabel(
-                    opacity: ref.watch(switchButtonToggleWithDelayProvider(key: globalKey)) ? 1 : 0,
+                    color: color,
                     value: widget.value,
-                    color: _color(widget.value),
-                    style: widget.properties.labelTextStyle,
+                    opacity: ref.watch(switchButtonToggleWithDelayProvider(key: globalKey)) ? 1 : 0,
+                    style: widget.properties.labelTextStyle?.copyWith(color: _color(widget.value)),
                   ),
               ],
             );
@@ -199,12 +202,12 @@ class _GazeSwitchButtonLabel extends StatelessWidget {
       duration: const Duration(milliseconds: 300),
       child: Center(
         child: Container(
-          color: Color.alphaBlend(Colors.black.withOpacity(.85), color),
+          color: color,
           padding: EdgeInsets.all(value ? 0 : 2),
           child: FittedBox(
             child: Text(
               value ? 'ON' : 'OFF',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: color).merge(style),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold).merge(style),
             ),
           ),
         ),

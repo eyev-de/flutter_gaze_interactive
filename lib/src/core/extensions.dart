@@ -151,6 +151,10 @@ extension ColorExtension on Color {
     final hexString = value.toRadixString(16);
     return hexString.substring(2, hexString.length);
   }
+
+  Color onColor({Color colorDark = Colors.black, Color colorLight = Colors.white}) {
+    return computeLuminance() > 0.5 ? colorDark : colorLight;
+  }
 }
 
 extension StringExtension on String {
