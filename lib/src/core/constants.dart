@@ -24,7 +24,7 @@ const gazeInteractiveDefaultPointerOpacity = 0.6;
 const gazeInteractiveMinPointerOpacity = 0.2;
 const gazeInteractiveMaxPointerOpacity = 1.0;
 
-const gazeInteractiveDefaultPointerSize = 50.0;
+const gazeInteractiveDefaultPointerSize = 55.0;
 const gazeInteractiveMinPointerSize = 10.0; // Not validated
 const gazeInteractiveMaxPointerSize = 70.0; // Not validated
 
