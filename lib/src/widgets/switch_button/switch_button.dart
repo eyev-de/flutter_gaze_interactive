@@ -41,7 +41,8 @@ class GazeSwitchButtonProperties {
     this.labelTextStyle,
     this.activeColor = Colors.blue,
     this.inactiveColor = Colors.red,
-    this.disabledColor = Colors.grey,
+    this.inactiveDisabledColor = Colors.grey,
+    this.activeDisabledColor = Colors.grey,
     this.backgroundColor,
     this.size = const Size(80, 80),
     this.innerPadding = const EdgeInsets.all(20),
@@ -51,7 +52,8 @@ class GazeSwitchButtonProperties {
   final bool gazeInteractive;
   final bool showLabel;
   final TextStyle? labelTextStyle;
-  final Color disabledColor;
+  final Color inactiveDisabledColor;
+  final Color activeDisabledColor;
   final Color inactiveColor;
   final Color activeColor;
   final Color? backgroundColor;
@@ -181,7 +183,10 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
   }
 
   Color _color(bool toggled) {
-    if (widget.onChanged == null) return widget.properties.disabledColor.withOpacity(0.5);
+    if (widget.onChanged == null) {
+      if (toggled) return widget.properties.activeDisabledColor;
+      return widget.properties.inactiveDisabledColor;
+    }
     if (toggled) return widget.properties.activeColor;
     return widget.properties.inactiveColor;
   }
