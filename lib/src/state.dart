@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../api.dart';
 import 'core/extensions.dart';
@@ -449,3 +450,72 @@ class _GazeContextState extends ConsumerState<_GazeContext> {
 }
 
 enum PredicateReturnState { gaze, snap, none }
+
+@riverpod
+class KeyboardSpeechToTextIsListening extends _$KeyboardSpeechToTextIsListening {
+  @override
+  bool build() => false;
+
+  void listen() => state = true;
+
+  void dismiss() => state = false;
+
+  void toggle() => state = !state;
+}
+
+// Collects spoken text and displays it in speech bubble
+@riverpod
+class KeyboardSpokenText extends _$KeyboardSpokenText {
+  @override
+  String build() => '';
+}
+
+@Riverpod(keepAlive: true)
+class KeyboardSpeechToTextAvailable extends _$KeyboardSpeechToTextAvailable {
+  @override
+  AsyncValue<bool?> build() {
+    init();
+    return const AsyncValue.data(null);
+  }
+
+  Future<void> init() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async => ref.read(keyboardSpeechToTextProvider.notifier).init());
+  }
+}
+
+// controller for speech to text
+@Riverpod(keepAlive: true)
+class KeyboardSpeechToText extends _$KeyboardSpeechToText {
+  @override
+  SpeechToText build() {
+    ref.onDispose(() => state.stop());
+    return SpeechToText();
+  }
+
+  Future<bool> init() async {
+    return state.initialize(
+      onStatus: (val) => debugPrint('onStatus: $val'),
+      onError: (val) => debugPrint('onError: $val'),
+    );
+  }
+
+  Future<void> listen({String locale = 'en-EN', required TextEditingController controller}) async {
+    await state.listen(
+      localeId: locale,
+      listenFor: const Duration(minutes: 1),
+      pauseFor: const Duration(seconds: 10),
+      listenOptions: SpeechListenOptions(
+        listenMode: ListenMode.dictation,
+        autoPunctuation: true,
+        cancelOnError: true,
+      ),
+      onResult: (result) {
+        ref.read(keyboardSpokenTextProvider.notifier).state = result.recognizedWords;
+        // FIXME: Not replace text -> Add words at cursor
+        controller.text = result.recognizedWords;
+        // if (result.finalResult) print(result);
+      },
+    );
+  }
+}

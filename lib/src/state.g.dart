@@ -71,5 +71,73 @@ final gazePointerHistoryNumberProvider =
 );
 
 typedef _$GazePointerHistoryNumber = Notifier<int>;
+String _$keyboardSpeechToTextIsListeningHash() =>
+    r'1f31f97e2da0e3733cdb767c17677cd75812bbe0';
+
+/// See also [KeyboardSpeechToTextIsListening].
+@ProviderFor(KeyboardSpeechToTextIsListening)
+final keyboardSpeechToTextIsListeningProvider =
+    AutoDisposeNotifierProvider<KeyboardSpeechToTextIsListening, bool>.internal(
+  KeyboardSpeechToTextIsListening.new,
+  name: r'keyboardSpeechToTextIsListeningProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextIsListeningHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextIsListening = AutoDisposeNotifier<bool>;
+String _$keyboardSpokenTextHash() =>
+    r'6444a6e0403af103d98175c118310bbda4e5a659';
+
+/// See also [KeyboardSpokenText].
+@ProviderFor(KeyboardSpokenText)
+final keyboardSpokenTextProvider =
+    AutoDisposeNotifierProvider<KeyboardSpokenText, String>.internal(
+  KeyboardSpokenText.new,
+  name: r'keyboardSpokenTextProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpokenTextHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpokenText = AutoDisposeNotifier<String>;
+String _$keyboardSpeechToTextAvailableHash() =>
+    r'c3d280809930eebe3a6ff5b6826347c0108596e2';
+
+/// See also [KeyboardSpeechToTextAvailable].
+@ProviderFor(KeyboardSpeechToTextAvailable)
+final keyboardSpeechToTextAvailableProvider =
+    NotifierProvider<KeyboardSpeechToTextAvailable, AsyncValue<bool?>>.internal(
+  KeyboardSpeechToTextAvailable.new,
+  name: r'keyboardSpeechToTextAvailableProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextAvailableHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextAvailable = Notifier<AsyncValue<bool?>>;
+String _$keyboardSpeechToTextHash() =>
+    r'ba6d725c0e9ac14b8b018154b15944f131732170';
+
+/// See also [KeyboardSpeechToText].
+@ProviderFor(KeyboardSpeechToText)
+final keyboardSpeechToTextProvider =
+    NotifierProvider<KeyboardSpeechToText, SpeechToText>.internal(
+  KeyboardSpeechToText.new,
+  name: r'keyboardSpeechToTextProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToText = Notifier<SpeechToText>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

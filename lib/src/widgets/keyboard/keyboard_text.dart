@@ -7,10 +7,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../button/button.dart';
-import '../scrollable/scrollable.dart';
-import 'keyboard_state.dart';
-import 'scroll_calculator.dart';
+import '../../../api.dart';
 
 class GazeKeyboardTextWidget extends StatefulWidget {
   GazeKeyboardTextWidget({
@@ -104,7 +101,15 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
             placeholder: widget.state.placeholder,
             cursorColor: Colors.white,
             keyboardType: TextInputType.none,
-            decoration: BoxDecoration(color: Colors.grey.shade900, borderRadius: const BorderRadius.all(Radius.circular(20))),
+            suffix: MicrophoneButton(
+              state: widget.state,
+              node: widget.node,
+              borderRadius: const BorderRadius.horizontal(right: Radius.circular(20)),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+            ),
           ),
         ),
       ),
