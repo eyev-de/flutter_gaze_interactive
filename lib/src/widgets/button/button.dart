@@ -22,6 +22,8 @@ class GazeButtonProperties {
     this.iconPadding,
     this.borderColor,
     this.borderWidth = 3,
+    this.animationDuration,
+    this.recoverDuration,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.innerPadding = const EdgeInsets.all(20),
     this.direction = Axis.vertical,
@@ -58,6 +60,8 @@ class GazeButtonProperties {
   final bool reselectable;
   final bool snappable;
   final bool withSound;
+  final int? recoverDuration;
+  final int? animationDuration;
 }
 
 class GazeButton extends StatelessWidget {
@@ -87,6 +91,8 @@ class GazeButton extends StatelessWidget {
         gazeInteractive: onTap != null && properties.gazeInteractive,
         type: properties.gazeSelectionAnimationType,
         animationColor: properties.animationColor,
+        durationMs: properties.animationDuration,
+        recoverMs: properties.recoverDuration,
         reselectable: properties.reselectable,
         reselectableCount: properties.reselectableCount,
         snappable: properties.snappable,
@@ -127,9 +133,9 @@ class _Button extends StatelessWidget {
               duration: const Duration(milliseconds: 150),
               padding: properties.innerPadding,
               decoration: BoxDecoration(
-                borderRadius: properties.borderRadius,
-                border: _getBorder(),
-              ),
+                  borderRadius: properties.borderRadius,
+                  border: _getBorder(),
+                  ),
               child: _ButtonChild(properties: properties),
             ),
     );
