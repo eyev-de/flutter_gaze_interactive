@@ -72,7 +72,7 @@ final gazePointerHistoryNumberProvider =
 
 typedef _$GazePointerHistoryNumber = Notifier<int>;
 String _$keyboardSpeechToTextIsListeningHash() =>
-    r'1f31f97e2da0e3733cdb767c17677cd75812bbe0';
+    r'a83f38824105c6f822b7de5ee8b5f2b55d8a934e';
 
 /// See also [KeyboardSpeechToTextIsListening].
 @ProviderFor(KeyboardSpeechToTextIsListening)
@@ -88,23 +88,6 @@ final keyboardSpeechToTextIsListeningProvider =
 );
 
 typedef _$KeyboardSpeechToTextIsListening = AutoDisposeNotifier<bool>;
-String _$keyboardSpokenTextHash() =>
-    r'6444a6e0403af103d98175c118310bbda4e5a659';
-
-/// See also [KeyboardSpokenText].
-@ProviderFor(KeyboardSpokenText)
-final keyboardSpokenTextProvider =
-    AutoDisposeNotifierProvider<KeyboardSpokenText, String>.internal(
-  KeyboardSpokenText.new,
-  name: r'keyboardSpokenTextProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$keyboardSpokenTextHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$KeyboardSpokenText = AutoDisposeNotifier<String>;
 String _$keyboardSpeechToTextAvailableHash() =>
     r'c3d280809930eebe3a6ff5b6826347c0108596e2';
 
@@ -122,8 +105,26 @@ final keyboardSpeechToTextAvailableProvider =
 );
 
 typedef _$KeyboardSpeechToTextAvailable = Notifier<AsyncValue<bool?>>;
+String _$keyboardSpeechToTextStatusHash() =>
+    r'2d8f951f703a51f31ec7c3345cd47c43e28fa2a1';
+
+/// See also [KeyboardSpeechToTextStatus].
+@ProviderFor(KeyboardSpeechToTextStatus)
+final keyboardSpeechToTextStatusProvider = AutoDisposeNotifierProvider<
+    KeyboardSpeechToTextStatus, KeyboardTextFieldStatus?>.internal(
+  KeyboardSpeechToTextStatus.new,
+  name: r'keyboardSpeechToTextStatusProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextStatusHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextStatus
+    = AutoDisposeNotifier<KeyboardTextFieldStatus?>;
 String _$keyboardSpeechToTextHash() =>
-    r'ba6d725c0e9ac14b8b018154b15944f131732170';
+    r'd4eac01a829be7dbb037d4c5b0c7e19123b4f2b2';
 
 /// See also [KeyboardSpeechToText].
 @ProviderFor(KeyboardSpeechToText)

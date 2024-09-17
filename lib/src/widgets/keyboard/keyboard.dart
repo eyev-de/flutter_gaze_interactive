@@ -8,18 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../button/button.dart';
-import '../pointer/view/pointer_view.dart';
-import 'keyboard_key.dart';
-import 'keyboard_key_type.enum.dart';
+import '../../../api.dart';
 import 'keyboard_mail_completions.dart';
-import 'keyboard_state.dart';
-import 'keyboard_text.dart';
-import 'keyboard_utility_buttons.dart';
-import 'keyboards.dart';
-import 'utility_buttons/delete_all.button.dart';
-import 'utility_buttons/redo.button.dart';
-import 'utility_buttons/undo.button.dart';
 
 class GazeKeyboard {
   factory GazeKeyboard() => _instance;
@@ -138,19 +128,7 @@ class GazeKeyboard {
                               Flexible(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-                                  child: SizedBox(
-                                    height: height,
-                                    child: GazeButton(
-                                      onTap: () => onBack?.call(context),
-                                      color: Color.alphaBlend(Theme.of(context).primaryColor.withOpacity(0.5), Colors.grey.shade800),
-                                      properties: GazeButtonProperties(
-                                        innerPadding: const EdgeInsets.all(0),
-                                        icon: const Icon(Icons.check, color: Colors.white),
-                                        direction: Axis.horizontal,
-                                        route: state.route,
-                                      ),
-                                    ),
-                                  ),
+                                  child: _GazeKeyboardCheckButton(state: state, height: height, onBack: onBack),
                                 ),
                               ),
                             ],
@@ -213,6 +191,35 @@ class GazeKeyboard {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _GazeKeyboardCheckButton extends ConsumerWidget {
+  const _GazeKeyboardCheckButton({required this.height, required this.state, this.onBack});
+
+  final double height;
+  final GazeKeyboardState state;
+  final void Function(BuildContext)? onBack;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      height: height,
+      child: GazeButton(
+        onTap: () {
+          ref.read(state.disableStateProvider.notifier).state = false;
+          ref.read(keyboardSpeechToTextProvider.notifier).stop();
+          onBack?.call(context);
+        },
+        color: Color.alphaBlend(Theme.of(context).primaryColor.withOpacity(0.5), Colors.grey.shade800),
+        properties: GazeButtonProperties(
+          innerPadding: const EdgeInsets.all(0),
+          icon: const Icon(Icons.check, color: Colors.white),
+          direction: Axis.horizontal,
+          route: state.route,
+        ),
       ),
     );
   }

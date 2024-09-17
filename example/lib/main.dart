@@ -64,10 +64,6 @@ class _AppState extends State<App> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _MicrophoneButton(
-                    focusNode: _focusNode,
-                    controller: _controller,
-                  ),
                   const SizedBox(height: 20),
                   _SearchTextField(
                     focusNode: _focusNode,
@@ -146,55 +142,6 @@ class ContentRow extends StatelessWidget {
   }
 }
 
-class _MicrophoneButton extends ConsumerWidget {
-  const _MicrophoneButton({required this.focusNode, required this.controller});
-
-  final FocusNode focusNode;
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = ref.watch(keyboardSpokenTextProvider);
-    final available = ref.watch(keyboardSpeechToTextAvailableProvider);
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.8,
-      height: 70,
-      child: available.when(
-        data: (data) {
-          if (data == null) return Center(child: CircularProgressIndicator());
-          if (data == false) return Center(child: Text('Speech not available'));
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 7,
-                child: Text(text.isEmpty ? 'Fange an zu sprechen...' : text, style: TextStyle(color: text.isEmpty ? Colors.grey : Colors.white)),
-              ),
-              Expanded(
-                flex: 3,
-                child: MicrophoneButton(
-                  node: focusNode,
-                  state: GazeKeyboardState(
-                    selectedKeyboardPlatformType: KeyboardPlatformType.mobile,
-                    type: KeyboardType.extended,
-                    language: Language.english,
-                    controller: controller,
-                    placeholder: 'Search',
-                    node: focusNode,
-                    route: '/',
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-        error: (err, stack) => Center(child: Text(err.toString())),
-        loading: () => Center(child: CircularProgressIndicator()),
-      ),
-    );
-  }
-}
-
 class _SearchTextField extends StatelessWidget {
   const _SearchTextField({required this.focusNode, required this.controller, required this.undoController});
 
@@ -212,7 +159,7 @@ class _SearchTextField extends StatelessWidget {
         controller: controller,
         onChanged: (value) {},
         properties: GazeTextFieldProperties(
-          obscureText: true,
+          obscureText: false,
           style: const TextStyle(fontSize: 20, color: Colors.white),
           inputDecoration: const InputDecoration(hintText: 'Search', prefixIcon: Icon(Icons.search_sharp)),
         ),
@@ -223,8 +170,8 @@ class _SearchTextField extends StatelessWidget {
               node: focusNode,
               route: '/dialog',
               placeholder: 'Search',
-              language: Language.english,
-              type: KeyboardType.extended,
+              language: Language.german,
+              type: KeyboardType.editor,
               controller: controller,
               undoHistoryController: undoController,
               selectedKeyboardPlatformType: KeyboardPlatformType.mobile,

@@ -26,11 +26,6 @@ final clickSoundSource = AssetSource('packages/gaze_interactive/lib/assets/click
 final player = AudioPlayer()..setSource(clickSoundSource);
 
 class GazeInteractive {
-  late WidgetRef ref;
-  Logger? logger;
-  final sharedPreferencesProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
-  static final GazeInteractive _instance = GazeInteractive._internal();
-
   factory GazeInteractive() {
     AudioCache.instance.prefix = '';
     unawaited(player.setVolume(1));
@@ -38,6 +33,10 @@ class GazeInteractive {
   }
 
   GazeInteractive._internal();
+  late WidgetRef ref;
+  Logger? logger;
+  final sharedPreferencesProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
+  static final GazeInteractive _instance = GazeInteractive._internal();
 
   PredicateReturnState Function(
     Rect itemRect,
@@ -409,10 +408,9 @@ class GazePointerHistoryNumber extends _$GazePointerHistoryNumber {
 }
 
 class GazeContext extends StatelessWidget {
+  const GazeContext({super.key, required this.child, required this.sharedPreferences});
   final Widget child;
   final SharedPreferences sharedPreferences;
-
-  const GazeContext({super.key, required this.child, required this.sharedPreferences});
 
   @override
   Widget build(Object context) => ProviderScope(overrides: [
@@ -421,9 +419,8 @@ class GazeContext extends StatelessWidget {
 }
 
 class _GazeContext extends ConsumerStatefulWidget {
-  final Widget child;
-
   const _GazeContext({required this.child});
+  final Widget child;
 
   @override
   _GazeContextState createState() => _GazeContextState();
@@ -459,15 +456,6 @@ class KeyboardSpeechToTextIsListening extends _$KeyboardSpeechToTextIsListening 
   void listen() => state = true;
 
   void dismiss() => state = false;
-
-  void toggle() => state = !state;
-}
-
-// Collects spoken text and displays it in speech bubble
-@riverpod
-class KeyboardSpokenText extends _$KeyboardSpokenText {
-  @override
-  String build() => '';
 }
 
 @Riverpod(keepAlive: true)
@@ -484,7 +472,21 @@ class KeyboardSpeechToTextAvailable extends _$KeyboardSpeechToTextAvailable {
   }
 }
 
-// controller for speech to text
+class KeyboardTextFieldStatus {
+  KeyboardTextFieldStatus({this.before = '', this.after = '', required this.cursor});
+  final String before;
+  final String after;
+  final int cursor;
+}
+
+@riverpod
+class KeyboardSpeechToTextStatus extends _$KeyboardSpeechToTextStatus {
+  @override
+  KeyboardTextFieldStatus? build() => null;
+
+  void status({required KeyboardTextFieldStatus status}) => state = status;
+}
+
 @Riverpod(keepAlive: true)
 class KeyboardSpeechToText extends _$KeyboardSpeechToText {
   @override
@@ -500,21 +502,25 @@ class KeyboardSpeechToText extends _$KeyboardSpeechToText {
     );
   }
 
+  Future<void> stop() async {
+    ref.read(keyboardSpeechToTextIsListeningProvider.notifier).dismiss();
+    await state.stop();
+  }
+
   Future<void> listen({String locale = 'en-EN', required TextEditingController controller}) async {
     await state.listen(
       localeId: locale,
-      listenFor: const Duration(minutes: 1),
-      pauseFor: const Duration(seconds: 10),
-      listenOptions: SpeechListenOptions(
-        listenMode: ListenMode.dictation,
-        autoPunctuation: true,
-        cancelOnError: true,
-      ),
+      listenOptions: SpeechListenOptions(listenMode: ListenMode.dictation, autoPunctuation: true, cancelOnError: true),
       onResult: (result) {
-        ref.read(keyboardSpokenTextProvider.notifier).state = result.recognizedWords;
-        // FIXME: Not replace text -> Add words at cursor
-        controller.text = result.recognizedWords;
-        // if (result.finalResult) print(result);
+        final status = ref.read(keyboardSpeechToTextStatusProvider);
+        if (status == null) return;
+        if (status.cursor == -1) {
+          controller.text = '';
+          return;
+        }
+        controller
+          ..text = controller.text = status.before + result.recognizedWords + status.after
+          ..selection = TextSelection.fromPosition(TextPosition(offset: status.before.length + result.recognizedWords.length));
       },
     );
   }
