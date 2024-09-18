@@ -24,6 +24,8 @@ class GazeSelectionAnimationProperties {
     this.borderWidth = 3,
     this.backgroundColor,
     this.animationColor,
+    this.durationMs,
+    this.recoverMs,
     this.color = Colors.grey,
     this.gazeInteractive = true,
     this.type = GazeSelectionAnimationType.progress,
@@ -37,6 +39,9 @@ class GazeSelectionAnimationProperties {
   final double borderWidth;
   final Color? backgroundColor;
   final Color? animationColor;
+  final int? durationMs;
+  final int? recoverMs;
+
   final Color color;
   final bool gazeInteractive;
   final GazeSelectionAnimationType type;
@@ -77,8 +82,8 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   void _initAnimation() {
     _reselectionCount = 0;
-    _recoverTime = ref.read(GazeInteractive().recoverTime);
-    _duration = ref.read(GazeInteractive().duration);
+    _recoverTime = widget.properties.recoverMs ?? ref.read(GazeInteractive().recoverTime);
+    _duration = widget.properties.durationMs ?? ref.read(GazeInteractive().duration);
     _controller = AnimationController(
       duration: Duration(milliseconds: _duration),
       vsync: this,
@@ -218,7 +223,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
           if (mounted) {
             setState(() => gazeIn = false);
             _controller.stop();
-            _duration = ref.read(GazeInteractive().duration);
+            _duration = widget.properties.durationMs ?? ref.read(GazeInteractive().duration);
             _controller.duration = Duration(milliseconds: _duration);
           }
           _timer = Timer(Duration(milliseconds: _recoverTime), () {
