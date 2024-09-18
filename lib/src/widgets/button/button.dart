@@ -133,9 +133,9 @@ class _Button extends StatelessWidget {
               duration: const Duration(milliseconds: 150),
               padding: properties.innerPadding,
               decoration: BoxDecoration(
-                  borderRadius: properties.borderRadius,
-                  border: _getBorder(),
-                  ),
+                borderRadius: properties.borderRadius,
+                border: _getBorder(),
+              ),
               child: _ButtonChild(properties: properties),
             ),
     );
