@@ -13,7 +13,13 @@ import 'keyboard_key.dart';
 import 'keyboard_key_type.enum.dart';
 import 'keyboard_state.dart';
 
-enum Language { german, english }
+enum Language {
+  german,
+  english;
+
+  // TODO(dev): Enable other languages to be recognised as well
+  String get speechLocale => this == Language.german ? 'de-DE' : 'en-EN';
+}
 
 enum KeyboardPlatformType { mobile, desktop }
 

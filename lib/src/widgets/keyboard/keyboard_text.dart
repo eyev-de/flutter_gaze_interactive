@@ -101,11 +101,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
             placeholder: widget.state.placeholder,
             cursorColor: Colors.white,
             keyboardType: TextInputType.none,
-            suffix: MicrophoneButton(
-              state: widget.state,
-              node: widget.node,
-              borderRadius: const BorderRadius.horizontal(right: Radius.circular(20)),
-            ),
+            suffix: _GazeKeyboardTextSuffix(state: widget.state, node: widget.node),
             decoration: BoxDecoration(
               color: Colors.grey.shade900,
               borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -113,6 +109,24 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _GazeKeyboardTextSuffix extends StatelessWidget {
+  const _GazeKeyboardTextSuffix({required this.state, required this.node});
+
+  final GazeKeyboardState state;
+  final FocusNode node;
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore for keyboard type email
+    if (state.type == KeyboardType.email) return Container();
+    return MicrophoneButton(
+      state: state,
+      node: node,
+      borderRadius: const BorderRadius.horizontal(right: Radius.circular(20)),
     );
   }
 }

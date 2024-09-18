@@ -60,10 +60,7 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
                   );
               ref.read(keyboardSpeechToTextIsListeningProvider.notifier).listen();
               ref.read(state.disableStateProvider.notifier).state = true;
-              // TODO(julia): Locale dependent on keyboard? -> can be changed in settings?
-              // FIXME: hide mic on keyboard -> Mail / Password
-              // FIXME: Notes: Add mic button to keyboard (as a separate button)
-              await ref.read(keyboardSpeechToTextProvider.notifier).listen(locale: 'de-DE', controller: state.controller);
+              await ref.read(keyboardSpeechToTextProvider.notifier).listen(locale: state.language.speechLocale, controller: state.controller);
             } else {
               ref.read(state.disableStateProvider.notifier).state = false;
               await ref.read(keyboardSpeechToTextProvider.notifier).stop();
@@ -71,7 +68,6 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
           },
         );
       },
-      // FIXME: Loading State auf gaze Button setzen
       loading: () => _MicrophoneButton(route: state.route, isLoading: true),
       error: (err, _) {
         debugPrint(err.toString());
