@@ -14,11 +14,13 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.disabledColor = Colors.grey,
     this.highlightColor,
+    this.iconColor,
   });
 
   final BorderRadius borderRadius;
   final Color disabledColor;
   final Color? highlightColor;
+  final Color? iconColor;
   late final controllerProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
@@ -48,6 +50,7 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
           borderRadius: borderRadius,
           disabledColor: disabledColor,
           highlightColor: highlightColor,
+          iconColor: iconColor,
           onTap: () async {
             if (isListening == false) {
               final selection = state.controller.value.selection;
@@ -71,7 +74,12 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
       loading: () => _MicrophoneButton(route: state.route, isLoading: true),
       error: (err, _) {
         debugPrint(err.toString());
-        return _MicrophoneButton(route: state.route, icon: Icons.mic_off, disabled: true, disabledColor: disabledColor);
+        return _MicrophoneButton(
+          route: state.route,
+          icon: Icons.mic_off,
+          disabled: true,
+          disabledColor: disabledColor,
+        );
       },
     );
   }
@@ -81,6 +89,7 @@ class _MicrophoneButton extends StatelessWidget {
   const _MicrophoneButton({
     required this.route,
     this.onTap,
+    this.iconColor,
     this.highlightColor,
     this.icon = Icons.mic,
     this.disabled = false,
@@ -92,6 +101,7 @@ class _MicrophoneButton extends StatelessWidget {
 
   final String route;
   final void Function()? onTap;
+  final Color? iconColor;
   final Color? highlightColor;
   final IconData icon;
   final bool disabled;
@@ -102,12 +112,13 @@ class _MicrophoneButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = highlightColor ?? Theme.of(context).primaryColor;
     const _loading = SizedBox(
       width: 80,
       child: Center(child: SizedBox.square(dimension: 40, child: Padding(padding: EdgeInsets.all(10), child: CircularProgressIndicator(strokeWidth: 2)))),
     );
     final _icon = isListening
-        ? PulseIcon(icon: icon, pulseColor: highlightColor ?? Theme.of(context).primaryColor, iconSize: 30, innerSize: 40, pulseSize: 80)
+        ? PulseIcon(icon: icon, pulseColor: color, iconColor: iconColor ?? Colors.white, iconSize: 30, innerSize: 40, pulseSize: 80)
         : SizedBox(width: 80, child: Icon(icon, size: 30, color: disabled ? disabledColor : null));
     return SizedBox(
       height: double.infinity,
