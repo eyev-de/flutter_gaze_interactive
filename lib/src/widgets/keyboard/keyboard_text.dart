@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../api.dart';
+import '../../core/extensions.dart';
 
 class GazeKeyboardTextWidget extends StatefulWidget {
   GazeKeyboardTextWidget({
@@ -137,6 +138,7 @@ class _GazeKeyboardTextSuffix extends StatelessWidget {
         state: state,
         node: node,
         height: height,
+        iconColor: Theme.of(context).primaryColor.onColor(),
         borderRadius: const BorderRadius.horizontal(right: Radius.circular(20)),
       ),
     );
