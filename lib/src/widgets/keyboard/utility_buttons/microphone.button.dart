@@ -15,12 +15,14 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
     this.disabledColor = Colors.grey,
     this.highlightColor,
     this.iconColor,
+    this.height,
   });
 
   final BorderRadius borderRadius;
   final Color disabledColor;
   final Color? highlightColor;
   final Color? iconColor;
+  final double? height;
   late final controllerProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
@@ -29,6 +31,7 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
     final selecting = ref.watch(state.selectingStateProvider);
     final isListening = ref.watch(keyboardSpeechToTextIsListeningProvider);
     final disabled = selecting || (!isListening && ref.watch(state.disableStateProvider));
+    final textIsEmpty = ref.watch(controllerProvider) == '';
 
     // if delete button is used -> stop speech to text
     ref.listen(controllerProvider, (before, after) async {
@@ -38,11 +41,12 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
         await ref.read(keyboardSpeechToTextProvider.notifier).stop();
       }
     });
-
     final available = ref.watch(keyboardSpeechToTextAvailableProvider);
     return available.when(
       data: (data) {
-        if (data == null || data == false) return _MicrophoneButton(route: state.route, icon: Icons.mic_off, disabledColor: disabledColor, disabled: true);
+        if (data == null || data == false) {
+          return _MicrophoneButton(route: state.route, icon: Icons.mic_off, disabledColor: disabledColor, disabled: true, height: height);
+        }
         return _MicrophoneButton(
           route: state.route,
           isListening: isListening,
@@ -51,16 +55,19 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
           disabledColor: disabledColor,
           highlightColor: highlightColor,
           iconColor: iconColor,
+          height: height,
           onTap: () async {
+            node.requestFocus();
             if (isListening == false) {
               final selection = state.controller.value.selection;
-              ref.read(keyboardSpeechToTextStatusProvider.notifier).status(
-                    status: KeyboardTextFieldStatus(
+              final status = textIsEmpty
+                  ? KeyboardTextFieldStatus(cursor: 0)
+                  : KeyboardTextFieldStatus(
                       before: selection.textBefore(state.controller.text),
                       after: selection.textAfter(state.controller.text),
                       cursor: state.controller.selection.baseOffset,
-                    ),
-                  );
+                    );
+              ref.read(keyboardSpeechToTextStatusProvider.notifier).status(status: status);
               ref.read(keyboardSpeechToTextIsListeningProvider.notifier).listen();
               ref.read(state.disableStateProvider.notifier).state = true;
               await ref.read(keyboardSpeechToTextProvider.notifier).listen(locale: state.language.speechLocale, controller: state.controller);
@@ -71,15 +78,10 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
           },
         );
       },
-      loading: () => _MicrophoneButton(route: state.route, isLoading: true),
+      loading: () => _MicrophoneButton(route: state.route, isLoading: true, height: height),
       error: (err, _) {
         debugPrint(err.toString());
-        return _MicrophoneButton(
-          route: state.route,
-          icon: Icons.mic_off,
-          disabled: true,
-          disabledColor: disabledColor,
-        );
+        return _MicrophoneButton(route: state.route, icon: Icons.mic_off, disabled: true, disabledColor: disabledColor, height: height);
       },
     );
   }
@@ -89,6 +91,7 @@ class _MicrophoneButton extends StatelessWidget {
   const _MicrophoneButton({
     required this.route,
     this.onTap,
+    this.height,
     this.iconColor,
     this.highlightColor,
     this.icon = Icons.mic,
@@ -101,6 +104,7 @@ class _MicrophoneButton extends StatelessWidget {
 
   final String route;
   final void Function()? onTap;
+  final double? height;
   final Color? iconColor;
   final Color? highlightColor;
   final IconData icon;
@@ -113,19 +117,16 @@ class _MicrophoneButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = highlightColor ?? Theme.of(context).primaryColor;
-    const _loading = SizedBox(
-      width: 80,
-      child: Center(child: SizedBox.square(dimension: 40, child: Padding(padding: EdgeInsets.all(10), child: CircularProgressIndicator(strokeWidth: 2)))),
-    );
+    const _loading = Center(child: SizedBox.square(dimension: 30, child: CircularProgressIndicator(strokeWidth: 2)));
     final _icon = isListening
         ? PulseIcon(icon: icon, pulseColor: color, iconColor: iconColor ?? Colors.white, iconSize: 30, innerSize: 40, pulseSize: 80)
         : SizedBox(width: 80, child: Icon(icon, size: 30, color: disabled ? disabledColor : null));
     return SizedBox(
-      height: double.infinity,
+      width: 80,
       child: GazeButton(
         properties: GazeButtonProperties(route: route, direction: Axis.horizontal, borderRadius: borderRadius),
         onTap: disabled ? null : onTap,
-        child: Center(child: isLoading ? _loading : _icon),
+        child: Align(alignment: Alignment.bottomRight, child: SizedBox(height: height ?? double.infinity, child: isLoading ? _loading : _icon)),
       ),
     );
   }
