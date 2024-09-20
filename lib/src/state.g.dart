@@ -71,5 +71,74 @@ final gazePointerHistoryNumberProvider =
 );
 
 typedef _$GazePointerHistoryNumber = Notifier<int>;
+String _$keyboardSpeechToTextIsListeningHash() =>
+    r'a83f38824105c6f822b7de5ee8b5f2b55d8a934e';
+
+/// See also [KeyboardSpeechToTextIsListening].
+@ProviderFor(KeyboardSpeechToTextIsListening)
+final keyboardSpeechToTextIsListeningProvider =
+    AutoDisposeNotifierProvider<KeyboardSpeechToTextIsListening, bool>.internal(
+  KeyboardSpeechToTextIsListening.new,
+  name: r'keyboardSpeechToTextIsListeningProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextIsListeningHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextIsListening = AutoDisposeNotifier<bool>;
+String _$keyboardSpeechToTextAvailableHash() =>
+    r'c3d280809930eebe3a6ff5b6826347c0108596e2';
+
+/// See also [KeyboardSpeechToTextAvailable].
+@ProviderFor(KeyboardSpeechToTextAvailable)
+final keyboardSpeechToTextAvailableProvider =
+    NotifierProvider<KeyboardSpeechToTextAvailable, AsyncValue<bool?>>.internal(
+  KeyboardSpeechToTextAvailable.new,
+  name: r'keyboardSpeechToTextAvailableProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextAvailableHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextAvailable = Notifier<AsyncValue<bool?>>;
+String _$keyboardSpeechToTextStatusHash() =>
+    r'2d8f951f703a51f31ec7c3345cd47c43e28fa2a1';
+
+/// See also [KeyboardSpeechToTextStatus].
+@ProviderFor(KeyboardSpeechToTextStatus)
+final keyboardSpeechToTextStatusProvider = AutoDisposeNotifierProvider<
+    KeyboardSpeechToTextStatus, KeyboardTextFieldStatus?>.internal(
+  KeyboardSpeechToTextStatus.new,
+  name: r'keyboardSpeechToTextStatusProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextStatusHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextStatus
+    = AutoDisposeNotifier<KeyboardTextFieldStatus?>;
+String _$keyboardSpeechToTextHash() =>
+    r'd4eac01a829be7dbb037d4c5b0c7e19123b4f2b2';
+
+/// See also [KeyboardSpeechToText].
+@ProviderFor(KeyboardSpeechToText)
+final keyboardSpeechToTextProvider =
+    NotifierProvider<KeyboardSpeechToText, SpeechToText>.internal(
+  KeyboardSpeechToText.new,
+  name: r'keyboardSpeechToTextProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToText = Notifier<SpeechToText>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

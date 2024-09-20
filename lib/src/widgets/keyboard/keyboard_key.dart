@@ -206,6 +206,8 @@ class GazeKey extends ConsumerWidget {
         ref.read(keyboardState.altStateProvider.notifier).state = !alt;
         break;
       case GazeKeyType.close:
+        ref.read(keyboardState.disableStateProvider.notifier).state = false;
+        ref.read(keyboardSpeechToTextProvider.notifier).stop();
         keyboardState.onTabClose?.call(context);
         break;
       case GazeKeyType.win:
