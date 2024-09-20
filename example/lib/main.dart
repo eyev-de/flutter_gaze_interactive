@@ -64,6 +64,7 @@ class _AppState extends State<App> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 20),
                   _SearchTextField(
                     focusNode: _focusNode,
                     controller: _controller,

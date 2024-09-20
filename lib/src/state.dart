@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../api.dart';
 import 'core/extensions.dart';
@@ -25,11 +26,6 @@ final clickSoundSource = AssetSource('packages/gaze_interactive/lib/assets/click
 final player = AudioPlayer()..setSource(clickSoundSource);
 
 class GazeInteractive {
-  late WidgetRef ref;
-  Logger? logger;
-  final sharedPreferencesProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
-  static final GazeInteractive _instance = GazeInteractive._internal();
-
   factory GazeInteractive() {
     AudioCache.instance.prefix = '';
     unawaited(player.setVolume(1));
@@ -37,6 +33,10 @@ class GazeInteractive {
   }
 
   GazeInteractive._internal();
+  late WidgetRef ref;
+  Logger? logger;
+  final sharedPreferencesProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
+  static final GazeInteractive _instance = GazeInteractive._internal();
 
   PredicateReturnState Function(
     Rect itemRect,
@@ -408,10 +408,9 @@ class GazePointerHistoryNumber extends _$GazePointerHistoryNumber {
 }
 
 class GazeContext extends StatelessWidget {
+  const GazeContext({super.key, required this.child, required this.sharedPreferences});
   final Widget child;
   final SharedPreferences sharedPreferences;
-
-  const GazeContext({super.key, required this.child, required this.sharedPreferences});
 
   @override
   Widget build(Object context) => ProviderScope(overrides: [
@@ -420,9 +419,8 @@ class GazeContext extends StatelessWidget {
 }
 
 class _GazeContext extends ConsumerStatefulWidget {
-  final Widget child;
-
   const _GazeContext({required this.child});
+  final Widget child;
 
   @override
   _GazeContextState createState() => _GazeContextState();
@@ -449,3 +447,81 @@ class _GazeContextState extends ConsumerState<_GazeContext> {
 }
 
 enum PredicateReturnState { gaze, snap, none }
+
+@riverpod
+class KeyboardSpeechToTextIsListening extends _$KeyboardSpeechToTextIsListening {
+  @override
+  bool build() => false;
+
+  void listen() => state = true;
+
+  void dismiss() => state = false;
+}
+
+@Riverpod(keepAlive: true)
+class KeyboardSpeechToTextAvailable extends _$KeyboardSpeechToTextAvailable {
+  @override
+  AsyncValue<bool?> build() {
+    init();
+    return const AsyncValue.data(null);
+  }
+
+  Future<void> init() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async => ref.read(keyboardSpeechToTextProvider.notifier).init());
+  }
+}
+
+class KeyboardTextFieldStatus {
+  KeyboardTextFieldStatus({this.before = '', this.after = '', required this.cursor});
+  final String before;
+  final String after;
+  final int cursor;
+}
+
+@riverpod
+class KeyboardSpeechToTextStatus extends _$KeyboardSpeechToTextStatus {
+  @override
+  KeyboardTextFieldStatus? build() => null;
+
+  void status({required KeyboardTextFieldStatus status}) => state = status;
+}
+
+@Riverpod(keepAlive: true)
+class KeyboardSpeechToText extends _$KeyboardSpeechToText {
+  @override
+  SpeechToText build() {
+    ref.onDispose(() => state.stop());
+    return SpeechToText();
+  }
+
+  Future<bool> init() async {
+    return state.initialize(
+      onStatus: (val) => debugPrint('onStatus: $val'),
+      onError: (val) => debugPrint('onError: $val'),
+    );
+  }
+
+  Future<void> stop() async {
+    ref.read(keyboardSpeechToTextIsListeningProvider.notifier).dismiss();
+    await state.stop();
+  }
+
+  Future<void> listen({String locale = 'en-EN', required TextEditingController controller}) async {
+    await state.listen(
+      localeId: locale,
+      listenOptions: SpeechListenOptions(listenMode: ListenMode.dictation, autoPunctuation: true, cancelOnError: true),
+      onResult: (result) {
+        final status = ref.read(keyboardSpeechToTextStatusProvider);
+        if (status == null) return;
+        if (status.cursor == -1) {
+          controller.text = '';
+          return;
+        }
+        controller
+          ..text = controller.text = status.before + result.recognizedWords + status.after
+          ..selection = TextSelection.fromPosition(TextPosition(offset: status.before.length + result.recognizedWords.length));
+      },
+    );
+  }
+}

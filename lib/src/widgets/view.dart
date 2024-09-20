@@ -43,8 +43,8 @@ class GazeView extends StatelessWidget {
       onGazeLeave: onGazeLeave,
       onGaze: onGaze,
       onScroll: onScroll,
-      child: child,
       snappable: snappable,
+      child: child,
     );
   }
 }
