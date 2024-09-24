@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../api.dart';
+import '../../../core/extensions.dart';
 import '../../../core/text_editing_controller_notifier.dart';
-import '../keyboard_utility_buttons.dart';
 
 class DeleteButton extends GazeKeyboardUtilityButton {
   DeleteButton({super.key, required super.state, required super.node, super.label = 'Character'});
@@ -17,10 +17,10 @@ class DeleteButton extends GazeKeyboardUtilityButton {
     final disabled = (selecting && !wordSelected) || (ref.watch(controllerProvider) == '' || ref.watch(state.disableStateProvider));
     return GazeKeyboardUtilityBaseButton(
       text: label,
-      textStyle: TextStyle(color: disabled ? Colors.grey : Colors.red),
-      backgroundColor: Colors.grey.shade900,
+      textStyle: TextStyle(color: disabled ? textDisabledColor : deleteButtonTextColor),
+      backgroundColor: disabled ? tealColor.disabled : deleteButtonColor.background,
       icon: CupertinoIcons.delete_left,
-      iconColor: disabled ? Colors.grey : Colors.red,
+      iconColor: disabled ? textDisabledColor : deleteButtonTextColor,
       route: state.route,
       gazeInteractive: disabled == false,
       reselectable: true,

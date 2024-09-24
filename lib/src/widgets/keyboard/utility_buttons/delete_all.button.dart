@@ -4,8 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../api.dart';
+import '../../../core/extensions.dart';
 import '../../../core/text_editing_controller_notifier.dart';
-import '../keyboard_utility_buttons.dart';
 
 class DeleteAllButton extends GazeKeyboardUtilityButton {
   DeleteAllButton({super.key, required super.node, required super.state, super.label = 'All', required this.controller, required this.route});
@@ -21,9 +22,10 @@ class DeleteAllButton extends GazeKeyboardUtilityButton {
       route: route,
       gazeInteractive: text != '',
       horizontal: label?.isEmpty ?? true,
-      backgroundColor: Colors.grey.shade800,
+      backgroundColor: text == '' ? tealColor.disabled : deleteButtonColor.background,
       text: label?.isEmpty ?? true ? null : label,
-      iconColor: text == '' ? Colors.grey : Colors.red,
+      iconColor: text == '' ? textDisabledColor : deleteButtonTextColor,
+      textStyle: TextStyle(color: text == '' ? textDisabledColor : deleteButtonTextColor),
       icon: Platform.isIOS ? CupertinoIcons.delete : Icons.delete,
       onTap: text == '' ? null : () => {node.requestFocus(), controller.text = ''},
     );

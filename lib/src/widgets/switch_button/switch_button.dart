@@ -40,7 +40,7 @@ class GazeSwitchButtonProperties {
     this.showLabel = true,
     this.labelTextStyle,
     this.activeColor = Colors.blue,
-    this.inactiveColor = Colors.red,
+    this.inactiveColor = Colors.pink,
     this.inactiveDisabledColor = Colors.grey,
     this.activeDisabledColor = Colors.grey,
     this.backgroundColor,

@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../api.dart';
 import '../../../core/text_editing_controller_notifier.dart';
-import '../keyboard_utility_buttons.dart';
 
 class UndoButton extends GazeKeyboardUtilityButton {
   UndoButton({super.key, required super.state, required super.node, super.label = 'Undo', super.textStyle});
@@ -23,10 +23,9 @@ class UndoButton extends GazeKeyboardUtilityButton {
       text: label,
       route: state.route,
       gazeInteractive: enable == true,
-      backgroundColor: Colors.grey.shade900,
-      iconColor: enable == true ? Colors.white : Colors.grey,
+      iconColor: enable == true ? Colors.white : textDisabledColor,
       icon: Platform.isIOS ? CupertinoIcons.arrow_turn_up_left : Icons.undo,
-      textStyle: (textStyle ?? const TextStyle()).copyWith(color: enable == true ? Colors.white : Colors.grey),
+      textStyle: (textStyle ?? const TextStyle()).copyWith(color: enable == true ? Colors.white : textDisabledColor),
       onTap: enable == true ? () => {node.requestFocus(), state.undoHistoryController?.undo()} : null,
     );
   }

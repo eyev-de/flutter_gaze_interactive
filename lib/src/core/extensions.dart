@@ -8,6 +8,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../api.dart';
+
 extension GlobalKeyExtension on GlobalKey {
   Rect? get globalPaintBounds {
     try {
@@ -152,9 +154,21 @@ extension ColorExtension on Color {
     return hexString.substring(2, hexString.length);
   }
 
-  Color onColor({Color colorDark = Colors.black, Color colorLight = Colors.white}) {
-    return computeLuminance() > 0.5 ? colorDark : colorLight;
+  Color blendWith({required Color background}) => Color.alphaBlend(this, background);
+
+  Color onColor({Color? backgroundColor, required bool disabled}) {
+    final color = blendWith(background: backgroundColor ?? surfaceColor);
+    final dark = color == tealColor ? surfaceColor : Colors.black;
+    if (disabled) {
+      return textDisabledColor;
+    } else {
+      return color.computeLuminance() > 0.5 ? dark : Colors.white;
+    }
   }
+
+  Color get background => withOpacity(0.5);
+
+  Color get disabled => withOpacity(0.4);
 }
 
 extension StringExtension on String {

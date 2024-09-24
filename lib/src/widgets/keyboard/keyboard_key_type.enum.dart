@@ -13,15 +13,15 @@ enum GazeKeyType {
   close,
   signs;
 
-  Color defaultColor({required Color primaryColor, required Color customColor}) {
+  Color defaultColor({required Color customColor, required Color fallbackColor}) {
     return switch (this) {
-      GazeKeyType.caps => Colors.grey.shade800,
-      GazeKeyType.shift => Colors.grey.shade800,
-      GazeKeyType.enter => Colors.grey.shade800,
-      GazeKeyType.tab => Colors.grey.shade800,
-      GazeKeyType.signs => Colors.grey.shade800,
-      GazeKeyType.close => primaryColor,
-      _ => customColor,
+      GazeKeyType.caps => customColor,
+      GazeKeyType.shift => customColor,
+      GazeKeyType.enter => customColor,
+      GazeKeyType.tab => customColor,
+      GazeKeyType.signs => customColor,
+      GazeKeyType.close => customColor,
+      _ => fallbackColor,
     };
   }
 }
