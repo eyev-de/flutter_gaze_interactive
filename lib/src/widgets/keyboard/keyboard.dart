@@ -214,10 +214,10 @@ class _GazeKeyboardCheckButton extends ConsumerWidget {
           ref.read(keyboardSpeechToTextProvider.notifier).stop();
           onBack?.call(context);
         },
-        color: tealColor.disabled,
+        color: tealColor,
         properties: GazeButtonProperties(
           innerPadding: const EdgeInsets.all(0),
-          icon: const Icon(Icons.check, color: Colors.white),
+          icon: const Icon(Icons.check, color: surfaceColor),
           direction: Axis.horizontal,
           route: state.route,
         ),
