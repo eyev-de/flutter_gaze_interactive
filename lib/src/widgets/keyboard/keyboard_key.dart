@@ -263,20 +263,8 @@ class _GazeKeyStacked extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (characters.isEmpty) return Container();
-    if (characters.first is String) {
-      return KeyboardKeyStackedString(
-        characters: characters as List<String>,
-        shift: shift,
-        backgroundColor: backgroundColor,
-      );
-    }
-    if (characters.first is Text) {
-      return KeyboardKeyStackedText(
-        texts: List<Text>.from(characters),
-        shift: shift,
-        backgroundColor: backgroundColor,
-      );
-    }
+    if (characters.first is String) return KeyboardKeyStackedString(characters: characters as List<String>, shift: shift, backgroundColor: backgroundColor);
+    if (characters.first is Text) return KeyboardKeyStackedText(texts: List<Text>.from(characters), shift: shift, backgroundColor: backgroundColor);
     if (characters.first is IconData) return KeyboardKeyStackedIcon(icons: characters as List<IconData>, shift: shift);
     return Container();
   }
