@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/extensions.dart';
+import '../../../../api.dart';
 import '../../../core/text_editing_controller_notifier.dart';
-import '../keyboard_utility_buttons.dart';
 
 class MoveCursorRightButton extends GazeKeyboardUtilityButton {
   MoveCursorRightButton({super.key, required super.state, required super.node, super.label = 'Cursor'});
@@ -20,8 +19,8 @@ class MoveCursorRightButton extends GazeKeyboardUtilityButton {
       reselectable: true,
       icon: Icons.arrow_forward,
       gazeInteractive: disabled == false,
-      iconColor: disabled ? Colors.grey : null,
-      textStyle: TextStyle(color: disabled ? Colors.grey : null),
+      iconColor: disabled ? textDisabledColor : null,
+      textStyle: TextStyle(color: disabled ? textDisabledColor : null),
       onTap: disabled
           ? null
           : () {

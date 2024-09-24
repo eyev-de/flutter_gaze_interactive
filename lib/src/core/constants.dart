@@ -4,6 +4,8 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'package:flutter/material.dart';
+
 const gazeInteractiveDefaultDuration = 1800;
 const gazeInteractiveMinDuration = 400; // Not validated
 const gazeInteractiveMaxDuration = 2000; // Not validated
@@ -17,8 +19,8 @@ const gazeInteractiveMinRecoverTime = 1500; // Not validated
 const gazeInteractiveMaxRecoverTime = 3000; // Not validated
 
 /// Gaze Pointer Settings
-const gazeInteractiveDefaultPointerColorPassive = 'FFD740'; // Colors.yellow
-const gazeInteractiveDefaultPointerColorActive = 'FF4433'; // Colors.red
+const gazeInteractiveDefaultPointerColorPassive = 'FFBF6E'; // Colors.yellow
+const gazeInteractiveDefaultPointerColorActive = 'AD1457'; // Colors.pink
 
 const gazeInteractiveDefaultPointerOpacity = 0.6;
 const gazeInteractiveMinPointerOpacity = 0.2;
@@ -53,3 +55,9 @@ const gazeInteractiveMinReselectionNumberOfLetterKeys = 1; // Not validated
 const gazeInteractiveMaxReselectionNumberOfLetterKeys = 5; // Not validated
 
 const timeToIgnorePointerWhenSnappingMs = 200; // needed especially for mouse usage
+
+const deleteButtonColor = Color(0xFFAD1457);
+const deleteButtonTextColor = Colors.white;
+const textDisabledColor = Color(0x80ffffff);
+const tealColor = Color(0xFFACE0D4);
+const surfaceColor = Color(0xFF012D35);

@@ -9,9 +9,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'keyboard_key.dart';
-import 'keyboard_key_type.enum.dart';
-import 'keyboard_state.dart';
+import '../../../api.dart';
+import '../../core/extensions.dart';
 
 enum Language {
   german,
@@ -122,7 +121,8 @@ class Keyboards {
     return [
       [
         if ([KeyboardType.extended, KeyboardType.email].contains(state.type)) const Spacer(),
-        if (state.type == KeyboardType.editor) GazeKey(content: Icons.keyboard_tab_rounded, widthRatio: 2, type: GazeKeyType.tab, keyboardState: state),
+        if (state.type == KeyboardType.editor)
+          GazeKey(content: Icons.keyboard_tab_rounded, widthRatio: 2, type: GazeKeyType.tab, keyboardState: state, color: tealColor),
         GazeKey(content: const ['q', 'Q', '1', '['], keyboardState: state),
         GazeKey(content: const ['w', 'W', '2', ']'], keyboardState: state),
         GazeKey(content: const ['e', 'E', '3', '{'], keyboardState: state),
@@ -175,7 +175,7 @@ class Keyboards {
         GazeKey(content: const ['b', 'B', '!', '!'], keyboardState: state),
         GazeKey(content: const ['n', 'N', '´', '`'], keyboardState: state),
         GazeKey(content: const ['m', 'M', '', ''], keyboardState: state),
-        if (state.type == KeyboardType.email) GazeKey(content: const ['@', '.', '', ''], color: Colors.grey.shade800, keyboardState: state, stacked: true),
+        if (state.type == KeyboardType.email) GazeKey(content: const ['@', '.', '', ''], color: tealColor, keyboardState: state, stacked: true),
         if ([KeyboardType.extended, KeyboardType.email].contains(state.type))
           GazeKey(content: Icons.keyboard_hide, type: GazeKeyType.close, keyboardState: state),
         if (state.type == KeyboardType.editor) GazeKey(content: 'Enter', widthRatio: 2, type: GazeKeyType.enter, keyboardState: state),
@@ -289,7 +289,7 @@ class Keyboards {
         GazeKey(content: const ['k', 'K', '&', '£'], keyboardState: state),
         GazeKey(content: const ['l', 'L', '@', '¥'], keyboardState: state),
         if (state.type == KeyboardType.email)
-          GazeKey(content: const ['@', '.', '"', '•'], colors: [Colors.grey.shade800, Colors.grey.shade800, null, null], keyboardState: state, stacked: true)
+          GazeKey(content: const ['@', '.', '"', '•'], colors: [tealColor.disabled, tealColor.disabled, null, null], keyboardState: state, stacked: true)
         else
           GazeKey(content: const ['', '', '"', '•'], keyboardState: state),
       ],
@@ -355,8 +355,8 @@ class Keyboards {
         GazeKey(content: 'b', keyboardState: state),
         GazeKey(content: 'n', keyboardState: state),
         GazeKey(content: 'm', keyboardState: state),
-        GazeKey(content: const ['.', ','], keyboardState: state, color: Colors.grey.shade800, stacked: true),
-        GazeKey(content: const ['?', '!'], keyboardState: state, color: Colors.grey.shade800, stacked: true),
+        GazeKey(content: const ['.', ','], keyboardState: state, color: tealColor.disabled, stacked: true),
+        GazeKey(content: const ['?', '!'], keyboardState: state, color: tealColor.disabled, stacked: true),
       ],
     ];
   }
@@ -388,7 +388,7 @@ class Keyboards {
         GazeKey(content: 'j', keyboardState: state),
         GazeKey(content: 'k', keyboardState: state),
         GazeKey(content: 'l', keyboardState: state),
-        GazeKey(content: const ["'", '-'], keyboardState: state, color: Colors.grey.shade800, stacked: true),
+        GazeKey(content: const ["'", '-'], keyboardState: state, color: tealColor.disabled, stacked: true),
       ],
       [
         GazeKey(content: 'z', keyboardState: state),
@@ -399,8 +399,8 @@ class Keyboards {
         GazeKey(content: 'b', keyboardState: state),
         GazeKey(content: 'n', keyboardState: state),
         GazeKey(content: 'm', keyboardState: state),
-        GazeKey(content: const ['.', ','], keyboardState: state, color: Colors.grey.shade800, stacked: true),
-        GazeKey(content: const ['?', '!'], keyboardState: state, color: Colors.grey.shade800, stacked: true),
+        GazeKey(content: const ['.', ','], keyboardState: state, color: tealColor.disabled, stacked: true),
+        GazeKey(content: const ['?', '!'], keyboardState: state, color: tealColor.disabled, stacked: true),
       ],
     ];
   }

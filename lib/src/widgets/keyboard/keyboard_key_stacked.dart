@@ -1,41 +1,55 @@
 import 'package:flutter/material.dart';
 
+import '../../core/extensions.dart';
+
 class KeyboardKeyStackedString extends StatelessWidget {
-  const KeyboardKeyStackedString({super.key, required this.characters, this.shift = false, this.textStyle = const TextStyle(fontSize: 20)});
+  KeyboardKeyStackedString({super.key, required this.characters, required this.backgroundColor, this.shift = false, this.textStyle});
 
   final bool shift;
   final List<String> characters;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
+  final Color backgroundColor;
+  final double defaultFontSize = 18;
 
   @override
   Widget build(BuildContext context) {
+    final textColor = backgroundColor.onColor(disabled: false);
     final top = characters.length >= 2 ? characters[1] : '';
     final bottom = characters.first;
+    final topTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor.background, fontWeight: FontWeight.bold);
+    final bottomTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize + 3)).copyWith(color: textColor, fontWeight: FontWeight.bold);
+    final shiftTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor, fontWeight: FontWeight.bold);
     return _KeyboardKeyStacked(
       shift: shift,
-      topWidget: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.grey, fontSize: 19), child: Text(top)),
-      bottomWidget: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold), child: Text(bottom)),
-      shiftWidget: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold), child: Text(top)),
+      topWidget: DefaultTextStyle.merge(style: topTextStyle, child: Text(top)),
+      bottomWidget: DefaultTextStyle.merge(style: bottomTextStyle, child: Text(bottom)),
+      shiftWidget: DefaultTextStyle.merge(style: shiftTextStyle, child: Text(top)),
     );
   }
 }
 
 class KeyboardKeyStackedText extends StatelessWidget {
-  const KeyboardKeyStackedText({super.key, required this.texts, this.shift = false, this.textStyle = const TextStyle(fontSize: 20)});
+  KeyboardKeyStackedText({super.key, required this.backgroundColor, required this.texts, this.shift = false, this.textStyle});
 
   final bool shift;
   final List<Text> texts;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
+  final Color backgroundColor;
+  final double defaultFontSize = 18;
 
   @override
   Widget build(BuildContext context) {
+    final textColor = backgroundColor.onColor(disabled: false);
     final top = texts.length >= 2 ? texts[1] : Container();
     final bottom = texts.first;
+    final topTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor.background, fontWeight: FontWeight.bold);
+    final bottomTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize + 3)).copyWith(color: textColor, fontWeight: FontWeight.bold);
+    final shiftTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor, fontWeight: FontWeight.bold);
     return _KeyboardKeyStacked(
       shift: shift,
-      topWidget: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.grey), child: top),
-      bottomWidget: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold), child: bottom),
-      shiftWidget: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold), child: top),
+      topWidget: DefaultTextStyle.merge(style: topTextStyle, child: top),
+      bottomWidget: DefaultTextStyle.merge(style: bottomTextStyle, child: bottom),
+      shiftWidget: DefaultTextStyle.merge(style: shiftTextStyle, child: top),
     );
   }
 }

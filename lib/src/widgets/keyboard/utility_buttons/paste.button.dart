@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../api.dart';
 import '../../../core/clipboard_provider.dart';
-import '../../../core/extensions.dart';
-import '../keyboard_utility_buttons.dart';
 
 class PasteButton extends GazeKeyboardUtilityButton {
   const PasteButton({super.key, required super.state, required super.node, super.label = 'Paste', super.textStyle});
@@ -19,8 +18,8 @@ class PasteButton extends GazeKeyboardUtilityButton {
       icon: Icons.paste,
       route: state.route,
       gazeInteractive: clipboardContent != '' && disabled == false,
-      iconColor: clipboardContent != '' && !disabled ? null : Colors.grey,
-      textStyle: (textStyle ?? const TextStyle()).copyWith(color: clipboardContent != '' && disabled == false ? null : Colors.grey),
+      iconColor: clipboardContent != '' && !disabled ? null : textDisabledColor,
+      textStyle: (textStyle ?? const TextStyle()).copyWith(color: clipboardContent != '' && disabled == false ? null : textDisabledColor),
       onTap: clipboardContent != '' && !disabled
           ? () async {
               node.requestFocus();
