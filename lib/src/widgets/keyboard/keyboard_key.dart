@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../api.dart';
+import '../../core/extensions.dart';
 import 'keyboard_key_stacked.dart';
 
 class GazeKey extends ConsumerWidget {
@@ -24,8 +25,7 @@ class GazeKey extends ConsumerWidget {
     this.colors = const [],
     this.stacked = false,
     Color? color,
-  }) : _color = color ?? Colors.grey.shade900;
-
+  }) : _color = color ?? tealColor.disabled;
   final Object content;
   final GazeKeyType type;
   final GazeKeyboardState keyboardState;
@@ -46,32 +46,39 @@ class GazeKey extends ConsumerWidget {
 
   static final validCharacters = RegExp(r'^[a-zA-Zäöü]+$');
 
-  static Widget _buildContent(BuildContext context, Object content, bool shift, GazeKeyboardState keyboardState, bool signs, GazeKeyType type, bool stacked) {
-    const textStyle = TextStyle(fontSize: 20);
+  static Widget _buildContent(BuildContext context, Object content, bool shift, GazeKeyboardState keyboardState, bool signs, GazeKeyType type, bool stacked,
+      Color backgroundColor, bool disabled) {
+    final signColor = backgroundColor.onColor(disabled: disabled);
+    final textStyle = TextStyle(fontSize: 20, color: signColor);
     switch (content) {
       case final List<dynamic> list:
         if (stacked && !signs) {
-          return _GazeKeyStacked(characters: list, textStyle: textStyle, shift: shift);
+          return _GazeKeyStacked(
+            characters: list,
+            textStyle: textStyle,
+            shift: shift,
+            backgroundColor: backgroundColor,
+          );
         }
         final cntnt = (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak)
             ? getIOSKey(list: list, signs: signs, shift: shift)
             : list[shift ? 1 : 0];
         if (cntnt is String) {
           if (cntnt.isEmpty) return Container();
-          return Center(child: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white), child: Text(cntnt)));
+          return Center(child: DefaultTextStyle.merge(style: textStyle, child: Text(cntnt)));
         }
         if (cntnt is Text) {
           if (cntnt.data?.isEmpty ?? true) return Container();
-          return Center(child: DefaultTextStyle.merge(style: textStyle.copyWith(color: Colors.white), child: cntnt));
+          return Center(child: DefaultTextStyle.merge(style: textStyle, child: cntnt));
         }
-        return _SpaceOut(child: Icon(cntnt as IconData, color: Colors.white, size: 25));
+        return _SpaceOut(child: Icon(cntnt as IconData, color: signColor, size: 25));
       case final String str:
         final _switchTo = shift && str.length == 1 && validCharacters.hasMatch(content);
         return _SpaceOut(
-          child: Text(_switchTo ? str.toUpperCase() : str, style: TextStyle(fontSize: textStyle.fontSize, color: Colors.white)),
+          child: Text(_switchTo ? str.toUpperCase() : str, style: textStyle),
         );
       case final IconData icon:
-        return _SpaceOut(child: Icon(icon, color: Colors.white, size: 25));
+        return _SpaceOut(child: Icon(icon, color: signColor, size: 25));
       default:
         // This is just blank space
         return Container();
@@ -90,21 +97,24 @@ class GazeKey extends ConsumerWidget {
     // It can be null
     final changeColor = type == GazeKeyType.caps && capsLock || type == GazeKeyType.shift && shift;
     final widgetColor = getIOSKeyColor(colors: colors, signs: signsState, shift: shiftState);
-    final defaultColor = type.defaultColor(primaryColor: Theme.of(context).primaryColor, customColor: widgetColor ?? _color);
+    final defaultColor = type.defaultColor(customColor: Theme.of(context).primaryColor, fallbackColor: widgetColor ?? _color);
     final animationColor = type == GazeKeyType.close ? Colors.white.withOpacity(0.5) : Theme.of(context).primaryColor;
 
     // if disabled -> keyboard buttons should not be clickable (gaze interactive)
     final disabled = ref.watch(keyboardState.disableStateProvider);
 
-    final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type, stacked);
-    if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget); // This is just blank space
+    final baseColor = changeColor ? Theme.of(context).primaryColor : defaultColor;
+    final baseDisabledColor = type.defaultColor(customColor: tealColor.background, fallbackColor: Colors.black);
+    final finalBackgroundColor = disabled ? baseDisabledColor : baseColor;
 
+    final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type, stacked, finalBackgroundColor, disabled);
+    if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget); // This is just blank space
     return Flexible(
       flex: widthRatio.round(),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         child: GazeButton(
-          color: changeColor ? Theme.of(context).primaryColor : defaultColor,
+          color: finalBackgroundColor,
           properties: GazeButtonProperties(
             innerPadding: EdgeInsets.zero,
             route: keyboardState.route,
@@ -241,18 +251,32 @@ class _GazeKeyStacked extends StatelessWidget {
   const _GazeKeyStacked({
     required this.characters,
     required this.textStyle,
+    required this.backgroundColor,
     this.shift = false,
   });
 
   final List<dynamic> characters;
   final TextStyle textStyle;
   final bool shift;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     if (characters.isEmpty) return Container();
-    if (characters.first is String) return KeyboardKeyStackedString(characters: characters as List<String>, shift: shift);
-    if (characters.first is Text) return KeyboardKeyStackedText(texts: List<Text>.from(characters), shift: shift);
+    if (characters.first is String) {
+      return KeyboardKeyStackedString(
+        characters: characters as List<String>,
+        shift: shift,
+        backgroundColor: backgroundColor,
+      );
+    }
+    if (characters.first is Text) {
+      return KeyboardKeyStackedText(
+        texts: List<Text>.from(characters),
+        shift: shift,
+        backgroundColor: backgroundColor,
+      );
+    }
     if (characters.first is IconData) return KeyboardKeyStackedIcon(icons: characters as List<IconData>, shift: shift);
     return Container();
   }

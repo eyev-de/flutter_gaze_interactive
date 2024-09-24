@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../api.dart';
+import '../../core/extensions.dart';
 import 'keyboard_mail_completions.dart';
 
 class GazeKeyboard {
@@ -56,7 +57,7 @@ class GazeKeyboard {
       pageBuilder: (context, animation, secondaryAnimation) {
         const double height = 80;
         return Container(
-          color: Colors.black,
+          color: surfaceColor,
           child: Stack(
             children: [
               Column(
@@ -213,7 +214,7 @@ class _GazeKeyboardCheckButton extends ConsumerWidget {
           ref.read(keyboardSpeechToTextProvider.notifier).stop();
           onBack?.call(context);
         },
-        color: Color.alphaBlend(Theme.of(context).primaryColor.withOpacity(0.5), Colors.grey.shade800),
+        color: tealColor.disabled,
         properties: GazeButtonProperties(
           innerPadding: const EdgeInsets.all(0),
           icon: const Icon(Icons.check, color: Colors.white),

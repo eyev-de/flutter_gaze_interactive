@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/extensions.dart';
+import '../../../../api.dart';
 import '../../../core/text_editing_controller_notifier.dart';
-import '../keyboard_utility_buttons.dart';
 
 class MoveCursorLeftButton extends GazeKeyboardUtilityButton {
   MoveCursorLeftButton({super.key, required super.state, required super.node, super.label = 'Cursor'});
@@ -19,9 +18,9 @@ class MoveCursorLeftButton extends GazeKeyboardUtilityButton {
       reselectable: true,
       route: state.route,
       icon: Icons.arrow_back,
-      iconColor: disabled ? Colors.grey : null,
+      iconColor: disabled ? textDisabledColor : null,
       gazeInteractive: disabled == false,
-      textStyle: TextStyle(color: disabled ? Colors.grey : null),
+      textStyle: TextStyle(color: disabled ? textDisabledColor : null),
       onTap: disabled
           ? null
           : () {

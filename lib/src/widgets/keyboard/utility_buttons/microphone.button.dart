@@ -12,7 +12,7 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
     required super.node,
     super.label = 'Mic',
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
-    this.disabledColor = Colors.grey,
+    this.disabledColor = textDisabledColor,
     this.highlightColor,
     this.iconColor,
     this.height,

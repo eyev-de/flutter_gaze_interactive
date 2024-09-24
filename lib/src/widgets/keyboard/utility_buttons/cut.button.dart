@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/extensions.dart';
+import '../../../../api.dart';
 import '../../../core/text_editing_controller_notifier.dart';
-import '../keyboard_utility_buttons.dart';
 
 class CutButton extends GazeKeyboardUtilityButton {
   CutButton({super.key, required super.state, required super.node, super.label = 'Cut', super.textStyle});
@@ -21,8 +20,8 @@ class CutButton extends GazeKeyboardUtilityButton {
       icon: Icons.cut,
       route: state.route,
       gazeInteractive: disabled == false,
-      iconColor: disabled ? Colors.grey : null,
-      textStyle: (textStyle ?? const TextStyle()).copyWith(color: disabled ? Colors.grey : null),
+      iconColor: disabled ? textDisabledColor : null,
+      textStyle: (textStyle ?? const TextStyle()).copyWith(color: disabled ? textDisabledColor : null),
       onTap: disabled
           ? null
           : () {

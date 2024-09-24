@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../api.dart';
+import '../../../core/extensions.dart';
 import '../../../core/text_editing_controller_notifier.dart';
 
 class DeleteWordButton extends GazeKeyboardUtilityButton {
@@ -19,9 +19,9 @@ class DeleteWordButton extends GazeKeyboardUtilityButton {
       route: state.route,
       gazeInteractive: disabled == false,
       icon: CupertinoIcons.delete_left_fill,
-      backgroundColor: Colors.grey.shade900,
-      textStyle: TextStyle(color: disabled ? Colors.grey : Colors.red),
-      iconColor: disabled ? Colors.grey : Colors.red,
+      backgroundColor: disabled ? tealColor.disabled : deleteButtonColor.background,
+      textStyle: TextStyle(color: disabled ? textDisabledColor : deleteButtonTextColor),
+      iconColor: disabled ? textDisabledColor : deleteButtonTextColor,
       onTap: disabled
           ? null
           : () {

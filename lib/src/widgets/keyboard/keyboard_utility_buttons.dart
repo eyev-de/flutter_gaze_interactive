@@ -7,19 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../button/button.dart';
-import 'keyboard_state.dart';
-import 'keyboards.dart';
-import 'utility_buttons/copy.button.dart';
-import 'utility_buttons/cut.button.dart';
-import 'utility_buttons/delete.button.dart';
-import 'utility_buttons/delete_word.button.dart';
-import 'utility_buttons/move_cursor_down.button.dart';
-import 'utility_buttons/move_cursor_left.button.dart';
-import 'utility_buttons/move_cursor_right.button.dart';
-import 'utility_buttons/move_cursor_up.button.dart';
-import 'utility_buttons/paste.button.dart';
-import 'utility_buttons/select.button.dart';
+import '../../../api.dart';
+import '../../core/extensions.dart';
 
 class GazeKeyboardUtilityButtons extends ConsumerWidget {
   GazeKeyboardUtilityButtons({super.key, required this.state, required this.node, this.type = KeyboardType.extended});
@@ -103,7 +92,7 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       child: GazeButton(
         onTap: () => onTap?.call(), // should not be null -> avoid disabled state
-        color: backgroundColor ?? Colors.grey.shade900,
+        color: backgroundColor ?? tealColor.disabled,
         properties: GazeButtonProperties(
           route: route,
           withSound: true,
