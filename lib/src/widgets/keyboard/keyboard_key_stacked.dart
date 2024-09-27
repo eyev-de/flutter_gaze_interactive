@@ -9,7 +9,7 @@ class KeyboardKeyStackedString extends StatelessWidget {
   final List<String> characters;
   final TextStyle? textStyle;
   final Color backgroundColor;
-  final double defaultFontSize = 18;
+  final double defaultFontSize = 17;
 
   @override
   Widget build(BuildContext context) {
