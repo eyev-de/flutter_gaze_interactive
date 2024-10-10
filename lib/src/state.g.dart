@@ -123,8 +123,43 @@ final keyboardSpeechToTextStatusProvider = AutoDisposeNotifierProvider<
 
 typedef _$KeyboardSpeechToTextStatus
     = AutoDisposeNotifier<KeyboardTextFieldStatus?>;
+String _$keyboardSpeechToTextLocalesHash() =>
+    r'f41bca94ce45128639899e14e65299d922e50075';
+
+/// See also [KeyboardSpeechToTextLocales].
+@ProviderFor(KeyboardSpeechToTextLocales)
+final keyboardSpeechToTextLocalesProvider = AutoDisposeNotifierProvider<
+    KeyboardSpeechToTextLocales, AsyncValue<List<LocaleName>>>.internal(
+  KeyboardSpeechToTextLocales.new,
+  name: r'keyboardSpeechToTextLocalesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextLocalesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextLocales
+    = AutoDisposeNotifier<AsyncValue<List<LocaleName>>>;
+String _$keyboardSpeechToTextLocaleHash() =>
+    r'80ecaadd05bd41dda076b97a582eab75753d474f';
+
+/// See also [KeyboardSpeechToTextLocale].
+@ProviderFor(KeyboardSpeechToTextLocale)
+final keyboardSpeechToTextLocaleProvider =
+    AutoDisposeNotifierProvider<KeyboardSpeechToTextLocale, String>.internal(
+  KeyboardSpeechToTextLocale.new,
+  name: r'keyboardSpeechToTextLocaleProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$keyboardSpeechToTextLocaleHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$KeyboardSpeechToTextLocale = AutoDisposeNotifier<String>;
 String _$keyboardSpeechToTextHash() =>
-    r'd4eac01a829be7dbb037d4c5b0c7e19123b4f2b2';
+    r'ee49297994527bf17e7cb16064bcdda4300a2108';
 
 /// See also [KeyboardSpeechToText].
 @ProviderFor(KeyboardSpeechToText)

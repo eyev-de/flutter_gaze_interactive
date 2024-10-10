@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
@@ -487,6 +488,29 @@ class KeyboardSpeechToTextStatus extends _$KeyboardSpeechToTextStatus {
   void status({required KeyboardTextFieldStatus status}) => state = status;
 }
 
+@riverpod
+class KeyboardSpeechToTextLocales extends _$KeyboardSpeechToTextLocales {
+  @override
+  AsyncValue<List<LocaleName>> build() {
+    _locales();
+    return const AsyncValue.loading();
+  }
+
+  Future<void> _locales() async {
+    state = const AsyncValue.loading();
+    final speechToText = ref.watch(keyboardSpeechToTextProvider);
+    state = await AsyncValue.guard(() async => speechToText.locales());
+  }
+}
+
+@riverpod
+class KeyboardSpeechToTextLocale extends _$KeyboardSpeechToTextLocale {
+  @override
+  String build() => Platform.localeName.replaceAll('_', '-');
+
+  set locale(String value) => state = value;
+}
+
 @Riverpod(keepAlive: true)
 class KeyboardSpeechToText extends _$KeyboardSpeechToText {
   @override
@@ -501,6 +525,8 @@ class KeyboardSpeechToText extends _$KeyboardSpeechToText {
       onError: (val) => debugPrint('onError: $val'),
     );
   }
+
+  Future<List<LocaleName>> locales() async => state.locales();
 
   Future<void> stop() async {
     ref.read(keyboardSpeechToTextIsListeningProvider.notifier).dismiss();
