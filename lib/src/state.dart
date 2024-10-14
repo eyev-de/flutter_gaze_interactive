@@ -488,7 +488,7 @@ class KeyboardSpeechToTextStatus extends _$KeyboardSpeechToTextStatus {
   void status({required KeyboardTextFieldStatus status}) => state = status;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class KeyboardSpeechToTextLocales extends _$KeyboardSpeechToTextLocales {
   @override
   AsyncValue<List<LocaleName>> build() {
@@ -503,7 +503,7 @@ class KeyboardSpeechToTextLocales extends _$KeyboardSpeechToTextLocales {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class KeyboardSpeechToTextLocale extends _$KeyboardSpeechToTextLocale {
   @override
   String build() => Platform.localeName.replaceAll('_', '-');
@@ -520,10 +520,13 @@ class KeyboardSpeechToText extends _$KeyboardSpeechToText {
   }
 
   Future<bool> init() async {
-    return state.initialize(
-      onStatus: (val) => debugPrint('onStatus: $val'),
-      onError: (val) => debugPrint('onError: $val'),
-    );
+    // initialize
+    final initialized = await state.initialize(onStatus: (val) => debugPrint('onStatus: $val'), onError: (val) => debugPrint('onError: $val'));
+    // check current locale
+    final currentLocale = ref.read(keyboardSpeechToTextLocaleProvider);
+    final locales = await state.locales();
+    final available = locales.any((locale) => locale.localeId == (currentLocale == 'en-UK' ? 'en-GB' : currentLocale));
+    return initialized && available;
   }
 
   Future<List<LocaleName>> locales() async => state.locales();
@@ -533,7 +536,8 @@ class KeyboardSpeechToText extends _$KeyboardSpeechToText {
     await state.stop();
   }
 
-  Future<void> listen({String locale = 'en-EN', required TextEditingController controller}) async {
+  Future<void> listen({required TextEditingController controller}) async {
+    final locale = ref.read(keyboardSpeechToTextLocaleProvider);
     await state.listen(
       localeId: locale,
       listenOptions: SpeechListenOptions(listenMode: ListenMode.dictation, autoPunctuation: true, cancelOnError: true),

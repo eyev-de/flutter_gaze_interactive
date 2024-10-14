@@ -70,8 +70,7 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
               ref.read(keyboardSpeechToTextStatusProvider.notifier).status(status: status);
               ref.read(keyboardSpeechToTextIsListeningProvider.notifier).listen();
               ref.read(state.disableStateProvider.notifier).state = true;
-              final locale = ref.read(keyboardSpeechToTextLocaleProvider);
-              await ref.read(keyboardSpeechToTextProvider.notifier).listen(locale: locale, controller: state.controller);
+              await ref.read(keyboardSpeechToTextProvider.notifier).listen(controller: state.controller);
             } else {
               ref.read(state.disableStateProvider.notifier).state = false;
               await ref.read(keyboardSpeechToTextProvider.notifier).stop();

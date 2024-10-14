@@ -124,11 +124,11 @@ final keyboardSpeechToTextStatusProvider = AutoDisposeNotifierProvider<
 typedef _$KeyboardSpeechToTextStatus
     = AutoDisposeNotifier<KeyboardTextFieldStatus?>;
 String _$keyboardSpeechToTextLocalesHash() =>
-    r'f41bca94ce45128639899e14e65299d922e50075';
+    r'540fffee052b22becae3048463367bf0bf36abc6';
 
 /// See also [KeyboardSpeechToTextLocales].
 @ProviderFor(KeyboardSpeechToTextLocales)
-final keyboardSpeechToTextLocalesProvider = AutoDisposeNotifierProvider<
+final keyboardSpeechToTextLocalesProvider = NotifierProvider<
     KeyboardSpeechToTextLocales, AsyncValue<List<LocaleName>>>.internal(
   KeyboardSpeechToTextLocales.new,
   name: r'keyboardSpeechToTextLocalesProvider',
@@ -139,15 +139,14 @@ final keyboardSpeechToTextLocalesProvider = AutoDisposeNotifierProvider<
   allTransitiveDependencies: null,
 );
 
-typedef _$KeyboardSpeechToTextLocales
-    = AutoDisposeNotifier<AsyncValue<List<LocaleName>>>;
+typedef _$KeyboardSpeechToTextLocales = Notifier<AsyncValue<List<LocaleName>>>;
 String _$keyboardSpeechToTextLocaleHash() =>
-    r'80ecaadd05bd41dda076b97a582eab75753d474f';
+    r'29317a8fc5a0360bbf3c89a8dfb9751d814c08bf';
 
 /// See also [KeyboardSpeechToTextLocale].
 @ProviderFor(KeyboardSpeechToTextLocale)
 final keyboardSpeechToTextLocaleProvider =
-    AutoDisposeNotifierProvider<KeyboardSpeechToTextLocale, String>.internal(
+    NotifierProvider<KeyboardSpeechToTextLocale, String>.internal(
   KeyboardSpeechToTextLocale.new,
   name: r'keyboardSpeechToTextLocaleProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -157,9 +156,9 @@ final keyboardSpeechToTextLocaleProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$KeyboardSpeechToTextLocale = AutoDisposeNotifier<String>;
+typedef _$KeyboardSpeechToTextLocale = Notifier<String>;
 String _$keyboardSpeechToTextHash() =>
-    r'ee49297994527bf17e7cb16064bcdda4300a2108';
+    r'5b523dd7c07272b37d0c85a3c0b0a9d1b7c2ac86';
 
 /// See also [KeyboardSpeechToText].
 @ProviderFor(KeyboardSpeechToText)
