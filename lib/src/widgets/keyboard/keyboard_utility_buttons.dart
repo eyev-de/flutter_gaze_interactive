@@ -87,12 +87,19 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool disabled = false;
+    if (state != null) {
+      disabled = ref.watch(state!.disableStateProvider);
+    }
+
     const double size = 20;
+    final buttonColor = disabled ? disabledBaseButtonColor : backgroundColor ?? tealColor.disabled;
+    final signColor = buttonColor.onColor(disabled: disabled);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       child: GazeButton(
         onTap: () => onTap?.call(), // should not be null -> avoid disabled state
-        color: backgroundColor ?? tealColor.disabled,
+        color: buttonColor,
         properties: GazeButtonProperties(
           route: route,
           withSound: true,
@@ -101,11 +108,11 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
           innerPadding: innerPadding,
           gazeInteractive: gazeInteractive,
           direction: horizontal ? Axis.horizontal : Axis.vertical,
-          icon: Icon(icon, color: iconColor ?? Colors.white, size: size),
+          icon: Icon(icon, color: iconColor ?? signColor, size: size),
           text: text != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: FittedBox(fit: BoxFit.fitHeight, child: Text(text!, style: textStyle)),
+                  child: FittedBox(fit: BoxFit.fitHeight, child: Text(text!, style: textStyle?.copyWith(color: signColor))),
                 )
               : null,
         ),

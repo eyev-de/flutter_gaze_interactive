@@ -18,9 +18,7 @@ class MoveCursorLeftButton extends GazeKeyboardUtilityButton {
       reselectable: true,
       route: state.route,
       icon: Icons.arrow_back,
-      iconColor: disabled ? textDisabledColor : null,
       gazeInteractive: disabled == false,
-      textStyle: TextStyle(color: disabled ? textDisabledColor : null),
       onTap: disabled
           ? null
           : () {

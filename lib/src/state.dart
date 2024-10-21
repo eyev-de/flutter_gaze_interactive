@@ -23,13 +23,9 @@ import 'core/local_store_notifiers.dart';
 
 part 'state.g.dart';
 
-final clickSoundSource = AssetSource('packages/gaze_interactive/lib/assets/click.mp3');
-final player = AudioPlayer()..setSource(clickSoundSource);
-
 class GazeInteractive {
   factory GazeInteractive() {
     AudioCache.instance.prefix = '';
-    unawaited(player.setVolume(1));
     return _instance;
   }
 
@@ -93,6 +89,14 @@ class GazeInteractive {
 
   late final recoverTime = StateNotifierProvider<GazeInteractiveRecoverTimeLocalNotifier, int>((ref) {
     return GazeInteractiveRecoverTimeLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final clickSoundVolume = StateNotifierProvider<GazeInteractiveClickSoundVolumeLocalNotifier, int>((ref) {
+    return GazeInteractiveClickSoundVolumeLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final clickSoundType = StateNotifierProvider<GazeInteractiveClickSoundTypeLocalNotifier, String>((ref) {
+    return GazeInteractiveClickSoundTypeLocalNotifier(ref.read(sharedPreferencesProvider));
   });
 
   late final reselectionAcceleration = StateNotifierProvider<GazeInteractiveReselectionAccelerationNotifier, double>((ref) {
