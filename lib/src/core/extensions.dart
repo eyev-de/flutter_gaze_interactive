@@ -3,10 +3,13 @@
 //  Created by the eyeV app dev team.
 //  Copyright © eyeV GmbH. All rights reserved.
 //
+import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../api.dart';
 
@@ -200,4 +203,18 @@ extension IndexedIterable<E> on Iterable<E> {
     var i = 0;
     return map((e) => f(e, i++));
   }
+}
+
+extension LocaleNameExtension on LocaleName {
+  bool get equalsSystemLocale => localeId == Platform.localeName.replaceAll('_', '-');
+
+  String get language {
+    final match = RegExp(r'^\S+').firstMatch(name);
+    if (match == null) return '';
+    return match.group(0) ?? '';
+  }
+}
+
+extension ListLocaleNameExtension on List<LocaleName> {
+  LocaleName? get systemLocaleName => firstWhereOrNull((locale) => locale.equalsSystemLocale);
 }

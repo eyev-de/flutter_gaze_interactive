@@ -12,13 +12,7 @@ import 'package:flutter/material.dart';
 import '../../../api.dart';
 import '../../core/extensions.dart';
 
-enum Language {
-  german,
-  english;
-
-  // TODO(dev): Enable other languages to be recognised as well
-  String get speechLocale => this == Language.german ? 'de-DE' : 'en-EN';
-}
+enum Language { german, english }
 
 enum KeyboardPlatformType { mobile, desktop }
 
