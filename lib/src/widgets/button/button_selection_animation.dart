@@ -4,7 +4,6 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -67,7 +66,6 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   late AnimationController _controller;
   late Animation<Color?> _colorTween;
-  Timer? _timer;
   late int _recoverTime;
   late int _duration;
   bool gazeIn = false;
@@ -82,14 +80,13 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   void _initAnimation() {
     _reselectionCount = 0;
-    _recoverTime = widget.properties.recoverMs ?? ref.read(GazeInteractive().recoverTime);
     _duration = widget.properties.durationMs ?? ref.read(GazeInteractive().duration);
+    _recoverTime = widget.properties.recoverMs ?? ref.read(GazeInteractive().recoverTime);
     _controller = AnimationController(
       duration: Duration(milliseconds: _duration),
       vsync: this,
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          _timer?.cancel();
           if (mounted) {
             _controller.reset();
             if (widget.properties.reselectable) {
@@ -194,14 +191,12 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   @override
   void deactivate() {
-    _timer?.cancel();
     GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
     super.deactivate();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
     if (mounted) _controller.dispose();
     super.dispose();
   }
@@ -213,22 +208,22 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
         route: widget.properties.route,
         snappable: widget.properties.snappable,
         onGazeEnter: () {
-          _timer?.cancel();
           if (mounted) {
             setState(() => gazeIn = true);
-            _controller.forward();
+            _duration = widget.properties.durationMs ?? ref.read(GazeInteractive().duration);
+            _controller
+              ..duration = Duration(milliseconds: _duration)
+              ..forward();
           }
         },
         onGazeLeave: () {
           if (mounted) {
             setState(() => gazeIn = false);
-            _controller.stop();
-            _duration = widget.properties.durationMs ?? ref.read(GazeInteractive().duration);
-            _controller.duration = Duration(milliseconds: _duration);
+            _recoverTime = widget.properties.recoverMs ?? ref.read(GazeInteractive().recoverTime);
+            _controller
+              ..duration = Duration(milliseconds: _recoverTime)
+              ..reverse();
           }
-          _timer = Timer(Duration(milliseconds: _recoverTime), () {
-            if (mounted) _controller.reset();
-          });
         },
       ),
     );
