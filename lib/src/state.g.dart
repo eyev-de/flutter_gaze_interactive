@@ -157,6 +157,23 @@ final keyboardSpeechToTextLocaleProvider =
 );
 
 typedef _$KeyboardSpeechToTextLocale = Notifier<String>;
+String _$buttonMaybePlaySoundHash() =>
+    r'503abb81bd8b45b62b0c4987160ff7ff0b05ba5c';
+
+/// See also [ButtonMaybePlaySound].
+@ProviderFor(ButtonMaybePlaySound)
+final buttonMaybePlaySoundProvider =
+    AutoDisposeNotifierProvider<ButtonMaybePlaySound, void>.internal(
+  ButtonMaybePlaySound.new,
+  name: r'buttonMaybePlaySoundProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$buttonMaybePlaySoundHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$ButtonMaybePlaySound = AutoDisposeNotifier<void>;
 String _$keyboardSpeechToTextHash() =>
     r'5b523dd7c07272b37d0c85a3c0b0a9d1b7c2ac86';
 

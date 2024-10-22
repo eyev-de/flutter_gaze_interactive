@@ -84,6 +84,7 @@ class GazeButton extends ConsumerWidget {
     final disabledColor = color == Colors.transparent ? color : color.withOpacity(0.3);
     final volume = properties.withSound ? SoundVolume.getByNumber(ref.read(GazeInteractive().clickSoundVolume)) : SoundVolume.val0;
     final type = SoundType.getByName(ref.read(GazeInteractive().clickSoundType));
+    if (properties.withSound) ref.read(buttonMaybePlaySoundProvider.notifier).playClickSound();
     return GazeSelectionAnimation(
       onGazed: onTap != null ? () => {unawaited(_maybePlaySound(volume, type)), onTap!()} : null,
       wrappedKey: GlobalKey(),

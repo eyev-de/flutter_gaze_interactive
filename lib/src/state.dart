@@ -20,6 +20,7 @@ import 'package:speech_to_text/speech_to_text.dart';
 import '../api.dart';
 import 'core/extensions.dart';
 import 'core/local_store_notifiers.dart';
+import 'core/sound_player.util.dart';
 
 part 'state.g.dart';
 
@@ -513,6 +514,18 @@ class KeyboardSpeechToTextLocale extends _$KeyboardSpeechToTextLocale {
   String build() => Platform.localeName.replaceAll('_', '-');
 
   set locale(String value) => state = value;
+}
+
+@riverpod
+class ButtonMaybePlaySound extends _$ButtonMaybePlaySound {
+  @override
+  void build() {}
+
+  Future<void> playClickSound({bool defaultVolume = false}) async {
+    final volume = SoundVolume.getByNumber(ref.read(GazeInteractive().clickSoundVolume));
+    final type = SoundType.getByName(ref.read(GazeInteractive().clickSoundType));
+    await SoundPlayerUtil.playClickSound(defaultVolume ? SoundVolume.getDefault() : volume, type);
+  }
 }
 
 @Riverpod(keepAlive: true)
