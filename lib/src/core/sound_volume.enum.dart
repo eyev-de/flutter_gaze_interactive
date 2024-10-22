@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 
 enum SoundVolume {
-  val0(0, Icon(CupertinoIcons.speaker_slash)),
-  val3(3, Icon(CupertinoIcons.speaker)),
-  val5(5, Icon(CupertinoIcons.speaker_1)),
-  val7(7, Icon(CupertinoIcons.speaker_2)),
-  val10(10, Icon(CupertinoIcons.speaker_3));
+  val0(0, CupertinoIcons.speaker_slash),
+  val3(3, CupertinoIcons.speaker),
+  val5(5, CupertinoIcons.speaker_1),
+  val7(7, CupertinoIcons.speaker_2),
+  val10(10, CupertinoIcons.speaker_3);
 
-  const SoundVolume(this.value, this.icon);
+  const SoundVolume(this.value, this.iconData);
 
   final int value;
-  final Icon icon;
+  final IconData iconData;
 
   static SoundVolume getDefault() => val5;
 
