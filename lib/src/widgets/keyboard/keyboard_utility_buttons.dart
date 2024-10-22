@@ -87,11 +87,7 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool disabled = false;
-    if (state != null) {
-      disabled = ref.watch(state!.disableStateProvider);
-    }
-
+    final disabled = state == null ? false : ref.watch(state!.disableStateProvider);
     const double size = 20;
     final buttonColor = disabled ? disabledBaseButtonColor : backgroundColor ?? tealColor.disabled;
     final signColor = buttonColor.onColor(disabled: disabled);
