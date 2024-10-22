@@ -12,6 +12,8 @@ export 'src/core/element_type.dart' show GazeElementType;
 export 'src/core/extensions.dart' show TextEditingControllerExtension, ListLocaleNameExtension, LocaleNameExtension;
 export 'src/core/scroll_direction.dart' show GazeScrollDirection;
 export 'src/core/sound_player.util.dart';
+export 'src/core/sound_type.enum.dart';
+export 'src/core/sound_volume.enum.dart';
 export 'src/core/text_part_style_controller.dart' show StyleableTextFieldController, TextPartStyleDefinition, TextPartStyleDefinitions;
 export 'src/state.dart';
 export 'src/widgets/button/button.dart' show GazeButton, GazeButtonProperties, GazeButtonTapTypes;
