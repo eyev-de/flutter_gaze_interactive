@@ -517,15 +517,10 @@ class KeyboardSpeechToTextLocale extends _$KeyboardSpeechToTextLocale {
 }
 
 @riverpod
-class ButtonMaybePlaySound extends _$ButtonMaybePlaySound {
-  @override
-  void build() {}
-
-  Future<void> playClickSound({bool defaultVolume = false}) async {
-    final volume = SoundVolume.getByNumber(ref.read(GazeInteractive().clickSoundVolume));
-    final type = SoundType.getByName(ref.read(GazeInteractive().clickSoundType));
-    await SoundPlayerUtil.playClickSound(defaultVolume ? SoundVolume.getDefault() : volume, type);
-  }
+Future<void> buttonMaybePlaySound(ButtonMaybePlaySoundRef ref, {bool defaultVolume = false}) async {
+  final volume = SoundVolume.getByNumber(ref.read(GazeInteractive().clickSoundVolume));
+  final type = SoundType.getByName(ref.read(GazeInteractive().clickSoundType));
+  await SoundPlayerUtil.playClickSound(defaultVolume ? SoundVolume.getDefault() : volume, type);
 }
 
 @Riverpod(keepAlive: true)

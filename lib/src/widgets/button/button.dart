@@ -4,14 +4,9 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/sound_player.util.dart';
-import '../../core/sound_type.enum.dart';
-import '../../core/sound_volume.enum.dart';
 import '../../state.dart';
 import 'button_selection_animation.dart';
 
@@ -82,13 +77,24 @@ class GazeButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final disabledColor = color == Colors.transparent ? color : color.withOpacity(0.3);
-    final volume = properties.withSound ? SoundVolume.getByNumber(ref.read(GazeInteractive().clickSoundVolume)) : SoundVolume.val0;
-    final type = SoundType.getByName(ref.read(GazeInteractive().clickSoundType));
-    if (properties.withSound) ref.read(buttonMaybePlaySoundProvider.notifier).playClickSound();
     return GazeSelectionAnimation(
-      onGazed: onTap != null ? () => {unawaited(_maybePlaySound(volume, type)), onTap!()} : null,
+      onGazed: onTap != null
+          ? () {
+              if (properties.withSound) ref.read(buttonMaybePlaySoundProvider());
+              onTap!();
+            }
+          : null,
       wrappedKey: GlobalKey(),
-      wrappedWidget: _Button(properties: properties, onTap: onTap != null ? () => {unawaited(_maybePlaySound(volume, type)), onTap!()} : null, child: child),
+      wrappedWidget: _Button(
+        properties: properties,
+        onTap: onTap != null
+            ? () {
+                if (properties.withSound) ref.read(buttonMaybePlaySoundProvider());
+                onTap!();
+              }
+            : null,
+        child: child,
+      ),
       properties: GazeSelectionAnimationProperties(
         backgroundColor: onTap != null ? color : disabledColor,
         route: properties.route,
@@ -104,10 +110,6 @@ class GazeButton extends ConsumerWidget {
         snappable: properties.snappable,
       ),
     );
-  }
-
-  Future<void> _maybePlaySound(SoundVolume volume, SoundType soundType) async {
-    await SoundPlayerUtil.playClickSound(volume, soundType);
   }
 }
 
