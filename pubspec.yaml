@@ -32,8 +32,8 @@ dev_dependencies:
   riverpod_generator: ^2.4.2
   json_serializable: ^6.8.0
 
-
 flutter:
   assets:
     - lib/assets/
     - lib/assets/click.mp3
+    - lib/assets/space_click.m4a

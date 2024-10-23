@@ -20,16 +20,13 @@ import 'package:speech_to_text/speech_to_text.dart';
 import '../api.dart';
 import 'core/extensions.dart';
 import 'core/local_store_notifiers.dart';
+import 'core/sound_player.util.dart';
 
 part 'state.g.dart';
-
-final clickSoundSource = AssetSource('packages/gaze_interactive/lib/assets/click.mp3');
-final player = AudioPlayer()..setSource(clickSoundSource);
 
 class GazeInteractive {
   factory GazeInteractive() {
     AudioCache.instance.prefix = '';
-    unawaited(player.setVolume(1));
     return _instance;
   }
 
@@ -93,6 +90,14 @@ class GazeInteractive {
 
   late final recoverTime = StateNotifierProvider<GazeInteractiveRecoverTimeLocalNotifier, int>((ref) {
     return GazeInteractiveRecoverTimeLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final clickSoundVolume = StateNotifierProvider<GazeInteractiveClickSoundVolumeLocalNotifier, int>((ref) {
+    return GazeInteractiveClickSoundVolumeLocalNotifier(ref.read(sharedPreferencesProvider));
+  });
+
+  late final clickSoundType = StateNotifierProvider<GazeInteractiveClickSoundTypeLocalNotifier, String>((ref) {
+    return GazeInteractiveClickSoundTypeLocalNotifier(ref.read(sharedPreferencesProvider));
   });
 
   late final reselectionAcceleration = StateNotifierProvider<GazeInteractiveReselectionAccelerationNotifier, double>((ref) {
@@ -509,6 +514,13 @@ class KeyboardSpeechToTextLocale extends _$KeyboardSpeechToTextLocale {
   String build() => Platform.localeName.replaceAll('_', '-');
 
   set locale(String value) => state = value;
+}
+
+@riverpod
+Future<void> buttonMaybePlaySound(ButtonMaybePlaySoundRef ref, {bool defaultVolume = false}) async {
+  final volume = SoundVolume.getByNumber(ref.read(GazeInteractive().clickSoundVolume));
+  final type = SoundType.getByName(ref.read(GazeInteractive().clickSoundType));
+  await SoundPlayerUtil.playClickSound(defaultVolume ? SoundVolume.getDefault() : volume, type);
 }
 
 @Riverpod(keepAlive: true)

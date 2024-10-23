@@ -68,6 +68,16 @@ class GazeInteractiveRecoverTimeLocalNotifier extends LocalStoreNotifier<int> {
       : super(sharedPreferences, 'gazeInteractiveRecoverTime', gazeInteractiveDefaultRecoverTime);
 }
 
+class GazeInteractiveClickSoundVolumeLocalNotifier extends LocalStoreNotifier<int> {
+  GazeInteractiveClickSoundVolumeLocalNotifier(SharedPreferences sharedPreferences)
+      : super(sharedPreferences, 'gazeInteractiveClickSoundVolume', gazeInteractiveDefaultClickSoundVolume);
+}
+
+class GazeInteractiveClickSoundTypeLocalNotifier extends LocalStoreNotifier<String> {
+  GazeInteractiveClickSoundTypeLocalNotifier(SharedPreferences sharedPreferences)
+      : super(sharedPreferences, 'gazeInteractiveClickSoundType', gazeInteractiveDefaultClickSoundType);
+}
+
 // factor to increase gaze duration on a button when re-selecting by staying on the button (if reselectable = true)
 class GazeInteractiveReselectionAccelerationNotifier extends LocalStoreNotifier<double> {
   GazeInteractiveReselectionAccelerationNotifier(SharedPreferences sharedPreferences)
