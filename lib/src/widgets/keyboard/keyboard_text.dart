@@ -94,6 +94,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
               child: CupertinoTextField(
                 key: cupertinoTextFieldKey,
                 showCursor: true,
+                autofocus: true,
                 minLines: 1,
                 undoController: widget.state.undoHistoryController,
                 maxLines: widget.maxLines,

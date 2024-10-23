@@ -18,6 +18,9 @@ const gazeInteractiveDefaultRecoverTime = 3000;
 const gazeInteractiveMinRecoverTime = 1500; // Not validated
 const gazeInteractiveMaxRecoverTime = 3000; // Not validated
 
+const gazeInteractiveDefaultClickSoundVolume = 5;
+const gazeInteractiveDefaultClickSoundType = 'Typewriter';
+
 /// Gaze Pointer Settings
 const gazeInteractiveDefaultPointerColorPassive = 'FFBF6E'; // Colors.yellow
 const gazeInteractiveDefaultPointerColorActive = 'AD1457'; // Colors.pink
@@ -61,3 +64,4 @@ const deleteButtonTextColor = Colors.white;
 const textDisabledColor = Color(0x80ffffff);
 const tealColor = Color(0xFFACE0D4);
 const surfaceColor = Color(0xFF012D35);
+const disabledBaseButtonColor = Color(0xFF091E23);

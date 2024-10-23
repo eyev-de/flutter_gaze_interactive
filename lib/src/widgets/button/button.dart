@@ -4,10 +4,8 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
-import 'dart:async';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../state.dart';
 import 'button_selection_animation.dart';
@@ -64,7 +62,7 @@ class GazeButtonProperties {
   final int? animationDuration;
 }
 
-class GazeButton extends StatelessWidget {
+class GazeButton extends ConsumerWidget {
   GazeButton({super.key, required this.properties, this.child, this.color = Colors.transparent, this.onTap})
       : assert(
           (child == null || properties.text == null) && (child == null || properties.icon == null),
@@ -77,12 +75,26 @@ class GazeButton extends StatelessWidget {
   final void Function()? onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final disabledColor = color == Colors.transparent ? color : color.withOpacity(0.3);
     return GazeSelectionAnimation(
-      onGazed: onTap != null ? () => {unawaited(_maybePlaySound()), onTap!()} : null,
+      onGazed: onTap != null
+          ? () {
+              if (properties.withSound) ref.read(buttonMaybePlaySoundProvider());
+              onTap!();
+            }
+          : null,
       wrappedKey: GlobalKey(),
-      wrappedWidget: _Button(properties: properties, onTap: onTap != null ? () => {unawaited(_maybePlaySound()), onTap!()} : null, child: child),
+      wrappedWidget: _Button(
+        properties: properties,
+        onTap: onTap != null
+            ? () {
+                if (properties.withSound) ref.read(buttonMaybePlaySoundProvider());
+                onTap!();
+              }
+            : null,
+        child: child,
+      ),
       properties: GazeSelectionAnimationProperties(
         backgroundColor: onTap != null ? color : disabledColor,
         route: properties.route,
@@ -98,12 +110,6 @@ class GazeButton extends StatelessWidget {
         snappable: properties.snappable,
       ),
     );
-  }
-
-  Future<void> _maybePlaySound() async {
-    if (properties.withSound == false) return;
-    if (player.state == PlayerState.playing) await player.stop();
-    await player.play(clickSoundSource);
   }
 }
 
