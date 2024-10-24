@@ -22,6 +22,7 @@ class GazeButtonProperties {
     this.borderWidth = 3,
     this.animationDuration,
     this.recoverDuration,
+    this.maxTextLines = 1,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.innerPadding = const EdgeInsets.all(20),
     this.direction = Axis.vertical,
@@ -44,6 +45,9 @@ class GazeButtonProperties {
   final EdgeInsets? iconPadding;
   final Color? borderColor;
   final double borderWidth;
+  final int? animationDuration;
+  final int? recoverDuration;
+  final int maxTextLines;
   final BorderRadius borderRadius;
   final EdgeInsets innerPadding;
   final Axis direction;
@@ -58,8 +62,6 @@ class GazeButtonProperties {
   final bool reselectable;
   final bool snappable;
   final bool withSound;
-  final int? recoverDuration;
-  final int? animationDuration;
 }
 
 class GazeButton extends ConsumerWidget {
@@ -174,12 +176,14 @@ class _ButtonChild extends StatelessWidget {
         children: [
           if (properties.icon != null) Padding(padding: properties.iconPadding ?? padding, child: properties.icon),
           if (properties.text != null)
-            DefaultTextStyle.merge(
-              style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              child: properties.text!,
+            Flexible(
+              child: DefaultTextStyle.merge(
+                style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: properties.maxTextLines,
+                child: properties.text!,
+              ),
             )
         ],
       ),
