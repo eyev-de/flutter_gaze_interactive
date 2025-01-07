@@ -174,7 +174,7 @@ class _SwitchButtonToggleWithDelayProviderElement
 }
 
 String _$switchButtonChangedHash() =>
-    r'8837df6211634879324e30b49a4d436067993107';
+    r'6f647605224b7827a5ffd198be9eae756c4ce8ca';
 
 abstract class _$SwitchButtonChanged
     extends BuildlessAutoDisposeNotifier<bool?> {

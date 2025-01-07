@@ -21,7 +21,8 @@ mixin _$GazePointerState {
       throw _privateConstructorUsedError; // ignore gesture on pointer
   bool get ignorePointer =>
       throw _privateConstructorUsedError; // ignore gesture on pointer
-  double? get absoluteOpacityValue =>
+  double? get absoluteOpacityValue => throw _privateConstructorUsedError;
+  bool get canLeaveBounds =>
       throw _privateConstructorUsedError; // action on pointer
   GazePointerAction get action => throw _privateConstructorUsedError;
   dynamic Function(Offset)? get onAction => throw _privateConstructorUsedError;
@@ -43,6 +44,7 @@ abstract class $GazePointerStateCopyWith<$Res> {
       {GazePointerType type,
       bool ignorePointer,
       double? absoluteOpacityValue,
+      bool canLeaveBounds,
       GazePointerAction action,
       dynamic Function(Offset)? onAction});
 }
@@ -65,6 +67,7 @@ class _$GazePointerStateCopyWithImpl<$Res, $Val extends GazePointerState>
     Object? type = null,
     Object? ignorePointer = null,
     Object? absoluteOpacityValue = freezed,
+    Object? canLeaveBounds = null,
     Object? action = null,
     Object? onAction = freezed,
   }) {
@@ -81,6 +84,10 @@ class _$GazePointerStateCopyWithImpl<$Res, $Val extends GazePointerState>
           ? _value.absoluteOpacityValue
           : absoluteOpacityValue // ignore: cast_nullable_to_non_nullable
               as double?,
+      canLeaveBounds: null == canLeaveBounds
+          ? _value.canLeaveBounds
+          : canLeaveBounds // ignore: cast_nullable_to_non_nullable
+              as bool,
       action: null == action
           ? _value.action
           : action // ignore: cast_nullable_to_non_nullable
@@ -105,6 +112,7 @@ abstract class _$$GazePointerStateImplCopyWith<$Res>
       {GazePointerType type,
       bool ignorePointer,
       double? absoluteOpacityValue,
+      bool canLeaveBounds,
       GazePointerAction action,
       dynamic Function(Offset)? onAction});
 }
@@ -125,6 +133,7 @@ class __$$GazePointerStateImplCopyWithImpl<$Res>
     Object? type = null,
     Object? ignorePointer = null,
     Object? absoluteOpacityValue = freezed,
+    Object? canLeaveBounds = null,
     Object? action = null,
     Object? onAction = freezed,
   }) {
@@ -141,6 +150,10 @@ class __$$GazePointerStateImplCopyWithImpl<$Res>
           ? _value.absoluteOpacityValue
           : absoluteOpacityValue // ignore: cast_nullable_to_non_nullable
               as double?,
+      canLeaveBounds: null == canLeaveBounds
+          ? _value.canLeaveBounds
+          : canLeaveBounds // ignore: cast_nullable_to_non_nullable
+              as bool,
       action: null == action
           ? _value.action
           : action // ignore: cast_nullable_to_non_nullable
@@ -160,6 +173,7 @@ class _$GazePointerStateImpl extends _GazePointerState {
       {this.type = GazePointerType.passive,
       this.ignorePointer = false,
       this.absoluteOpacityValue = null,
+      this.canLeaveBounds = false,
       this.action = GazePointerAction.click,
       this.onAction})
       : super._();
@@ -176,6 +190,9 @@ class _$GazePointerStateImpl extends _GazePointerState {
   @override
   @JsonKey()
   final double? absoluteOpacityValue;
+  @override
+  @JsonKey()
+  final bool canLeaveBounds;
 // action on pointer
   @override
   @JsonKey()
@@ -185,7 +202,7 @@ class _$GazePointerStateImpl extends _GazePointerState {
 
   @override
   String toString() {
-    return 'GazePointerState(type: $type, ignorePointer: $ignorePointer, absoluteOpacityValue: $absoluteOpacityValue, action: $action, onAction: $onAction)';
+    return 'GazePointerState(type: $type, ignorePointer: $ignorePointer, absoluteOpacityValue: $absoluteOpacityValue, canLeaveBounds: $canLeaveBounds, action: $action, onAction: $onAction)';
   }
 
   @override
@@ -198,14 +215,16 @@ class _$GazePointerStateImpl extends _GazePointerState {
                 other.ignorePointer == ignorePointer) &&
             (identical(other.absoluteOpacityValue, absoluteOpacityValue) ||
                 other.absoluteOpacityValue == absoluteOpacityValue) &&
+            (identical(other.canLeaveBounds, canLeaveBounds) ||
+                other.canLeaveBounds == canLeaveBounds) &&
             (identical(other.action, action) || other.action == action) &&
             (identical(other.onAction, onAction) ||
                 other.onAction == onAction));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, type, ignorePointer, absoluteOpacityValue, action, onAction);
+  int get hashCode => Object.hash(runtimeType, type, ignorePointer,
+      absoluteOpacityValue, canLeaveBounds, action, onAction);
 
   /// Create a copy of GazePointerState
   /// with the given fields replaced by the non-null parameter values.
@@ -222,6 +241,7 @@ abstract class _GazePointerState extends GazePointerState {
       {final GazePointerType type,
       final bool ignorePointer,
       final double? absoluteOpacityValue,
+      final bool canLeaveBounds,
       final GazePointerAction action,
       final dynamic Function(Offset)? onAction}) = _$GazePointerStateImpl;
   _GazePointerState._() : super._();
@@ -232,7 +252,9 @@ abstract class _GazePointerState extends GazePointerState {
   @override
   bool get ignorePointer; // ignore gesture on pointer
   @override
-  double? get absoluteOpacityValue; // action on pointer
+  double? get absoluteOpacityValue;
+  @override
+  bool get canLeaveBounds; // action on pointer
   @override
   GazePointerAction get action;
   @override

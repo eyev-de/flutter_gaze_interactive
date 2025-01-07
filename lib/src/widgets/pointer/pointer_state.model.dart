@@ -20,6 +20,8 @@ class GazePointerState with _$GazePointerState {
     @Default(false) bool ignorePointer,
     // ignore gesture on pointer
     @Default(null) double? absoluteOpacityValue,
+    // can leave the view bounds, used for windows on desktop platforms that are partially interactive
+    @Default(false) bool canLeaveBounds,
     // action on pointer
     @Default(GazePointerAction.click) GazePointerAction action,
     Function(Offset)? onAction,

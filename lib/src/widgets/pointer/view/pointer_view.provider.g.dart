@@ -7,7 +7,7 @@ part of 'pointer_view.provider.dart';
 // **************************************************************************
 
 String _$pointerAnimationControllerHash() =>
-    r'ed5780ae4a596257bd0c145f2b5fc6937f52acd6';
+    r'6e071f419b81615ab7f6403e91282cf6b658bd32';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -347,7 +347,7 @@ final pointerIsMovingProvider =
 );
 
 typedef _$PointerIsMoving = AutoDisposeNotifier<bool>;
-String _$pointerOpacityHash() => r'5636a53ae27c38e0ef9bbb378b41ca8e07553ce4';
+String _$pointerOpacityHash() => r'727d06f62551cab2f88e727bb0ec4e7794ea245f';
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
 ///
@@ -365,7 +365,7 @@ final pointerOpacityProvider =
 );
 
 typedef _$PointerOpacity = AutoDisposeNotifier<double>;
-String _$pointerColorHash() => r'2a932c21f10c317d29204a849a0ce2c0b8311deb';
+String _$pointerColorHash() => r'48c839ee1718a4ed70cb5c8b223875b8a188886c';
 
 abstract class _$PointerColor extends BuildlessAutoDisposeNotifier<Color> {
   late final GazePointerType type;
@@ -507,7 +507,7 @@ class _PointerColorProviderElement
   GazePointerType get type => (origin as PointerColorProvider).type;
 }
 
-String _$pointerSizeHash() => r'0a869ad6583a1631ee8d72b4dfda9e19dffa13bf';
+String _$pointerSizeHash() => r'c609367a1ce0ed7d2ac7e43aa480e20f4c5b4ad9';
 
 abstract class _$PointerSize extends BuildlessAutoDisposeNotifier<double> {
   late final GazePointerType type;
@@ -697,7 +697,7 @@ final pointerHistoryProvider = AutoDisposeNotifierProvider<PointerHistory,
 typedef _$PointerHistory
     = AutoDisposeNotifier<Queue<(GlobalKey key, Offset offset)>>;
 String _$pointerFixationPointHash() =>
-    r'f46a0a2eda2db84cc179dc2eb436781c520f71d3';
+    r'30365f0aa87b69a9e8a75ddc90185455ffd4a71a';
 
 /// Gaze Pointer Fixation Point
 ///
@@ -715,7 +715,7 @@ final pointerFixationPointProvider =
 );
 
 typedef _$PointerFixationPoint = Notifier<Offset>;
-String _$snapElementHash() => r'a111b876829fe178b4dc947c065cbeedf6ee9e84';
+String _$snapElementHash() => r'ddf6ae096ef462be6329f6d12129fa8b8e5d39cb';
 
 /// Gaze Pointer Snapping Point
 ///
@@ -732,7 +732,7 @@ final snapElementProvider =
 );
 
 typedef _$SnapElement = Notifier<GazeElementData?>;
-String _$snappingStateHash() => r'a7a304f469bef13f422513f5a20d9f8bd68f2fce';
+String _$snappingStateHash() => r'4dbdcdac784cb60eabecf180b809e3289015cec8';
 
 /// Gaze Pointer in snapp mode Point
 ///
@@ -751,7 +751,7 @@ final snappingStateProvider =
 
 typedef _$SnappingState = Notifier<SnapState>;
 String _$pointerFixationRadiusHash() =>
-    r'cb3a8a4204caa0e05d5c01d3415317553325f5ba';
+    r'9b571565e8267bb0ec6475b5227fe8d27c3b18f6';
 
 /// Gaze Pointer Fixation Radius
 ///
@@ -770,7 +770,7 @@ final pointerFixationRadiusProvider =
 
 typedef _$PointerFixationRadius = Notifier<double>;
 String _$pointerSnappingRadiusHash() =>
-    r'1ccf0729b21b413d0e8070565d9424aa8c670b78';
+    r'1a98da0a320a1f8813095aa5ff6d875bd0d54339';
 
 /// Gaze Pointer Snapping Radius
 ///
@@ -789,7 +789,7 @@ final pointerSnappingRadiusProvider =
 
 typedef _$PointerSnappingRadius = AutoDisposeNotifier<double>;
 String _$ignorePointerStateHash() =>
-    r'c44e590e846ae76f62162d00fdceede62c89c7a8';
+    r'fd15cdd57247539445190998e274112b54f62ae5';
 
 /// Indicates if recently snapped and pointer is ignored by mouse
 ///

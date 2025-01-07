@@ -29,14 +29,11 @@ final gazeInteractiveProvider = Provider<GazeInteractiveState>((ref) => throw Un
 class GazeInteractiveState {
   GazeInteractiveState({required this.sharedPreferences, this.logger}) {
     AudioCache.instance.prefix = '';
-    // return _instance;
   }
 
-  // GazeInteractive._internal();
   late WidgetRef ref;
   final Logger? logger;
   final SharedPreferences sharedPreferences;
-  // static final GazeInteractive _instance = GazeInteractive._internal();
 
   PredicateReturnState Function(
     Rect itemRect,
