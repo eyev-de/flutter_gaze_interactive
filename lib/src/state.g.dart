@@ -7,7 +7,7 @@ part of 'state.dart';
 // **************************************************************************
 
 String _$buttonMaybePlaySoundHash() =>
-    r'60568887b377b6e5ffbae511c651204bc3c1cf88';
+    r'f4024cded024e96b44b6536e1b71a534e1e5f5f0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -259,7 +259,7 @@ final keyboardSpeechToTextAvailableProvider =
 
 typedef _$KeyboardSpeechToTextAvailable = Notifier<AsyncValue<bool?>>;
 String _$keyboardSpeechToTextStatusHash() =>
-    r'2d8f951f703a51f31ec7c3345cd47c43e28fa2a1';
+    r'e76435bd1cb1da0658cf46b502e3f907646da181';
 
 /// See also [KeyboardSpeechToTextStatus].
 @ProviderFor(KeyboardSpeechToTextStatus)
@@ -294,7 +294,7 @@ final keyboardSpeechToTextLocalesProvider = NotifierProvider<
 
 typedef _$KeyboardSpeechToTextLocales = Notifier<AsyncValue<List<LocaleName>>>;
 String _$keyboardSpeechToTextLocaleHash() =>
-    r'29317a8fc5a0360bbf3c89a8dfb9751d814c08bf';
+    r'951efbfca4edefae11afdba94bf410fb28037271';
 
 /// See also [KeyboardSpeechToTextLocale].
 @ProviderFor(KeyboardSpeechToTextLocale)

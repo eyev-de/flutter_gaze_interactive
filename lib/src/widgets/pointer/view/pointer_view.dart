@@ -61,9 +61,10 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
     if (mounted && !widget.state.ignorePointer) {
       ref.read(pointerIsMovingProvider.notifier).move();
       final _size = ref.read(pointerSizeProvider(type: widget.state.type));
-      final Offset temp = context.validateGazePointer(offset: gaze - Offset(_size / 2, _size / 2), size: _size);
+      final newPosition = gaze - Offset(_size / 2.0, _size / 2.0);
+      final Offset temp = widget.state.canLeaveBounds ? newPosition : context.validateGazePointer(offset: newPosition, size: _size);
       ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-      gazePointerData.onPointerMove?.call(temp + Offset(_size / 2, _size / 2), Size(_size, _size));
+      gazePointerData.onPointerMove?.call(temp + Offset(_size / 2.0, _size / 2.0), Size(_size, _size));
       if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze)) {
         ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
       }
