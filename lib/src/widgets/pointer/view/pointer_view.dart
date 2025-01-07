@@ -82,7 +82,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   // on fixation -> user focuses on one point
   void _onFixation() {
     if (mounted && widget.state.type == GazePointerType.active && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
-      ref.read(pointerFixationPointProvider.notifier).update(offset: ref.read(pointerOffsetProvider));
+      ref.read(pointerFixationPointProvider.notifier).point = ref.read(pointerOffsetProvider);
       ref.read(pointerAnimationControllerProvider(vsync: this)).forward();
     }
   }
@@ -134,12 +134,12 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
         }
       },
     );
-    GazeInteractive().register(gazePointerData);
+    ref.read(gazeInteractiveProvider).register(gazePointerData);
   }
 
   @override
   void deactivate() {
-    GazeInteractive().unregister(key: _wrappedkey, type: GazeElementType.pointer);
+    ref.read(gazeInteractiveProvider).unregister(key: _wrappedkey, type: GazeElementType.pointer);
     super.deactivate();
   }
 
@@ -222,7 +222,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
                   onTap: () {},
                   onTapDown: (details) {
                     if (mounted && kDebugMode) {
-                      GazeInteractive().onFixation();
+                      ref.read(gazeInteractiveProvider).onFixation();
                     }
                   },
                   onTapUp: (details) {
@@ -256,7 +256,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   void callOnGazeNormalized(BuildContext context, Offset globalPosition, double _size) {
     final Offset temp = context.validateGazePointer(offset: globalPosition, size: _size);
     ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-    GazeInteractive().onGaze(temp);
+    ref.read(gazeInteractiveProvider).onGaze(temp);
   }
 
   bool _leftFixationRadius(Offset gaze) {

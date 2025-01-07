@@ -7,17 +7,17 @@
 import 'package:flutter/material.dart';
 
 class TextPartStyleDefinition {
-  final String part;
-  final TextStyle style;
   TextPartStyleDefinition({
     required this.part,
     required this.style,
   });
+  final String part;
+  final TextStyle style;
 }
 
 class TextPartStyleDefinitions {
-  final List<TextPartStyleDefinition> definitionList;
   TextPartStyleDefinitions({required this.definitionList});
+  final List<TextPartStyleDefinition> definitionList;
 }
 
 class StyleableTextFieldController extends TextEditingController {

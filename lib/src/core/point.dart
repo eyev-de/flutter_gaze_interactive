@@ -7,12 +7,12 @@
 import 'dart:math';
 
 class GazePoint {
+  GazePoint({this.x = 0, this.y = 0});
+
   // static const tol = 0.005;
   double x = 0;
   double y = 0;
   int timestamp = DateTime.now().millisecondsSinceEpoch;
-
-  GazePoint({this.x = 0, this.y = 0});
 
   double slope(GazePoint o) {
     return atan((y - o.y).abs() / (x - o.x).abs()) * (180 / pi);

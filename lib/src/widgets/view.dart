@@ -14,14 +14,6 @@ import '../core/scroll_direction.dart';
 import '../state.dart';
 
 class GazeView extends StatelessWidget {
-  final Widget child;
-  final String route;
-  final bool snappable;
-  final void Function()? onGazeEnter;
-  final void Function()? onGazeLeave;
-  final void Function(Offset)? onGaze;
-  final void Function(GazeScrollDirection, double)? onScroll;
-
   const GazeView({
     super.key,
     required this.child,
@@ -33,6 +25,14 @@ class GazeView extends StatelessWidget {
     // GazeViews are in general not snappable
     this.snappable = false,
   });
+
+  final Widget child;
+  final String route;
+  final bool snappable;
+  final void Function()? onGazeEnter;
+  final void Function()? onGazeLeave;
+  final void Function(Offset)? onGaze;
+  final void Function(GazeScrollDirection, double)? onScroll;
 
   @override
   Widget build(BuildContext context) {
@@ -50,16 +50,6 @@ class GazeView extends StatelessWidget {
 }
 
 class GazeViewImpl extends ConsumerStatefulWidget {
-  final GlobalKey wrappedKey;
-  final Widget child;
-  final String route;
-  final bool snappable;
-
-  final void Function()? onGazeEnter;
-  final void Function()? onGazeLeave;
-  final void Function(Offset)? onGaze;
-  final void Function(GazeScrollDirection, double)? onScroll;
-
   const GazeViewImpl({
     required this.wrappedKey,
     required this.child,
@@ -70,6 +60,16 @@ class GazeViewImpl extends ConsumerStatefulWidget {
     this.onScroll,
     required this.snappable,
   }) : super(key: wrappedKey);
+
+  final GlobalKey wrappedKey;
+  final Widget child;
+  final String route;
+  final bool snappable;
+
+  final void Function()? onGazeEnter;
+  final void Function()? onGazeLeave;
+  final void Function(Offset)? onGaze;
+  final void Function(GazeScrollDirection, double)? onScroll;
 
   @override
   _GazeViewImplState createState() => _GazeViewImplState();
@@ -87,40 +87,40 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
 
   @override
   void deactivate() {
-    GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.all);
+    ref.read(gazeInteractiveProvider).unregister(key: widget.wrappedKey, type: GazeElementType.all);
     super.deactivate();
   }
 
   void _register() {
-    GazeInteractive().register(
-      GazeElementData(
-        key: widget.wrappedKey,
-        route: widget.route,
-        snappable: widget.snappable,
-        onGazeEnter: () {
-          if (mounted) {
-            widget.onGazeEnter?.call();
-            setState(() {
-              _active = true;
-            });
-          }
-        },
-        onGazeLeave: () {
-          if (mounted) {
-            widget.onGazeLeave?.call();
-            setState(() {
-              _active = false;
-            });
-          }
-        },
-        onGaze: (gaze) {
-          if (mounted) {
-            widget.onGaze?.call(gaze);
-            _calculate(Rect.fromCenter(center: gaze, width: 3, height: 3));
-          }
-        },
-      ),
-    );
+    ref.read(gazeInteractiveProvider).register(
+          GazeElementData(
+            key: widget.wrappedKey,
+            route: widget.route,
+            snappable: widget.snappable,
+            onGazeEnter: () {
+              if (mounted) {
+                widget.onGazeEnter?.call();
+                setState(() {
+                  _active = true;
+                });
+              }
+            },
+            onGazeLeave: () {
+              if (mounted) {
+                widget.onGazeLeave?.call();
+                setState(() {
+                  _active = false;
+                });
+              }
+            },
+            onGaze: (gaze) {
+              if (mounted) {
+                widget.onGaze?.call(gaze);
+                _calculate(Rect.fromCenter(center: gaze, width: 3, height: 3));
+              }
+            },
+          ),
+        );
   }
 
   Future<void> _calculate(Rect rect) async {
@@ -141,7 +141,7 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
         bounds.bottom,
       );
 
-      final double maxScrollSpeed = ref.read(GazeInteractive().scrollFactor);
+      final double maxScrollSpeed = ref.read(ref.read(gazeInteractiveProvider).scrollFactor);
       // final double maxScrollSpeed = GazeInteractive().scrollFactor;
       if (tempTop.overlaps(rect)) {
         // In top area

@@ -62,27 +62,27 @@ class GazeScrollableImpl extends ConsumerStatefulWidget {
 }
 
 class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
+  _GazeScrollableImplState();
+
   bool _active = false;
   bool _animating = false;
 
   final _upIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
   final _downIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
 
-  _GazeScrollableImplState();
-
   static const double scrollArea = 0.2;
 
   @override
   void initState() {
     super.initState();
-    GazeInteractive().register(
-      GazeScrollableData(
-        key: widget.wrappedKey,
-        route: widget.route,
-        onGazeEnter: () => _active = true,
-        onGazeLeave: () => _active = false,
-      ),
-    );
+    ref.read(gazeInteractiveProvider).register(
+          GazeScrollableData(
+            key: widget.wrappedKey,
+            route: widget.route,
+            onGazeEnter: () => _active = true,
+            onGazeLeave: () => _active = false,
+          ),
+        );
     widget.controller.addListener(_scrollListener);
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       try {
@@ -99,7 +99,7 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
   @override
   void deactivate() {
     // widget.gazeInteractive.removeListener(_listener);
-    GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.scrollable);
+    ref.read(gazeInteractiveProvider).unregister(key: widget.wrappedKey, type: GazeElementType.scrollable);
     widget.controller.removeListener(_scrollListener);
     super.deactivate();
   }
@@ -160,7 +160,7 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
     // calculate bottom area in which scrolling happens
     final tempBottom = Rect.fromLTRB(bounds.left, bounds.bottom - bounds.height * scrollArea, bounds.right, bounds.bottom);
 
-    final double maxScrollSpeed = ref.read(GazeInteractive().scrollFactor);
+    final double maxScrollSpeed = ref.read(ref.read(gazeInteractiveProvider).scrollFactor);
     // final double maxScrollSpeed = widget.gazeInteractive.scrollFactor;
     final _upIndicatorState = ref.read(_upIndicatorProvider);
     final _downIndicatorState = ref.read(_downIndicatorProvider);
@@ -208,7 +208,7 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
     final upIndicatorState = ref.watch(_upIndicatorProvider);
     final downIndicatorState = ref.watch(_downIndicatorProvider);
     final size = Size(widget.indicatorWidth, widget.indicatorHeight);
-    ref.listen(GazeInteractive().currentRectStateProvider, (_, next) => _listener(next));
+    ref.listen(ref.read(gazeInteractiveProvider).currentRectStateProvider, (_, next) => _listener(next));
     return MouseRegion(
       onHover: (event) {
         if (!_active) {

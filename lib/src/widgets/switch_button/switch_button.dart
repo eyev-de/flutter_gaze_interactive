@@ -31,7 +31,8 @@ class SwitchButtonChanged extends _$SwitchButtonChanged {
   @override
   bool? build({required GlobalKey key}) => false;
 
-  void update({required bool? value}) => state = value;
+  bool? get isChanged => state;
+  set isChanged(bool? value) => state = value;
 }
 
 class GazeSwitchButtonProperties {
@@ -108,7 +109,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
     super.didUpdateWidget(oldWidget);
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
-        ref.read(switchButtonChangedProvider(key: globalKey).notifier).update(value: oldWidget.value != widget.value);
+        ref.read(switchButtonChangedProvider(key: globalKey).notifier).isChanged = oldWidget.value != widget.value;
       }
     });
     // toggle if value changed

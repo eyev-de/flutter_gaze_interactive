@@ -6,8 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
-  runApp(GazeContext(sharedPreferences: prefs, child: const MyApp()));
+  gazeInteractiveState = GazeInteractiveState(sharedPreferences: prefs);
+  runApp(GazeContext(child: const MyApp(), state: gazeInteractiveState));
 }
+
+late final GazeInteractiveState gazeInteractiveState;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -48,7 +51,7 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     //GazeInteractive().predicate = gazeInteractionPredicate;
-    GazeInteractive().currentRoute = '/';
+    gazeInteractiveState.currentRoute = '/';
   }
 
   @override
@@ -176,9 +179,9 @@ class _SearchTextField extends StatelessWidget {
               undoHistoryController: undoController,
               selectedKeyboardPlatformType: KeyboardPlatformType.mobile,
             ),
-            () => GazeInteractive().currentRoute = '/dialog',
+            () => gazeInteractiveState.currentRoute = '/dialog',
             (ctx) => Navigator.of(ctx).pop(),
-            (ctx) => GazeInteractive().currentRoute = '/',
+            (ctx) => gazeInteractiveState.currentRoute = '/',
           );
         },
       ),

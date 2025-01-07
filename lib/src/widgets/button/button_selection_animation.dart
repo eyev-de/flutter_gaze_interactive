@@ -80,8 +80,8 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   void _initAnimation() {
     _reselectionCount = 0;
-    _duration = widget.properties.durationMs ?? ref.read(GazeInteractive().duration);
-    _recoverTime = widget.properties.recoverMs ?? ref.read(GazeInteractive().recoverTime);
+    _duration = widget.properties.durationMs ?? ref.read(ref.read(gazeInteractiveProvider).duration);
+    _recoverTime = widget.properties.recoverMs ?? ref.read(ref.read(gazeInteractiveProvider).recoverTime);
     _controller = AnimationController(
       duration: Duration(milliseconds: _duration),
       vsync: this,
@@ -94,7 +94,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
               if (widget.properties.reselectableCount != null && _reselectionCount >= widget.properties.reselectableCount! - 1) {
                 _reselectionCount = 0;
               } else {
-                final double reselectionAcceleration = ref.read(GazeInteractive().reselectionAcceleration);
+                final double reselectionAcceleration = ref.read(ref.read(gazeInteractiveProvider).reselectionAcceleration);
                 final _newDuration = (_duration * reselectionAcceleration).round();
                 _reselectionCount += 1;
                 _duration = max(_newDuration, gazeInteractiveMinDuration);
@@ -116,11 +116,11 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   @override
   Widget build(BuildContext context) {
     ref
-      ..listen(GazeInteractive().duration, (previous, next) {
+      ..listen(ref.read(gazeInteractiveProvider).duration, (previous, next) {
         _duration = next;
         _controller.duration = Duration(milliseconds: _duration);
       })
-      ..listen(GazeInteractive().recoverTime, (previous, next) {
+      ..listen(ref.read(gazeInteractiveProvider).recoverTime, (previous, next) {
         _recoverTime = next;
       });
     return Stack(
@@ -191,7 +191,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   @override
   void deactivate() {
-    GazeInteractive().unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
+    ref.read(gazeInteractiveProvider).unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
     super.deactivate();
   }
 
@@ -202,30 +202,30 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   }
 
   void _register() {
-    GazeInteractive().register(
-      GazeSelectableData(
-        key: widget.wrappedKey,
-        route: widget.properties.route,
-        snappable: widget.properties.snappable,
-        onGazeEnter: () {
-          if (mounted) {
-            setState(() => gazeIn = true);
-            _duration = widget.properties.durationMs ?? ref.read(GazeInteractive().duration);
-            _controller
-              ..duration = Duration(milliseconds: _duration)
-              ..forward();
-          }
-        },
-        onGazeLeave: () {
-          if (mounted) {
-            setState(() => gazeIn = false);
-            _recoverTime = widget.properties.recoverMs ?? ref.read(GazeInteractive().recoverTime);
-            _controller
-              ..duration = Duration(milliseconds: _recoverTime)
-              ..reverse();
-          }
-        },
-      ),
-    );
+    ref.read(gazeInteractiveProvider).register(
+          GazeSelectableData(
+            key: widget.wrappedKey,
+            route: widget.properties.route,
+            snappable: widget.properties.snappable,
+            onGazeEnter: () {
+              if (mounted) {
+                setState(() => gazeIn = true);
+                _duration = widget.properties.durationMs ?? ref.read(ref.read(gazeInteractiveProvider).duration);
+                _controller
+                  ..duration = Duration(milliseconds: _duration)
+                  ..forward();
+              }
+            },
+            onGazeLeave: () {
+              if (mounted) {
+                setState(() => gazeIn = false);
+                _recoverTime = widget.properties.recoverMs ?? ref.read(ref.read(gazeInteractiveProvider).recoverTime);
+                _controller
+                  ..duration = Duration(milliseconds: _recoverTime)
+                  ..reverse();
+              }
+            },
+          ),
+        );
   }
 }

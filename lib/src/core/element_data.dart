@@ -9,18 +9,6 @@ import 'package:flutter/material.dart';
 import 'element_type.dart';
 
 final class GazeElementData {
-  final GlobalKey key;
-  final String? route;
-  final GazeElementType type;
-  final bool snappable;
-
-  final void Function()? onGazeEnter;
-  final void Function()? onGazeLeave;
-  final void Function(Offset)? onGaze;
-  final void Function()? onScroll;
-  final void Function()? onFixation;
-  final void Function(GazeElementData snapElement)? onSnap;
-
   const GazeElementData({
     required this.key,
     this.route,
@@ -33,6 +21,17 @@ final class GazeElementData {
     this.onFixation,
     this.snappable = true,
   });
+  final GlobalKey key;
+  final String? route;
+  final GazeElementType type;
+  final bool snappable;
+
+  final void Function()? onGazeEnter;
+  final void Function()? onGazeLeave;
+  final void Function(Offset)? onGaze;
+  final void Function()? onScroll;
+  final void Function()? onFixation;
+  final void Function(GazeElementData snapElement)? onSnap;
 }
 
 final class GazeSelectableData extends GazeElementData {
@@ -56,11 +55,11 @@ final class GazeScrollableData extends GazeElementData {
 }
 
 final class GazePointerData extends GazeElementData {
-  Function(Offset, Size)? onPointerMove;
   GazePointerData({
     required super.key,
     required super.onGaze,
     super.onSnap,
     super.onFixation,
   }) : super(type: GazeElementType.pointer);
+  Function(Offset, Size)? onPointerMove;
 }

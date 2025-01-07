@@ -62,7 +62,7 @@ class PointerCircle extends ConsumerWidget {
     // GazePointerType.passive
     if (snapState == SnapState.inSnapTimer) {
       return ShakeWidget(
-        duration: Duration(milliseconds: ref.read(GazeInteractive().snappingTimerMilliseconds)),
+        duration: Duration(milliseconds: ref.read(ref.read(gazeInteractiveProvider).snappingTimerMilliseconds)),
         shakeConstant: ShakeDefaultConstant1(),
         autoPlay: true,
         child: Container(
