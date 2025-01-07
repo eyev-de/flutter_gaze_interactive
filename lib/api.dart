@@ -6,6 +6,7 @@
 
 library gaze_interactive;
 
+export 'src/context.dart';
 export 'src/core/constants.dart';
 export 'src/core/element_data.dart' show GazeElementData, GazePointerData;
 export 'src/core/element_type.dart' show GazeElementType;

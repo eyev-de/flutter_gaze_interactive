@@ -169,6 +169,8 @@ linter:
     - void_checks
 
 analyzer:
+  plugins:
+    - custom_lint
   language:
     strict-casts: true
     strict-raw-types: true

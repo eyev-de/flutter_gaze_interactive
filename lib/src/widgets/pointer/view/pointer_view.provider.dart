@@ -36,7 +36,7 @@ enum SnapState {
 class PointerAnimationController extends _$PointerAnimationController {
   @override
   AnimationController build({required TickerProvider vsync}) {
-    return AnimationController(vsync: vsync, duration: Duration(milliseconds: ref.watch(GazeInteractive().duration)));
+    return AnimationController(vsync: vsync, duration: Duration(milliseconds: ref.watch(ref.read(gazeInteractiveProvider).duration)));
   }
 }
 
@@ -77,7 +77,7 @@ class PointerIsMoving extends _$PointerIsMoving {
 class PointerOpacity extends _$PointerOpacity {
   @override
   double build() {
-    final defaultOpacity = ref.watch(GazeInteractive().pointerOpacity);
+    final defaultOpacity = ref.watch(ref.read(gazeInteractiveProvider).pointerOpacity);
     final isMoving = ref.watch(pointerIsMovingProvider);
     final pointerAlwaysVisible = ref.watch(gazePointerAlwaysVisibleProvider);
 
@@ -96,8 +96,8 @@ class PointerColor extends _$PointerColor {
   @override
   Color build({required GazePointerType type}) {
     return switch (type) {
-      GazePointerType.active => ref.watch(GazeInteractive().pointerColorActive).color,
-      _ => ref.watch(GazeInteractive().pointerColorPassive).color,
+      GazePointerType.active => ref.watch(ref.read(gazeInteractiveProvider).pointerColorActive).color,
+      _ => ref.watch(ref.read(gazeInteractiveProvider).pointerColorPassive).color,
     };
   }
 }
@@ -107,7 +107,7 @@ class PointerColor extends _$PointerColor {
 class PointerSize extends _$PointerSize {
   @override
   double build({required GazePointerType type}) {
-    final double _size = ref.watch(GazeInteractive().pointerSize);
+    final double _size = ref.watch(ref.read(gazeInteractiveProvider).pointerSize);
     return switch (type) {
       GazePointerType.active => _size / 1.5,
       _ => _size,
@@ -148,7 +148,8 @@ class PointerFixationPoint extends _$PointerFixationPoint {
   @override
   Offset build() => const Offset(0, 0);
 
-  void update({required Offset offset}) => state = offset;
+  Offset get point => state;
+  set point(Offset offset) => state = offset;
 }
 
 /// Gaze Pointer Snapping Point
@@ -157,7 +158,8 @@ class SnapElement extends _$SnapElement {
   @override
   GazeElementData? build() => null;
 
-  void update({required GazeElementData snapElement}) => state = snapElement;
+  GazeElementData? get element => state;
+  set element(GazeElementData? element) => state = element;
 
   void refresh() => ref.invalidateSelf();
 }
@@ -171,10 +173,10 @@ class SnappingState extends _$SnappingState {
   // When in snap radius for the first time when SnapState.on
   void startSnapTimer(GazeElementData snapElement) {
     if (state == SnapState.on) {
-      ref.read(snapElementProvider.notifier).update(snapElement: snapElement);
+      ref.read(snapElementProvider.notifier).element = snapElement;
       state = SnapState.inSnapTimer;
       // Timer to wait
-      Timer(Duration(milliseconds: ref.read(GazeInteractive().snappingTimerMilliseconds)), () {
+      Timer(Duration(milliseconds: ref.read(ref.read(gazeInteractiveProvider).snappingTimerMilliseconds)), () {
         if (state == SnapState.inSnapTimer && ref.read(snapElementProvider)?.key == snapElement.key) {
           debugPrint('ready for ${ref.read(snapElementProvider)}');
           state = SnapState.readyToSnap;
@@ -195,7 +197,7 @@ class SnappingState extends _$SnappingState {
     if (state == SnapState.readyToSnap && ref.read(snapElementProvider)?.key == snapElement.key) {
       state = SnapState.snapping;
       debugPrint('start snap');
-      ref.read(ignorePointerStateProvider.notifier).update(ignore: true);
+      ref.read(ignorePointerStateProvider.notifier).isIgnored = true;
     }
   }
 
@@ -209,7 +211,7 @@ class SnappingState extends _$SnappingState {
       // wait a bit until next snap is possible
       state = SnapState.snapPaused;
       // Timer to wait
-      Timer(Duration(milliseconds: ref.read(GazeInteractive().afterSnapPauseMilliseconds)), () {
+      Timer(Duration(milliseconds: ref.read(ref.read(gazeInteractiveProvider).afterSnapPauseMilliseconds)), () {
         if (state == SnapState.snapPaused && state != SnapState.off) {
           state = SnapState.on;
         }
@@ -224,7 +226,7 @@ class SnappingState extends _$SnappingState {
     // Only running snappscan be finished
     if (state != SnapState.off && ref.read(snapElementProvider)?.key == snapElement.key) {
       // user can move the pointer again
-      ref.read(ignorePointerStateProvider.notifier).update(ignore: false);
+      ref.read(ignorePointerStateProvider.notifier).isIgnored = false;
 
       // refresh element we were snapping to
       ref.read(snapElementProvider.notifier).refresh();
@@ -232,7 +234,7 @@ class SnappingState extends _$SnappingState {
       // wait a bit until next snap is possible
       state = SnapState.snapPaused;
       // Timer to wait
-      Timer(Duration(milliseconds: ref.read(GazeInteractive().afterSnapPauseMilliseconds)), () {
+      Timer(Duration(milliseconds: ref.read(ref.read(gazeInteractiveProvider).afterSnapPauseMilliseconds)), () {
         if (state == SnapState.snapPaused && state != SnapState.off) {
           state = SnapState.on;
         }
@@ -255,18 +257,20 @@ class SnappingState extends _$SnappingState {
 @Riverpod(keepAlive: true)
 class PointerFixationRadius extends _$PointerFixationRadius {
   @override
-  double build() => ref.watch(GazeInteractive().fixationRadius);
+  double build() => ref.watch(ref.read(gazeInteractiveProvider).fixationRadius);
 
-  void update({required double radius}) => state = radius;
+  double get radius => state;
+  set radius(double radius) => state = radius;
 }
 
 /// Gaze Pointer Snapping Radius
 @riverpod
 class PointerSnappingRadius extends _$PointerSnappingRadius {
   @override
-  double build() => ref.watch(GazeInteractive().snappingRadius);
+  double build() => ref.watch(ref.read(gazeInteractiveProvider).snappingRadius);
 
-  void update({required double radius}) => state = radius;
+  double get radius => state;
+  set radius(double radius) => state = radius;
 }
 
 /// Indicates if recently snapped and pointer is ignored by mouse
@@ -275,7 +279,8 @@ class IgnorePointerState extends _$IgnorePointerState {
   @override
   bool build() => false;
 
-  void update({required bool ignore}) => state = ignore;
+  bool get isIgnored => state;
+  set isIgnored(bool ignore) => state = ignore;
 
   void deactivate() => state = false;
 }

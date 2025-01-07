@@ -12,17 +12,6 @@ import '../scrollable/scrollable.dart';
 import 'extensions.dart';
 
 class GazeDatePicker extends StatefulWidget {
-  final DateTime initialDate;
-  final DateTime firstDate;
-  final DateTime lastDate;
-  final void Function(DateTime, BuildContext)? selected;
-  final void Function(BuildContext)? cancelled;
-
-  final String cancelLabel;
-  final String selectLabel;
-
-  final String route;
-
   GazeDatePicker({
     Key? key,
     required this.initialDate,
@@ -34,12 +23,23 @@ class GazeDatePicker extends StatefulWidget {
     this.cancelLabel = 'Cancel',
     this.selectLabel = 'Select',
   }) : super(key: key);
+  final DateTime initialDate;
+  final DateTime firstDate;
+  final DateTime lastDate;
+  final void Function(DateTime, BuildContext)? selected;
+  final void Function(BuildContext)? cancelled;
+
+  final String cancelLabel;
+  final String selectLabel;
+
+  final String route;
 
   @override
   State<StatefulWidget> createState() => _GazeDatePickerState();
 }
 
 class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStateMixin {
+  _GazeDatePickerState();
   List<int> _list = [-2, -1, 0, 1, 2];
   late final int _initialIndex = (_list.length / 2).floor();
   late DateTime _current = widget.initialDate;
@@ -55,8 +55,6 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
 
   final ScrollController _scrollController = ScrollController();
   final yearsPerRow = 7;
-
-  _GazeDatePickerState();
 
   @override
   void initState() {

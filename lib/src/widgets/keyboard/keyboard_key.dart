@@ -121,7 +121,7 @@ class GazeKey extends ConsumerWidget {
             animationColor: !changeColor ? animationColor : defaultColor,
             gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
             reselectable: true,
-            reselectableCount: type == GazeKeyType.none ? ref.read(GazeInteractive().reselectionNumberOfLetterKeys) : null,
+            reselectableCount: type == GazeKeyType.none ? ref.read(ref.read(gazeInteractiveProvider).reselectionNumberOfLetterKeys) : null,
             gazeInteractive: disabled == false,
             withSound: type != GazeKeyType.close,
             // All keyboard keys should not be snapped to

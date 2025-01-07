@@ -36,7 +36,7 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
     // if delete button is used -> stop speech to text
     ref.listen(controllerProvider, (before, after) async {
       if (after == '') {
-        ref.read(keyboardSpeechToTextStatusProvider.notifier).status(status: KeyboardTextFieldStatus(cursor: -1));
+        ref.read(keyboardSpeechToTextStatusProvider.notifier).status = KeyboardTextFieldStatus(cursor: -1);
         ref.read(state.disableStateProvider.notifier).state = false;
         await ref.read(keyboardSpeechToTextProvider.notifier).stop();
       }
@@ -67,7 +67,7 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
                       after: selection.textAfter(state.controller.text),
                       cursor: state.controller.selection.baseOffset,
                     );
-              ref.read(keyboardSpeechToTextStatusProvider.notifier).status(status: status);
+              ref.read(keyboardSpeechToTextStatusProvider.notifier).status = status;
               ref.read(keyboardSpeechToTextIsListeningProvider.notifier).listen();
               ref.read(state.disableStateProvider.notifier).state = true;
               await ref.read(keyboardSpeechToTextProvider.notifier).listen(controller: state.controller);

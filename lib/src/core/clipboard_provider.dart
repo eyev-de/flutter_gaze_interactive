@@ -12,11 +12,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final clipboardProvider = StateNotifierProvider((ref) => _ClipboardNotifier());
 
 class _ClipboardNotifier extends StateNotifier<String> {
-  late Timer clipboardTriggerTime;
   _ClipboardNotifier() : super('') {
     clipboardTriggerTime = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
       final content = await Clipboard.getData('text/plain');
       if (content != null && content.text != null && state != content.text) state = content.text!;
     });
   }
+  late Timer clipboardTriggerTime;
 }
