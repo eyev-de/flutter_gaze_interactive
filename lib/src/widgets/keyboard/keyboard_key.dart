@@ -98,7 +98,7 @@ class GazeKey extends ConsumerWidget {
     final changeColor = type == GazeKeyType.caps && capsLock || type == GazeKeyType.shift && shift;
     final widgetColor = getIOSKeyColor(colors: colors, signs: signsState, shift: shiftState);
     final defaultColor = type.defaultColor(customColor: Theme.of(context).primaryColor, fallbackColor: widgetColor ?? _color);
-    final animationColor = type == GazeKeyType.close ? Colors.white.withOpacity(0.5) : Theme.of(context).primaryColor;
+    final animationColor = type == GazeKeyType.close ? Colors.white.withValues(alpha: 0.5) : Theme.of(context).primaryColor;
 
     // if disabled -> keyboard buttons should not be clickable (gaze interactive)
     final disabled = ref.watch(keyboardState.disableStateProvider);
@@ -184,7 +184,7 @@ class GazeKey extends ConsumerWidget {
     final capsLock = ref.read(keyboardState.capsLockStateProvider);
     switch (type) {
       case GazeKeyType.none:
-        if (str != null) keyboardState.controller.insert(str is Text ? str.data ?? '' : str as String);
+        if (str != null) keyboardState.controller.insert(str is Text ? str.data ?? '' : str as String, keyboardState.type, keyboardState.inputFormatters);
         if (shift) ref.read(keyboardState.shiftStateProvider.notifier).state = false;
         if (alt) ref.read(keyboardState.altStateProvider.notifier).state = false;
         if (ctrl) ref.read(keyboardState.ctrlStateProvider.notifier).state = false;
@@ -199,13 +199,13 @@ class GazeKey extends ConsumerWidget {
         // _controller.sendKeyEvent(LogicalKeyboardKey.backspace);
         // widget.node?.requestFocus();
         final String value = keyboardState.controller.text;
-        if (value.isNotEmpty) keyboardState.controller.insert(value.substring(0, value.length - 1));
+        if (value.isNotEmpty) keyboardState.controller.insert(value.substring(0, value.length - 1), keyboardState.type, keyboardState.inputFormatters);
         break;
       case GazeKeyType.enter:
-        if (keyboardState.type == KeyboardType.editor) keyboardState.controller.insert('\n');
+        if (keyboardState.type == KeyboardType.editor) keyboardState.controller.insert('\n', keyboardState.type, keyboardState.inputFormatters);
         break;
       case GazeKeyType.tab:
-        if (keyboardState.type == KeyboardType.editor) keyboardState.controller.insert('\t');
+        if (keyboardState.type == KeyboardType.editor) keyboardState.controller.insert('\t', keyboardState.type, keyboardState.inputFormatters);
         // _controller.sendKeyEvent(LogicalKeyboardKey.tab);
         // widget.node?.requestFocus();
         break;

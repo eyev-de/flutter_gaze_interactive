@@ -157,7 +157,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
                       child: child,
                     );
                   },
-                  child: Container(color: widget.properties.color.withOpacity(0.5)),
+                  child: Container(color: widget.properties.color.withValues(alpha: 0.5)),
                 ),
               ),
             ),

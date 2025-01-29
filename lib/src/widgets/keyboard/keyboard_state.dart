@@ -7,6 +7,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'keyboard_controller.dart';
@@ -29,6 +30,7 @@ class GazeKeyboardState {
     this.onMoveCursorUp,
     this.onTabClose,
     KeyboardPlatformType? selectedKeyboardPlatformType,
+    this.inputFormatters = const [],
   }) : keyboardPlatformType = selectedKeyboardPlatformType ?? getPlatformFromSystem();
 
   final TextEditingController controller;
@@ -61,4 +63,6 @@ class GazeKeyboardState {
   final selectingStateProvider = StateProvider((ref) => false);
   final selectingWordStateProvider = StateProvider((ref) => false);
   final disableStateProvider = StateProvider((ref) => false);
+
+  final List<TextInputFormatter> inputFormatters;
 }

@@ -78,7 +78,7 @@ class GazeButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final disabledColor = color == Colors.transparent ? color : color.withOpacity(0.3);
+    final disabledColor = color == Colors.transparent ? color : color.withValues(alpha: 0.3);
     return GazeSelectionAnimation(
       onGazed: onTap != null
           ? () {
@@ -152,7 +152,7 @@ class _Button extends StatelessWidget {
   Border? _getBorder() {
     if (properties.borderColor == null) return null;
     if (onTap == null && properties.borderColor == Colors.transparent) return Border.all(color: Colors.transparent, width: properties.borderWidth);
-    if (onTap == null) return Border.all(color: properties.borderColor!.withOpacity(0.3), width: properties.borderWidth);
+    if (onTap == null) return Border.all(color: properties.borderColor!.withValues(alpha: 0.3), width: properties.borderWidth);
     return Border.all(color: properties.borderColor!, width: properties.borderWidth);
   }
 }

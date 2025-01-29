@@ -38,7 +38,7 @@ extension GazePointerValidationExtension on BuildContext {
 }
 
 extension TextEditingControllerExtension on TextEditingController {
-  void insert(String value) {
+  void insert(String value, KeyboardType type, List<TextInputFormatter> inputFormatters) {
     var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
     final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
 
@@ -50,7 +50,9 @@ extension TextEditingControllerExtension on TextEditingController {
       // Trim if . ! ? is inserted
       if (value == '.' || value == '!' || value == '?') {
         before = before.trim();
-        after = ' $after';
+        if (type != KeyboardType.email) {
+          after = ' $after';
+        }
       }
       text = before + value + after;
     } else {
@@ -58,12 +60,19 @@ extension TextEditingControllerExtension on TextEditingController {
       text = text.replaceRange(startIndex, endIndex, value);
     }
     if (startIndex.isNegative) startIndex = 0;
+    if (inputFormatters.isNotEmpty) {
+      text = inputFormatters.fold(text, (value, formatter) => formatter.formatEditUpdate(TextEditingValue(text: value), TextEditingValue(text: value)).text);
+    }
     selection = TextSelection.fromPosition(TextPosition(offset: min(startIndex + 1, text.length)));
   }
 
-  Future<void> paste({bool selecting = false}) async {
+  Future<void> paste(List<TextInputFormatter> inputFormatters, {bool selecting = false}) async {
     final data = await Clipboard.getData(Clipboard.kTextPlain) ?? const ClipboardData(text: '');
-    final pasteText = data.text ?? '';
+    String pasteText = data.text ?? '';
+    if (inputFormatters.isNotEmpty) {
+      pasteText =
+          inputFormatters.fold(text, (value, formatter) => formatter.formatEditUpdate(TextEditingValue(text: value), TextEditingValue(text: value)).text);
+    }
     if (selecting) {
       final start = selection.start;
       text = text.replaceRange(start, selection.end, pasteText);
@@ -169,9 +178,9 @@ extension ColorExtension on Color {
     }
   }
 
-  Color get background => withOpacity(0.5);
+  Color get background => withValues(alpha: 0.5);
 
-  Color get disabled => withOpacity(0.4);
+  Color get disabled => withValues(alpha: 0.4);
 }
 
 extension StringExtension on String {

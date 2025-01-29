@@ -111,6 +111,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
                   color: tealColor.disabled,
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
+                inputFormatters: widget.state.inputFormatters,
               ),
             ),
             if (widget.state.type != KeyboardType.email)

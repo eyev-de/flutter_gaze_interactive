@@ -284,7 +284,7 @@ class _ArrowButton extends StatelessWidget {
           child: GazeButton(
             // onTap must be specified here -> displayed button not as disabled
             onTap: () {},
-            color: Colors.white.withOpacity(state.opacity),
+            color: Colors.white.withValues(alpha: state.opacity),
             properties: GazeButtonProperties(
               // Scrolling should not be snapped to
               snappable: false,

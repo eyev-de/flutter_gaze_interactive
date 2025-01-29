@@ -151,7 +151,7 @@ class Keyboards {
       [
         GazeKey(
           content: const [CupertinoIcons.textformat_123, CupertinoIcons.textformat_123, CupertinoIcons.textformat_abc, CupertinoIcons.textformat_abc],
-          widthRatio: [KeyboardType.extended, KeyboardType.email].contains(state.type) ? 1 : 2,
+          widthRatio: [KeyboardType.extended].contains(state.type) ? 1 : 2,
           type: GazeKeyType.signs,
           keyboardState: state,
         ),
@@ -159,19 +159,14 @@ class Keyboards {
         GazeKey(content: const ['y', 'Y', '', ''], keyboardState: state),
         GazeKey(content: const ['x', 'X', '.', '.'], keyboardState: state),
         GazeKey(content: const ['c', 'C', ',', ','], keyboardState: state),
-        if (state.type == KeyboardType.email) ...[
-          GazeKey(content: const ['v', 'V', '?', '?'], keyboardState: state),
-          GazeKey(content: ' ', widthRatio: 2, keyboardState: state),
-        ] else ...[
-          GazeKey(content: ' ', widthRatio: 2, keyboardState: state),
-          GazeKey(content: const ['v', 'V', '?', '?'], keyboardState: state),
-        ],
+        if (state.type != KeyboardType.email) GazeKey(content: ' ', widthRatio: 2, keyboardState: state),
+        GazeKey(content: const ['v', 'V', '?', '?'], keyboardState: state),
         GazeKey(content: const ['b', 'B', '!', '!'], keyboardState: state),
         GazeKey(content: const ['n', 'N', '´', '`'], keyboardState: state),
         GazeKey(content: const ['m', 'M', '', ''], keyboardState: state),
         if (state.type == KeyboardType.email) GazeKey(content: const ['@', '.', '', ''], color: tealColor, keyboardState: state, stacked: true),
         if ([KeyboardType.extended, KeyboardType.email].contains(state.type))
-          GazeKey(content: Icons.keyboard_hide, type: GazeKeyType.close, keyboardState: state),
+          GazeKey(content: Icons.keyboard_hide, widthRatio: state.type == KeyboardType.email ? 1.5 : 1, type: GazeKeyType.close, keyboardState: state),
         if (state.type == KeyboardType.editor) GazeKey(content: 'Enter', widthRatio: 2, type: GazeKeyType.enter, keyboardState: state),
       ],
     ];
@@ -290,19 +285,20 @@ class Keyboards {
       [
         GazeKey(
           content: const [CupertinoIcons.textformat_123, CupertinoIcons.textformat_123, CupertinoIcons.textformat_abc, CupertinoIcons.textformat_abc],
+          widthRatio: state.type == KeyboardType.email ? 1.5 : 1,
           type: GazeKeyType.signs,
           keyboardState: state,
         ),
         GazeKey(content: const ['z', 'Z', '', ''], keyboardState: state),
         GazeKey(content: const ['x', 'X', '.', '.'], keyboardState: state),
         GazeKey(content: const ['c', 'C', ',', ','], keyboardState: state),
-        GazeKey(content: ' ', widthRatio: 2, keyboardState: state),
+        if (state.type != KeyboardType.email) GazeKey(content: ' ', widthRatio: 2, keyboardState: state),
         GazeKey(content: const ['v', 'V', '?', '?'], keyboardState: state),
         GazeKey(content: const ['b', 'B', '!', '!'], keyboardState: state),
         GazeKey(content: const ['n', 'N', '´', '`'], keyboardState: state),
         GazeKey(content: const ['m', 'M', '', ''], keyboardState: state),
         if ([KeyboardType.extended, KeyboardType.email].contains(state.type))
-          GazeKey(content: Icons.keyboard_hide, type: GazeKeyType.close, keyboardState: state),
+          GazeKey(content: Icons.keyboard_hide, widthRatio: state.type == KeyboardType.email ? 1.5 : 1, type: GazeKeyType.close, keyboardState: state),
         if (state.type == KeyboardType.editor) GazeKey(content: 'Enter', widthRatio: 2, type: GazeKeyType.enter, keyboardState: state),
       ],
     ];
