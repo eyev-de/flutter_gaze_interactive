@@ -5,6 +5,7 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api.dart';
@@ -31,6 +32,7 @@ class GazeTextFieldProperties {
     this.obscureText = false,
     // Textfields are snappable by default
     this.snappable = true,
+    this.inputFormatters = const [],
   });
 
   final int? maxLength;
@@ -50,6 +52,7 @@ class GazeTextFieldProperties {
   final bool expands;
   final bool obscureText;
   final bool snappable;
+  final List<TextInputFormatter> inputFormatters;
 }
 
 class GazeTextField extends ConsumerWidget {
@@ -183,6 +186,7 @@ class _TextFieldGazeAnimation extends StatelessWidget {
             expands: properties.expands,
             obscureText: properties.obscureText && obscureText,
             maxLines: properties.obscureText ? 1 : null,
+            inputFormatters: properties.inputFormatters,
           ),
         ),
       ),
@@ -208,7 +212,7 @@ class _TextFieldObscureTextGazeButton extends StatelessWidget {
     return SizedBox(
       width: 70,
       child: GazeButton(
-        color: Theme.of(context).colorScheme.primary.withOpacity(enabled ? 1.0 : 0.4),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: enabled ? 1.0 : 0.4),
         onTap: onTap,
         properties: GazeButtonProperties(
           route: route,

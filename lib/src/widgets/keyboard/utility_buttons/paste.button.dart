@@ -23,7 +23,7 @@ class PasteButton extends GazeKeyboardUtilityButton {
       onTap: clipboardContent != '' && !disabled
           ? () async {
               node.requestFocus();
-              await state.controller.paste(selecting: selecting);
+              await state.controller.paste(state.inputFormatters, selecting: selecting);
               ref.read(state.selectingStateProvider.notifier).state = false;
               ref.read(state.selectingWordStateProvider.notifier).state = false;
             }

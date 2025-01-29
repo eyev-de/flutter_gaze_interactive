@@ -3,8 +3,8 @@ description: Gaze Interaction implements the interaction of eye-trackers (or poi
 version: 0.0.1
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 dependencies:
   # For Linux you need to do the following:

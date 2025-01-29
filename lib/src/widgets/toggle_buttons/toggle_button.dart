@@ -84,7 +84,7 @@ class _GazeToggleButton extends StatelessWidget {
     return Flexible(
       child: GazeButton(
         onTap: button.onTap,
-        color: button.active ? _buttonColor : _buttonColor.withOpacity(0.1),
+        color: button.active ? _buttonColor : _buttonColor.withValues(alpha: 0.1),
         properties: GazeButtonProperties(
           gazeSelectionAnimationType: GazeSelectionAnimationType.fade,
           animationColor: color ?? Theme.of(context).primaryColor,
@@ -98,9 +98,9 @@ class _GazeToggleButton extends StatelessWidget {
             maxLines: button.label.maxLines,
             softWrap: button.label.softWrap,
             textAlign: button.label.textAlign,
-            style: TextStyle(color: button.active ? _onButtonColor : _onButtonColor.withOpacity(0.5)).merge(button.label.style),
+            style: TextStyle(color: button.active ? _onButtonColor : _onButtonColor.withValues(alpha: 0.5)).merge(button.label.style),
           ),
-          icon: button.icon != null ? Icon(button.icon, color: button.active ? _onButtonColor : _onButtonColor.withOpacity(0.5)) : null,
+          icon: button.icon != null ? Icon(button.icon, color: button.active ? _onButtonColor : _onButtonColor.withValues(alpha: 0.5)) : null,
           borderColor: Colors.transparent,
         ),
       ),

@@ -120,7 +120,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
 
   @override
   Widget build(BuildContext context) {
-    final color = Color.alphaBlend(_color(widget.value).withOpacity(0.1), widget.properties.backgroundColor ?? Colors.black);
+    final color = Color.alphaBlend(_color(widget.value).withValues(alpha: 0.1), widget.properties.backgroundColor ?? Colors.black);
     return GazeButton(
       properties: GazeButtonProperties(
         route: widget.route,

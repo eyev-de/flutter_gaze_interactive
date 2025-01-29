@@ -17,7 +17,7 @@ class PointerCircle extends ConsumerWidget {
     final color = ref.watch(pointerColorProvider(type: type));
     if (type == GazePointerType.active) {
       const _dotSize = 5.0;
-      final _lighterColor = Color.alphaBlend(color.withOpacity(0.6), Colors.white);
+      final _lighterColor = Color.alphaBlend(color.withValues(alpha: 0.6), Colors.white);
       return SizedBox(
         width: size,
         height: size,
