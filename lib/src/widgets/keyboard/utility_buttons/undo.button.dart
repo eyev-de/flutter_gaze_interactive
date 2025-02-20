@@ -24,7 +24,7 @@ class UndoButton extends GazeKeyboardUtilityButton {
       route: state.route,
       gazeInteractive: enable == true,
       iconColor: enable == true ? Colors.white : textDisabledColor,
-      icon: Platform.isIOS ? CupertinoIcons.arrow_turn_up_left : Icons.undo,
+      icon: Platform.isIOS || Platform.isMacOS ? CupertinoIcons.arrow_turn_up_left : Icons.undo,
       textStyle: (textStyle ?? const TextStyle()).copyWith(color: enable == true ? Colors.white : textDisabledColor),
       onTap: enable == true ? () => {node.requestFocus(), state.undoHistoryController?.undo()} : null,
     );

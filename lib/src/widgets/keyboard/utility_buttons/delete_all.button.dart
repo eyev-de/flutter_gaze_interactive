@@ -26,7 +26,7 @@ class DeleteAllButton extends GazeKeyboardUtilityButton {
       text: label?.isEmpty ?? true ? null : label,
       iconColor: text == '' ? textDisabledColor : deleteButtonTextColor,
       textStyle: TextStyle(color: text == '' ? textDisabledColor : deleteButtonTextColor),
-      icon: Platform.isIOS ? CupertinoIcons.delete : Icons.delete,
+      icon: Platform.isIOS || Platform.isMacOS ? CupertinoIcons.delete : Icons.delete,
       onTap: text == '' ? null : () => {node.requestFocus(), controller.text = ''},
     );
   }
