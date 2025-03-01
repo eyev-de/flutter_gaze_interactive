@@ -14,7 +14,7 @@ import '../../core/element_data.dart';
 import '../../core/element_type.dart';
 import '../../state.dart';
 
-enum GazeSelectionAnimationType { progress, fade }
+enum GazeSelectionAnimationType { progress, rise, fade }
 
 class GazeSelectionAnimationProperties {
   GazeSelectionAnimationProperties({
@@ -141,7 +141,8 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
               ),
             ),
           ),
-        if (widget.properties.gazeInteractive && widget.properties.type == GazeSelectionAnimationType.progress)
+        if (widget.properties.gazeInteractive &&
+            (widget.properties.type == GazeSelectionAnimationType.progress || widget.properties.type == GazeSelectionAnimationType.rise))
           Positioned.fill(
             child: IgnorePointer(
               child: Container(
@@ -150,6 +151,14 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
                 child: AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {
+                    if (widget.properties.type == GazeSelectionAnimationType.rise) {
+                      return Transform(
+                        transform: Matrix4.diagonal3Values(1, _controller.value, 1),
+                        alignment: Alignment.bottomCenter,
+                        origin: const Offset(0, 1),
+                        child: child,
+                      );
+                    }
                     return Transform(
                       transform: Matrix4.diagonal3Values(_controller.value, 1, 1),
                       alignment: Alignment.centerLeft,
@@ -170,6 +179,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
     if (widget.properties.backgroundColor == null) return widget.wrappedWidget;
     switch (widget.properties.type) {
       case GazeSelectionAnimationType.progress:
+      case GazeSelectionAnimationType.rise:
         return Material(
           color: widget.properties.backgroundColor,
           borderRadius: widget.properties.borderRadius,
