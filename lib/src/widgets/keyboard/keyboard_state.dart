@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'keyboard_controller.dart';
+import 'keyboard_key_type.enum.dart';
 import 'keyboards.dart';
 
 class GazeKeyboardState {
@@ -29,6 +30,7 @@ class GazeKeyboardState {
     this.onMoveCursorDown,
     this.onMoveCursorUp,
     this.onTabClose,
+    this.onKey,
     KeyboardPlatformType? selectedKeyboardPlatformType,
     this.inputFormatters = const [],
   }) : keyboardPlatformType = selectedKeyboardPlatformType ?? getPlatformFromSystem();
@@ -44,6 +46,7 @@ class GazeKeyboardState {
   final bool withNumbers;
   final KeyboardType type;
   Language language;
+  void Function({Object? data, required GazeKeyType type})? onKey;
   void Function({bool selecting})? onMoveCursorDown;
   void Function({bool selecting})? onMoveCursorUp;
   void Function(BuildContext)? onTabClose;
@@ -51,7 +54,7 @@ class GazeKeyboardState {
 
   final GazeKeyboardController keyboardController = GazeKeyboardController(WidgetsBinding.instance);
 
-  static KeyboardPlatformType getPlatformFromSystem() => Platform.isIOS ? KeyboardPlatformType.mobile : KeyboardPlatformType.desktop;
+  static KeyboardPlatformType getPlatformFromSystem() => Platform.isIOS || Platform.isAndroid ? KeyboardPlatformType.mobile : KeyboardPlatformType.desktop;
 
   final shiftStateProvider = StateProvider((ref) => false);
   final capsLockStateProvider = StateProvider((ref) => false);
