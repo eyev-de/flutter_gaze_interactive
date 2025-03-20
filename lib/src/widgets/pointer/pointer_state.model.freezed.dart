@@ -21,7 +21,8 @@ mixin _$GazePointerState {
       throw _privateConstructorUsedError; // ignore gesture on pointer
   bool get ignorePointer =>
       throw _privateConstructorUsedError; // ignore gesture on pointer
-  double? get absoluteOpacityValue => throw _privateConstructorUsedError;
+  double? get absoluteOpacityValue =>
+      throw _privateConstructorUsedError; // can leave the view bounds, used for windows on desktop platforms that are partially interactive
   bool get canLeaveBounds =>
       throw _privateConstructorUsedError; // action on pointer
   GazePointerAction get action => throw _privateConstructorUsedError;
@@ -190,6 +191,7 @@ class _$GazePointerStateImpl extends _GazePointerState {
   @override
   @JsonKey()
   final double? absoluteOpacityValue;
+// can leave the view bounds, used for windows on desktop platforms that are partially interactive
   @override
   @JsonKey()
   final bool canLeaveBounds;
@@ -252,7 +254,8 @@ abstract class _GazePointerState extends GazePointerState {
   @override
   bool get ignorePointer; // ignore gesture on pointer
   @override
-  double? get absoluteOpacityValue;
+  double?
+      get absoluteOpacityValue; // can leave the view bounds, used for windows on desktop platforms that are partially interactive
   @override
   bool get canLeaveBounds; // action on pointer
   @override

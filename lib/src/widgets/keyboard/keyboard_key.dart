@@ -176,15 +176,17 @@ class GazeKey extends ConsumerWidget {
     );
   }
 
-  void _onTap(str, GazeKeyType type, WidgetRef ref, BuildContext context) {
+  void _onTap(data, GazeKeyType type, WidgetRef ref, BuildContext context) {
     final shift = ref.read(keyboardState.shiftStateProvider);
     final alt = ref.read(keyboardState.altStateProvider);
     final signs = ref.read(keyboardState.signsStateProvider);
     final ctrl = ref.read(keyboardState.ctrlStateProvider);
     final capsLock = ref.read(keyboardState.capsLockStateProvider);
+
+    keyboardState.onKey?.call(data: data, type: type);
     switch (type) {
       case GazeKeyType.none:
-        if (str != null) keyboardState.controller.insert(str is Text ? str.data ?? '' : str as String, keyboardState.type, keyboardState.inputFormatters);
+        if (data != null) keyboardState.controller.insert(data is Text ? data.data ?? '' : data as String, keyboardState.type, keyboardState.inputFormatters);
         if (shift) ref.read(keyboardState.shiftStateProvider.notifier).state = false;
         if (alt) ref.read(keyboardState.altStateProvider.notifier).state = false;
         if (ctrl) ref.read(keyboardState.ctrlStateProvider.notifier).state = false;

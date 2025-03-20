@@ -165,9 +165,9 @@ class Keyboards {
         GazeKey(content: const ['n', 'N', '´', '`'], keyboardState: state),
         GazeKey(content: const ['m', 'M', '', ''], keyboardState: state),
         if (state.type == KeyboardType.email) GazeKey(content: const ['@', '.', '', ''], color: tealColor, keyboardState: state, stacked: true),
-        if ([KeyboardType.extended, KeyboardType.email].contains(state.type) && !Platform.isMacOS)
+        if ([KeyboardType.extended, KeyboardType.email].contains(state.type) && !Platform.isMacOS && !Platform.isWindows)
           GazeKey(content: Icons.keyboard_hide, widthRatio: state.type == KeyboardType.email ? 1.5 : 1, type: GazeKeyType.close, keyboardState: state)
-        else if (Platform.isMacOS)
+        else if (Platform.isMacOS || Platform.isWindows)
           const Spacer(),
         if (state.type == KeyboardType.editor) GazeKey(content: 'Enter', widthRatio: 2, type: GazeKeyType.enter, keyboardState: state),
       ],
@@ -299,9 +299,9 @@ class Keyboards {
         GazeKey(content: const ['b', 'B', '!', '!'], keyboardState: state),
         GazeKey(content: const ['n', 'N', '´', '`'], keyboardState: state),
         GazeKey(content: const ['m', 'M', '', ''], keyboardState: state),
-        if ([KeyboardType.extended, KeyboardType.email].contains(state.type) && !Platform.isMacOS)
+        if ([KeyboardType.extended, KeyboardType.email].contains(state.type) && !Platform.isMacOS && !Platform.isWindows)
           GazeKey(content: Icons.keyboard_hide, widthRatio: state.type == KeyboardType.email ? 1.5 : 1, type: GazeKeyType.close, keyboardState: state)
-        else if (Platform.isMacOS)
+        else if (Platform.isMacOS || Platform.isWindows)
           const Spacer(),
         if (state.type == KeyboardType.editor) GazeKey(content: 'Enter', widthRatio: 2, type: GazeKeyType.enter, keyboardState: state),
       ],

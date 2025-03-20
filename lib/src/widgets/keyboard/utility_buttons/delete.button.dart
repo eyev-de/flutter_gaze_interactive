@@ -25,7 +25,7 @@ class DeleteButton extends GazeKeyboardUtilityButton {
       gazeInteractive: disabled == false,
       reselectable: true,
       onTap: disabled
-          ? null
+          ? () => state.onKey?.call(data: '', type: GazeKeyType.del)
           : () {
               node.requestFocus();
               // If select mode is activated but no text is selected -> nothing is deleted
@@ -33,16 +33,19 @@ class DeleteButton extends GazeKeyboardUtilityButton {
                 return null;
               }
               final selection = state.controller.selection;
+              String deletedText = '';
               if (state.controller.text.isNotEmpty) {
                 var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
                 final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
                 startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
                 if (startIndex.isNegative) startIndex = 0;
+                deletedText = state.controller.text.substring(startIndex, endIndex);
                 state.controller
                   ..text = state.controller.text.replaceRange(startIndex, endIndex, '')
                   ..selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
               }
               ref.read(state.selectingWordStateProvider.notifier).state = state.controller.selection.textInside(state.controller.text).isNotEmpty;
+              state.onKey?.call(data: deletedText, type: GazeKeyType.del);
             },
     );
   }
