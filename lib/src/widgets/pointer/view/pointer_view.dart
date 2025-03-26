@@ -30,7 +30,8 @@ class GazePointerView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // if (_state.type == GazePointerType.passive) return _PointerPassiveView(state: _state);
-    return _PointerView(state: _state.copyWith(ignorePointer: ref.watch(ignorePointerStateProvider)));
+    final ignorePointer = ref.watch(ignorePointerStateProvider);
+    return _PointerView(state: _state.copyWith(ignorePointer: ignorePointer));
   }
 }
 
@@ -58,57 +59,63 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
 
   // on moving -> updated gaze data
   void _onGazeData(Offset gaze) {
-    if (mounted && !widget.state.ignorePointer) {
-      ref.read(pointerIsMovingProvider.notifier).move();
-      final _size = ref.read(pointerSizeProvider(type: widget.state.type));
-      final newPosition = gaze - Offset(_size / 2.0, _size / 2.0);
-      final Offset temp = widget.state.canLeaveBounds ? newPosition : context.validateGazePointer(offset: newPosition, size: _size);
-      ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-      gazePointerData.onPointerMove?.call(temp + Offset(_size / 2.0, _size / 2.0), Size(_size, _size));
-      if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze)) {
-        ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
-      }
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (mounted && !widget.state.ignorePointer) {
+        ref.read(pointerIsMovingProvider.notifier).move();
+        final _size = ref.read(pointerSizeProvider(type: widget.state.type));
+        final newPosition = gaze - Offset(_size / 2.0, _size / 2.0);
+        final Offset temp = widget.state.canLeaveBounds ? newPosition : context.validateGazePointer(offset: newPosition, size: _size);
+        ref.read(pointerOffsetProvider.notifier).update(offset: temp);
+        gazePointerData.onPointerMove?.call(temp + Offset(_size / 2.0, _size / 2.0), Size(_size, _size));
+        if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze)) {
+          ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
+        }
 
-      // // Calculate if leaving snap radius
-      // if (ref.read(snappingStateProvider) == SnapState.inSnapTimer) {
-      //   if (_leftSnappingRadius(gaze)) {
-      //     // Test if not in same snap point radius
-      //     ref.read(snappingStateProvider.notifier).leftWhileSnapping(snapElement);
-      //     ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
-      //   }
-      // }
-    }
+        // // Calculate if leaving snap radius
+        // if (ref.read(snappingStateProvider) == SnapState.inSnapTimer) {
+        //   if (_leftSnappingRadius(gaze)) {
+        //     // Test if not in same snap point radius
+        //     ref.read(snappingStateProvider.notifier).leftWhileSnapping(snapElement);
+        //     ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
+        //   }
+        // }
+      }
+    });
   }
 
   // on fixation -> user focuses on one point
   void _onFixation() {
-    if (mounted && widget.state.type == GazePointerType.active && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
-      ref.read(pointerFixationPointProvider.notifier).point = ref.read(pointerOffsetProvider);
-      ref.read(pointerAnimationControllerProvider(vsync: this)).forward();
-    }
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.state.type == GazePointerType.active && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
+        ref.read(pointerFixationPointProvider.notifier).point = ref.read(pointerOffsetProvider);
+        ref.read(pointerAnimationControllerProvider(vsync: this)).forward();
+      }
+    });
   }
 
   // on snap -> whenever user was close enough to a button
   void _onSnap(GazeElementData snapElement) {
-    // really move the pointer
-    final Offset includingSizeSnapToOffset = _getOffsetWithSizeDeviation(snapElement.key.globalPaintBounds!);
-    if (mounted && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
-      if (ref.read(snappingStateProvider) == SnapState.on) {
-        // wait for x milliseconds until snapping can be started
-        ref.read(snappingStateProvider.notifier).startSnapTimer(snapElement);
-        // really move the pointer
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      // really move the pointer
+      final Offset includingSizeSnapToOffset = _getOffsetWithSizeDeviation(snapElement.key.globalPaintBounds!);
+      if (mounted && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
+        if (ref.read(snappingStateProvider) == SnapState.on) {
+          // wait for x milliseconds until snapping can be started
+          ref.read(snappingStateProvider.notifier).startSnapTimer(snapElement);
+          // really move the pointer
+        }
+        // It has to be in the same snap elements radius when snapping
+        if (ref.read(snappingStateProvider) == SnapState.readyToSnap) {
+          ref.read(snappingStateProvider.notifier).startSnap(snapElement);
+          //snap and set snap point (including size deviation due to pointer size)
+          _onGazeData(includingSizeSnapToOffset);
+          // reset ignorePointer after manual moving (snapping) pointer in snapFinished
+          // Timer(const Duration(milliseconds: timeToIgnorePointerWhenSnappingMs), () {
+          //   ref.read(snappingStateProvider.notifier).endSnap(snapElement);
+          // });
+        }
       }
-      // It has to be in the same snap elements radius when snapping
-      if (ref.read(snappingStateProvider) == SnapState.readyToSnap) {
-        ref.read(snappingStateProvider.notifier).startSnap(snapElement);
-        //snap and set snap point (including size deviation due to pointer size)
-        _onGazeData(includingSizeSnapToOffset);
-        // reset ignorePointer after manual moving (snapping) pointer in snapFinished
-        // Timer(const Duration(milliseconds: timeToIgnorePointerWhenSnappingMs), () {
-        //   ref.read(snappingStateProvider.notifier).endSnap(snapElement);
-        // });
-      }
-    }
+    });
   }
 
   Offset _getOffsetWithSizeDeviation(Rect snapElement) {
@@ -255,9 +262,11 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   }
 
   void callOnGazeNormalized(BuildContext context, Offset globalPosition, double _size) {
-    final Offset temp = context.validateGazePointer(offset: globalPosition, size: _size);
-    ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-    ref.read(gazeInteractiveProvider).onGaze(temp);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      final Offset temp = context.validateGazePointer(offset: globalPosition, size: _size);
+      ref.read(pointerOffsetProvider.notifier).update(offset: temp);
+      ref.read(gazeInteractiveProvider).onGaze(temp);
+    });
   }
 
   bool _leftFixationRadius(Offset gaze) {
