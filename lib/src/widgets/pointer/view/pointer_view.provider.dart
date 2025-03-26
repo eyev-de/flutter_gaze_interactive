@@ -54,7 +54,10 @@ class PointerIsMoving extends _$PointerIsMoving {
   Timer? timer;
 
   @override
-  bool build() => true;
+  bool build() {
+    ref.onDispose(() => timer?.cancel());
+    return true;
+  }
 
   void move() {
     if (timer != null) {
@@ -66,7 +69,6 @@ class PointerIsMoving extends _$PointerIsMoving {
       const Duration(milliseconds: 1200),
       () {
         state = false;
-        ref.onDispose(() => timer?.cancel());
       },
     );
   }

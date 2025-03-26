@@ -7,6 +7,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants.dart';
@@ -218,22 +219,26 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
             route: widget.properties.route,
             snappable: widget.properties.snappable,
             onGazeEnter: () {
-              if (mounted) {
-                setState(() => gazeIn = true);
-                _duration = widget.properties.durationMs ?? ref.read(ref.read(gazeInteractiveProvider).duration);
-                _controller
-                  ..duration = Duration(milliseconds: _duration)
-                  ..forward();
-              }
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() => gazeIn = true);
+                  _duration = widget.properties.durationMs ?? ref.read(ref.read(gazeInteractiveProvider).duration);
+                  _controller
+                    ..duration = Duration(milliseconds: _duration)
+                    ..forward();
+                }
+              });
             },
             onGazeLeave: () {
-              if (mounted) {
-                setState(() => gazeIn = false);
-                _recoverTime = widget.properties.recoverMs ?? ref.read(ref.read(gazeInteractiveProvider).recoverTime);
-                _controller
-                  ..duration = Duration(milliseconds: _recoverTime)
-                  ..reverse();
-              }
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() => gazeIn = false);
+                  _recoverTime = widget.properties.recoverMs ?? ref.read(ref.read(gazeInteractiveProvider).recoverTime);
+                  _controller
+                    ..duration = Duration(milliseconds: _recoverTime)
+                    ..reverse();
+                }
+              });
             },
           ),
         );
