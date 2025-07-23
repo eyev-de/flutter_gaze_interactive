@@ -182,7 +182,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
                     },
                     child: PointerCircle(
                       type: GazePointerType.history,
-                      size: _size / 5,
+                      size: _size,
                       animation: _animation,
                     ),
                     // Use a unique delay based on index

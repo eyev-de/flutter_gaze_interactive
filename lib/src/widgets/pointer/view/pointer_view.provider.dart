@@ -112,6 +112,7 @@ class PointerSize extends _$PointerSize {
     final double _size = ref.watch(ref.read(gazeInteractiveProvider).pointerSize);
     return switch (type) {
       GazePointerType.active => _size / 1.5,
+      GazePointerType.history => _size / 2,
       _ => _size,
     };
   }
