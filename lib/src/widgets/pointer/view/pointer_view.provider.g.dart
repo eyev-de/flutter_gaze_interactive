@@ -335,7 +335,7 @@ class _PointerAnimationProviderElement
   TickerProvider get vsync => (origin as PointerAnimationProvider).vsync;
 }
 
-String _$pointerIsMovingHash() => r'2f14ac6f693bf5ca4d189d8420afc84ec2657791';
+String _$pointerIsMovingHash() => r'1b8ce36b3352a45ba2cd969ced738e780eed33b6';
 
 /// See also [PointerIsMoving].
 @ProviderFor(PointerIsMoving)
@@ -513,7 +513,7 @@ class _PointerColorProviderElement
   GazePointerType get type => (origin as PointerColorProvider).type;
 }
 
-String _$pointerSizeHash() => r'c609367a1ce0ed7d2ac7e43aa480e20f4c5b4ad9';
+String _$pointerSizeHash() => r'64e0f8e2c0cf221b3c380cce07bfd35bfc17f0c5';
 
 abstract class _$PointerSize extends BuildlessAutoDisposeNotifier<double> {
   late final GazePointerType type;

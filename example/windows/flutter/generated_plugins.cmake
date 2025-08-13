@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
+  clipboard_watcher
+  speech_to_text_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
