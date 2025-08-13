@@ -6,21 +6,27 @@
 
 import 'dart:async';
 
+import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final clipboardProvider = StateNotifierProvider((ref) => _ClipboardNotifier());
+part 'clipboard_provider.g.dart';
 
-class _ClipboardNotifier extends StateNotifier<String> {
-  _ClipboardNotifier() : super('') {
-    clipboardTriggerTime = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
-      try {
-        final content = await Clipboard.getData('text/plain');
-        if (content != null && content.text != null && state != content.text) state = content.text!;
-      } catch (e) {
-        // ignore
-      }
-    });
+@Riverpod(keepAlive: true)
+class ClipboardText extends _$ClipboardText with ClipboardListener {
+  @override
+  String build() {
+    ref.onDispose(clipboardWatcher.stop);
+    clipboardWatcher
+      ..addListener(this)
+      // start watch
+      ..start();
+    return '';
   }
-  late Timer clipboardTriggerTime;
+
+  @override
+  Future<void> onClipboardChanged() async {
+    final content = await Clipboard.getData(Clipboard.kTextPlain);
+    if (content != null && content.text != null && state != content.text) state = content.text!;
+  }
 }

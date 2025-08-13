@@ -12,7 +12,7 @@ import 'pointer_type.enum.dart';
 part 'pointer_state.model.freezed.dart';
 
 @freezed
-class GazePointerState with _$GazePointerState {
+sealed class GazePointerState with _$GazePointerState {
   factory GazePointerState({
     // type: passive (static circle), active (circle with animation on fixation)
     @Default(GazePointerType.passive) GazePointerType type,

@@ -10,7 +10,7 @@ class PasteButton extends GazeKeyboardUtilityButton {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
-    final clipboardContent = ref.watch(clipboardProvider);
+    final clipboardContent = 'ref.watch(clipboardTextProvider)';
     final disabled = ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
