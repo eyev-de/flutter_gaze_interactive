@@ -22,6 +22,10 @@ class GazeView extends StatelessWidget {
     this.onGazeLeave,
     this.onGaze,
     this.onScroll,
+    this.scrollAreaLeft = 0.3,
+    this.scrollAreaRight = 0.3,
+    this.scrollAreaTop = 0.3,
+    this.scrollAreaBottom = 0.3,
     // GazeViews are in general not snappable
     this.snappable = false,
   });
@@ -33,6 +37,10 @@ class GazeView extends StatelessWidget {
   final void Function()? onGazeLeave;
   final void Function(Offset)? onGaze;
   final void Function(GazeScrollDirection, double)? onScroll;
+  final double scrollAreaLeft;
+  final double scrollAreaRight;
+  final double scrollAreaTop;
+  final double scrollAreaBottom;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +52,10 @@ class GazeView extends StatelessWidget {
       onGaze: onGaze,
       onScroll: onScroll,
       snappable: snappable,
+      scrollAreaLeft: scrollAreaLeft,
+      scrollAreaRight: scrollAreaRight,
+      scrollAreaTop: scrollAreaTop,
+      scrollAreaBottom: scrollAreaBottom,
       child: child,
     );
   }
