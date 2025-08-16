@@ -141,6 +141,21 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
         bounds.bottom,
       );
 
+      // calculate left area in which scrolling happens
+      final tempLeft = Rect.fromLTRB(
+        bounds.left,
+        bounds.top,
+        bounds.left + bounds.width * scrollArea,
+        bounds.bottom,
+      );
+
+      // calculate right area in which scrolling happens
+      final tempRight = Rect.fromLTRB(
+        bounds.right - bounds.width * scrollArea,
+        bounds.top,
+        bounds.right,
+        bounds.bottom,
+      );
       final double maxScrollSpeed = ref.read(ref.read(gazeInteractiveProvider).scrollFactor);
       // final double maxScrollSpeed = GazeInteractive().scrollFactor;
       if (tempTop.overlaps(rect)) {
@@ -152,9 +167,21 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
       } else if (tempBottom.overlaps(rect)) {
         // In bottom area;
         // calculate scrolling factor
-        final double factor = (rect.bottomCenter.dy - tempBottom.top) / tempTop.height * maxScrollSpeed;
+        final double factor = (rect.bottomCenter.dy - tempBottom.top) / tempBottom.height * maxScrollSpeed;
         // scroll down
         widget.onScroll?.call(GazeScrollDirection.down, factor);
+      } else if (tempLeft.overlaps(rect)) {
+        // In left area
+        // calculate scrolling factor
+        final double factor = (tempLeft.right - rect.right) / tempLeft.width * maxScrollSpeed;
+        // scroll left
+        widget.onScroll?.call(GazeScrollDirection.left, factor);
+      } else if (tempRight.overlaps(rect)) {
+        // In right area
+        // calculate scrolling factor
+        final double factor = (rect.left - tempRight.left) / tempRight.width * maxScrollSpeed;
+        // scroll right
+        widget.onScroll?.call(GazeScrollDirection.right, factor);
       }
     }
   }
