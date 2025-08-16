@@ -58,6 +58,14 @@ class GazeViewImpl extends ConsumerStatefulWidget {
     this.onGazeLeave,
     this.onGaze,
     this.onScroll,
+    // left scroll area percentage of the screen
+    this.scrollAreaLeft = 0.3,
+    // right scroll area percentage of the screen
+    this.scrollAreaRight = 0.3,
+    // top scroll area percentage of the screen
+    this.scrollAreaTop = 0.3,
+    // bottom scroll area percentage of the screen
+    this.scrollAreaBottom = 0.3,
     required this.snappable,
   }) : super(key: wrappedKey);
 
@@ -65,6 +73,10 @@ class GazeViewImpl extends ConsumerStatefulWidget {
   final Widget child;
   final String route;
   final bool snappable;
+  final double scrollAreaLeft;
+  final double scrollAreaRight;
+  final double scrollAreaTop;
+  final double scrollAreaBottom;
 
   final void Function()? onGazeEnter;
   final void Function()? onGazeLeave;
@@ -76,8 +88,6 @@ class GazeViewImpl extends ConsumerStatefulWidget {
 }
 
 class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
-  bool _active = false;
-  static const double scrollArea = 0.3;
 
   @override
   void initState() {
@@ -100,17 +110,11 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
             onGazeEnter: () {
               if (mounted) {
                 widget.onGazeEnter?.call();
-                setState(() {
-                  _active = true;
-                });
               }
             },
             onGazeLeave: () {
               if (mounted) {
                 widget.onGazeLeave?.call();
-                setState(() {
-                  _active = false;
-                });
               }
             },
             onGaze: (gaze) {
@@ -131,12 +135,12 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
         bounds.left,
         bounds.top,
         bounds.right,
-        bounds.top + bounds.height * scrollArea,
+        bounds.top + bounds.height * widget.scrollAreaTop,
       );
       // calculate bottom area in which scrolling happens
       final tempBottom = Rect.fromLTRB(
         bounds.left,
-        bounds.bottom - bounds.height * scrollArea,
+        bounds.bottom - bounds.height * widget.scrollAreaBottom,
         bounds.right,
         bounds.bottom,
       );
@@ -145,13 +149,13 @@ class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
       final tempLeft = Rect.fromLTRB(
         bounds.left,
         bounds.top,
-        bounds.left + bounds.width * scrollArea,
+        bounds.left + bounds.width * widget.scrollAreaLeft,
         bounds.bottom,
       );
 
       // calculate right area in which scrolling happens
       final tempRight = Rect.fromLTRB(
-        bounds.right - bounds.width * scrollArea,
+        bounds.right - bounds.width * widget.scrollAreaRight,
         bounds.top,
         bounds.right,
         bounds.bottom,
