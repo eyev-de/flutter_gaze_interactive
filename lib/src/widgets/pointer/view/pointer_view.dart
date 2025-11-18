@@ -47,11 +47,12 @@ class _PointerView extends ConsumerStatefulWidget {
 class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderStateMixin {
   _PointerViewState();
 
-  final GlobalKey _wrappedkey = GlobalKey();
+  final _wrappedKey = GlobalKey();
+  bool _isDragging = false;
 
   /// GazePointerData
   late final gazePointerData = GazePointerData(
-    key: _wrappedkey,
+    key: _wrappedKey,
     onGaze: _onGazeData,
     onFixation: _onFixation,
     onSnap: _onSnap,
@@ -59,18 +60,20 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
 
   // on moving -> updated gaze data
   void _onGazeData(Offset gaze) {
+    // ignore moving when dragging
+    if (_isDragging) return;
+    // update pointer position
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (mounted && !widget.state.ignorePointer) {
         ref.read(pointerIsMovingProvider.notifier).move();
-        final _size = ref.read(pointerSizeProvider(type: widget.state.type));
-        final newPosition = gaze - Offset(_size / 2.0, _size / 2.0);
-        final Offset temp = widget.state.canLeaveBounds ? newPosition : context.validateGazePointer(offset: newPosition, size: _size);
-        ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-        gazePointerData.onPointerMove?.call(temp + Offset(_size / 2.0, _size / 2.0), Size(_size, _size));
+        final size = ref.read(pointerSizeProvider(type: widget.state.type));
+        final pos = gaze - Offset(size / 2, size / 2);
+        final clamped = widget.state.canLeaveBounds ? pos : context.validateGazePointer(offset: pos, size: size);
+        ref.read(pointerOffsetProvider.notifier).update(offset: clamped);
+        gazePointerData.onPointerMove?.call(clamped + Offset(size / 2, size / 2), Size(size, size));
         if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze)) {
           ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
         }
-
         // // Calculate if leaving snap radius
         // if (ref.read(snappingStateProvider) == SnapState.inSnapTimer) {
         //   if (_leftSnappingRadius(gaze)) {
@@ -147,7 +150,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
 
   @override
   void deactivate() {
-    ref.read(gazeInteractiveProvider).unregister(key: _wrappedkey, type: GazeElementType.pointer);
+    ref.read(gazeInteractiveProvider).unregister(key: _wrappedKey, type: GazeElementType.pointer);
     super.deactivate();
   }
 
@@ -155,52 +158,39 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   Widget build(BuildContext context) {
     final _size = ref.watch(pointerSizeProvider(type: widget.state.type));
     final _pointerOffset = ref.watch(pointerOffsetProvider);
-    final _pointerHistory = ref.watch(pointerHistoryProvider);
-
     final _opacity = ref.watch(pointerOpacityProvider);
     final calculatedOpacity = widget.state.absoluteOpacityValue != null ? widget.state.absoluteOpacityValue! : _opacity;
     final _controller = ref.watch(pointerAnimationControllerProvider(vsync: this));
     final _animation = ref.watch(pointerAnimationProvider(vsync: this));
     return Stack(
       children: [
-        if (widget.state.type == GazePointerType.history)
-          ...List.from(
-            _pointerHistory.toList().mapIndexed(
-              (element, index) {
-                return Positioned(
-                  left: _size / 2 + element.$2.dx - _size / 5 / 2,
-                  top: _size / 2 + element.$2.dy - _size / 5 / 2,
-                  child: TweenAnimationBuilder(
-                    key: element.$1,
-                    tween: Tween<double>(begin: 1, end: 0),
-                    duration: const Duration(seconds: 1),
-                    builder: (context, opacity, child) {
-                      return Opacity(
-                        opacity: opacity,
-                        child: child,
-                      );
-                    },
-                    child: PointerCircle(
-                      type: GazePointerType.history,
-                      size: _size,
-                      animation: _animation,
-                    ),
-                    // Use a unique delay based on index
-                    onEnd: () {
-                      if (index == _pointerHistory.length - 1) {
-                        // Ensure that the last item is removed after fading out
-                        Future.delayed(const Duration(seconds: 1), () {
-                          if (_pointerHistory.isNotEmpty) {
-                            _pointerHistory.removeLast();
-                          }
-                        });
-                      }
-                    },
-                  ),
-                );
+        // HISTORY POINTER
+        if (widget.state.type == GazePointerType.history) ...[
+          _PointerHistory(size: _size),
+          // history pointer on top of faded out pointers - draggable
+          Positioned(
+            left: _pointerOffset.dx,
+            top: _pointerOffset.dy,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onPanStart: (details) {
+                _isDragging = true;
+                _callOnGazeNormalized(context, details.globalPosition, _size);
               },
+              onPanUpdate: (details) {
+                _callOnGazeNormalized(context, details.globalPosition, _size);
+              },
+              onPanEnd: (_) => _isDragging = false,
+              onPanCancel: () => _isDragging = false,
+              child: PointerCircle(
+                type: GazePointerType.history,
+                size: _size,
+                animation: _animation,
+              ),
             ),
           ),
+        ],
+        // ACTIVE / PASSIVE POINTER
         if (widget.state.type != GazePointerType.history)
           Positioned(
             left: _pointerOffset.dx,
@@ -239,15 +229,14 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
                     }
                   },
                   onPanStart: (details) {
-                    if (mounted) {
-                      callOnGazeNormalized(context, details.globalPosition, _size);
-                    }
+                    _isDragging = true;
+                    _callOnGazeNormalized(context, details.globalPosition, _size);
                   },
                   onPanUpdate: (details) {
-                    if (mounted) {
-                      callOnGazeNormalized(context, details.globalPosition, _size);
-                    }
+                    _callOnGazeNormalized(context, details.globalPosition, _size);
                   },
+                  onPanEnd: (_) => _isDragging = false,
+                  onPanCancel: () => _isDragging = false,
                   child: AnimatedOpacity(
                     opacity: calculatedOpacity,
                     duration: const Duration(milliseconds: 150),
@@ -261,17 +250,52 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
     );
   }
 
-  void callOnGazeNormalized(BuildContext context, Offset globalPosition, double _size) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      final Offset temp = context.validateGazePointer(offset: globalPosition, size: _size);
-      ref.read(pointerOffsetProvider.notifier).update(offset: temp);
-      ref.read(gazeInteractiveProvider).onGaze(temp);
-    });
+  void _callOnGazeNormalized(BuildContext context, Offset global, double size) {
+    final center = global;
+    final topLeft = center - Offset(size / 2, size / 2);
+    final clampedTopLeft = context.validateGazePointer(offset: topLeft, size: size);
+    ref.read(pointerOffsetProvider.notifier).update(offset: clampedTopLeft);
+    ref.read(gazeInteractiveProvider).onDragMove(clampedTopLeft + Offset(size / 2, size / 2), origin: _wrappedKey, size);
   }
 
   bool _leftFixationRadius(Offset gaze) {
     final _fixationPoint = ref.read(pointerFixationPointProvider);
     final _fixationRadius = ref.read(pointerFixationRadiusProvider);
     return (gaze - _fixationPoint).distanceSquared > pow(_fixationRadius, 2);
+  }
+}
+
+/// Widget to show pointer history with fade out animation
+class _PointerHistory extends ConsumerWidget {
+  const _PointerHistory({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _pointerHistory = ref.watch(pointerHistoryProvider);
+    return Stack(
+      children: [
+        ..._pointerHistory.toList().mapIndexed((element, index) {
+          return Positioned(
+            left: element.$2.dx,
+            top: element.$2.dy,
+            child: TweenAnimationBuilder<double>(
+              key: element.$1,
+              tween: Tween(begin: 1, end: 0),
+              duration: const Duration(seconds: 1),
+              builder: (context, opacity, child) => Opacity(opacity: opacity, child: child),
+              onEnd: () {
+                if (_pointerHistory.isEmpty) return;
+                if (index != _pointerHistory.length - 1) return;
+                // Ensure that the last item is removed after fading out
+                Future.delayed(const Duration(seconds: 1), _pointerHistory.removeLast);
+              },
+              child: PointerCircle(type: GazePointerType.history, size: size),
+            ),
+          );
+        })
+      ],
+    );
   }
 }

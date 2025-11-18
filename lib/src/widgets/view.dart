@@ -100,7 +100,6 @@ class GazeViewImpl extends ConsumerStatefulWidget {
 }
 
 class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
-
   @override
   void initState() {
     super.initState();
