@@ -3,35 +3,35 @@ description: Gaze Interaction implements the interaction of eye-trackers (or poi
 version: 0.0.1
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.27.0"
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.38.0"
 
 dependencies:
   # For Linux you need to do the following:
   # https://github.com/bluefireteam/audioplayers/blob/main/packages/audioplayers_linux/requirements.md
-  audioplayers: ^6.0.0
+  audioplayers: ^6.5.1
   clipboard_watcher: ^0.3.0
-  enum_to_string: ^2.0.1
+  enum_to_string: ^2.2.1
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.5.1
-  freezed_annotation: ^3.0.0
-  riverpod_annotation: ^2.3.5
+  flutter_riverpod: ^2.6.1
+  freezed_annotation: ^3.1.0
+  riverpod_annotation: ^2.6.1
   intl: ^0.20.2
-  logger: ^2.4.0
+  logger: ^2.6.2
   material_design_icons_flutter: ^7.0.7296
-  shared_preferences: ^2.3.1
+  shared_preferences: ^2.5.3
   flutter_shake_animated: ^0.0.5
-  speech_to_text: ^7.0.0
+  speech_to_text: ^7.3.0
   pulsator: ^1.0.0+2
 
 dev_dependencies:
-  build_runner: ^2.4.13
+  build_runner: ^2.5.4
   flutter_test:
     sdk: flutter
-  freezed: ^3.0.6
-  riverpod_generator: ^2.4.2
-  json_serializable: ^6.8.0
+  freezed: ^3.1.0
+  riverpod_generator: ^2.6.5
+  json_serializable: ^6.9.5
 
 flutter:
   assets:

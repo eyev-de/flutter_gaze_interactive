@@ -1,6 +1,12 @@
 PODS:
   - audioplayers_darwin (0.0.1):
+    - Flutter
     - FlutterMacOS
+  - clipboard_watcher (0.0.1):
+    - FlutterMacOS
+  - CwlCatchException (2.2.1):
+    - CwlCatchExceptionSupport (~> 2.2.1)
+  - CwlCatchExceptionSupport (2.2.1)
   - FlutterMacOS (1.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -8,14 +14,14 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - speech_to_text (0.0.1):
+  - speech_to_text (7.2.0):
+    - CwlCatchException
     - Flutter
     - FlutterMacOS
-    - Try
-  - Try (2.1.1)
 
 DEPENDENCIES:
-  - audioplayers_darwin (from `Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos`)
+  - audioplayers_darwin (from `Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/darwin`)
+  - clipboard_watcher (from `Flutter/ephemeral/.symlinks/plugins/clipboard_watcher/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -23,11 +29,14 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Try
+    - CwlCatchException
+    - CwlCatchExceptionSupport
 
 EXTERNAL SOURCES:
   audioplayers_darwin:
-    :path: Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos
+    :path: Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/darwin
+  clipboard_watcher:
+    :path: Flutter/ephemeral/.symlinks/plugins/clipboard_watcher/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   path_provider_foundation:
@@ -38,12 +47,14 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/speech_to_text/darwin
 
 SPEC CHECKSUMS:
-  audioplayers_darwin: 761f2948df701d05b5db603220c384fb55720012
-  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
-  speech_to_text: 9dc43a5df3cbc2813f8c7cc9bd0fbf94268ed7ac
-  Try: 5ef669ae832617b3cee58cb2c6f99fb767a4ff96
+  audioplayers_darwin: 4027b33a8f471d996c13f71cb77f0b1583b5d923
+  clipboard_watcher: a71da520051c24c1b969a411b3e152d4dcc93ca5
+  CwlCatchException: 7acc161b299a6de7f0a46a6ed741eae2c8b4d75a
+  CwlCatchExceptionSupport: 54ccab8d8c78907b57f99717fb19d4cc3bce02dc
+  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
+  shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
+  speech_to_text: 87bf9298952e8d9073be1b6aade6d5758db5170c
 
 PODFILE CHECKSUM: 0d3963a09fc94f580682bd88480486da345dc3f0
 
