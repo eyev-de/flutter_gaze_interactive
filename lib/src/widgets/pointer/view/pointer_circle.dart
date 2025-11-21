@@ -6,11 +6,12 @@ import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import '../../../../api.dart';
 
 class PointerCircle extends ConsumerWidget {
-  const PointerCircle({super.key, required this.type, required this.size, required this.animation});
+  const PointerCircle({super.key, required this.type, required this.size, this.animation})
+      : assert(type != GazePointerType.active || animation != null, 'Animation must be provided for active pointer type');
 
   final GazePointerType type;
   final double size;
-  final Animation<double> animation;
+  final Animation<double>? animation;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,11 +29,11 @@ class PointerCircle extends ConsumerWidget {
               child: SizedBox.square(
                 dimension: size,
                 child: AnimatedBuilder(
-                  animation: animation,
+                  animation: animation!,
                   builder: (context, child) => CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(_lighterColor),
                     strokeWidth: 10,
-                    value: animation.value,
+                    value: animation!.value,
                   ),
                 ),
               ),
@@ -59,7 +60,6 @@ class PointerCircle extends ConsumerWidget {
       );
     }
     final snapState = ref.watch(snappingStateProvider);
-    // GazePointerType.passive
     if (snapState == SnapState.inSnapTimer) {
       return ShakeWidget(
         duration: Duration(milliseconds: ref.read(ref.read(gazeInteractiveProvider).snappingTimerMilliseconds)),
@@ -76,20 +76,12 @@ class PointerCircle extends ConsumerWidget {
               : null,
         ),
       );
-    } else {
-      return Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
-        child: kDebugMode || ref.watch(snapIconStateProvider)
-            ? Center(
-                child: Text(snapState.icon, style: const TextStyle(fontSize: 30)),
-              )
-            : null,
-      );
     }
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      child: kDebugMode || ref.watch(snapIconStateProvider) ? Center(child: Text(snapState.icon, style: const TextStyle(fontSize: 30))) : null,
+    );
   }
 }
