@@ -11,6 +11,8 @@ export 'src/core/constants.dart';
 export 'src/core/element_data.dart' show GazeElementData, GazePointerData;
 export 'src/core/element_type.dart' show GazeElementType;
 export 'src/core/extensions.dart' show TextEditingControllerExtension, ListLocaleNameExtension, LocaleNameExtension;
+export 'src/core/gaze_pointer.util.dart' show GazePointerUtil;
+export 'src/core/gaze_shape.dart' show GazeShape;
 export 'src/core/scroll_direction.dart' show GazeScrollDirection;
 export 'src/core/sound_type.enum.dart';
 export 'src/core/sound_volume.enum.dart';

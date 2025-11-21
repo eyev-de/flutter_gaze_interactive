@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -122,7 +121,7 @@ class PointerSize extends _$PointerSize {
 @riverpod
 class PointerOffset extends _$PointerOffset {
   @override
-  Offset build() => kDebugMode ? const Offset(200, 200) : const Offset(200, 200);
+  Offset build() => const Offset(200, 200);
 
   void update({required Offset offset}) {
     state = offset;
@@ -140,9 +139,7 @@ class PointerHistory extends _$PointerHistory {
     state.addWithLimit((GlobalKey(), offset), limit);
   }
 
-  void removeLast() {
-    state.removeLast();
-  }
+  void removeLast() => state.removeLast();
 }
 
 /// Gaze Pointer Fixation Point
