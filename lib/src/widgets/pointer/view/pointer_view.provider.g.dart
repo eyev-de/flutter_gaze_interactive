@@ -34,9 +34,7 @@ abstract class _$PointerAnimationController
     extends BuildlessAutoDisposeNotifier<AnimationController> {
   late final TickerProvider vsync;
 
-  AnimationController build({
-    required TickerProvider vsync,
-  });
+  AnimationController build({required TickerProvider vsync});
 }
 
 /// Animation Controller
@@ -57,21 +55,15 @@ class PointerAnimationControllerFamily extends Family<AnimationController> {
   /// Animation Controller
   ///
   /// Copied from [PointerAnimationController].
-  PointerAnimationControllerProvider call({
-    required TickerProvider vsync,
-  }) {
-    return PointerAnimationControllerProvider(
-      vsync: vsync,
-    );
+  PointerAnimationControllerProvider call({required TickerProvider vsync}) {
+    return PointerAnimationControllerProvider(vsync: vsync);
   }
 
   @override
   PointerAnimationControllerProvider getProviderOverride(
     covariant PointerAnimationControllerProvider provider,
   ) {
-    return call(
-      vsync: provider.vsync,
-    );
+    return call(vsync: provider.vsync);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -93,26 +85,27 @@ class PointerAnimationControllerFamily extends Family<AnimationController> {
 ///
 /// Copied from [PointerAnimationController].
 class PointerAnimationControllerProvider
-    extends AutoDisposeNotifierProviderImpl<PointerAnimationController,
-        AnimationController> {
+    extends
+        AutoDisposeNotifierProviderImpl<
+          PointerAnimationController,
+          AnimationController
+        > {
   /// Animation Controller
   ///
   /// Copied from [PointerAnimationController].
-  PointerAnimationControllerProvider({
-    required TickerProvider vsync,
-  }) : this._internal(
-          () => PointerAnimationController()..vsync = vsync,
-          from: pointerAnimationControllerProvider,
-          name: r'pointerAnimationControllerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$pointerAnimationControllerHash,
-          dependencies: PointerAnimationControllerFamily._dependencies,
-          allTransitiveDependencies:
-              PointerAnimationControllerFamily._allTransitiveDependencies,
-          vsync: vsync,
-        );
+  PointerAnimationControllerProvider({required TickerProvider vsync})
+    : this._internal(
+        () => PointerAnimationController()..vsync = vsync,
+        from: pointerAnimationControllerProvider,
+        name: r'pointerAnimationControllerProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$pointerAnimationControllerHash,
+        dependencies: PointerAnimationControllerFamily._dependencies,
+        allTransitiveDependencies:
+            PointerAnimationControllerFamily._allTransitiveDependencies,
+        vsync: vsync,
+      );
 
   PointerAnimationControllerProvider._internal(
     super._createNotifier, {
@@ -130,9 +123,7 @@ class PointerAnimationControllerProvider
   AnimationController runNotifierBuild(
     covariant PointerAnimationController notifier,
   ) {
-    return notifier.build(
-      vsync: vsync,
-    );
+    return notifier.build(vsync: vsync);
   }
 
   @override
@@ -152,8 +143,11 @@ class PointerAnimationControllerProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<PointerAnimationController,
-      AnimationController> createElement() {
+  AutoDisposeNotifierProviderElement<
+    PointerAnimationController,
+    AnimationController
+  >
+  createElement() {
     return _PointerAnimationControllerProviderElement(this);
   }
 
@@ -180,8 +174,12 @@ mixin PointerAnimationControllerRef
 }
 
 class _PointerAnimationControllerProviderElement
-    extends AutoDisposeNotifierProviderElement<PointerAnimationController,
-        AnimationController> with PointerAnimationControllerRef {
+    extends
+        AutoDisposeNotifierProviderElement<
+          PointerAnimationController,
+          AnimationController
+        >
+    with PointerAnimationControllerRef {
   _PointerAnimationControllerProviderElement(super.provider);
 
   @override
@@ -195,9 +193,7 @@ abstract class _$PointerAnimation
     extends BuildlessAutoDisposeNotifier<Animation<double>> {
   late final TickerProvider vsync;
 
-  Animation<double> build({
-    required TickerProvider vsync,
-  });
+  Animation<double> build({required TickerProvider vsync});
 }
 
 /// See also [PointerAnimation].
@@ -210,21 +206,15 @@ class PointerAnimationFamily extends Family<Animation<double>> {
   const PointerAnimationFamily();
 
   /// See also [PointerAnimation].
-  PointerAnimationProvider call({
-    required TickerProvider vsync,
-  }) {
-    return PointerAnimationProvider(
-      vsync: vsync,
-    );
+  PointerAnimationProvider call({required TickerProvider vsync}) {
+    return PointerAnimationProvider(vsync: vsync);
   }
 
   @override
   PointerAnimationProvider getProviderOverride(
     covariant PointerAnimationProvider provider,
   ) {
-    return call(
-      vsync: provider.vsync,
-    );
+    return call(vsync: provider.vsync);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -243,24 +233,23 @@ class PointerAnimationFamily extends Family<Animation<double>> {
 }
 
 /// See also [PointerAnimation].
-class PointerAnimationProvider extends AutoDisposeNotifierProviderImpl<
-    PointerAnimation, Animation<double>> {
+class PointerAnimationProvider
+    extends
+        AutoDisposeNotifierProviderImpl<PointerAnimation, Animation<double>> {
   /// See also [PointerAnimation].
-  PointerAnimationProvider({
-    required TickerProvider vsync,
-  }) : this._internal(
-          () => PointerAnimation()..vsync = vsync,
-          from: pointerAnimationProvider,
-          name: r'pointerAnimationProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$pointerAnimationHash,
-          dependencies: PointerAnimationFamily._dependencies,
-          allTransitiveDependencies:
-              PointerAnimationFamily._allTransitiveDependencies,
-          vsync: vsync,
-        );
+  PointerAnimationProvider({required TickerProvider vsync})
+    : this._internal(
+        () => PointerAnimation()..vsync = vsync,
+        from: pointerAnimationProvider,
+        name: r'pointerAnimationProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$pointerAnimationHash,
+        dependencies: PointerAnimationFamily._dependencies,
+        allTransitiveDependencies:
+            PointerAnimationFamily._allTransitiveDependencies,
+        vsync: vsync,
+      );
 
   PointerAnimationProvider._internal(
     super._createNotifier, {
@@ -275,12 +264,8 @@ class PointerAnimationProvider extends AutoDisposeNotifierProviderImpl<
   final TickerProvider vsync;
 
   @override
-  Animation<double> runNotifierBuild(
-    covariant PointerAnimation notifier,
-  ) {
-    return notifier.build(
-      vsync: vsync,
-    );
+  Animation<double> runNotifierBuild(covariant PointerAnimation notifier) {
+    return notifier.build(vsync: vsync);
   }
 
   @override
@@ -301,7 +286,7 @@ class PointerAnimationProvider extends AutoDisposeNotifierProviderImpl<
 
   @override
   AutoDisposeNotifierProviderElement<PointerAnimation, Animation<double>>
-      createElement() {
+  createElement() {
     return _PointerAnimationProviderElement(this);
   }
 
@@ -327,8 +312,9 @@ mixin PointerAnimationRef on AutoDisposeNotifierProviderRef<Animation<double>> {
 }
 
 class _PointerAnimationProviderElement
-    extends AutoDisposeNotifierProviderElement<PointerAnimation,
-        Animation<double>> with PointerAnimationRef {
+    extends
+        AutoDisposeNotifierProviderElement<PointerAnimation, Animation<double>>
+    with PointerAnimationRef {
   _PointerAnimationProviderElement(super.provider);
 
   @override
@@ -341,14 +327,14 @@ String _$pointerIsMovingHash() => r'1b8ce36b3352a45ba2cd969ced738e780eed33b6';
 @ProviderFor(PointerIsMoving)
 final pointerIsMovingProvider =
     AutoDisposeNotifierProvider<PointerIsMoving, bool>.internal(
-  PointerIsMoving.new,
-  name: r'pointerIsMovingProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pointerIsMovingHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      PointerIsMoving.new,
+      name: r'pointerIsMovingProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$pointerIsMovingHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$PointerIsMoving = AutoDisposeNotifier<bool>;
 String _$pointerOpacityHash() => r'727d06f62551cab2f88e727bb0ec4e7794ea245f';
@@ -359,14 +345,14 @@ String _$pointerOpacityHash() => r'727d06f62551cab2f88e727bb0ec4e7794ea245f';
 @ProviderFor(PointerOpacity)
 final pointerOpacityProvider =
     AutoDisposeNotifierProvider<PointerOpacity, double>.internal(
-  PointerOpacity.new,
-  name: r'pointerOpacityProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pointerOpacityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      PointerOpacity.new,
+      name: r'pointerOpacityProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$pointerOpacityHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$PointerOpacity = AutoDisposeNotifier<double>;
 String _$pointerColorHash() => r'48c839ee1718a4ed70cb5c8b223875b8a188886c';
@@ -374,9 +360,7 @@ String _$pointerColorHash() => r'48c839ee1718a4ed70cb5c8b223875b8a188886c';
 abstract class _$PointerColor extends BuildlessAutoDisposeNotifier<Color> {
   late final GazePointerType type;
 
-  Color build({
-    required GazePointerType type,
-  });
+  Color build({required GazePointerType type});
 }
 
 /// See also [PointerColor].
@@ -389,21 +373,15 @@ class PointerColorFamily extends Family<Color> {
   const PointerColorFamily();
 
   /// See also [PointerColor].
-  PointerColorProvider call({
-    required GazePointerType type,
-  }) {
-    return PointerColorProvider(
-      type: type,
-    );
+  PointerColorProvider call({required GazePointerType type}) {
+    return PointerColorProvider(type: type);
   }
 
   @override
   PointerColorProvider getProviderOverride(
     covariant PointerColorProvider provider,
   ) {
-    return call(
-      type: provider.type,
-    );
+    return call(type: provider.type);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -425,21 +403,19 @@ class PointerColorFamily extends Family<Color> {
 class PointerColorProvider
     extends AutoDisposeNotifierProviderImpl<PointerColor, Color> {
   /// See also [PointerColor].
-  PointerColorProvider({
-    required GazePointerType type,
-  }) : this._internal(
-          () => PointerColor()..type = type,
-          from: pointerColorProvider,
-          name: r'pointerColorProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$pointerColorHash,
-          dependencies: PointerColorFamily._dependencies,
-          allTransitiveDependencies:
-              PointerColorFamily._allTransitiveDependencies,
-          type: type,
-        );
+  PointerColorProvider({required GazePointerType type})
+    : this._internal(
+        () => PointerColor()..type = type,
+        from: pointerColorProvider,
+        name: r'pointerColorProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$pointerColorHash,
+        dependencies: PointerColorFamily._dependencies,
+        allTransitiveDependencies:
+            PointerColorFamily._allTransitiveDependencies,
+        type: type,
+      );
 
   PointerColorProvider._internal(
     super._createNotifier, {
@@ -454,12 +430,8 @@ class PointerColorProvider
   final GazePointerType type;
 
   @override
-  Color runNotifierBuild(
-    covariant PointerColor notifier,
-  ) {
-    return notifier.build(
-      type: type,
-    );
+  Color runNotifierBuild(covariant PointerColor notifier) {
+    return notifier.build(type: type);
   }
 
   @override
@@ -518,9 +490,7 @@ String _$pointerSizeHash() => r'64e0f8e2c0cf221b3c380cce07bfd35bfc17f0c5';
 abstract class _$PointerSize extends BuildlessAutoDisposeNotifier<double> {
   late final GazePointerType type;
 
-  double build({
-    required GazePointerType type,
-  });
+  double build({required GazePointerType type});
 }
 
 /// Gaze Pointer Circle Size
@@ -541,21 +511,15 @@ class PointerSizeFamily extends Family<double> {
   /// Gaze Pointer Circle Size
   ///
   /// Copied from [PointerSize].
-  PointerSizeProvider call({
-    required GazePointerType type,
-  }) {
-    return PointerSizeProvider(
-      type: type,
-    );
+  PointerSizeProvider call({required GazePointerType type}) {
+    return PointerSizeProvider(type: type);
   }
 
   @override
   PointerSizeProvider getProviderOverride(
     covariant PointerSizeProvider provider,
   ) {
-    return call(
-      type: provider.type,
-    );
+    return call(type: provider.type);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -581,21 +545,18 @@ class PointerSizeProvider
   /// Gaze Pointer Circle Size
   ///
   /// Copied from [PointerSize].
-  PointerSizeProvider({
-    required GazePointerType type,
-  }) : this._internal(
-          () => PointerSize()..type = type,
-          from: pointerSizeProvider,
-          name: r'pointerSizeProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$pointerSizeHash,
-          dependencies: PointerSizeFamily._dependencies,
-          allTransitiveDependencies:
-              PointerSizeFamily._allTransitiveDependencies,
-          type: type,
-        );
+  PointerSizeProvider({required GazePointerType type})
+    : this._internal(
+        () => PointerSize()..type = type,
+        from: pointerSizeProvider,
+        name: r'pointerSizeProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$pointerSizeHash,
+        dependencies: PointerSizeFamily._dependencies,
+        allTransitiveDependencies: PointerSizeFamily._allTransitiveDependencies,
+        type: type,
+      );
 
   PointerSizeProvider._internal(
     super._createNotifier, {
@@ -610,12 +571,8 @@ class PointerSizeProvider
   final GazePointerType type;
 
   @override
-  double runNotifierBuild(
-    covariant PointerSize notifier,
-  ) {
-    return notifier.build(
-      type: type,
-    );
+  double runNotifierBuild(covariant PointerSize notifier) {
+    return notifier.build(type: type);
   }
 
   @override
@@ -669,7 +626,7 @@ class _PointerSizeProviderElement
   GazePointerType get type => (origin as PointerSizeProvider).type;
 }
 
-String _$pointerOffsetHash() => r'9c2380ceffaca19b02e16732672c8126b77abffd';
+String _$pointerOffsetHash() => r'b865fafaeea979307ea9327532cc8cfc2748eb1b';
 
 /// Gaze Pointer Offset
 ///
@@ -677,33 +634,36 @@ String _$pointerOffsetHash() => r'9c2380ceffaca19b02e16732672c8126b77abffd';
 @ProviderFor(PointerOffset)
 final pointerOffsetProvider =
     AutoDisposeNotifierProvider<PointerOffset, Offset>.internal(
-  PointerOffset.new,
-  name: r'pointerOffsetProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pointerOffsetHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      PointerOffset.new,
+      name: r'pointerOffsetProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$pointerOffsetHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$PointerOffset = AutoDisposeNotifier<Offset>;
-String _$pointerHistoryHash() => r'e9f847dbc056dad738965cd7e47a078c470790f8';
+String _$pointerHistoryHash() => r'5287b52caf12e35d985f7e96088f9c299b829105';
 
 /// See also [PointerHistory].
 @ProviderFor(PointerHistory)
-final pointerHistoryProvider = AutoDisposeNotifierProvider<PointerHistory,
-    Queue<(GlobalKey key, Offset offset)>>.internal(
-  PointerHistory.new,
-  name: r'pointerHistoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pointerHistoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final pointerHistoryProvider =
+    AutoDisposeNotifierProvider<
+      PointerHistory,
+      Queue<(GlobalKey key, Offset offset)>
+    >.internal(
+      PointerHistory.new,
+      name: r'pointerHistoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$pointerHistoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
-typedef _$PointerHistory
-    = AutoDisposeNotifier<Queue<(GlobalKey key, Offset offset)>>;
+typedef _$PointerHistory =
+    AutoDisposeNotifier<Queue<(GlobalKey key, Offset offset)>>;
 String _$pointerFixationPointHash() =>
     r'30365f0aa87b69a9e8a75ddc90185455ffd4a71a';
 
@@ -713,14 +673,14 @@ String _$pointerFixationPointHash() =>
 @ProviderFor(PointerFixationPoint)
 final pointerFixationPointProvider =
     NotifierProvider<PointerFixationPoint, Offset>.internal(
-  PointerFixationPoint.new,
-  name: r'pointerFixationPointProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pointerFixationPointHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      PointerFixationPoint.new,
+      name: r'pointerFixationPointProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$pointerFixationPointHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$PointerFixationPoint = Notifier<Offset>;
 String _$snapElementHash() => r'ddf6ae096ef462be6329f6d12129fa8b8e5d39cb';
@@ -731,13 +691,14 @@ String _$snapElementHash() => r'ddf6ae096ef462be6329f6d12129fa8b8e5d39cb';
 @ProviderFor(SnapElement)
 final snapElementProvider =
     NotifierProvider<SnapElement, GazeElementData?>.internal(
-  SnapElement.new,
-  name: r'snapElementProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$snapElementHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      SnapElement.new,
+      name: r'snapElementProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$snapElementHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$SnapElement = Notifier<GazeElementData?>;
 String _$snappingStateHash() => r'4dbdcdac784cb60eabecf180b809e3289015cec8';
@@ -748,14 +709,14 @@ String _$snappingStateHash() => r'4dbdcdac784cb60eabecf180b809e3289015cec8';
 @ProviderFor(SnappingState)
 final snappingStateProvider =
     NotifierProvider<SnappingState, SnapState>.internal(
-  SnappingState.new,
-  name: r'snappingStateProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$snappingStateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      SnappingState.new,
+      name: r'snappingStateProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$snappingStateHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$SnappingState = Notifier<SnapState>;
 String _$pointerFixationRadiusHash() =>
@@ -767,14 +728,14 @@ String _$pointerFixationRadiusHash() =>
 @ProviderFor(PointerFixationRadius)
 final pointerFixationRadiusProvider =
     NotifierProvider<PointerFixationRadius, double>.internal(
-  PointerFixationRadius.new,
-  name: r'pointerFixationRadiusProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pointerFixationRadiusHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      PointerFixationRadius.new,
+      name: r'pointerFixationRadiusProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$pointerFixationRadiusHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$PointerFixationRadius = Notifier<double>;
 String _$pointerSnappingRadiusHash() =>
@@ -786,14 +747,14 @@ String _$pointerSnappingRadiusHash() =>
 @ProviderFor(PointerSnappingRadius)
 final pointerSnappingRadiusProvider =
     AutoDisposeNotifierProvider<PointerSnappingRadius, double>.internal(
-  PointerSnappingRadius.new,
-  name: r'pointerSnappingRadiusProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pointerSnappingRadiusHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      PointerSnappingRadius.new,
+      name: r'pointerSnappingRadiusProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$pointerSnappingRadiusHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$PointerSnappingRadius = AutoDisposeNotifier<double>;
 String _$ignorePointerStateHash() =>
@@ -805,14 +766,14 @@ String _$ignorePointerStateHash() =>
 @ProviderFor(IgnorePointerState)
 final ignorePointerStateProvider =
     AutoDisposeNotifierProvider<IgnorePointerState, bool>.internal(
-  IgnorePointerState.new,
-  name: r'ignorePointerStateProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$ignorePointerStateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      IgnorePointerState.new,
+      name: r'ignorePointerStateProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$ignorePointerStateHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$IgnorePointerState = AutoDisposeNotifier<bool>;
 // ignore_for_file: type=lint
