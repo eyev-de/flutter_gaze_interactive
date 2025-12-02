@@ -40,21 +40,15 @@ class ButtonMaybePlaySoundFamily extends Family<AsyncValue<void>> {
   const ButtonMaybePlaySoundFamily();
 
   /// See also [buttonMaybePlaySound].
-  ButtonMaybePlaySoundProvider call({
-    bool defaultVolume = false,
-  }) {
-    return ButtonMaybePlaySoundProvider(
-      defaultVolume: defaultVolume,
-    );
+  ButtonMaybePlaySoundProvider call({bool defaultVolume = false}) {
+    return ButtonMaybePlaySoundProvider(defaultVolume: defaultVolume);
   }
 
   @override
   ButtonMaybePlaySoundProvider getProviderOverride(
     covariant ButtonMaybePlaySoundProvider provider,
   ) {
-    return call(
-      defaultVolume: provider.defaultVolume,
-    );
+    return call(defaultVolume: provider.defaultVolume);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -75,24 +69,22 @@ class ButtonMaybePlaySoundFamily extends Family<AsyncValue<void>> {
 /// See also [buttonMaybePlaySound].
 class ButtonMaybePlaySoundProvider extends AutoDisposeFutureProvider<void> {
   /// See also [buttonMaybePlaySound].
-  ButtonMaybePlaySoundProvider({
-    bool defaultVolume = false,
-  }) : this._internal(
-          (ref) => buttonMaybePlaySound(
-            ref as ButtonMaybePlaySoundRef,
-            defaultVolume: defaultVolume,
-          ),
-          from: buttonMaybePlaySoundProvider,
-          name: r'buttonMaybePlaySoundProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$buttonMaybePlaySoundHash,
-          dependencies: ButtonMaybePlaySoundFamily._dependencies,
-          allTransitiveDependencies:
-              ButtonMaybePlaySoundFamily._allTransitiveDependencies,
+  ButtonMaybePlaySoundProvider({bool defaultVolume = false})
+    : this._internal(
+        (ref) => buttonMaybePlaySound(
+          ref as ButtonMaybePlaySoundRef,
           defaultVolume: defaultVolume,
-        );
+        ),
+        from: buttonMaybePlaySoundProvider,
+        name: r'buttonMaybePlaySoundProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$buttonMaybePlaySoundHash,
+        dependencies: ButtonMaybePlaySoundFamily._dependencies,
+        allTransitiveDependencies:
+            ButtonMaybePlaySoundFamily._allTransitiveDependencies,
+        defaultVolume: defaultVolume,
+      );
 
   ButtonMaybePlaySoundProvider._internal(
     super._createNotifier, {
@@ -167,14 +159,14 @@ String _$snapActiveStateHash() => r'0ba78c6a0da56e78bf57e560e759113c94e72461';
 @ProviderFor(SnapActiveState)
 final snapActiveStateProvider =
     NotifierProvider<SnapActiveState, bool>.internal(
-  SnapActiveState.new,
-  name: r'snapActiveStateProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$snapActiveStateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      SnapActiveState.new,
+      name: r'snapActiveStateProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$snapActiveStateHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$SnapActiveState = Notifier<bool>;
 String _$snapIconStateHash() => r'9beed2dc0f83941f0875b87008af21cfe0f35ee0';
@@ -199,31 +191,31 @@ String _$gazePointerAlwaysVisibleHash() =>
 @ProviderFor(GazePointerAlwaysVisible)
 final gazePointerAlwaysVisibleProvider =
     NotifierProvider<GazePointerAlwaysVisible, bool>.internal(
-  GazePointerAlwaysVisible.new,
-  name: r'gazePointerAlwaysVisibleProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$gazePointerAlwaysVisibleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      GazePointerAlwaysVisible.new,
+      name: r'gazePointerAlwaysVisibleProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$gazePointerAlwaysVisibleHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$GazePointerAlwaysVisible = Notifier<bool>;
 String _$gazePointerHistoryNumberHash() =>
-    r'8872f13512cdbcaa4bd698272692384592b6ad70';
+    r'e6f875251f8edd6994aef177ba8dd834b09e58fa';
 
 /// See also [GazePointerHistoryNumber].
 @ProviderFor(GazePointerHistoryNumber)
 final gazePointerHistoryNumberProvider =
     NotifierProvider<GazePointerHistoryNumber, int>.internal(
-  GazePointerHistoryNumber.new,
-  name: r'gazePointerHistoryNumberProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$gazePointerHistoryNumberHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      GazePointerHistoryNumber.new,
+      name: r'gazePointerHistoryNumberProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$gazePointerHistoryNumberHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$GazePointerHistoryNumber = Notifier<int>;
 String _$keyboardSpeechToTextIsListeningHash() =>
@@ -233,14 +225,14 @@ String _$keyboardSpeechToTextIsListeningHash() =>
 @ProviderFor(KeyboardSpeechToTextIsListening)
 final keyboardSpeechToTextIsListeningProvider =
     AutoDisposeNotifierProvider<KeyboardSpeechToTextIsListening, bool>.internal(
-  KeyboardSpeechToTextIsListening.new,
-  name: r'keyboardSpeechToTextIsListeningProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$keyboardSpeechToTextIsListeningHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      KeyboardSpeechToTextIsListening.new,
+      name: r'keyboardSpeechToTextIsListeningProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$keyboardSpeechToTextIsListeningHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$KeyboardSpeechToTextIsListening = AutoDisposeNotifier<bool>;
 String _$keyboardSpeechToTextAvailableHash() =>
@@ -250,14 +242,14 @@ String _$keyboardSpeechToTextAvailableHash() =>
 @ProviderFor(KeyboardSpeechToTextAvailable)
 final keyboardSpeechToTextAvailableProvider =
     NotifierProvider<KeyboardSpeechToTextAvailable, AsyncValue<bool?>>.internal(
-  KeyboardSpeechToTextAvailable.new,
-  name: r'keyboardSpeechToTextAvailableProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$keyboardSpeechToTextAvailableHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      KeyboardSpeechToTextAvailable.new,
+      name: r'keyboardSpeechToTextAvailableProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$keyboardSpeechToTextAvailableHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$KeyboardSpeechToTextAvailable = Notifier<AsyncValue<bool?>>;
 String _$keyboardSpeechToTextStatusHash() =>
@@ -265,34 +257,40 @@ String _$keyboardSpeechToTextStatusHash() =>
 
 /// See also [KeyboardSpeechToTextStatus].
 @ProviderFor(KeyboardSpeechToTextStatus)
-final keyboardSpeechToTextStatusProvider = AutoDisposeNotifierProvider<
-    KeyboardSpeechToTextStatus, KeyboardTextFieldStatus?>.internal(
-  KeyboardSpeechToTextStatus.new,
-  name: r'keyboardSpeechToTextStatusProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$keyboardSpeechToTextStatusHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final keyboardSpeechToTextStatusProvider =
+    AutoDisposeNotifierProvider<
+      KeyboardSpeechToTextStatus,
+      KeyboardTextFieldStatus?
+    >.internal(
+      KeyboardSpeechToTextStatus.new,
+      name: r'keyboardSpeechToTextStatusProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$keyboardSpeechToTextStatusHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
-typedef _$KeyboardSpeechToTextStatus
-    = AutoDisposeNotifier<KeyboardTextFieldStatus?>;
+typedef _$KeyboardSpeechToTextStatus =
+    AutoDisposeNotifier<KeyboardTextFieldStatus?>;
 String _$keyboardSpeechToTextLocalesHash() =>
     r'540fffee052b22becae3048463367bf0bf36abc6';
 
 /// See also [KeyboardSpeechToTextLocales].
 @ProviderFor(KeyboardSpeechToTextLocales)
-final keyboardSpeechToTextLocalesProvider = NotifierProvider<
-    KeyboardSpeechToTextLocales, AsyncValue<List<LocaleName>>>.internal(
-  KeyboardSpeechToTextLocales.new,
-  name: r'keyboardSpeechToTextLocalesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$keyboardSpeechToTextLocalesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final keyboardSpeechToTextLocalesProvider =
+    NotifierProvider<
+      KeyboardSpeechToTextLocales,
+      AsyncValue<List<LocaleName>>
+    >.internal(
+      KeyboardSpeechToTextLocales.new,
+      name: r'keyboardSpeechToTextLocalesProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$keyboardSpeechToTextLocalesHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$KeyboardSpeechToTextLocales = Notifier<AsyncValue<List<LocaleName>>>;
 String _$keyboardSpeechToTextLocaleHash() =>
@@ -302,14 +300,14 @@ String _$keyboardSpeechToTextLocaleHash() =>
 @ProviderFor(KeyboardSpeechToTextLocale)
 final keyboardSpeechToTextLocaleProvider =
     NotifierProvider<KeyboardSpeechToTextLocale, String>.internal(
-  KeyboardSpeechToTextLocale.new,
-  name: r'keyboardSpeechToTextLocaleProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$keyboardSpeechToTextLocaleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      KeyboardSpeechToTextLocale.new,
+      name: r'keyboardSpeechToTextLocaleProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$keyboardSpeechToTextLocaleHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$KeyboardSpeechToTextLocale = Notifier<String>;
 String _$keyboardSpeechToTextHash() =>
@@ -319,14 +317,14 @@ String _$keyboardSpeechToTextHash() =>
 @ProviderFor(KeyboardSpeechToText)
 final keyboardSpeechToTextProvider =
     NotifierProvider<KeyboardSpeechToText, SpeechToText>.internal(
-  KeyboardSpeechToText.new,
-  name: r'keyboardSpeechToTextProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$keyboardSpeechToTextHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      KeyboardSpeechToText.new,
+      name: r'keyboardSpeechToTextProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$keyboardSpeechToTextHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$KeyboardSpeechToText = Notifier<SpeechToText>;
 // ignore_for_file: type=lint

@@ -29,11 +29,11 @@ extension GlobalKeyExtension on GlobalKey {
 extension GazePointerValidationExtension on BuildContext {
   Offset validateGazePointer({required Offset offset, required double size}) {
     final media = MediaQuery.maybeOf(this);
-    if (media != null && offset.dx + size > media.size.width) return Offset(media.size.width - size, offset.dy);
-    if (media != null && offset.dy + size > media.size.height) return Offset(offset.dx, media.size.height - size);
-    if (offset.dx < 0) return Offset(0, offset.dy);
-    if (offset.dy < 0) return Offset(offset.dx, 0);
-    return offset;
+    if (media == null) return offset;
+    // Clamp ensures that the value is not smaller than 0 and not larger than (screen width - pointer size).
+    final clampedX = offset.dx.clamp(0.0, media.size.width - size);
+    final clampedY = offset.dy.clamp(0.0, media.size.height - size);
+    return Offset(clampedX, clampedY);
   }
 }
 
@@ -70,8 +70,10 @@ extension TextEditingControllerExtension on TextEditingController {
     final data = await Clipboard.getData(Clipboard.kTextPlain) ?? const ClipboardData(text: '');
     String pasteText = data.text ?? '';
     if (inputFormatters.isNotEmpty) {
-      pasteText =
-          inputFormatters.fold(text, (value, formatter) => formatter.formatEditUpdate(TextEditingValue(text: value), TextEditingValue(text: value)).text);
+      pasteText = inputFormatters.fold(
+        text,
+        (value, formatter) => formatter.formatEditUpdate(TextEditingValue(text: value), TextEditingValue(text: value)).text,
+      );
     }
     if (selecting) {
       final start = selection.start;
@@ -122,10 +124,7 @@ extension TextEditingControllerExtension on TextEditingController {
     }
     value = TextEditingValue(
       text: text,
-      selection: TextSelection(
-        baseOffset: baseOffset,
-        extentOffset: extentOffset,
-      ),
+      selection: TextSelection(baseOffset: baseOffset, extentOffset: extentOffset),
     );
   }
 
@@ -139,10 +138,7 @@ extension TextEditingControllerExtension on TextEditingController {
     }
     value = TextEditingValue(
       text: text,
-      selection: TextSelection(
-        baseOffset: baseOffset,
-        extentOffset: extentOffset,
-      ),
+      selection: TextSelection(baseOffset: baseOffset, extentOffset: extentOffset),
     );
   }
 
@@ -152,10 +148,7 @@ extension TextEditingControllerExtension on TextEditingController {
     baseOffset = extentOffset = text.length;
     value = TextEditingValue(
       text: text,
-      selection: TextSelection(
-        baseOffset: baseOffset,
-        extentOffset: extentOffset,
-      ),
+      selection: TextSelection(baseOffset: baseOffset, extentOffset: extentOffset),
     );
   }
 }

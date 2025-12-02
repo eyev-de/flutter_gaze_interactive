@@ -34,9 +34,7 @@ abstract class _$SwitchButtonToggleWithDelay
     extends BuildlessAutoDisposeNotifier<bool> {
   late final GlobalKey<State<StatefulWidget>> key;
 
-  bool build({
-    required GlobalKey<State<StatefulWidget>> key,
-  });
+  bool build({required GlobalKey<State<StatefulWidget>> key});
 }
 
 /// See also [SwitchButtonToggleWithDelay].
@@ -52,18 +50,14 @@ class SwitchButtonToggleWithDelayFamily extends Family<bool> {
   SwitchButtonToggleWithDelayProvider call({
     required GlobalKey<State<StatefulWidget>> key,
   }) {
-    return SwitchButtonToggleWithDelayProvider(
-      key: key,
-    );
+    return SwitchButtonToggleWithDelayProvider(key: key);
   }
 
   @override
   SwitchButtonToggleWithDelayProvider getProviderOverride(
     covariant SwitchButtonToggleWithDelayProvider provider,
   ) {
-    return call(
-      key: provider.key,
-    );
+    return call(key: provider.key);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -88,18 +82,17 @@ class SwitchButtonToggleWithDelayProvider
   SwitchButtonToggleWithDelayProvider({
     required GlobalKey<State<StatefulWidget>> key,
   }) : this._internal(
-          () => SwitchButtonToggleWithDelay()..key = key,
-          from: switchButtonToggleWithDelayProvider,
-          name: r'switchButtonToggleWithDelayProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$switchButtonToggleWithDelayHash,
-          dependencies: SwitchButtonToggleWithDelayFamily._dependencies,
-          allTransitiveDependencies:
-              SwitchButtonToggleWithDelayFamily._allTransitiveDependencies,
-          key: key,
-        );
+         () => SwitchButtonToggleWithDelay()..key = key,
+         from: switchButtonToggleWithDelayProvider,
+         name: r'switchButtonToggleWithDelayProvider',
+         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+             ? null
+             : _$switchButtonToggleWithDelayHash,
+         dependencies: SwitchButtonToggleWithDelayFamily._dependencies,
+         allTransitiveDependencies:
+             SwitchButtonToggleWithDelayFamily._allTransitiveDependencies,
+         key: key,
+       );
 
   SwitchButtonToggleWithDelayProvider._internal(
     super._createNotifier, {
@@ -114,12 +107,8 @@ class SwitchButtonToggleWithDelayProvider
   final GlobalKey<State<StatefulWidget>> key;
 
   @override
-  bool runNotifierBuild(
-    covariant SwitchButtonToggleWithDelay notifier,
-  ) {
-    return notifier.build(
-      key: key,
-    );
+  bool runNotifierBuild(covariant SwitchButtonToggleWithDelay notifier) {
+    return notifier.build(key: key);
   }
 
   @override
@@ -140,7 +129,7 @@ class SwitchButtonToggleWithDelayProvider
 
   @override
   AutoDisposeNotifierProviderElement<SwitchButtonToggleWithDelay, bool>
-      createElement() {
+  createElement() {
     return _SwitchButtonToggleWithDelayProviderElement(this);
   }
 
@@ -166,8 +155,9 @@ mixin SwitchButtonToggleWithDelayRef on AutoDisposeNotifierProviderRef<bool> {
 }
 
 class _SwitchButtonToggleWithDelayProviderElement
-    extends AutoDisposeNotifierProviderElement<SwitchButtonToggleWithDelay,
-        bool> with SwitchButtonToggleWithDelayRef {
+    extends
+        AutoDisposeNotifierProviderElement<SwitchButtonToggleWithDelay, bool>
+    with SwitchButtonToggleWithDelayRef {
   _SwitchButtonToggleWithDelayProviderElement(super.provider);
 
   @override
@@ -182,9 +172,7 @@ abstract class _$SwitchButtonChanged
     extends BuildlessAutoDisposeNotifier<bool?> {
   late final GlobalKey<State<StatefulWidget>> key;
 
-  bool? build({
-    required GlobalKey<State<StatefulWidget>> key,
-  });
+  bool? build({required GlobalKey<State<StatefulWidget>> key});
 }
 
 /// See also [SwitchButtonChanged].
@@ -200,18 +188,14 @@ class SwitchButtonChangedFamily extends Family<bool?> {
   SwitchButtonChangedProvider call({
     required GlobalKey<State<StatefulWidget>> key,
   }) {
-    return SwitchButtonChangedProvider(
-      key: key,
-    );
+    return SwitchButtonChangedProvider(key: key);
   }
 
   @override
   SwitchButtonChangedProvider getProviderOverride(
     covariant SwitchButtonChangedProvider provider,
   ) {
-    return call(
-      key: provider.key,
-    );
+    return call(key: provider.key);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -233,21 +217,19 @@ class SwitchButtonChangedFamily extends Family<bool?> {
 class SwitchButtonChangedProvider
     extends AutoDisposeNotifierProviderImpl<SwitchButtonChanged, bool?> {
   /// See also [SwitchButtonChanged].
-  SwitchButtonChangedProvider({
-    required GlobalKey<State<StatefulWidget>> key,
-  }) : this._internal(
-          () => SwitchButtonChanged()..key = key,
-          from: switchButtonChangedProvider,
-          name: r'switchButtonChangedProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$switchButtonChangedHash,
-          dependencies: SwitchButtonChangedFamily._dependencies,
-          allTransitiveDependencies:
-              SwitchButtonChangedFamily._allTransitiveDependencies,
-          key: key,
-        );
+  SwitchButtonChangedProvider({required GlobalKey<State<StatefulWidget>> key})
+    : this._internal(
+        () => SwitchButtonChanged()..key = key,
+        from: switchButtonChangedProvider,
+        name: r'switchButtonChangedProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$switchButtonChangedHash,
+        dependencies: SwitchButtonChangedFamily._dependencies,
+        allTransitiveDependencies:
+            SwitchButtonChangedFamily._allTransitiveDependencies,
+        key: key,
+      );
 
   SwitchButtonChangedProvider._internal(
     super._createNotifier, {
@@ -262,12 +244,8 @@ class SwitchButtonChangedProvider
   final GlobalKey<State<StatefulWidget>> key;
 
   @override
-  bool? runNotifierBuild(
-    covariant SwitchButtonChanged notifier,
-  ) {
-    return notifier.build(
-      key: key,
-    );
+  bool? runNotifierBuild(covariant SwitchButtonChanged notifier) {
+    return notifier.build(key: key);
   }
 
   @override
@@ -288,7 +266,7 @@ class SwitchButtonChangedProvider
 
   @override
   AutoDisposeNotifierProviderElement<SwitchButtonChanged, bool?>
-      createElement() {
+  createElement() {
     return _SwitchButtonChangedProviderElement(this);
   }
 
@@ -322,5 +300,6 @@ class _SwitchButtonChangedProviderElement
   GlobalKey<State<StatefulWidget>> get key =>
       (origin as SwitchButtonChangedProvider).key;
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
