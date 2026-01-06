@@ -21,9 +21,7 @@ import 'pointer_circle.dart';
 import 'pointer_view.provider.dart';
 
 class GazePointerView extends ConsumerWidget {
-  GazePointerView({Key? key, GazePointerState? state})
-      : _state = state ?? GazePointerState(),
-        super(key: key);
+  GazePointerView({Key? key, GazePointerState? state}) : _state = state ?? GazePointerState(), super(key: key);
 
   final GazePointerState _state;
 
@@ -49,14 +47,10 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
 
   final _wrappedKey = GlobalKey();
   bool _isDragging = false;
+  late final GazeInteractiveState _gazeState;
 
   /// GazePointerData
-  late final gazePointerData = GazePointerData(
-    key: _wrappedKey,
-    onGaze: _onGazeData,
-    onFixation: _onFixation,
-    onSnap: _onSnap,
-  );
+  late final gazePointerData = GazePointerData(key: _wrappedKey, onGaze: _onGazeData, onFixation: _onFixation, onSnap: _onSnap);
 
   // on moving -> updated gaze data
   void _onGazeData(Offset gaze) {
@@ -129,29 +123,30 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   @override
   void initState() {
     super.initState();
+    // Cache the reference to avoid accessing ref after dispose
+    _gazeState = ref.read(gazeInteractiveProvider);
     // fade out gaze pointer
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (mounted) ref.read(pointerIsMovingProvider.notifier).move();
     });
     // gaze pointer type is active -> animate fixation
     ref.read(pointerAnimationProvider(vsync: this));
-    ref.read(pointerAnimationControllerProvider(vsync: this)).addStatusListener(
-      (status) {
-        if (status == AnimationStatus.completed) {
-          if (mounted) ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
-          final _pointerOffset = ref.read(pointerOffsetProvider);
-          final _size = ref.read(pointerSizeProvider(type: widget.state.type));
-          widget.state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
-        }
-      },
-    );
-    ref.read(gazeInteractiveProvider).register(gazePointerData);
+    ref.read(pointerAnimationControllerProvider(vsync: this)).addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        if (mounted) ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
+        final _pointerOffset = ref.read(pointerOffsetProvider);
+        final _size = ref.read(pointerSizeProvider(type: widget.state.type));
+        widget.state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
+      }
+    });
+    _gazeState.register(gazePointerData);
   }
 
   @override
-  void deactivate() {
-    ref.read(gazeInteractiveProvider).unregister(key: _wrappedKey, type: GazeElementType.pointer);
-    super.deactivate();
+  void dispose() {
+    // Unregister using cached reference (safe to use after dispose)
+    _gazeState.unregister(key: _wrappedKey, type: GazeElementType.pointer);
+    super.dispose();
   }
 
   @override
@@ -182,11 +177,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
               },
               onPanEnd: (_) => _isDragging = false,
               onPanCancel: () => _isDragging = false,
-              child: PointerCircle(
-                type: GazePointerType.history,
-                size: _size,
-                animation: _animation,
-              ),
+              child: PointerCircle(type: GazePointerType.history, size: _size, animation: _animation),
             ),
           ),
         ],
@@ -294,7 +285,7 @@ class _PointerHistory extends ConsumerWidget {
               child: PointerCircle(type: GazePointerType.history, size: size),
             ),
           );
-        })
+        }),
       ],
     );
   }
