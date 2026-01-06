@@ -35,13 +35,7 @@ class GazeInteractiveState {
   final Logger? logger;
   final SharedPreferences sharedPreferences;
 
-  PredicateReturnState Function(
-    GazeShape element,
-    GazeShape gazePointer,
-    GazeShape gazeSnapPointer,
-    String itemRoute,
-    String currentRoute,
-  )? predicate;
+  PredicateReturnState Function(GazeShape element, GazeShape gazePointer, GazeShape gazeSnapPointer, String itemRoute, String currentRoute)? predicate;
 
   String get currentRoute => ref.read(currentRouteStateProvider);
 
@@ -82,6 +76,8 @@ class GazeInteractiveState {
 
   final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
   GazePointerData? _currentGazePointerView;
+
+  List<GazeElementData> get currentGazeViews => _currentGazeViews;
 
   late final duration = StateNotifierProvider<GazeInteractiveDurationLocalNotifier, int>((ref) {
     return GazeInteractiveDurationLocalNotifier(sharedPreferences);
@@ -183,8 +179,10 @@ class GazeInteractiveState {
   void onGaze(Offset position) {
     final active = ref.read(activeStateProvider);
     if (!active) return;
+    // Ensure pointer is set up - this will trigger onPointerMove callback
     _currentGazePointerView?.onPointerMove = onPointerMove;
     _currentGazePointerView?.onGaze?.call(position);
+    // Process gaze for active views
     for (final view in _currentGazeViews) {
       view.onGaze?.call(position);
     }
@@ -219,17 +217,10 @@ class GazeInteractiveState {
   /// Internal endpoint
   /// DO NOT USE
   // TODO(krjw): Change it!!!
-  void onPointerMove(
-    Offset position,
-    Size size,
-  ) {
+  void onPointerMove(Offset position, Size size) {
     final active = ref.read(activeStateProvider);
     if (!active) return;
-    final rect = Rect.fromCenter(
-      center: position,
-      width: size.width,
-      height: size.height,
-    );
+    final rect = Rect.fromCenter(center: position, width: size.width, height: size.height);
     final snapRect = Rect.fromCenter(
       center: position - Offset(ref.watch(snappingRadius), ref.watch(snappingRadius)),
       // adding additional radius for snapping
@@ -310,13 +301,7 @@ class GazeInteractiveState {
     required GazeElementData element,
     required GazeElementData currentGazePointer,
     required String currentRoute,
-    PredicateReturnState Function(
-      GazeShape element,
-      GazeShape gazePointer,
-      GazeShape gazeSnapPointer,
-      String itemRoute,
-      String currentRoute,
-    )? predicate,
+    PredicateReturnState Function(GazeShape element, GazeShape gazePointer, GazeShape gazeSnapPointer, String itemRoute, String currentRoute)? predicate,
   }) {
     // Get bounding rect of the element
     final elementRect = element.key.globalPaintBounds;

@@ -100,77 +100,60 @@ class GazeViewImpl extends ConsumerStatefulWidget {
 }
 
 class _GazeViewImplState extends ConsumerState<GazeViewImpl> {
+  late final GazeInteractiveState _gazeState;
+
   @override
   void initState() {
     super.initState();
+    // Cache the reference to avoid accessing ref after dispose
+    _gazeState = ref.read(gazeInteractiveProvider);
     _register();
   }
 
   @override
-  void deactivate() {
-    ref.read(gazeInteractiveProvider).unregister(key: widget.wrappedKey, type: GazeElementType.all);
-    super.deactivate();
+  void dispose() {
+    // Unregister using cached reference (safe to use after dispose)
+    _gazeState.unregister(key: widget.wrappedKey, type: GazeElementType.all);
+    super.dispose();
   }
 
   void _register() {
-    ref.read(gazeInteractiveProvider).register(
-          GazeElementData(
-            key: widget.wrappedKey,
-            route: widget.route,
-            snappable: widget.snappable,
-            onGazeEnter: () {
-              if (mounted) {
-                widget.onGazeEnter?.call();
-              }
-            },
-            onGazeLeave: () {
-              if (mounted) {
-                widget.onGazeLeave?.call();
-              }
-            },
-            onGaze: (gaze) {
-              if (mounted) {
-                widget.onGaze?.call(gaze);
-                _calculate(Rect.fromCenter(center: gaze, width: 3, height: 3));
-              }
-            },
-          ),
-        );
+    _gazeState.register(
+      GazeElementData(
+        key: widget.wrappedKey,
+        route: widget.route,
+        snappable: widget.snappable,
+        onGazeEnter: () {
+          if (mounted) {
+            widget.onGazeEnter?.call();
+          }
+        },
+        onGazeLeave: () {
+          if (mounted) {
+            widget.onGazeLeave?.call();
+          }
+        },
+        onGaze: (gaze) {
+          if (mounted) {
+            widget.onGaze?.call(gaze);
+            _calculate(Rect.fromCenter(center: gaze, width: 3, height: 3));
+          }
+        },
+      ),
+    );
   }
 
   Future<void> _calculate(Rect rect) async {
     final bounds = widget.wrappedKey.globalPaintBounds;
     if (bounds != null) {
       // calculate top area in which scrolling happens
-      final tempTop = Rect.fromLTRB(
-        bounds.left,
-        bounds.top,
-        bounds.right,
-        bounds.top + bounds.height * widget.scrollAreaTop,
-      );
+      final tempTop = Rect.fromLTRB(bounds.left, bounds.top, bounds.right, bounds.top + bounds.height * widget.scrollAreaTop);
       // calculate bottom area in which scrolling happens
-      final tempBottom = Rect.fromLTRB(
-        bounds.left,
-        bounds.bottom - bounds.height * widget.scrollAreaBottom,
-        bounds.right,
-        bounds.bottom,
-      );
-
+      final tempBottom = Rect.fromLTRB(bounds.left, bounds.bottom - bounds.height * widget.scrollAreaBottom, bounds.right, bounds.bottom);
       // calculate left area in which scrolling happens
-      final tempLeft = Rect.fromLTRB(
-        bounds.left,
-        bounds.top,
-        bounds.left + bounds.width * widget.scrollAreaLeft,
-        bounds.bottom,
-      );
-
+      final tempLeft = Rect.fromLTRB(bounds.left, bounds.top, bounds.left + bounds.width * widget.scrollAreaLeft, bounds.bottom);
       // calculate right area in which scrolling happens
-      final tempRight = Rect.fromLTRB(
-        bounds.right - bounds.width * widget.scrollAreaRight,
-        bounds.top,
-        bounds.right,
-        bounds.bottom,
-      );
+      final tempRight = Rect.fromLTRB(bounds.right - bounds.width * widget.scrollAreaRight, bounds.top, bounds.right, bounds.bottom);
       final double maxScrollSpeed = ref.read(ref.read(gazeInteractiveProvider).scrollFactor);
       // final double maxScrollSpeed = GazeInteractive().scrollFactor;
       if (tempTop.overlaps(rect)) {

@@ -9,9 +9,10 @@ class GazeContext extends StatelessWidget {
   final GazeInteractiveState state;
 
   @override
-  Widget build(BuildContext context) => ProviderScope(overrides: [
-        gazeInteractiveProvider.overrideWithValue(state),
-      ], child: _GazeContext(state: state, child: child));
+  Widget build(BuildContext context) => ProviderScope(
+    overrides: [gazeInteractiveProvider.overrideWithValue(state)],
+    child: _GazeContext(state: state, child: child),
+  );
 }
 
 class _GazeContext extends ConsumerStatefulWidget {
@@ -34,10 +35,18 @@ class _GazeContextState extends ConsumerState<_GazeContext> {
     widget.state.ref = ref;
     ref
       ..listen(widget.state.activeStateProvider, (prev, next) {
-        widget.state.leaveAllGazeViews();
+        if (!next) {
+          // When becoming inactive, call leave callbacks but don't clear the list -> allows views to be re-entered automatically when active again
+          for (final view in widget.state.currentGazeViews) {
+            view.onGazeLeave?.call();
+          }
+        } else if (prev != null && !prev && next) {
+          // When becoming active again, trigger re-entry for views that were active -> next onGaze event will re-populate _currentGazeViews via onPointerMove
+        }
       })
       ..listen(widget.state.currentRouteStateProvider, (prev, next) {
-        widget.state.leaveAllGazeViews();
+        // Only clear if route really changes and is not empty
+        if (prev != null && next.isNotEmpty && prev != next) widget.state.leaveAllGazeViews();
       });
     return widget.child;
   }
