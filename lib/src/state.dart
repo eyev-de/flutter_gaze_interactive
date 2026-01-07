@@ -31,7 +31,24 @@ class GazeInteractiveState {
     AudioCache.instance.prefix = '';
   }
 
-  late WidgetRef ref;
+  WidgetRef Function()? _refGetter;
+
+  WidgetRef get ref {
+    final getter = _refGetter;
+    if (getter == null) {
+      throw StateError('GazeInteractiveState.ref accessed before GazeContext was built');
+    }
+    return getter();
+  }
+
+  void bindRef(WidgetRef Function() getter) {
+    _refGetter = getter;
+  }
+
+  void unbindRef() {
+    _refGetter = null;
+  }
+
   final Logger? logger;
   final SharedPreferences sharedPreferences;
 
