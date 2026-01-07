@@ -28,11 +28,17 @@ class _GazeContextState extends ConsumerState<_GazeContext> {
   @override
   void initState() {
     super.initState();
+    widget.state.bindRef(() => ref);
+  }
+
+  @override
+  void dispose() {
+    widget.state.unbindRef();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.state.ref = ref;
     ref
       ..listen(widget.state.activeStateProvider, (prev, next) {
         if (!next) {
