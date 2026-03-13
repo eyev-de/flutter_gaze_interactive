@@ -59,7 +59,7 @@ class GazeInteractiveState {
   set currentRoute(String value) {
     if (ref.read(currentRouteStateProvider) != value) {
       Future.delayed(const Duration(), () {
-        ref.read(currentRouteStateProvider.notifier).state = value;
+        ref.read(currentRouteStateProvider.notifier).set(value);
       });
     }
   }
@@ -69,16 +69,16 @@ class GazeInteractiveState {
   set active(bool value) {
     if (ref.read(activeStateProvider) != value) {
       Future.delayed(const Duration(), () {
-        ref.read(activeStateProvider.notifier).state = value;
+        ref.read(activeStateProvider.notifier).set(value);
       });
     }
   }
 
-  final activeStateProvider = StateProvider<bool>((ref) => true);
+  final activeStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(true));
 
-  final currentRouteStateProvider = StateProvider<String>((ref) => '');
+  final currentRouteStateProvider = NotifierProvider<SimpleNotifier<String>, String>(() => SimpleNotifier(''));
 
-  final currentRectStateProvider = StateProvider<Rect>((ref) => Rect.zero);
+  final currentRectStateProvider = NotifierProvider<SimpleNotifier<Rect>, Rect>(() => SimpleNotifier(Rect.zero));
 
   final List<GazeElementData> _registeredGazeViews = [];
   List<GazeElementData> _currentGazeViews = [];
@@ -96,71 +96,65 @@ class GazeInteractiveState {
 
   List<GazeElementData> get currentGazeViews => _currentGazeViews;
 
-  late final duration = StateNotifierProvider<GazeInteractiveDurationLocalNotifier, int>((ref) {
-    return GazeInteractiveDurationLocalNotifier(sharedPreferences);
-  });
+  late final duration = NotifierProvider<GazeInteractiveDurationLocalNotifier, int>(() => GazeInteractiveDurationLocalNotifier(sharedPreferences));
 
-  late final recoverTime = StateNotifierProvider<GazeInteractiveRecoverTimeLocalNotifier, int>((ref) {
-    return GazeInteractiveRecoverTimeLocalNotifier(sharedPreferences);
-  });
+  late final recoverTime = NotifierProvider<GazeInteractiveRecoverTimeLocalNotifier, int>(() => GazeInteractiveRecoverTimeLocalNotifier(sharedPreferences));
 
-  late final clickSoundVolume = StateNotifierProvider<GazeInteractiveClickSoundVolumeLocalNotifier, int>((ref) {
-    return GazeInteractiveClickSoundVolumeLocalNotifier(sharedPreferences);
-  });
+  late final clickSoundVolume = NotifierProvider<GazeInteractiveClickSoundVolumeLocalNotifier, int>(
+    () => GazeInteractiveClickSoundVolumeLocalNotifier(sharedPreferences),
+  );
 
-  late final clickSoundType = StateNotifierProvider<GazeInteractiveClickSoundTypeLocalNotifier, String>((ref) {
-    return GazeInteractiveClickSoundTypeLocalNotifier(sharedPreferences);
-  });
+  late final clickSoundType = NotifierProvider<GazeInteractiveClickSoundTypeLocalNotifier, String>(
+    () => GazeInteractiveClickSoundTypeLocalNotifier(sharedPreferences),
+  );
 
-  late final reselectionAcceleration = StateNotifierProvider<GazeInteractiveReselectionAccelerationNotifier, double>((ref) {
-    return GazeInteractiveReselectionAccelerationNotifier(sharedPreferences);
-  });
+  late final reselectionAcceleration = NotifierProvider<GazeInteractiveReselectionAccelerationNotifier, double>(
+    () => GazeInteractiveReselectionAccelerationNotifier(sharedPreferences),
+  );
 
-  late final reselectionNumberOfLetterKeys = StateNotifierProvider<GazeInteractiveReselectionNumberOfLetterKeysNotifier, int>((ref) {
-    return GazeInteractiveReselectionNumberOfLetterKeysNotifier(sharedPreferences);
-  });
+  late final reselectionNumberOfLetterKeys = NotifierProvider<GazeInteractiveReselectionNumberOfLetterKeysNotifier, int>(
+    () => GazeInteractiveReselectionNumberOfLetterKeysNotifier(sharedPreferences),
+  );
 
-  late final scrollFactor = StateNotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>((ref) {
-    return GazeInteractiveScrollFactorLocalNotifier(sharedPreferences);
-  });
+  late final scrollFactor = NotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>(
+    () => GazeInteractiveScrollFactorLocalNotifier(sharedPreferences),
+  );
 
   /// Pointer Settings
 
   // GazePointerType: passive (static circle)
-  late final pointerColorPassive = StateNotifierProvider<GazeInteractivePointerColorPassiveLocalNotifier, String>((ref) {
-    return GazeInteractivePointerColorPassiveLocalNotifier(sharedPreferences);
-  });
+  late final pointerColorPassive = NotifierProvider<GazeInteractivePointerColorPassiveLocalNotifier, String>(
+    () => GazeInteractivePointerColorPassiveLocalNotifier(sharedPreferences),
+  );
 
   // GazePointerType: active (static circle)
-  late final pointerColorActive = StateNotifierProvider<GazeInteractivePointerColorActiveLocalNotifier, String>((ref) {
-    return GazeInteractivePointerColorActiveLocalNotifier(sharedPreferences);
-  });
+  late final pointerColorActive = NotifierProvider<GazeInteractivePointerColorActiveLocalNotifier, String>(
+    () => GazeInteractivePointerColorActiveLocalNotifier(sharedPreferences),
+  );
 
   // applied opacity of the circle in specified color
-  late final pointerOpacity = StateNotifierProvider<GazeInteractivePointerOpacityLocalNotifier, double>((ref) {
-    return GazeInteractivePointerOpacityLocalNotifier(sharedPreferences);
-  });
+  late final pointerOpacity = NotifierProvider<GazeInteractivePointerOpacityLocalNotifier, double>(
+    () => GazeInteractivePointerOpacityLocalNotifier(sharedPreferences),
+  );
 
   // size of gaze pointer circle (default: 50)
-  late final pointerSize = StateNotifierProvider<GazeInteractivePointerSizeLocalNotifier, double>((ref) {
-    return GazeInteractivePointerSizeLocalNotifier(sharedPreferences);
-  });
+  late final pointerSize = NotifierProvider<GazeInteractivePointerSizeLocalNotifier, double>(() => GazeInteractivePointerSizeLocalNotifier(sharedPreferences));
 
-  late final fixationRadius = StateNotifierProvider<GazeInteractiveFixationRadiusLocalNotifier, double>((ref) {
-    return GazeInteractiveFixationRadiusLocalNotifier(sharedPreferences);
-  });
+  late final fixationRadius = NotifierProvider<GazeInteractiveFixationRadiusLocalNotifier, double>(
+    () => GazeInteractiveFixationRadiusLocalNotifier(sharedPreferences),
+  );
 
-  late final snappingRadius = StateNotifierProvider<GazeInteractiveSnappingRadiusLocalNotifier, double>((ref) {
-    return GazeInteractiveSnappingRadiusLocalNotifier(sharedPreferences);
-  });
+  late final snappingRadius = NotifierProvider<GazeInteractiveSnappingRadiusLocalNotifier, double>(
+    () => GazeInteractiveSnappingRadiusLocalNotifier(sharedPreferences),
+  );
 
-  late final afterSnapPauseMilliseconds = StateNotifierProvider<GazeInteractiveAfterSnapPauseLocalNotifier, int>((ref) {
-    return GazeInteractiveAfterSnapPauseLocalNotifier(sharedPreferences);
-  });
+  late final afterSnapPauseMilliseconds = NotifierProvider<GazeInteractiveAfterSnapPauseLocalNotifier, int>(
+    () => GazeInteractiveAfterSnapPauseLocalNotifier(sharedPreferences),
+  );
 
-  late final snappingTimerMilliseconds = StateNotifierProvider<GazeInteractiveSnappingTimerLocalNotifier, int>((ref) {
-    return GazeInteractiveSnappingTimerLocalNotifier(sharedPreferences);
-  });
+  late final snappingTimerMilliseconds = NotifierProvider<GazeInteractiveSnappingTimerLocalNotifier, int>(
+    () => GazeInteractiveSnappingTimerLocalNotifier(sharedPreferences),
+  );
 
   void register(GazeElementData data) {
     logger?.i('GazeInteractiveLib: Register GazeInteractive: ${data.type}:');
@@ -245,7 +239,7 @@ class GazeInteractiveState {
       height: size.height + (ref.watch(snappingRadius) * 2),
     );
 
-    ref.read(currentRectStateProvider.notifier).state = rect;
+    ref.read(currentRectStateProvider.notifier).set(rect);
     final currentRoute = ref.read(currentRouteStateProvider);
     if (_currentGazePointerView != null) {
       _currentGazeViews = _getNewListOfActiveGazeElements(
@@ -486,7 +480,7 @@ class KeyboardSpeechToTextLocale extends _$KeyboardSpeechToTextLocale {
 }
 
 @riverpod
-Future<void> buttonMaybePlaySound(ButtonMaybePlaySoundRef ref, {bool defaultVolume = false}) async {
+Future<void> buttonMaybePlaySound(Ref ref, {bool defaultVolume = false}) async {
   final volume = SoundVolume.getByNumber(ref.read(ref.read(gazeInteractiveProvider).clickSoundVolume));
   final type = SoundType.getByName(ref.read(ref.read(gazeInteractiveProvider).clickSoundType));
   await SoundPlayerUtil.playClickSound(defaultVolume ? SoundVolume.getDefault() : volume, type);
@@ -503,9 +497,11 @@ class KeyboardSpeechToText extends _$KeyboardSpeechToText {
   Future<bool> init() async {
     // initialize
     final initialized = await state.initialize(onStatus: (val) => debugPrint('onStatus: $val'), onError: (val) => debugPrint('onError: $val'));
+    if (!ref.mounted) return false;
     // check current locale
     final currentLocale = ref.read(keyboardSpeechToTextLocaleProvider);
     final locales = await state.locales();
+    if (!ref.mounted) return false;
     final available = locales.any((locale) => locale.localeId == (currentLocale == 'en-UK' ? 'en-GB' : currentLocale));
     return initialized && available;
   }
@@ -515,6 +511,7 @@ class KeyboardSpeechToText extends _$KeyboardSpeechToText {
   Future<void> stop() async {
     ref.read(keyboardSpeechToTextIsListeningProvider.notifier).dismiss();
     await state.stop();
+    if (!ref.mounted) return;
   }
 
   Future<void> listen({required TextEditingController controller}) async {
@@ -523,6 +520,7 @@ class KeyboardSpeechToText extends _$KeyboardSpeechToText {
       localeId: locale,
       listenOptions: SpeechListenOptions(listenMode: ListenMode.dictation, autoPunctuation: true, cancelOnError: true),
       onResult: (result) {
+        if (!ref.mounted) return;
         final status = ref.read(keyboardSpeechToTextStatusProvider);
         if (status == null) return;
         if (status.cursor == -1) {

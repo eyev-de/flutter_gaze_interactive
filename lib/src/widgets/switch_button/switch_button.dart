@@ -154,10 +154,7 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     margin: widget.properties.margin,
-                    decoration: BoxDecoration(
-                      color: _color(widget.value),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
+                    decoration: BoxDecoration(color: _color(widget.value), borderRadius: BorderRadius.circular(5)),
                   ),
                 ),
                 if (widget.properties.showLabel)
@@ -211,10 +208,7 @@ class _GazeSwitchButtonLabel extends StatelessWidget {
           color: color,
           padding: EdgeInsets.all(value ? 0 : 2),
           child: FittedBox(
-            child: Text(
-              value ? 'ON' : 'OFF',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold).merge(style),
-            ),
+            child: Text(value ? 'ON' : 'OFF', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold).merge(style)),
           ),
         ),
       ),

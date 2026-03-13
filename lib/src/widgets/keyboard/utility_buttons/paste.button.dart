@@ -10,7 +10,7 @@ class PasteButton extends GazeKeyboardUtilityButton {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
-    final clipboardContent = 'ref.watch(clipboardTextProvider)';
+    final clipboardContent = ref.watch(clipboardTextProvider);
     final disabled = ref.watch(state.disableStateProvider);
     return GazeKeyboardUtilityBaseButton(
       text: label,
@@ -24,8 +24,8 @@ class PasteButton extends GazeKeyboardUtilityButton {
           ? () async {
               node.requestFocus();
               await state.controller.paste(state.inputFormatters, selecting: selecting);
-              ref.read(state.selectingStateProvider.notifier).state = false;
-              ref.read(state.selectingWordStateProvider.notifier).state = false;
+              ref.read(state.selectingStateProvider.notifier).set(false);
+              ref.read(state.selectingWordStateProvider.notifier).set(false);
             }
           : null,
     );

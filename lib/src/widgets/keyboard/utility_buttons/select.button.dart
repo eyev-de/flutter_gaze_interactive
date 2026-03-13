@@ -9,7 +9,9 @@ import '../../../core/text_editing_controller_notifier.dart';
 class SelectButton extends GazeKeyboardUtilityButton {
   SelectButton({super.key, required super.state, required super.node, super.label = 'Select', super.textStyle});
 
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
+  late final controllerTextProvider = NotifierProvider<TextEditingControllerTextNotifier, String>(
+    () => TextEditingControllerTextNotifier(controller: state.controller),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,7 +20,7 @@ class SelectButton extends GazeKeyboardUtilityButton {
 
     // Disable select button if text is empty
     ref.listen(controllerTextProvider, (prev, next) {
-      if (next == '' && selecting) ref.read(state.selectingStateProvider.notifier).state = false;
+      if (next == '' && selecting) ref.read(state.selectingStateProvider.notifier).set(false);
     });
 
     final enabledColor = selecting ? tealColor : tealColor.disabled;
@@ -42,8 +44,8 @@ class SelectButton extends GazeKeyboardUtilityButton {
                   extentOffset: state.controller.selection.extentOffset,
                 );
               }
-              ref.read(state.selectingStateProvider.notifier).state = !selecting;
-              ref.read(state.selectingWordStateProvider.notifier).state = state.controller.selection.textInside(state.controller.text).isNotEmpty;
+              ref.read(state.selectingStateProvider.notifier).set(!selecting);
+              ref.read(state.selectingWordStateProvider.notifier).set(state.controller.selection.textInside(state.controller.text).isNotEmpty);
             },
     );
   }

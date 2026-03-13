@@ -32,7 +32,9 @@ class KeyboardMailCompletions extends StatelessWidget {
           const Spacer(),
           Flexible(
             flex: 8,
-            child: Row(children: completions.map((completion) => _KeyboardMailCompletion(completion: completion, state: state, node: node)).toList()),
+            child: Row(
+              children: completions.map((completion) => _KeyboardMailCompletion(completion: completion, state: state, node: node)).toList(),
+            ),
           ),
           const Spacer(),
         ],
@@ -48,7 +50,7 @@ class _KeyboardMailCompletion extends ConsumerWidget {
   final GazeKeyboardState state;
   final FocusNode node;
 
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
+  late final controllerTextProvider = NotifierProvider<TextEditingControllerTextNotifier, String>(() => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

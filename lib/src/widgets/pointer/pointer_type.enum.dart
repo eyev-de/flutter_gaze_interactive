@@ -4,8 +4,4 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
-enum GazePointerType {
-  history,
-  passive,
-  active;
-}
+enum GazePointerType { history, passive, active }

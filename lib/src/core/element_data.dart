@@ -35,31 +35,16 @@ final class GazeElementData {
 }
 
 final class GazeSelectableData extends GazeElementData {
-  const GazeSelectableData({
-    required super.key,
-    required super.route,
-    required super.onGazeEnter,
-    required super.onGazeLeave,
-    required super.snappable,
-  }) : super(type: GazeElementType.selectable);
+  const GazeSelectableData({required super.key, required super.route, required super.onGazeEnter, required super.onGazeLeave, required super.snappable})
+    : super(type: GazeElementType.selectable);
 }
 
 final class GazeScrollableData extends GazeElementData {
-  const GazeScrollableData({
-    required super.key,
-    required super.route,
-    required super.onGazeEnter,
-    required super.onGazeLeave,
-    super.snappable = false,
-  }) : super(type: GazeElementType.scrollable);
+  const GazeScrollableData({required super.key, required super.route, required super.onGazeEnter, required super.onGazeLeave, super.snappable = false})
+    : super(type: GazeElementType.scrollable);
 }
 
 final class GazePointerData extends GazeElementData {
-  GazePointerData({
-    required super.key,
-    required super.onGaze,
-    super.onSnap,
-    super.onFixation,
-  }) : super(type: GazeElementType.pointer);
+  GazePointerData({required super.key, required super.onGaze, super.onSnap, super.onFixation}) : super(type: GazeElementType.pointer);
   Function(Offset, Size)? onPointerMove;
 }

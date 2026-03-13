@@ -8,23 +8,22 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalStoreNotifier<T> extends StateNotifier<T> {
-  LocalStoreNotifier(
-    this.sharedPreferences,
-    this.sharedPreferencesKey,
-    this.defaultValue, {
-    T? initialValue,
-  }) : super(initialValue ?? sharedPreferences.get(sharedPreferencesKey) as T? ?? defaultValue) {
-    Future(
-      () async {
-        await update(state);
-      },
-    );
-  }
+class LocalStoreNotifier<T> extends Notifier<T> {
+  LocalStoreNotifier(this.sharedPreferences, this.sharedPreferencesKey, this.defaultValue, {this.initialValue});
 
   final SharedPreferences sharedPreferences;
   final String sharedPreferencesKey;
   final T defaultValue;
+  final T? initialValue;
+
+  @override
+  T build() {
+    final value = initialValue ?? sharedPreferences.get(sharedPreferencesKey) as T? ?? defaultValue;
+    Future(() async {
+      await update(value);
+    });
+    return value;
+  }
 
   Future<void> update(T value) async {
     if (value is String) {
@@ -46,12 +45,4 @@ class LocalStoreNotifier<T> extends StateNotifier<T> {
   }
 
   T get getState => state;
-
-  // @override
-  // set state(T value) {
-  //   assert(false, "Don't use the setter for state. Instead use `await update(value)`.");
-  //   Future(() async {
-  //     await update(value);
-  //   });
-  // }
 }

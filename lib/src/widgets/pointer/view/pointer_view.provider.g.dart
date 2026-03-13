@@ -6,775 +6,724 @@ part of 'pointer_view.provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$pointerAnimationControllerHash() =>
-    r'6e071f419b81615ab7f6403e91282cf6b658bd32';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$PointerAnimationController
-    extends BuildlessAutoDisposeNotifier<AnimationController> {
-  late final TickerProvider vsync;
-
-  AnimationController build({required TickerProvider vsync});
-}
-
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 /// Animation Controller
-///
-/// Copied from [PointerAnimationController].
+
 @ProviderFor(PointerAnimationController)
-const pointerAnimationControllerProvider = PointerAnimationControllerFamily();
+final pointerAnimationControllerProvider = PointerAnimationControllerFamily._();
 
 /// Animation Controller
-///
-/// Copied from [PointerAnimationController].
-class PointerAnimationControllerFamily extends Family<AnimationController> {
+final class PointerAnimationControllerProvider extends $NotifierProvider<PointerAnimationController, AnimationController> {
   /// Animation Controller
-  ///
-  /// Copied from [PointerAnimationController].
-  const PointerAnimationControllerFamily();
+  PointerAnimationControllerProvider._({required PointerAnimationControllerFamily super.from, required TickerProvider super.argument})
+    : super(retry: null, name: r'pointerAnimationControllerProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
 
-  /// Animation Controller
-  ///
-  /// Copied from [PointerAnimationController].
-  PointerAnimationControllerProvider call({required TickerProvider vsync}) {
-    return PointerAnimationControllerProvider(vsync: vsync);
+  @override
+  String debugGetCreateSourceHash() => _$pointerAnimationControllerHash();
+
+  @override
+  String toString() {
+    return r'pointerAnimationControllerProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  PointerAnimationControllerProvider getProviderOverride(
-    covariant PointerAnimationControllerProvider provider,
-  ) {
-    return call(vsync: provider.vsync);
-  }
+  PointerAnimationController create() => PointerAnimationController();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'pointerAnimationControllerProvider';
-}
-
-/// Animation Controller
-///
-/// Copied from [PointerAnimationController].
-class PointerAnimationControllerProvider
-    extends
-        AutoDisposeNotifierProviderImpl<
-          PointerAnimationController,
-          AnimationController
-        > {
-  /// Animation Controller
-  ///
-  /// Copied from [PointerAnimationController].
-  PointerAnimationControllerProvider({required TickerProvider vsync})
-    : this._internal(
-        () => PointerAnimationController()..vsync = vsync,
-        from: pointerAnimationControllerProvider,
-        name: r'pointerAnimationControllerProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$pointerAnimationControllerHash,
-        dependencies: PointerAnimationControllerFamily._dependencies,
-        allTransitiveDependencies:
-            PointerAnimationControllerFamily._allTransitiveDependencies,
-        vsync: vsync,
-      );
-
-  PointerAnimationControllerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.vsync,
-  }) : super.internal();
-
-  final TickerProvider vsync;
-
-  @override
-  AnimationController runNotifierBuild(
-    covariant PointerAnimationController notifier,
-  ) {
-    return notifier.build(vsync: vsync);
-  }
-
-  @override
-  Override overrideWith(PointerAnimationController Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PointerAnimationControllerProvider._internal(
-        () => create()..vsync = vsync,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        vsync: vsync,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<
-    PointerAnimationController,
-    AnimationController
-  >
-  createElement() {
-    return _PointerAnimationControllerProviderElement(this);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AnimationController value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<AnimationController>(value));
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PointerAnimationControllerProvider && other.vsync == vsync;
+    return other is PointerAnimationControllerProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, vsync.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PointerAnimationControllerRef
-    on AutoDisposeNotifierProviderRef<AnimationController> {
-  /// The parameter `vsync` of this provider.
-  TickerProvider get vsync;
-}
+String _$pointerAnimationControllerHash() => r'6e071f419b81615ab7f6403e91282cf6b658bd32';
 
-class _PointerAnimationControllerProviderElement
-    extends
-        AutoDisposeNotifierProviderElement<
-          PointerAnimationController,
-          AnimationController
-        >
-    with PointerAnimationControllerRef {
-  _PointerAnimationControllerProviderElement(super.provider);
+/// Animation Controller
+
+final class PointerAnimationControllerFamily extends $Family
+    with $ClassFamilyOverride<PointerAnimationController, AnimationController, AnimationController, AnimationController, TickerProvider> {
+  PointerAnimationControllerFamily._()
+    : super(retry: null, name: r'pointerAnimationControllerProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+
+  /// Animation Controller
+
+  PointerAnimationControllerProvider call({required TickerProvider vsync}) => PointerAnimationControllerProvider._(argument: vsync, from: this);
 
   @override
-  TickerProvider get vsync =>
-      (origin as PointerAnimationControllerProvider).vsync;
+  String toString() => r'pointerAnimationControllerProvider';
+}
+
+/// Animation Controller
+
+abstract class _$PointerAnimationController extends $Notifier<AnimationController> {
+  late final _$args = ref.$arg as TickerProvider;
+  TickerProvider get vsync => _$args;
+
+  AnimationController build({required TickerProvider vsync});
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AnimationController, AnimationController>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<AnimationController, AnimationController>, AnimationController, Object?, Object?>;
+    element.handleCreate(ref, () => build(vsync: _$args));
+  }
+}
+
+@ProviderFor(PointerAnimation)
+final pointerAnimationProvider = PointerAnimationFamily._();
+
+final class PointerAnimationProvider extends $NotifierProvider<PointerAnimation, Animation<double>> {
+  PointerAnimationProvider._({required PointerAnimationFamily super.from, required TickerProvider super.argument})
+    : super(retry: null, name: r'pointerAnimationProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+
+  @override
+  String debugGetCreateSourceHash() => _$pointerAnimationHash();
+
+  @override
+  String toString() {
+    return r'pointerAnimationProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  PointerAnimation create() => PointerAnimation();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Animation<double> value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Animation<double>>(value));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PointerAnimationProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$pointerAnimationHash() => r'334d78d535c1a588bea85cd0f06f81c3597d0e4e';
 
-abstract class _$PointerAnimation
-    extends BuildlessAutoDisposeNotifier<Animation<double>> {
-  late final TickerProvider vsync;
+final class PointerAnimationFamily extends $Family
+    with $ClassFamilyOverride<PointerAnimation, Animation<double>, Animation<double>, Animation<double>, TickerProvider> {
+  PointerAnimationFamily._() : super(retry: null, name: r'pointerAnimationProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+
+  PointerAnimationProvider call({required TickerProvider vsync}) => PointerAnimationProvider._(argument: vsync, from: this);
+
+  @override
+  String toString() => r'pointerAnimationProvider';
+}
+
+abstract class _$PointerAnimation extends $Notifier<Animation<double>> {
+  late final _$args = ref.$arg as TickerProvider;
+  TickerProvider get vsync => _$args;
 
   Animation<double> build({required TickerProvider vsync});
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<Animation<double>, Animation<double>>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<Animation<double>, Animation<double>>, Animation<double>, Object?, Object?>;
+    element.handleCreate(ref, () => build(vsync: _$args));
+  }
 }
 
-/// See also [PointerAnimation].
-@ProviderFor(PointerAnimation)
-const pointerAnimationProvider = PointerAnimationFamily();
+@ProviderFor(PointerIsMoving)
+final pointerIsMovingProvider = PointerIsMovingProvider._();
 
-/// See also [PointerAnimation].
-class PointerAnimationFamily extends Family<Animation<double>> {
-  /// See also [PointerAnimation].
-  const PointerAnimationFamily();
-
-  /// See also [PointerAnimation].
-  PointerAnimationProvider call({required TickerProvider vsync}) {
-    return PointerAnimationProvider(vsync: vsync);
-  }
-
-  @override
-  PointerAnimationProvider getProviderOverride(
-    covariant PointerAnimationProvider provider,
-  ) {
-    return call(vsync: provider.vsync);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'pointerAnimationProvider';
-}
-
-/// See also [PointerAnimation].
-class PointerAnimationProvider
-    extends
-        AutoDisposeNotifierProviderImpl<PointerAnimation, Animation<double>> {
-  /// See also [PointerAnimation].
-  PointerAnimationProvider({required TickerProvider vsync})
-    : this._internal(
-        () => PointerAnimation()..vsync = vsync,
-        from: pointerAnimationProvider,
-        name: r'pointerAnimationProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$pointerAnimationHash,
-        dependencies: PointerAnimationFamily._dependencies,
-        allTransitiveDependencies:
-            PointerAnimationFamily._allTransitiveDependencies,
-        vsync: vsync,
+final class PointerIsMovingProvider extends $NotifierProvider<PointerIsMoving, bool> {
+  PointerIsMovingProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pointerIsMovingProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
 
-  PointerAnimationProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.vsync,
-  }) : super.internal();
-
-  final TickerProvider vsync;
-
   @override
-  Animation<double> runNotifierBuild(covariant PointerAnimation notifier) {
-    return notifier.build(vsync: vsync);
+  String debugGetCreateSourceHash() => _$pointerIsMovingHash();
+
+  @$internal
+  @override
+  PointerIsMoving create() => PointerIsMoving();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool>(value));
   }
-
-  @override
-  Override overrideWith(PointerAnimation Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PointerAnimationProvider._internal(
-        () => create()..vsync = vsync,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        vsync: vsync,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<PointerAnimation, Animation<double>>
-  createElement() {
-    return _PointerAnimationProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is PointerAnimationProvider && other.vsync == vsync;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, vsync.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PointerAnimationRef on AutoDisposeNotifierProviderRef<Animation<double>> {
-  /// The parameter `vsync` of this provider.
-  TickerProvider get vsync;
-}
-
-class _PointerAnimationProviderElement
-    extends
-        AutoDisposeNotifierProviderElement<PointerAnimation, Animation<double>>
-    with PointerAnimationRef {
-  _PointerAnimationProviderElement(super.provider);
-
-  @override
-  TickerProvider get vsync => (origin as PointerAnimationProvider).vsync;
 }
 
 String _$pointerIsMovingHash() => r'1b8ce36b3352a45ba2cd969ced738e780eed33b6';
 
-/// See also [PointerIsMoving].
-@ProviderFor(PointerIsMoving)
-final pointerIsMovingProvider =
-    AutoDisposeNotifierProvider<PointerIsMoving, bool>.internal(
-      PointerIsMoving.new,
-      name: r'pointerIsMovingProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pointerIsMovingHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$PointerIsMoving extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$PointerIsMoving = AutoDisposeNotifier<bool>;
+/// Gaze Pointer appears shortly and is then faded out -> current opacity
+
+@ProviderFor(PointerOpacity)
+final pointerOpacityProvider = PointerOpacityProvider._();
+
+/// Gaze Pointer appears shortly and is then faded out -> current opacity
+final class PointerOpacityProvider extends $NotifierProvider<PointerOpacity, double> {
+  /// Gaze Pointer appears shortly and is then faded out -> current opacity
+  PointerOpacityProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pointerOpacityProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pointerOpacityHash();
+
+  @$internal
+  @override
+  PointerOpacity create() => PointerOpacity();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(double value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+  }
+}
+
 String _$pointerOpacityHash() => r'727d06f62551cab2f88e727bb0ec4e7794ea245f';
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
-///
-/// Copied from [PointerOpacity].
-@ProviderFor(PointerOpacity)
-final pointerOpacityProvider =
-    AutoDisposeNotifierProvider<PointerOpacity, double>.internal(
-      PointerOpacity.new,
-      name: r'pointerOpacityProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pointerOpacityHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$PointerOpacity = AutoDisposeNotifier<double>;
-String _$pointerColorHash() => r'48c839ee1718a4ed70cb5c8b223875b8a188886c';
-
-abstract class _$PointerColor extends BuildlessAutoDisposeNotifier<Color> {
-  late final GazePointerType type;
-
-  Color build({required GazePointerType type});
+abstract class _$PointerOpacity extends $Notifier<double> {
+  double build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<double, double>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
 }
 
-/// See also [PointerColor].
 @ProviderFor(PointerColor)
-const pointerColorProvider = PointerColorFamily();
+final pointerColorProvider = PointerColorFamily._();
 
-/// See also [PointerColor].
-class PointerColorFamily extends Family<Color> {
-  /// See also [PointerColor].
-  const PointerColorFamily();
+final class PointerColorProvider extends $NotifierProvider<PointerColor, Color> {
+  PointerColorProvider._({required PointerColorFamily super.from, required GazePointerType super.argument})
+    : super(retry: null, name: r'pointerColorProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
 
-  /// See also [PointerColor].
-  PointerColorProvider call({required GazePointerType type}) {
-    return PointerColorProvider(type: type);
+  @override
+  String debugGetCreateSourceHash() => _$pointerColorHash();
+
+  @override
+  String toString() {
+    return r'pointerColorProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  PointerColorProvider getProviderOverride(
-    covariant PointerColorProvider provider,
-  ) {
-    return call(type: provider.type);
-  }
+  PointerColor create() => PointerColor();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'pointerColorProvider';
-}
-
-/// See also [PointerColor].
-class PointerColorProvider
-    extends AutoDisposeNotifierProviderImpl<PointerColor, Color> {
-  /// See also [PointerColor].
-  PointerColorProvider({required GazePointerType type})
-    : this._internal(
-        () => PointerColor()..type = type,
-        from: pointerColorProvider,
-        name: r'pointerColorProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$pointerColorHash,
-        dependencies: PointerColorFamily._dependencies,
-        allTransitiveDependencies:
-            PointerColorFamily._allTransitiveDependencies,
-        type: type,
-      );
-
-  PointerColorProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.type,
-  }) : super.internal();
-
-  final GazePointerType type;
-
-  @override
-  Color runNotifierBuild(covariant PointerColor notifier) {
-    return notifier.build(type: type);
-  }
-
-  @override
-  Override overrideWith(PointerColor Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PointerColorProvider._internal(
-        () => create()..type = type,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        type: type,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<PointerColor, Color> createElement() {
-    return _PointerColorProviderElement(this);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Color value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Color>(value));
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PointerColorProvider && other.type == type;
+    return other is PointerColorProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, type.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PointerColorRef on AutoDisposeNotifierProviderRef<Color> {
-  /// The parameter `type` of this provider.
-  GazePointerType get type;
-}
+String _$pointerColorHash() => r'48c839ee1718a4ed70cb5c8b223875b8a188886c';
 
-class _PointerColorProviderElement
-    extends AutoDisposeNotifierProviderElement<PointerColor, Color>
-    with PointerColorRef {
-  _PointerColorProviderElement(super.provider);
+final class PointerColorFamily extends $Family with $ClassFamilyOverride<PointerColor, Color, Color, Color, GazePointerType> {
+  PointerColorFamily._() : super(retry: null, name: r'pointerColorProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+
+  PointerColorProvider call({required GazePointerType type}) => PointerColorProvider._(argument: type, from: this);
 
   @override
-  GazePointerType get type => (origin as PointerColorProvider).type;
+  String toString() => r'pointerColorProvider';
+}
+
+abstract class _$PointerColor extends $Notifier<Color> {
+  late final _$args = ref.$arg as GazePointerType;
+  GazePointerType get type => _$args;
+
+  Color build({required GazePointerType type});
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<Color, Color>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<Color, Color>, Color, Object?, Object?>;
+    element.handleCreate(ref, () => build(type: _$args));
+  }
+}
+
+/// Gaze Pointer Circle Size
+
+@ProviderFor(PointerSize)
+final pointerSizeProvider = PointerSizeFamily._();
+
+/// Gaze Pointer Circle Size
+final class PointerSizeProvider extends $NotifierProvider<PointerSize, double> {
+  /// Gaze Pointer Circle Size
+  PointerSizeProvider._({required PointerSizeFamily super.from, required GazePointerType super.argument})
+    : super(retry: null, name: r'pointerSizeProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+
+  @override
+  String debugGetCreateSourceHash() => _$pointerSizeHash();
+
+  @override
+  String toString() {
+    return r'pointerSizeProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  PointerSize create() => PointerSize();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(double value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PointerSizeProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$pointerSizeHash() => r'64e0f8e2c0cf221b3c380cce07bfd35bfc17f0c5';
 
-abstract class _$PointerSize extends BuildlessAutoDisposeNotifier<double> {
-  late final GazePointerType type;
+/// Gaze Pointer Circle Size
+
+final class PointerSizeFamily extends $Family with $ClassFamilyOverride<PointerSize, double, double, double, GazePointerType> {
+  PointerSizeFamily._() : super(retry: null, name: r'pointerSizeProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+
+  /// Gaze Pointer Circle Size
+
+  PointerSizeProvider call({required GazePointerType type}) => PointerSizeProvider._(argument: type, from: this);
+
+  @override
+  String toString() => r'pointerSizeProvider';
+}
+
+/// Gaze Pointer Circle Size
+
+abstract class _$PointerSize extends $Notifier<double> {
+  late final _$args = ref.$arg as GazePointerType;
+  GazePointerType get type => _$args;
 
   double build({required GazePointerType type});
-}
-
-/// Gaze Pointer Circle Size
-///
-/// Copied from [PointerSize].
-@ProviderFor(PointerSize)
-const pointerSizeProvider = PointerSizeFamily();
-
-/// Gaze Pointer Circle Size
-///
-/// Copied from [PointerSize].
-class PointerSizeFamily extends Family<double> {
-  /// Gaze Pointer Circle Size
-  ///
-  /// Copied from [PointerSize].
-  const PointerSizeFamily();
-
-  /// Gaze Pointer Circle Size
-  ///
-  /// Copied from [PointerSize].
-  PointerSizeProvider call({required GazePointerType type}) {
-    return PointerSizeProvider(type: type);
-  }
-
+  @$mustCallSuper
   @override
-  PointerSizeProvider getProviderOverride(
-    covariant PointerSizeProvider provider,
-  ) {
-    return call(type: provider.type);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'pointerSizeProvider';
-}
-
-/// Gaze Pointer Circle Size
-///
-/// Copied from [PointerSize].
-class PointerSizeProvider
-    extends AutoDisposeNotifierProviderImpl<PointerSize, double> {
-  /// Gaze Pointer Circle Size
-  ///
-  /// Copied from [PointerSize].
-  PointerSizeProvider({required GazePointerType type})
-    : this._internal(
-        () => PointerSize()..type = type,
-        from: pointerSizeProvider,
-        name: r'pointerSizeProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$pointerSizeHash,
-        dependencies: PointerSizeFamily._dependencies,
-        allTransitiveDependencies: PointerSizeFamily._allTransitiveDependencies,
-        type: type,
-      );
-
-  PointerSizeProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.type,
-  }) : super.internal();
-
-  final GazePointerType type;
-
-  @override
-  double runNotifierBuild(covariant PointerSize notifier) {
-    return notifier.build(type: type);
-  }
-
-  @override
-  Override overrideWith(PointerSize Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: PointerSizeProvider._internal(
-        () => create()..type = type,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        type: type,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<PointerSize, double> createElement() {
-    return _PointerSizeProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is PointerSizeProvider && other.type == type;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, type.hashCode);
-
-    return _SystemHash.finish(hash);
+  void runBuild() {
+    final ref = this.ref as $Ref<double, double>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    element.handleCreate(ref, () => build(type: _$args));
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin PointerSizeRef on AutoDisposeNotifierProviderRef<double> {
-  /// The parameter `type` of this provider.
-  GazePointerType get type;
-}
+/// Gaze Pointer Offset
 
-class _PointerSizeProviderElement
-    extends AutoDisposeNotifierProviderElement<PointerSize, double>
-    with PointerSizeRef {
-  _PointerSizeProviderElement(super.provider);
+@ProviderFor(PointerOffset)
+final pointerOffsetProvider = PointerOffsetProvider._();
+
+/// Gaze Pointer Offset
+final class PointerOffsetProvider extends $NotifierProvider<PointerOffset, Offset> {
+  /// Gaze Pointer Offset
+  PointerOffsetProvider._()
+    : super(from: null, argument: null, retry: null, name: r'pointerOffsetProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
 
   @override
-  GazePointerType get type => (origin as PointerSizeProvider).type;
+  String debugGetCreateSourceHash() => _$pointerOffsetHash();
+
+  @$internal
+  @override
+  PointerOffset create() => PointerOffset();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Offset value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Offset>(value));
+  }
 }
 
 String _$pointerOffsetHash() => r'b865fafaeea979307ea9327532cc8cfc2748eb1b';
 
 /// Gaze Pointer Offset
-///
-/// Copied from [PointerOffset].
-@ProviderFor(PointerOffset)
-final pointerOffsetProvider =
-    AutoDisposeNotifierProvider<PointerOffset, Offset>.internal(
-      PointerOffset.new,
-      name: r'pointerOffsetProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pointerOffsetHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$PointerOffset = AutoDisposeNotifier<Offset>;
+abstract class _$PointerOffset extends $Notifier<Offset> {
+  Offset build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<Offset, Offset>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<Offset, Offset>, Offset, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(PointerHistory)
+final pointerHistoryProvider = PointerHistoryProvider._();
+
+final class PointerHistoryProvider extends $NotifierProvider<PointerHistory, Queue<(GlobalKey<State<StatefulWidget>>, Offset)>> {
+  PointerHistoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pointerHistoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pointerHistoryHash();
+
+  @$internal
+  @override
+  PointerHistory create() => PointerHistory();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Queue<(GlobalKey<State<StatefulWidget>>, Offset)> value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>>(value));
+  }
+}
+
 String _$pointerHistoryHash() => r'5287b52caf12e35d985f7e96088f9c299b829105';
 
-/// See also [PointerHistory].
-@ProviderFor(PointerHistory)
-final pointerHistoryProvider =
-    AutoDisposeNotifierProvider<
-      PointerHistory,
-      Queue<(GlobalKey key, Offset offset)>
-    >.internal(
-      PointerHistory.new,
-      name: r'pointerHistoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pointerHistoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$PointerHistory =
-    AutoDisposeNotifier<Queue<(GlobalKey key, Offset offset)>>;
-String _$pointerFixationPointHash() =>
-    r'30365f0aa87b69a9e8a75ddc90185455ffd4a71a';
+abstract class _$PointerHistory extends $Notifier<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>> {
+  Queue<(GlobalKey<State<StatefulWidget>>, Offset)> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>, Queue<(GlobalKey<State<StatefulWidget>>, Offset)>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>, Queue<(GlobalKey<State<StatefulWidget>>, Offset)>>,
+              Queue<(GlobalKey<State<StatefulWidget>>, Offset)>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
 /// Gaze Pointer Fixation Point
-///
-/// Copied from [PointerFixationPoint].
-@ProviderFor(PointerFixationPoint)
-final pointerFixationPointProvider =
-    NotifierProvider<PointerFixationPoint, Offset>.internal(
-      PointerFixationPoint.new,
-      name: r'pointerFixationPointProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pointerFixationPointHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$PointerFixationPoint = Notifier<Offset>;
+@ProviderFor(PointerFixationPoint)
+final pointerFixationPointProvider = PointerFixationPointProvider._();
+
+/// Gaze Pointer Fixation Point
+final class PointerFixationPointProvider extends $NotifierProvider<PointerFixationPoint, Offset> {
+  /// Gaze Pointer Fixation Point
+  PointerFixationPointProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pointerFixationPointProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pointerFixationPointHash();
+
+  @$internal
+  @override
+  PointerFixationPoint create() => PointerFixationPoint();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Offset value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Offset>(value));
+  }
+}
+
+String _$pointerFixationPointHash() => r'30365f0aa87b69a9e8a75ddc90185455ffd4a71a';
+
+/// Gaze Pointer Fixation Point
+
+abstract class _$PointerFixationPoint extends $Notifier<Offset> {
+  Offset build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<Offset, Offset>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<Offset, Offset>, Offset, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}
+
+/// Gaze Pointer Snapping Point
+
+@ProviderFor(SnapElement)
+final snapElementProvider = SnapElementProvider._();
+
+/// Gaze Pointer Snapping Point
+final class SnapElementProvider extends $NotifierProvider<SnapElement, GazeElementData?> {
+  /// Gaze Pointer Snapping Point
+  SnapElementProvider._()
+    : super(from: null, argument: null, retry: null, name: r'snapElementProvider', isAutoDispose: false, dependencies: null, $allTransitiveDependencies: null);
+
+  @override
+  String debugGetCreateSourceHash() => _$snapElementHash();
+
+  @$internal
+  @override
+  SnapElement create() => SnapElement();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GazeElementData? value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<GazeElementData?>(value));
+  }
+}
+
 String _$snapElementHash() => r'ddf6ae096ef462be6329f6d12129fa8b8e5d39cb';
 
 /// Gaze Pointer Snapping Point
-///
-/// Copied from [SnapElement].
-@ProviderFor(SnapElement)
-final snapElementProvider =
-    NotifierProvider<SnapElement, GazeElementData?>.internal(
-      SnapElement.new,
-      name: r'snapElementProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$snapElementHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$SnapElement = Notifier<GazeElementData?>;
+abstract class _$SnapElement extends $Notifier<GazeElementData?> {
+  GazeElementData? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<GazeElementData?, GazeElementData?>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<GazeElementData?, GazeElementData?>, GazeElementData?, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}
+
+/// Gaze Pointer in snapp mode Point
+
+@ProviderFor(SnappingState)
+final snappingStateProvider = SnappingStateProvider._();
+
+/// Gaze Pointer in snapp mode Point
+final class SnappingStateProvider extends $NotifierProvider<SnappingState, SnapState> {
+  /// Gaze Pointer in snapp mode Point
+  SnappingStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'snappingStateProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$snappingStateHash();
+
+  @$internal
+  @override
+  SnappingState create() => SnappingState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SnapState value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<SnapState>(value));
+  }
+}
+
 String _$snappingStateHash() => r'4dbdcdac784cb60eabecf180b809e3289015cec8';
 
 /// Gaze Pointer in snapp mode Point
-///
-/// Copied from [SnappingState].
-@ProviderFor(SnappingState)
-final snappingStateProvider =
-    NotifierProvider<SnappingState, SnapState>.internal(
-      SnappingState.new,
-      name: r'snappingStateProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$snappingStateHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$SnappingState = Notifier<SnapState>;
-String _$pointerFixationRadiusHash() =>
-    r'9b571565e8267bb0ec6475b5227fe8d27c3b18f6';
+abstract class _$SnappingState extends $Notifier<SnapState> {
+  SnapState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<SnapState, SnapState>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<SnapState, SnapState>, SnapState, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}
 
 /// Gaze Pointer Fixation Radius
-///
-/// Copied from [PointerFixationRadius].
-@ProviderFor(PointerFixationRadius)
-final pointerFixationRadiusProvider =
-    NotifierProvider<PointerFixationRadius, double>.internal(
-      PointerFixationRadius.new,
-      name: r'pointerFixationRadiusProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pointerFixationRadiusHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$PointerFixationRadius = Notifier<double>;
-String _$pointerSnappingRadiusHash() =>
-    r'1a98da0a320a1f8813095aa5ff6d875bd0d54339';
+@ProviderFor(PointerFixationRadius)
+final pointerFixationRadiusProvider = PointerFixationRadiusProvider._();
+
+/// Gaze Pointer Fixation Radius
+final class PointerFixationRadiusProvider extends $NotifierProvider<PointerFixationRadius, double> {
+  /// Gaze Pointer Fixation Radius
+  PointerFixationRadiusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pointerFixationRadiusProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pointerFixationRadiusHash();
+
+  @$internal
+  @override
+  PointerFixationRadius create() => PointerFixationRadius();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(double value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+  }
+}
+
+String _$pointerFixationRadiusHash() => r'9b571565e8267bb0ec6475b5227fe8d27c3b18f6';
+
+/// Gaze Pointer Fixation Radius
+
+abstract class _$PointerFixationRadius extends $Notifier<double> {
+  double build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<double, double>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}
 
 /// Gaze Pointer Snapping Radius
-///
-/// Copied from [PointerSnappingRadius].
-@ProviderFor(PointerSnappingRadius)
-final pointerSnappingRadiusProvider =
-    AutoDisposeNotifierProvider<PointerSnappingRadius, double>.internal(
-      PointerSnappingRadius.new,
-      name: r'pointerSnappingRadiusProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pointerSnappingRadiusHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$PointerSnappingRadius = AutoDisposeNotifier<double>;
-String _$ignorePointerStateHash() =>
-    r'fd15cdd57247539445190998e274112b54f62ae5';
+@ProviderFor(PointerSnappingRadius)
+final pointerSnappingRadiusProvider = PointerSnappingRadiusProvider._();
+
+/// Gaze Pointer Snapping Radius
+final class PointerSnappingRadiusProvider extends $NotifierProvider<PointerSnappingRadius, double> {
+  /// Gaze Pointer Snapping Radius
+  PointerSnappingRadiusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pointerSnappingRadiusProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pointerSnappingRadiusHash();
+
+  @$internal
+  @override
+  PointerSnappingRadius create() => PointerSnappingRadius();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(double value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+  }
+}
+
+String _$pointerSnappingRadiusHash() => r'1a98da0a320a1f8813095aa5ff6d875bd0d54339';
+
+/// Gaze Pointer Snapping Radius
+
+abstract class _$PointerSnappingRadius extends $Notifier<double> {
+  double build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<double, double>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}
 
 /// Indicates if recently snapped and pointer is ignored by mouse
-///
-/// Copied from [IgnorePointerState].
-@ProviderFor(IgnorePointerState)
-final ignorePointerStateProvider =
-    AutoDisposeNotifierProvider<IgnorePointerState, bool>.internal(
-      IgnorePointerState.new,
-      name: r'ignorePointerStateProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$ignorePointerStateHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$IgnorePointerState = AutoDisposeNotifier<bool>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+@ProviderFor(IgnorePointerState)
+final ignorePointerStateProvider = IgnorePointerStateProvider._();
+
+/// Indicates if recently snapped and pointer is ignored by mouse
+final class IgnorePointerStateProvider extends $NotifierProvider<IgnorePointerState, bool> {
+  /// Indicates if recently snapped and pointer is ignored by mouse
+  IgnorePointerStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'ignorePointerStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$ignorePointerStateHash();
+
+  @$internal
+  @override
+  IgnorePointerState create() => IgnorePointerState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool>(value));
+  }
+}
+
+String _$ignorePointerStateHash() => r'fd15cdd57247539445190998e274112b54f62ae5';
+
+/// Indicates if recently snapped and pointer is ignored by mouse
+
+abstract class _$IgnorePointerState extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    element.handleCreate(ref, build);
+  }
+}

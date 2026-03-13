@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/element_data.dart';
 import '../../core/element_type.dart';
 import '../../core/extensions.dart';
+import '../../core/simple_notifiers.dart';
 import '../../state.dart';
 import '../button/button.dart';
 
@@ -67,29 +68,28 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
   bool _active = false;
   bool _animating = false;
 
-  final _upIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
-  final _downIndicatorProvider = StateProvider((ref) => GazeScrollableIndicatorState.hidden);
+  final _upIndicatorProvider = NotifierProvider<SimpleNotifier<GazeScrollableIndicatorState>, GazeScrollableIndicatorState>(
+    () => SimpleNotifier(GazeScrollableIndicatorState.hidden),
+  );
+  final _downIndicatorProvider = NotifierProvider<SimpleNotifier<GazeScrollableIndicatorState>, GazeScrollableIndicatorState>(
+    () => SimpleNotifier(GazeScrollableIndicatorState.hidden),
+  );
 
   static const double scrollArea = 0.2;
 
   @override
   void initState() {
     super.initState();
-    ref.read(gazeInteractiveProvider).register(
-          GazeScrollableData(
-            key: widget.wrappedKey,
-            route: widget.route,
-            onGazeEnter: () => _active = true,
-            onGazeLeave: () => _active = false,
-          ),
-        );
+    ref
+        .read(gazeInteractiveProvider)
+        .register(GazeScrollableData(key: widget.wrappedKey, route: widget.route, onGazeEnter: () => _active = true, onGazeLeave: () => _active = false));
     widget.controller.addListener(_scrollListener);
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       try {
         if (mounted && widget.controller.hasClients && widget.controller.position.extentAfter > 0) {
           final _downIndicatorState = ref.read(_downIndicatorProvider);
           if (!_downIndicatorState.isVisible) {
-            ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+            ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.visible);
           }
         }
       } catch (_) {}
@@ -112,25 +112,25 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
     if (widget.controller.position.atEdge) {
       if (widget.controller.position.pixels == 0) {
         if (_upIndicatorState.isVisible) {
-          ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+          ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.hidden);
         }
       } else {
         if (_downIndicatorState.isVisible) {
-          ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+          ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.hidden);
         }
       }
     } else {
       if (!_upIndicatorState.isVisible) {
-        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.visible);
       }
       if (!_downIndicatorState.isVisible) {
-        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.visible);
       }
     }
     if (widget.controller.position.extentBefore == 0.0 && widget.controller.position.extentAfter == 0.0) {
       if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
-        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
-        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+        ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.hidden);
+        ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.hidden);
       }
     }
   }
@@ -144,8 +144,8 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
     final _downIndicatorState = ref.read(_downIndicatorProvider);
     if (widget.controller.position.maxScrollExtent == 0) {
       if (_downIndicatorState != GazeScrollableIndicatorState.hidden || _upIndicatorState != GazeScrollableIndicatorState.hidden) {
-        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
-        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.hidden;
+        ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.hidden);
+        ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.hidden);
       }
       return;
     }
@@ -168,8 +168,8 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
       // In top area
       if (widget.controller.offset == 0) return;
       if (_downIndicatorState != GazeScrollableIndicatorState.visible || _upIndicatorState != GazeScrollableIndicatorState.active) {
-        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
-        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
+        ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.visible);
+        ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.active);
       }
       // calculate scrolling factor
       final double factor = (tempTop.bottom - rect.topCenter.dy) / tempTop.height * maxScrollSpeed;
@@ -182,8 +182,8 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
       // In bottom area;
       if (widget.controller.position.atEdge && widget.controller.position.pixels > 0) return;
       if (_downIndicatorState != GazeScrollableIndicatorState.active || _upIndicatorState != GazeScrollableIndicatorState.visible) {
-        ref.read(_downIndicatorProvider.notifier).state = GazeScrollableIndicatorState.active;
-        ref.read(_upIndicatorProvider.notifier).state = GazeScrollableIndicatorState.visible;
+        ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.active);
+        ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.visible);
       }
       // calculate scrolling factor
       final double factor = (rect.bottomCenter.dy - tempBottom.top) / tempTop.height * maxScrollSpeed;
@@ -192,11 +192,7 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
           ? widget.controller.position.maxScrollExtent
           : widget.controller.offset + factor;
       _animating = true;
-      await widget.controller.position.animateTo(
-        offset,
-        duration: const Duration(milliseconds: 60),
-        curve: Curves.ease,
-      );
+      await widget.controller.position.animateTo(offset, duration: const Duration(milliseconds: 60), curve: Curves.ease);
       _animating = false;
     }
     // Hides the indicators if they are at the edge at the end of scrolling
@@ -222,21 +218,9 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
           widget.child,
           Positioned(
             bottom: 0,
-            child: _ArrowButton(
-              size: size,
-              type: ArrowButtonType.down,
-              state: downIndicatorState,
-              route: widget.route,
-              padding: widget.indicatorInnerPadding,
-            ),
+            child: _ArrowButton(size: size, type: ArrowButtonType.down, state: downIndicatorState, route: widget.route, padding: widget.indicatorInnerPadding),
           ),
-          _ArrowButton(
-            size: size,
-            type: ArrowButtonType.up,
-            state: upIndicatorState,
-            route: widget.route,
-            padding: widget.indicatorInnerPadding,
-          ),
+          _ArrowButton(size: size, type: ArrowButtonType.up, state: upIndicatorState, route: widget.route, padding: widget.indicatorInnerPadding),
         ],
       ),
     );
@@ -247,7 +231,10 @@ enum ArrowButtonType {
   up,
   down;
 
-  IconData get icon => switch (this) { ArrowButtonType.up => Icons.arrow_upward, ArrowButtonType.down => Icons.arrow_downward };
+  IconData get icon => switch (this) {
+    ArrowButtonType.up => Icons.arrow_upward,
+    ArrowButtonType.down => Icons.arrow_downward,
+  };
 
   BorderRadius get borderRadius {
     return switch (this) {
@@ -258,13 +245,7 @@ enum ArrowButtonType {
 }
 
 class _ArrowButton extends StatelessWidget {
-  const _ArrowButton({
-    required this.route,
-    required this.type,
-    required this.size,
-    required this.state,
-    required this.padding,
-  });
+  const _ArrowButton({required this.route, required this.type, required this.size, required this.state, required this.padding});
 
   final String route;
   final ArrowButtonType type;

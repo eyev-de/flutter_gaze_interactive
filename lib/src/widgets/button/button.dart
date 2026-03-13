@@ -66,10 +66,10 @@ class GazeButtonProperties {
 
 class GazeButton extends ConsumerWidget {
   GazeButton({super.key, required this.properties, this.child, this.color = Colors.transparent, this.onTap})
-      : assert(
-          (child == null || properties.text == null) && (child == null || properties.icon == null),
-          'You cannot specify a child widget as well as a text or icon. The child widget replaces all previously specified properties',
-        );
+    : assert(
+        (child == null || properties.text == null) && (child == null || properties.icon == null),
+        'You cannot specify a child widget as well as a text or icon. The child widget replaces all previously specified properties',
+      );
 
   final GazeButtonProperties properties;
   final Widget? child;
@@ -140,10 +140,7 @@ class _Button extends StatelessWidget {
           : AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               padding: properties.innerPadding,
-              decoration: BoxDecoration(
-                borderRadius: properties.borderRadius,
-                border: _getBorder(),
-              ),
+              decoration: BoxDecoration(borderRadius: properties.borderRadius, border: _getBorder()),
               child: _ButtonChild(properties: properties),
             ),
     );
@@ -184,7 +181,7 @@ class _ButtonChild extends StatelessWidget {
                 maxLines: properties.maxTextLines,
                 child: properties.text!,
               ),
-            )
+            ),
         ],
       ),
     );

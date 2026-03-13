@@ -26,19 +26,19 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.blue,
         primaryTextTheme: const TextTheme(displayLarge: TextStyle(fontSize: 30, color: Colors.white)),
         inputDecorationTheme: ThemeData.dark().inputDecorationTheme.copyWith(
-              filled: true,
-              fillColor: Colors.black,
-              contentPadding: const EdgeInsets.all(20),
-              border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            ),
+          filled: true,
+          fillColor: Colors.black,
+          contentPadding: const EdgeInsets.all(20),
+          border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        ),
       ),
     );
   }
 }
 
-final debugRRectsProvider = StateProvider<DebugRRects?>((_) => null);
-final debugButtonRadiusProvider = StateProvider<BorderRadius>((_) => BorderRadius.zero);
-final debugGazePointerTypeProvider = StateProvider<GazePointerType>((_) => GazePointerType.passive);
+final debugRRectsProvider = NotifierProvider<SimpleNotifier<DebugRRects?>, DebugRRects?>(() => SimpleNotifier(null));
+final debugButtonRadiusProvider = NotifierProvider<SimpleNotifier<BorderRadius>, BorderRadius>(() => SimpleNotifier(BorderRadius.zero));
+final debugGazePointerTypeProvider = NotifierProvider<SimpleNotifier<GazePointerType>, GazePointerType>(() => SimpleNotifier(GazePointerType.passive));
 
 class DebugRRects {
   final RRect element;
@@ -86,11 +86,7 @@ class _AppState extends ConsumerState<App> {
                   const _PointerSizeButton(route: '/'),
                   DebugExampleButton(),
                   const SizedBox(height: 20),
-                  _SearchTextField(
-                    focusNode: _focusNode,
-                    controller: _controller,
-                    undoController: _undoHistoryController,
-                  ),
+                  _SearchTextField(focusNode: _focusNode, controller: _controller, undoController: _undoHistoryController),
                   ContentRow(
                     subtitle: 'Date',
                     title: _dateTime.toString(),
@@ -117,13 +113,7 @@ class _AppState extends ConsumerState<App> {
     );
   }
 
-  PredicateReturnState gazeInteractionPredicate(
-    GazeShape element,
-    GazeShape gazePointer,
-    GazeShape snapPointer,
-    String itemRoute,
-    String currentRoute,
-  ) {
+  PredicateReturnState gazeInteractionPredicate(GazeShape element, GazeShape gazePointer, GazeShape snapPointer, String itemRoute, String currentRoute) {
     // Route check
     if (itemRoute != currentRoute) return PredicateReturnState.none;
     // Debug: Check overlap with gaze pointer, using inner factor for more precise detection
@@ -132,7 +122,7 @@ class _AppState extends ConsumerState<App> {
     final innerRadius = Radius.circular(gazePointer.rect.width / 2 * factor);
     // Gaze if element intersects the inner area of the gaze pointer, which represents 30%–60% of the pointer size
     if (element.overlaps(gazePointer, factor: factor)) {
-      ref.read(debugRRectsProvider.notifier).state = DebugRRects(element: element.toRRect, gaze: RRect.fromRectAndRadius(innerRect, innerRadius));
+      ref.read(debugRRectsProvider.notifier).set(DebugRRects(element: element.toRRect, gaze: RRect.fromRectAndRadius(innerRect, innerRadius)));
       return PredicateReturnState.gaze;
     }
     return PredicateReturnState.none;
@@ -157,10 +147,7 @@ class RRectIntersect extends ConsumerWidget {
 }
 
 class RRectIntersectionPainter extends CustomPainter {
-  const RRectIntersectionPainter({
-    required this.element,
-    required this.gaze,
-  });
+  const RRectIntersectionPainter({required this.element, required this.gaze});
 
   final RRect? element;
   final RRect? gaze;
@@ -208,7 +195,7 @@ class DebugExampleButton extends ConsumerWidget {
             properties: GazeButtonProperties(route: '/', borderRadius: borderRadius, icon: const Icon(Icons.refresh)),
             onTap: () {
               final borderRadius = randomBorderRadius(maxRadius: 200);
-              ref.read(debugButtonRadiusProvider.notifier).state = borderRadius;
+              ref.read(debugButtonRadiusProvider.notifier).set(borderRadius);
             },
           ),
         ),
@@ -225,15 +212,9 @@ class DebugExampleButton extends ConsumerWidget {
         final radius = r();
         return BorderRadius.all(Radius.circular(radius));
       case 2:
-        return BorderRadius.horizontal(
-          left: Radius.circular(r()),
-          right: Radius.circular(r()),
-        );
+        return BorderRadius.horizontal(left: Radius.circular(r()), right: Radius.circular(r()));
       case 3:
-        return BorderRadius.vertical(
-          top: Radius.circular(r()),
-          bottom: Radius.circular(r()),
-        );
+        return BorderRadius.vertical(top: Radius.circular(r()), bottom: Radius.circular(r()));
       case 4:
         return BorderRadius.only(
           topLeft: _rnd.nextBool() ? Radius.circular(r()) : Radius.zero,
@@ -383,11 +364,7 @@ class _PointerSizeButton extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: GazeButton(
             onTap: () => ref.read(gazeInteractiveState.pointerSize.notifier).update(s),
-            properties: GazeButtonProperties(
-              route: route,
-              borderRadius: BorderRadius.circular(buttonSize),
-              gazeInteractive: s != size,
-            ),
+            properties: GazeButtonProperties(route: route, borderRadius: BorderRadius.circular(buttonSize), gazeInteractive: s != size),
             child: Container(
               width: buttonSize,
               height: buttonSize,
@@ -426,17 +403,17 @@ class _PointerTypeButton extends ConsumerWidget {
           GazeToggleButton(
             active: type == GazePointerType.passive,
             label: const Text('Passive', style: TextStyle(color: Colors.white)),
-            onTap: () => ref.read(debugGazePointerTypeProvider.notifier).state = GazePointerType.passive,
+            onTap: () => ref.read(debugGazePointerTypeProvider.notifier).set(GazePointerType.passive),
           ),
           GazeToggleButton(
             active: type == GazePointerType.active,
             label: const Text('Active', style: TextStyle(color: Colors.white)),
-            onTap: () => ref.read(debugGazePointerTypeProvider.notifier).state = GazePointerType.active,
+            onTap: () => ref.read(debugGazePointerTypeProvider.notifier).set(GazePointerType.active),
           ),
           GazeToggleButton(
             active: type == GazePointerType.history,
             label: const Text('History', style: TextStyle(color: Colors.white)),
-            onTap: () => ref.read(debugGazePointerTypeProvider.notifier).state = GazePointerType.history,
+            onTap: () => ref.read(debugGazePointerTypeProvider.notifier).set(GazePointerType.history),
           ),
         ],
       ),

@@ -33,7 +33,10 @@ class ScrollCalculator {
     final cursorSpan = TextSpan(text: controller.text.substring(0, min(cursorOffset.round(), controller.text.length)), style: textStyle);
     final cursorTp = TextPainter(text: cursorSpan, textDirection: TextDirection.ltr);
     // get total lines of text in text field
-    final tp = TextPainter(text: TextSpan(text: controller.text, style: textStyle), textDirection: TextDirection.ltr);
+    final tp = TextPainter(
+      text: TextSpan(text: controller.text, style: textStyle),
+      textDirection: TextDirection.ltr,
+    );
     // 5 pixel puffer to scroll a little earlier
     final puffer = isZoomed ? 15 : 25;
     // calculate the space the text has in text field - padding

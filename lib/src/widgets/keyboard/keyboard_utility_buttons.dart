@@ -22,20 +22,45 @@ class GazeKeyboardUtilityButtons extends ConsumerWidget {
     final selecting = ref.watch(state.selectingStateProvider);
     return Row(
       children: [
-        Flexible(child: SelectButton(state: state, node: node)),
-        Flexible(child: MoveCursorLeftButton(state: state, node: node)),
-        Flexible(child: MoveCursorRightButton(state: state, node: node)),
-        if (state.onMoveCursorUp != null && state.type == KeyboardType.editor) Flexible(child: MoveCursorUpButton(state: state, node: node)),
-        if (state.onMoveCursorDown != null && state.type == KeyboardType.editor) Flexible(child: MoveCursorDownButton(state: state, node: node)),
-        Flexible(child: CopyButton(state: state, node: node, label: selecting ? 'Copy' : 'Copy All')),
-        Flexible(child: PasteButton(state: state, node: node)),
-        Flexible(child: CutButton(state: state, node: node, label: selecting ? 'Cut' : 'Cut All')),
+        Flexible(
+          child: SelectButton(state: state, node: node),
+        ),
+        Flexible(
+          child: MoveCursorLeftButton(state: state, node: node),
+        ),
+        Flexible(
+          child: MoveCursorRightButton(state: state, node: node),
+        ),
+        if (state.onMoveCursorUp != null && state.type == KeyboardType.editor)
+          Flexible(
+            child: MoveCursorUpButton(state: state, node: node),
+          ),
+        if (state.onMoveCursorDown != null && state.type == KeyboardType.editor)
+          Flexible(
+            child: MoveCursorDownButton(state: state, node: node),
+          ),
+        Flexible(
+          child: CopyButton(state: state, node: node, label: selecting ? 'Copy' : 'Copy All'),
+        ),
+        Flexible(
+          child: PasteButton(state: state, node: node),
+        ),
+        Flexible(
+          child: CutButton(state: state, node: node, label: selecting ? 'Cut' : 'Cut All'),
+        ),
         if (selecting)
-          Flexible(flex: 2, child: DeleteButton(state: state, node: node, label: 'Select'))
+          Flexible(
+            flex: 2,
+            child: DeleteButton(state: state, node: node, label: 'Select'),
+          )
         else ...[
-          Flexible(child: DeleteButton(state: state, node: node)),
-          Flexible(child: DeleteWordButton(state: state, node: node)),
-        ]
+          Flexible(
+            child: DeleteButton(state: state, node: node),
+          ),
+          Flexible(
+            child: DeleteWordButton(state: state, node: node),
+          ),
+        ],
       ],
     );
   }
@@ -108,7 +133,10 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
           text: text != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: FittedBox(fit: BoxFit.fitHeight, child: Text(text!, style: textStyle?.copyWith(color: signColor))),
+                  child: FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: Text(text!, style: textStyle?.copyWith(color: signColor)),
+                  ),
                 )
               : null,
         ),

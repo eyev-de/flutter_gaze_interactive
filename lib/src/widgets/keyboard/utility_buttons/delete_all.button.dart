@@ -13,7 +13,9 @@ class DeleteAllButton extends GazeKeyboardUtilityButton {
 
   final TextEditingController controller;
   final String route;
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: controller));
+  late final controllerTextProvider = NotifierProvider<TextEditingControllerTextNotifier, String>(
+    () => TextEditingControllerTextNotifier(controller: controller),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

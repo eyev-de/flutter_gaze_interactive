@@ -7,7 +7,7 @@ import '../../../../api.dart';
 
 class PointerCircle extends ConsumerWidget {
   const PointerCircle({super.key, required this.type, required this.size, this.animation})
-      : assert(type != GazePointerType.active || animation != null, 'Animation must be provided for active pointer type');
+    : assert(type != GazePointerType.active || animation != null, 'Animation must be provided for active pointer type');
 
   final GazePointerType type;
   final double size;
@@ -30,11 +30,8 @@ class PointerCircle extends ConsumerWidget {
                 dimension: size,
                 child: AnimatedBuilder(
                   animation: animation!,
-                  builder: (context, child) => CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(_lighterColor),
-                    strokeWidth: 10,
-                    value: animation!.value,
-                  ),
+                  builder: (context, child) =>
+                      CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(_lighterColor), strokeWidth: 10, value: animation!.value),
                 ),
               ),
             ),
@@ -69,11 +66,7 @@ class PointerCircle extends ConsumerWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          child: kDebugMode
-              ? Center(
-                  child: Text(snapState.icon, style: const TextStyle(fontSize: 30)),
-                )
-              : null,
+          child: kDebugMode ? Center(child: Text(snapState.icon, style: const TextStyle(fontSize: 30))) : null,
         ),
       );
     }

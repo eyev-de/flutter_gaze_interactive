@@ -63,22 +63,12 @@ class KeyboardKeyStackedIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final top = icons.length >= 2 ? Icon(icons[1]) : Container();
-    return _KeyboardKeyStacked(
-      shift: shift,
-      topWidget: top,
-      bottomWidget: Icon(icons.first),
-      shiftWidget: top,
-    );
+    return _KeyboardKeyStacked(shift: shift, topWidget: top, bottomWidget: Icon(icons.first), shiftWidget: top);
   }
 }
 
 class _KeyboardKeyStacked extends StatelessWidget {
-  const _KeyboardKeyStacked({
-    required this.topWidget,
-    required this.bottomWidget,
-    required this.shiftWidget,
-    required this.shift,
-  });
+  const _KeyboardKeyStacked({required this.topWidget, required this.bottomWidget, required this.shiftWidget, required this.shift});
 
   final Widget topWidget;
   final Widget bottomWidget;
@@ -91,16 +81,7 @@ class _KeyboardKeyStacked extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Spacer(),
-            topWidget,
-            const Spacer(),
-            bottomWidget,
-            const Spacer(),
-          ],
-        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const Spacer(), topWidget, const Spacer(), bottomWidget, const Spacer()]),
       ),
     );
   }

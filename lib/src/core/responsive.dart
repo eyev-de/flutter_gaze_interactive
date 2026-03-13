@@ -14,12 +14,7 @@ class Responsive {
     // final heightFactor = media.size.height / maxHeight;
     // final widthFactor = media.size.width / maxWidth;
     // return EdgeInsets.fromLTRB(base.left * widthFactor, base.top * heightFactor, base.right * widthFactor, base.bottom * heightFactor);
-    return getResponsiveValue(
-      forVeryLargeScreen: base,
-      forLargeScreen: base / 1.5,
-      forMediumScreen: base / 2.0,
-      context: context,
-    );
+    return getResponsiveValue(forVeryLargeScreen: base, forLargeScreen: base / 1.5, forMediumScreen: base / 2.0, context: context);
   }
 
   static T getResponsiveValue<T>({

@@ -6,300 +6,132 @@ part of 'switch_button.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$switchButtonToggleWithDelayHash() =>
-    r'6313a962ad792833105f4ca96810703944bb8b64';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+@ProviderFor(SwitchButtonToggleWithDelay)
+final switchButtonToggleWithDelayProvider = SwitchButtonToggleWithDelayFamily._();
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+final class SwitchButtonToggleWithDelayProvider extends $NotifierProvider<SwitchButtonToggleWithDelay, bool> {
+  SwitchButtonToggleWithDelayProvider._({required SwitchButtonToggleWithDelayFamily super.from, required GlobalKey<State<StatefulWidget>> super.argument})
+    : super(retry: null, name: r'switchButtonToggleWithDelayProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+
+  @override
+  String debugGetCreateSourceHash() => _$switchButtonToggleWithDelayHash();
+
+  @override
+  String toString() {
+    return r'switchButtonToggleWithDelayProvider'
+        ''
+        '($argument)';
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  @$internal
+  @override
+  SwitchButtonToggleWithDelay create() => SwitchButtonToggleWithDelay();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool>(value));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SwitchButtonToggleWithDelayProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-abstract class _$SwitchButtonToggleWithDelay
-    extends BuildlessAutoDisposeNotifier<bool> {
-  late final GlobalKey<State<StatefulWidget>> key;
+String _$switchButtonToggleWithDelayHash() => r'6313a962ad792833105f4ca96810703944bb8b64';
+
+final class SwitchButtonToggleWithDelayFamily extends $Family
+    with $ClassFamilyOverride<SwitchButtonToggleWithDelay, bool, bool, bool, GlobalKey<State<StatefulWidget>>> {
+  SwitchButtonToggleWithDelayFamily._()
+    : super(retry: null, name: r'switchButtonToggleWithDelayProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+
+  SwitchButtonToggleWithDelayProvider call({required GlobalKey<State<StatefulWidget>> key}) => SwitchButtonToggleWithDelayProvider._(argument: key, from: this);
+
+  @override
+  String toString() => r'switchButtonToggleWithDelayProvider';
+}
+
+abstract class _$SwitchButtonToggleWithDelay extends $Notifier<bool> {
+  late final _$args = ref.$arg as GlobalKey<State<StatefulWidget>>;
+  GlobalKey<State<StatefulWidget>> get key => _$args;
 
   bool build({required GlobalKey<State<StatefulWidget>> key});
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    element.handleCreate(ref, () => build(key: _$args));
+  }
 }
 
-/// See also [SwitchButtonToggleWithDelay].
-@ProviderFor(SwitchButtonToggleWithDelay)
-const switchButtonToggleWithDelayProvider = SwitchButtonToggleWithDelayFamily();
+@ProviderFor(SwitchButtonChanged)
+final switchButtonChangedProvider = SwitchButtonChangedFamily._();
 
-/// See also [SwitchButtonToggleWithDelay].
-class SwitchButtonToggleWithDelayFamily extends Family<bool> {
-  /// See also [SwitchButtonToggleWithDelay].
-  const SwitchButtonToggleWithDelayFamily();
+final class SwitchButtonChangedProvider extends $NotifierProvider<SwitchButtonChanged, bool?> {
+  SwitchButtonChangedProvider._({required SwitchButtonChangedFamily super.from, required GlobalKey<State<StatefulWidget>> super.argument})
+    : super(retry: null, name: r'switchButtonChangedProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
 
-  /// See also [SwitchButtonToggleWithDelay].
-  SwitchButtonToggleWithDelayProvider call({
-    required GlobalKey<State<StatefulWidget>> key,
-  }) {
-    return SwitchButtonToggleWithDelayProvider(key: key);
+  @override
+  String debugGetCreateSourceHash() => _$switchButtonChangedHash();
+
+  @override
+  String toString() {
+    return r'switchButtonChangedProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  SwitchButtonToggleWithDelayProvider getProviderOverride(
-    covariant SwitchButtonToggleWithDelayProvider provider,
-  ) {
-    return call(key: provider.key);
-  }
+  SwitchButtonChanged create() => SwitchButtonChanged();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'switchButtonToggleWithDelayProvider';
-}
-
-/// See also [SwitchButtonToggleWithDelay].
-class SwitchButtonToggleWithDelayProvider
-    extends AutoDisposeNotifierProviderImpl<SwitchButtonToggleWithDelay, bool> {
-  /// See also [SwitchButtonToggleWithDelay].
-  SwitchButtonToggleWithDelayProvider({
-    required GlobalKey<State<StatefulWidget>> key,
-  }) : this._internal(
-         () => SwitchButtonToggleWithDelay()..key = key,
-         from: switchButtonToggleWithDelayProvider,
-         name: r'switchButtonToggleWithDelayProvider',
-         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-             ? null
-             : _$switchButtonToggleWithDelayHash,
-         dependencies: SwitchButtonToggleWithDelayFamily._dependencies,
-         allTransitiveDependencies:
-             SwitchButtonToggleWithDelayFamily._allTransitiveDependencies,
-         key: key,
-       );
-
-  SwitchButtonToggleWithDelayProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.key,
-  }) : super.internal();
-
-  final GlobalKey<State<StatefulWidget>> key;
-
-  @override
-  bool runNotifierBuild(covariant SwitchButtonToggleWithDelay notifier) {
-    return notifier.build(key: key);
-  }
-
-  @override
-  Override overrideWith(SwitchButtonToggleWithDelay Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: SwitchButtonToggleWithDelayProvider._internal(
-        () => create()..key = key,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        key: key,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<SwitchButtonToggleWithDelay, bool>
-  createElement() {
-    return _SwitchButtonToggleWithDelayProviderElement(this);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool? value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool?>(value));
   }
 
   @override
   bool operator ==(Object other) {
-    return other is SwitchButtonToggleWithDelayProvider && other.key == key;
+    return other is SwitchButtonChangedProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, key.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin SwitchButtonToggleWithDelayRef on AutoDisposeNotifierProviderRef<bool> {
-  /// The parameter `key` of this provider.
-  GlobalKey<State<StatefulWidget>> get key;
-}
+String _$switchButtonChangedHash() => r'6f647605224b7827a5ffd198be9eae756c4ce8ca';
 
-class _SwitchButtonToggleWithDelayProviderElement
-    extends
-        AutoDisposeNotifierProviderElement<SwitchButtonToggleWithDelay, bool>
-    with SwitchButtonToggleWithDelayRef {
-  _SwitchButtonToggleWithDelayProviderElement(super.provider);
+final class SwitchButtonChangedFamily extends $Family with $ClassFamilyOverride<SwitchButtonChanged, bool?, bool?, bool?, GlobalKey<State<StatefulWidget>>> {
+  SwitchButtonChangedFamily._()
+    : super(retry: null, name: r'switchButtonChangedProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+
+  SwitchButtonChangedProvider call({required GlobalKey<State<StatefulWidget>> key}) => SwitchButtonChangedProvider._(argument: key, from: this);
 
   @override
-  GlobalKey<State<StatefulWidget>> get key =>
-      (origin as SwitchButtonToggleWithDelayProvider).key;
+  String toString() => r'switchButtonChangedProvider';
 }
 
-String _$switchButtonChangedHash() =>
-    r'6f647605224b7827a5ffd198be9eae756c4ce8ca';
-
-abstract class _$SwitchButtonChanged
-    extends BuildlessAutoDisposeNotifier<bool?> {
-  late final GlobalKey<State<StatefulWidget>> key;
+abstract class _$SwitchButtonChanged extends $Notifier<bool?> {
+  late final _$args = ref.$arg as GlobalKey<State<StatefulWidget>>;
+  GlobalKey<State<StatefulWidget>> get key => _$args;
 
   bool? build({required GlobalKey<State<StatefulWidget>> key});
-}
-
-/// See also [SwitchButtonChanged].
-@ProviderFor(SwitchButtonChanged)
-const switchButtonChangedProvider = SwitchButtonChangedFamily();
-
-/// See also [SwitchButtonChanged].
-class SwitchButtonChangedFamily extends Family<bool?> {
-  /// See also [SwitchButtonChanged].
-  const SwitchButtonChangedFamily();
-
-  /// See also [SwitchButtonChanged].
-  SwitchButtonChangedProvider call({
-    required GlobalKey<State<StatefulWidget>> key,
-  }) {
-    return SwitchButtonChangedProvider(key: key);
-  }
-
+  @$mustCallSuper
   @override
-  SwitchButtonChangedProvider getProviderOverride(
-    covariant SwitchButtonChangedProvider provider,
-  ) {
-    return call(key: provider.key);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'switchButtonChangedProvider';
-}
-
-/// See also [SwitchButtonChanged].
-class SwitchButtonChangedProvider
-    extends AutoDisposeNotifierProviderImpl<SwitchButtonChanged, bool?> {
-  /// See also [SwitchButtonChanged].
-  SwitchButtonChangedProvider({required GlobalKey<State<StatefulWidget>> key})
-    : this._internal(
-        () => SwitchButtonChanged()..key = key,
-        from: switchButtonChangedProvider,
-        name: r'switchButtonChangedProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$switchButtonChangedHash,
-        dependencies: SwitchButtonChangedFamily._dependencies,
-        allTransitiveDependencies:
-            SwitchButtonChangedFamily._allTransitiveDependencies,
-        key: key,
-      );
-
-  SwitchButtonChangedProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.key,
-  }) : super.internal();
-
-  final GlobalKey<State<StatefulWidget>> key;
-
-  @override
-  bool? runNotifierBuild(covariant SwitchButtonChanged notifier) {
-    return notifier.build(key: key);
-  }
-
-  @override
-  Override overrideWith(SwitchButtonChanged Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: SwitchButtonChangedProvider._internal(
-        () => create()..key = key,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        key: key,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<SwitchButtonChanged, bool?>
-  createElement() {
-    return _SwitchButtonChangedProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is SwitchButtonChangedProvider && other.key == key;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, key.hashCode);
-
-    return _SystemHash.finish(hash);
+  void runBuild() {
+    final ref = this.ref as $Ref<bool?, bool?>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<bool?, bool?>, bool?, Object?, Object?>;
+    element.handleCreate(ref, () => build(key: _$args));
   }
 }
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin SwitchButtonChangedRef on AutoDisposeNotifierProviderRef<bool?> {
-  /// The parameter `key` of this provider.
-  GlobalKey<State<StatefulWidget>> get key;
-}
-
-class _SwitchButtonChangedProviderElement
-    extends AutoDisposeNotifierProviderElement<SwitchButtonChanged, bool?>
-    with SwitchButtonChangedRef {
-  _SwitchButtonChangedProviderElement(super.provider);
-
-  @override
-  GlobalKey<State<StatefulWidget>> get key =>
-      (origin as SwitchButtonChangedProvider).key;
-}
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

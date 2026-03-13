@@ -7,7 +7,9 @@ import '../../../core/text_editing_controller_notifier.dart';
 class CutButton extends GazeKeyboardUtilityButton {
   CutButton({super.key, required super.state, required super.node, super.label = 'Cut', super.textStyle});
 
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
+  late final controllerTextProvider = NotifierProvider<TextEditingControllerTextNotifier, String>(
+    () => TextEditingControllerTextNotifier(controller: state.controller),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

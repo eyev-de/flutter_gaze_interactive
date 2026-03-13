@@ -107,10 +107,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
                 cursorColor: Colors.white,
                 keyboardType: TextInputType.none,
                 suffix: widget.state.type != KeyboardType.email ? SizedBox(height: widget.minHeight, width: 70) : null,
-                decoration: BoxDecoration(
-                  color: tealColor.disabled,
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                ),
+                decoration: BoxDecoration(color: tealColor.disabled, borderRadius: const BorderRadius.all(Radius.circular(20))),
                 inputFormatters: widget.state.inputFormatters,
               ),
             ),

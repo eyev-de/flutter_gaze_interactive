@@ -7,10 +7,7 @@
 import 'package:flutter/material.dart';
 
 class TextPartStyleDefinition {
-  TextPartStyleDefinition({
-    required this.part,
-    required this.style,
-  });
+  TextPartStyleDefinition({required this.part, required this.style});
   final String part;
   final TextStyle style;
 }
@@ -21,17 +18,11 @@ class TextPartStyleDefinitions {
 }
 
 class StyleableTextFieldController extends TextEditingController {
-  StyleableTextFieldController({
-    List<TextPartStyleDefinition>? initialTextPartStyles,
-  }) : _textPartStyles = initialTextPartStyles ?? [];
+  StyleableTextFieldController({List<TextPartStyleDefinition>? initialTextPartStyles}) : _textPartStyles = initialTextPartStyles ?? [];
   List<TextPartStyleDefinition> _textPartStyles;
 
   @override
-  TextSpan buildTextSpan({
-    required BuildContext context,
-    TextStyle? style,
-    required bool withComposing,
-  }) {
+  TextSpan buildTextSpan({required BuildContext context, TextStyle? style, required bool withComposing}) {
     if (_textPartStyles.isNotEmpty) {
       final List<InlineSpan> textSpanChildren = <InlineSpan>[];
       for (final textPartStyle in _textPartStyles) {
@@ -49,33 +40,19 @@ class StyleableTextFieldController extends TextEditingController {
         style: style,
         children: <TextSpan>[
           TextSpan(text: value.composing.textBefore(value.text)),
-          TextSpan(
-            style: composingStyle,
-            text: value.composing.textInside(value.text),
-          ),
+          TextSpan(style: composingStyle, text: value.composing.textInside(value.text)),
           TextSpan(text: value.composing.textAfter(value.text)),
         ],
       );
     }
   }
 
-  void updateStyles(
-    List<TextPartStyleDefinition> newTextPartStyles,
-  ) {
+  void updateStyles(List<TextPartStyleDefinition> newTextPartStyles) {
     _textPartStyles = newTextPartStyles;
     notifyListeners();
   }
 
-  void _addTextSpan(
-    List<InlineSpan> textSpanChildren,
-    String textToBeStyled,
-    TextStyle style,
-  ) {
-    textSpanChildren.add(
-      TextSpan(
-        text: textToBeStyled,
-        style: style,
-      ),
-    );
+  void _addTextSpan(List<InlineSpan> textSpanChildren, String textToBeStyled, TextStyle style) {
+    textSpanChildren.add(TextSpan(text: textToBeStyled, style: style));
   }
 }
