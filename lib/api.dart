@@ -14,6 +14,7 @@ export 'src/core/extensions.dart' show TextEditingControllerExtension, ListLocal
 export 'src/core/gaze_pointer.util.dart' show GazePointerUtil;
 export 'src/core/gaze_shape.dart' show GazeShape;
 export 'src/core/scroll_direction.dart' show GazeScrollDirection;
+export 'src/core/simple_notifiers.dart' show BoolNotifier, SimpleNotifier;
 export 'src/core/sound_type.enum.dart';
 export 'src/core/sound_volume.enum.dart';
 export 'src/core/text_part_style_controller.dart' show StyleableTextFieldController, TextPartStyleDefinition, TextPartStyleDefinitions;

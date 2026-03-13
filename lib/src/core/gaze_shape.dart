@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 /// A class that represents a shape that can be interacted with using gaze.
 class GazeShape {
-  const GazeShape({
-    required this.rect,
-    this.borderRadius = BorderRadius.zero,
-  });
+  const GazeShape({required this.rect, this.borderRadius = BorderRadius.zero});
 
   /// The rectangular area of the shape.
   final Rect rect;
@@ -37,12 +34,12 @@ class GazeShape {
 
   /// Converts the shape to a RRect.
   RRect get toRRect => RRect.fromRectAndCorners(
-        rect,
-        topLeft: borderRadius.topLeft,
-        topRight: borderRadius.topRight,
-        bottomLeft: borderRadius.bottomLeft,
-        bottomRight: borderRadius.bottomRight,
-      );
+    rect,
+    topLeft: borderRadius.topLeft,
+    topRight: borderRadius.topRight,
+    bottomLeft: borderRadius.bottomLeft,
+    bottomRight: borderRadius.bottomRight,
+  );
 
   /// Checks if this shape overlaps with the given [gazePointer].
   bool overlaps(GazeShape gazePointer, {double factor = 0.1}) {

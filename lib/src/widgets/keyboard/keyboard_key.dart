@@ -46,37 +46,43 @@ class GazeKey extends ConsumerWidget {
 
   static final validCharacters = RegExp(r'^[a-zA-Zäöü]+$');
 
-  static Widget _buildContent(BuildContext context, Object content, bool shift, GazeKeyboardState keyboardState, bool signs, GazeKeyType type, bool stacked,
-      Color backgroundColor, bool disabled) {
+  static Widget _buildContent(
+    BuildContext context,
+    Object content,
+    bool shift,
+    GazeKeyboardState keyboardState,
+    bool signs,
+    GazeKeyType type,
+    bool stacked,
+    Color backgroundColor,
+    bool disabled,
+  ) {
     final signColor = backgroundColor.onColor(disabled: disabled);
     final textStyle = TextStyle(fontSize: 20, color: signColor);
     switch (content) {
       case final List<dynamic> list:
         if (stacked && !signs) {
-          return _GazeKeyStacked(
-            characters: list,
-            textStyle: textStyle,
-            shift: shift,
-            backgroundColor: backgroundColor,
-          );
+          return _GazeKeyStacked(characters: list, textStyle: textStyle, shift: shift, backgroundColor: backgroundColor);
         }
         final cntnt = (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak)
             ? getIOSKey(list: list, signs: signs, shift: shift)
             : list[shift ? 1 : 0];
         if (cntnt is String) {
           if (cntnt.isEmpty) return Container();
-          return Center(child: DefaultTextStyle.merge(style: textStyle, child: Text(cntnt)));
+          return Center(
+            child: DefaultTextStyle.merge(style: textStyle, child: Text(cntnt)),
+          );
         }
         if (cntnt is Text) {
           if (cntnt.data?.isEmpty ?? true) return Container();
-          return Center(child: DefaultTextStyle.merge(style: textStyle, child: cntnt));
+          return Center(
+            child: DefaultTextStyle.merge(style: textStyle, child: cntnt),
+          );
         }
         return _SpaceOut(child: Icon(cntnt as IconData, color: signColor, size: 25));
       case final String str:
         final _switchTo = shift && str.length == 1 && validCharacters.hasMatch(content);
-        return _SpaceOut(
-          child: Text(_switchTo ? str.toUpperCase() : str, style: textStyle),
-        );
+        return _SpaceOut(child: Text(_switchTo ? str.toUpperCase() : str, style: textStyle));
       case final IconData icon:
         return _SpaceOut(child: Icon(icon, color: signColor, size: 25));
       default:
@@ -187,15 +193,15 @@ class GazeKey extends ConsumerWidget {
     switch (type) {
       case GazeKeyType.none:
         if (data != null) keyboardState.controller.insert(data is Text ? data.data ?? '' : data as String, keyboardState.type, keyboardState.inputFormatters);
-        if (shift) ref.read(keyboardState.shiftStateProvider.notifier).state = false;
-        if (alt) ref.read(keyboardState.altStateProvider.notifier).state = false;
-        if (ctrl) ref.read(keyboardState.ctrlStateProvider.notifier).state = false;
+        if (shift) ref.read(keyboardState.shiftStateProvider.notifier).set(false);
+        if (alt) ref.read(keyboardState.altStateProvider.notifier).set(false);
+        if (ctrl) ref.read(keyboardState.ctrlStateProvider.notifier).set(false);
         break;
       case GazeKeyType.shift:
-        ref.read(keyboardState.shiftStateProvider.notifier).state = !shift;
+        ref.read(keyboardState.shiftStateProvider.notifier).set(!shift);
         break;
       case GazeKeyType.caps:
-        ref.read(keyboardState.capsLockStateProvider.notifier).state = !capsLock;
+        ref.read(keyboardState.capsLockStateProvider.notifier).set(!capsLock);
         break;
       case GazeKeyType.del:
         // _controller.sendKeyEvent(LogicalKeyboardKey.backspace);
@@ -212,13 +218,13 @@ class GazeKey extends ConsumerWidget {
         // widget.node?.requestFocus();
         break;
       case GazeKeyType.ctrl:
-        ref.read(keyboardState.ctrlStateProvider.notifier).state = !ctrl;
+        ref.read(keyboardState.ctrlStateProvider.notifier).set(!ctrl);
         break;
       case GazeKeyType.alt:
-        ref.read(keyboardState.altStateProvider.notifier).state = !alt;
+        ref.read(keyboardState.altStateProvider.notifier).set(!alt);
         break;
       case GazeKeyType.close:
-        ref.read(keyboardState.disableStateProvider.notifier).state = false;
+        ref.read(keyboardState.disableStateProvider.notifier).set(false);
         ref.read(keyboardSpeechToTextProvider.notifier).stop();
         keyboardState.onTabClose?.call(context);
         break;
@@ -226,9 +232,9 @@ class GazeKey extends ConsumerWidget {
         break;
       case GazeKeyType.signs:
         // shift / capsLock becomes unselected when signs is pressed
-        if (shift) ref.read(keyboardState.shiftStateProvider.notifier).state = false;
-        if (capsLock) ref.read(keyboardState.capsLockStateProvider.notifier).state = false;
-        ref.read(keyboardState.signsStateProvider.notifier).state = !signs;
+        if (shift) ref.read(keyboardState.shiftStateProvider.notifier).set(false);
+        if (capsLock) ref.read(keyboardState.capsLockStateProvider.notifier).set(false);
+        ref.read(keyboardState.signsStateProvider.notifier).set(!signs);
         break;
     }
   }
@@ -250,12 +256,7 @@ class GazeKey extends ConsumerWidget {
 }
 
 class _GazeKeyStacked extends StatelessWidget {
-  const _GazeKeyStacked({
-    required this.characters,
-    required this.textStyle,
-    required this.backgroundColor,
-    this.shift = false,
-  });
+  const _GazeKeyStacked({required this.characters, required this.textStyle, required this.backgroundColor, this.shift = false});
 
   final List<dynamic> characters;
   final TextStyle textStyle;
@@ -282,10 +283,7 @@ class _SpaceOut extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [child],
-        ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [child]),
       ],
     );
   }

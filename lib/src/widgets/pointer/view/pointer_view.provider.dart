@@ -35,7 +35,10 @@ enum SnapState {
 class PointerAnimationController extends _$PointerAnimationController {
   @override
   AnimationController build({required TickerProvider vsync}) {
-    return AnimationController(vsync: vsync, duration: Duration(milliseconds: ref.watch(ref.read(gazeInteractiveProvider).duration)));
+    return AnimationController(
+      vsync: vsync,
+      duration: Duration(milliseconds: ref.watch(ref.read(gazeInteractiveProvider).duration)),
+    );
   }
 }
 
@@ -64,12 +67,9 @@ class PointerIsMoving extends _$PointerIsMoving {
       state = true;
     }
     // time delay when no more movement is detected
-    timer = Timer(
-      const Duration(milliseconds: 1200),
-      () {
-        state = false;
-      },
-    );
+    timer = Timer(const Duration(milliseconds: 1200), () {
+      state = false;
+    });
   }
 }
 
@@ -219,8 +219,8 @@ class SnappingState extends _$SnappingState {
     }
   }
 
-// when not in snap radius while state = SnapState.inSnapTimer
-// -> stop being ready to snap
+  // when not in snap radius while state = SnapState.inSnapTimer
+  // -> stop being ready to snap
   void endSnap(GazeElementData snapElement) {
     debugPrint('end snap');
     // Only running snappscan be finished

@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api.dart';
 
-final obscureTextProvider = StateProvider((ref) => true);
+final obscureTextProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(true));
 
 class GazeTextFieldProperties {
   GazeTextFieldProperties({
@@ -56,15 +56,8 @@ class GazeTextFieldProperties {
 }
 
 class GazeTextField extends ConsumerWidget {
-  GazeTextField({
-    Key? key,
-    required this.controller,
-    required this.focusNode,
-    required this.properties,
-    required this.route,
-    this.onChanged,
-    this.onFocus,
-  }) : super(key: key) {
+  GazeTextField({Key? key, required this.controller, required this.focusNode, required this.properties, required this.route, this.onChanged, this.onFocus})
+    : super(key: key) {
     controller.addListener(() {
       if (onChanged != null) onChanged!(controller.text);
     });
@@ -101,14 +94,10 @@ class GazeTextField extends ConsumerWidget {
                 route: route,
                 enabled: properties.enabled,
                 icon: ref.watch(obscureTextProvider) ? Icons.visibility_off : Icons.visibility,
-                onTap: () => ref.read(obscureTextProvider.notifier).state = !ref.watch(obscureTextProvider),
+                onTap: () => ref.read(obscureTextProvider.notifier).toggle(),
               ),
             ),
-            if (state.hasError)
-              _TextFieldValidationError(
-                text: state.errorText ?? ' - ',
-                style: properties.inputDecoration?.errorStyle,
-              ),
+            if (state.hasError) _TextFieldValidationError(text: state.errorText ?? ' - ', style: properties.inputDecoration?.errorStyle),
           ],
         );
       },
@@ -158,11 +147,7 @@ class _TextFieldGazeAnimation extends StatelessWidget {
       child: GazeSelectionAnimation(
         onGazed: onTap,
         wrappedKey: GlobalKey(),
-        properties: GazeSelectionAnimationProperties(
-          route: route,
-          gazeInteractive: properties.enabled,
-          snappable: properties.snappable,
-        ),
+        properties: GazeSelectionAnimationProperties(route: route, gazeInteractive: properties.enabled, snappable: properties.snappable),
         wrappedWidget: Positioned.directional(
           textDirection: TextDirection.ltr,
           child: TextField(
@@ -195,12 +180,7 @@ class _TextFieldGazeAnimation extends StatelessWidget {
 }
 
 class _TextFieldObscureTextGazeButton extends StatelessWidget {
-  const _TextFieldObscureTextGazeButton({
-    required this.route,
-    required this.icon,
-    required this.enabled,
-    required this.onTap,
-  });
+  const _TextFieldObscureTextGazeButton({required this.route, required this.icon, required this.enabled, required this.onTap});
 
   final String route;
   final IconData icon;

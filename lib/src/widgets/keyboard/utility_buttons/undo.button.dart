@@ -10,8 +10,9 @@ import '../../../core/text_editing_controller_notifier.dart';
 class UndoButton extends GazeKeyboardUtilityButton {
   UndoButton({super.key, required super.state, required super.node, super.label = 'Undo', super.textStyle});
 
-  late final undoControllerProvider =
-      StateNotifierProvider((ref) => UndoHistoryControllerNotifier(controller: state.undoHistoryController ?? UndoHistoryController()));
+  late final undoControllerProvider = NotifierProvider<UndoHistoryControllerNotifier, bool>(
+    () => UndoHistoryControllerNotifier(controller: state.undoHistoryController ?? UndoHistoryController()),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

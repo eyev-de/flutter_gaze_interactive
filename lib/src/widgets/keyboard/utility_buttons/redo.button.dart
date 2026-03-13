@@ -10,8 +10,9 @@ import '../../../core/text_editing_controller_notifier.dart';
 class RedoButton extends GazeKeyboardUtilityButton {
   RedoButton({super.key, required super.state, required super.node, super.label = 'Redo', super.textStyle});
 
-  late final redoControllerProvider =
-      StateNotifierProvider((ref) => RedoHistoryControllerNotifier(controller: state.undoHistoryController ?? UndoHistoryController()));
+  late final redoControllerProvider = NotifierProvider<RedoHistoryControllerNotifier, bool>(
+    () => RedoHistoryControllerNotifier(controller: state.undoHistoryController ?? UndoHistoryController()),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

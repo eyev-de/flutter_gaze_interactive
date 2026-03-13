@@ -8,7 +8,9 @@ import '../../../core/text_editing_controller_notifier.dart';
 class DeleteButton extends GazeKeyboardUtilityButton {
   DeleteButton({super.key, required super.state, required super.node, super.label = 'Character'});
 
-  late final controllerProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
+  late final controllerProvider = NotifierProvider<TextEditingControllerTextNotifier, String>(
+    () => TextEditingControllerTextNotifier(controller: state.controller),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +46,7 @@ class DeleteButton extends GazeKeyboardUtilityButton {
                   ..text = state.controller.text.replaceRange(startIndex, endIndex, '')
                   ..selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
               }
-              ref.read(state.selectingWordStateProvider.notifier).state = state.controller.selection.textInside(state.controller.text).isNotEmpty;
+              ref.read(state.selectingWordStateProvider.notifier).set(state.controller.selection.textInside(state.controller.text).isNotEmpty);
               state.onKey?.call(data: deletedText, type: GazeKeyType.del);
             },
     );

@@ -48,10 +48,7 @@ class GazeKeyboard {
         const end = Offset.zero;
         final tween = Tween(begin: begin, end: end);
         final offsetAnimation = animation.drive(tween);
-        return SlideTransition(
-          position: offsetAnimation,
-          child: child,
-        );
+        return SlideTransition(position: offsetAnimation, child: child);
       },
       pageBuilder: (context, animation, secondaryAnimation) {
         const double height = 80;
@@ -113,12 +110,7 @@ class GazeKeyboard {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
                                     // Subtract vertical padding from text field size
-                                    child: GazeKeyboardTextWidget(
-                                      state: state,
-                                      node: node,
-                                      minHeight: height - 6,
-                                      scrollController: _scrollController,
-                                    ),
+                                    child: GazeKeyboardTextWidget(state: state, node: node, minHeight: height - 6, scrollController: _scrollController),
                                   ),
                                 ),
                                 // Delete Button
@@ -152,12 +144,7 @@ class GazeKeyboard {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: Row(
-                          children: [
-                            Flexible(
-                              flex: 8,
-                              child: GazeKeyboardWidget(state: state),
-                            ),
-                          ],
+                          children: [Flexible(flex: 8, child: GazeKeyboardWidget(state: state))],
                         ),
                       ),
                     ),
@@ -214,7 +201,7 @@ class _GazeKeyboardCheckButton extends ConsumerWidget {
       height: height,
       child: GazeButton(
         onTap: () {
-          ref.read(state.disableStateProvider.notifier).state = false;
+          ref.read(state.disableStateProvider.notifier).set(false);
           ref.read(keyboardSpeechToTextProvider.notifier).stop();
           onBack?.call(context);
         },
@@ -235,7 +222,7 @@ class GazeKeyboardWidget extends ConsumerWidget {
 
   final GazeKeyboardState state;
 
-  late final stateProvider = StateProvider((ref) => state);
+  late final stateProvider = NotifierProvider<SimpleNotifier<GazeKeyboardState>, GazeKeyboardState>(() => SimpleNotifier(state));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -250,14 +237,7 @@ class GazeKeyboardWidget extends ConsumerWidget {
     if (!state.withCtrl) keys[keys.length - 1].removeWhere((key) => key is GazeKey && key.type == GazeKeyType.ctrl);
     return Column(
       children: [
-        for (final row in keys)
-          Flexible(
-            child: Row(
-              children: [
-                for (final element in row) element,
-              ],
-            ),
-          ),
+        for (final row in keys) Flexible(child: Row(children: [for (final element in row) element])),
       ],
     );
   }

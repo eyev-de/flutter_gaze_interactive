@@ -4,9 +4,4 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
-enum GazeElementType {
-  all,
-  selectable,
-  scrollable,
-  pointer,
-}
+enum GazeElementType { all, selectable, scrollable, pointer }

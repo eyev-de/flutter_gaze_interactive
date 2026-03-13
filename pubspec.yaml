@@ -14,9 +14,9 @@ dependencies:
   enum_to_string: ^2.2.1
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.6.1
+  flutter_riverpod: ^3.3.1
   freezed_annotation: ^3.1.0
-  riverpod_annotation: ^2.6.1
+  riverpod_annotation: ^4.0.2
   intl: ^0.20.2
   logger: ^2.6.2
   material_design_icons_flutter: ^7.0.7296
@@ -30,7 +30,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^3.1.0
-  riverpod_generator: ^2.6.5
+  riverpod_generator: ^4.0.3
   json_serializable: ^6.9.5
 
 flutter:

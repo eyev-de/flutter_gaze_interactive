@@ -7,38 +7,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TextEditingControllerTextNotifier extends StateNotifier<String> {
-  TextEditingControllerTextNotifier({required this.controller}) : super(controller.text) {
-    controller.addListener(_listener);
-  }
+class TextEditingControllerTextNotifier extends Notifier<String> {
+  TextEditingControllerTextNotifier({required this.controller});
   final TextEditingController controller;
 
-  @override
-  void dispose() => {super.dispose(), controller.removeListener(_listener)};
-
   void _listener() => state = controller.text;
+
+  @override
+  String build() {
+    controller.addListener(_listener);
+    ref.onDispose(() => controller.removeListener(_listener));
+    return controller.text;
+  }
 }
 
-class UndoHistoryControllerNotifier extends StateNotifier<bool> {
-  UndoHistoryControllerNotifier({required this.controller}) : super(controller.value.canUndo) {
-    controller.addListener(_listener);
-  }
+class UndoHistoryControllerNotifier extends Notifier<bool> {
+  UndoHistoryControllerNotifier({required this.controller});
   final UndoHistoryController controller;
-
-  @override
-  void dispose() => {super.dispose(), controller.removeListener(_listener)};
 
   void _listener() => state = controller.value.canUndo;
-}
-
-class RedoHistoryControllerNotifier extends StateNotifier<bool> {
-  RedoHistoryControllerNotifier({required this.controller}) : super(controller.value.canRedo) {
-    controller.addListener(_listener);
-  }
-  final UndoHistoryController controller;
 
   @override
-  void dispose() => {super.dispose(), controller.removeListener(_listener)};
+  bool build() {
+    controller.addListener(_listener);
+    ref.onDispose(() => controller.removeListener(_listener));
+    return controller.value.canUndo;
+  }
+}
+
+class RedoHistoryControllerNotifier extends Notifier<bool> {
+  RedoHistoryControllerNotifier({required this.controller});
+  final UndoHistoryController controller;
 
   void _listener() => state = controller.value.canRedo;
+
+  @override
+  bool build() {
+    controller.addListener(_listener);
+    ref.onDispose(() => controller.removeListener(_listener));
+    return controller.value.canRedo;
+  }
 }

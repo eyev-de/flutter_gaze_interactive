@@ -23,7 +23,9 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
   final Color? highlightColor;
   final Color? iconColor;
   final double? height;
-  late final controllerProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
+  late final controllerProvider = NotifierProvider<TextEditingControllerTextNotifier, String>(
+    () => TextEditingControllerTextNotifier(controller: state.controller),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,8 +39,9 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
     ref.listen(controllerProvider, (before, after) async {
       if (after == '') {
         ref.read(keyboardSpeechToTextStatusProvider.notifier).status = KeyboardTextFieldStatus(cursor: -1);
-        ref.read(state.disableStateProvider.notifier).state = false;
+        ref.read(state.disableStateProvider.notifier).set(false);
         await ref.read(keyboardSpeechToTextProvider.notifier).stop();
+        if (!context.mounted) return;
       }
     });
     final available = ref.watch(keyboardSpeechToTextAvailableProvider);
@@ -69,11 +72,13 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
                     );
               ref.read(keyboardSpeechToTextStatusProvider.notifier).status = status;
               ref.read(keyboardSpeechToTextIsListeningProvider.notifier).listen();
-              ref.read(state.disableStateProvider.notifier).state = true;
+              ref.read(state.disableStateProvider.notifier).set(true);
               await ref.read(keyboardSpeechToTextProvider.notifier).listen(controller: state.controller);
+              if (!context.mounted) return;
             } else {
-              ref.read(state.disableStateProvider.notifier).state = false;
+              ref.read(state.disableStateProvider.notifier).set(false);
               await ref.read(keyboardSpeechToTextProvider.notifier).stop();
+              if (!context.mounted) return;
             }
           },
         );
@@ -126,7 +131,10 @@ class _MicrophoneButton extends StatelessWidget {
       child: GazeButton(
         properties: GazeButtonProperties(route: route, direction: Axis.horizontal, borderRadius: borderRadius),
         onTap: disabled ? null : onTap,
-        child: Align(alignment: Alignment.bottomRight, child: SizedBox(height: height ?? double.infinity, child: isLoading ? _loading : _icon)),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: SizedBox(height: height ?? double.infinity, child: isLoading ? _loading : _icon),
+        ),
       ),
     );
   }

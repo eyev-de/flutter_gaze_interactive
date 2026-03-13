@@ -31,13 +31,8 @@ enum GazeScrollableIndicatorSize {
 }
 
 class GazeScrollable extends StatelessWidget {
-  GazeScrollable({
-    Key? key,
-    required this.route,
-    required this.child,
-    required this.controller,
-    this.indicatorSize = GazeScrollableIndicatorSize.medium,
-  }) : super(key: key);
+  GazeScrollable({Key? key, required this.route, required this.child, required this.controller, this.indicatorSize = GazeScrollableIndicatorSize.medium})
+    : super(key: key);
 
   final String route;
   final Widget child;

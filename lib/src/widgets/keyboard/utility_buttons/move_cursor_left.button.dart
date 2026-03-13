@@ -7,7 +7,7 @@ import '../../../core/text_editing_controller_notifier.dart';
 class MoveCursorLeftButton extends GazeKeyboardUtilityButton {
   MoveCursorLeftButton({super.key, required super.state, required super.node, super.label = 'Cursor'});
 
-  late final controllerTextProvider = StateNotifierProvider((ref) => TextEditingControllerTextNotifier(controller: state.controller));
+  late final controllerTextProvider = NotifierProvider<TextEditingControllerTextNotifier, String>(() => TextEditingControllerTextNotifier(controller: state.controller));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +24,7 @@ class MoveCursorLeftButton extends GazeKeyboardUtilityButton {
           : () {
               node.requestFocus();
               state.controller.moveCursorRight(selecting: selecting);
-              ref.read(state.selectingWordStateProvider.notifier).state = state.controller.selection.textInside(state.controller.text).isNotEmpty;
+              ref.read(state.selectingWordStateProvider.notifier).set(state.controller.selection.textInside(state.controller.text).isNotEmpty);
             },
     );
   }

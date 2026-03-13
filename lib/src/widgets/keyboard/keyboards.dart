@@ -106,7 +106,7 @@ class Keyboards {
         if (Platform.isWindows) GazeKey(content: 'win', widthRatio: 1.2, type: GazeKeyType.win, keyboardState: state),
         if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'ctrl', widthRatio: 1.5, type: GazeKeyType.ctrl, keyboardState: state),
         if (state.type == KeyboardType.extended) GazeKey(content: Icons.keyboard_hide, widthRatio: 2, type: GazeKeyType.close, keyboardState: state),
-      ]
+      ],
     ];
   }
 
@@ -242,7 +242,7 @@ class Keyboards {
         if (Platform.isWindows) GazeKey(content: 'win', widthRatio: 1.2, type: GazeKeyType.win, keyboardState: state),
         if (!Platform.isIOS && !Platform.isAndroid) GazeKey(content: 'ctrl', widthRatio: 1.5, type: GazeKeyType.ctrl, keyboardState: state),
         if (state.type == KeyboardType.extended) GazeKey(content: Icons.keyboard_hide, widthRatio: 2, type: GazeKeyType.close, keyboardState: state),
-      ]
+      ],
     ];
   }
 

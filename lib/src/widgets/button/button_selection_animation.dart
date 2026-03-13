@@ -83,35 +83,33 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
     _reselectionCount = 0;
     _duration = widget.properties.durationMs ?? ref.read(ref.read(gazeInteractiveProvider).duration);
     _recoverTime = widget.properties.recoverMs ?? ref.read(ref.read(gazeInteractiveProvider).recoverTime);
-    _controller = AnimationController(
-      duration: Duration(milliseconds: _duration),
-      vsync: this,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          if (mounted) {
-            _controller.reset();
-            if (widget.properties.reselectable) {
-              // reselectable count = null means infinite re-selections
-              if (widget.properties.reselectableCount != null && _reselectionCount >= widget.properties.reselectableCount! - 1) {
-                _reselectionCount = 0;
-              } else {
-                final double reselectionAcceleration = ref.read(ref.read(gazeInteractiveProvider).reselectionAcceleration);
-                final _newDuration = (_duration * reselectionAcceleration).round();
-                _reselectionCount += 1;
-                _duration = max(_newDuration, gazeInteractiveMinDuration);
-                _controller
-                  ..duration = Duration(milliseconds: _duration)
-                  ..forward();
+    _controller =
+        AnimationController(
+          duration: Duration(milliseconds: _duration),
+          vsync: this,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            if (mounted) {
+              _controller.reset();
+              if (widget.properties.reselectable) {
+                // reselectable count = null means infinite re-selections
+                if (widget.properties.reselectableCount != null && _reselectionCount >= widget.properties.reselectableCount! - 1) {
+                  _reselectionCount = 0;
+                } else {
+                  final double reselectionAcceleration = ref.read(ref.read(gazeInteractiveProvider).reselectionAcceleration);
+                  final _newDuration = (_duration * reselectionAcceleration).round();
+                  _reselectionCount += 1;
+                  _duration = max(_newDuration, gazeInteractiveMinDuration);
+                  _controller
+                    ..duration = Duration(milliseconds: _duration)
+                    ..forward();
+                }
               }
             }
+            if (widget.properties.gazeInteractive) widget.onGazed?.call();
           }
-          if (widget.properties.gazeInteractive) widget.onGazed?.call();
-        }
-      });
-    _colorTween = ColorTween(
-      begin: widget.properties.backgroundColor,
-      end: widget.properties.animationColor,
-    ).animate(_controller);
+        });
+    _colorTween = ColorTween(begin: widget.properties.backgroundColor, end: widget.properties.animationColor).animate(_controller);
   }
 
   @override
@@ -134,10 +132,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   borderRadius: widget.properties.borderRadius,
-                  border: Border.all(
-                    color: gazeIn ? widget.properties.color : Colors.transparent,
-                    width: widget.properties.borderWidth,
-                  ),
+                  border: Border.all(color: gazeIn ? widget.properties.color : Colors.transparent, width: widget.properties.borderWidth),
                 ),
               ),
             ),
@@ -181,11 +176,7 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
     switch (widget.properties.type) {
       case GazeSelectionAnimationType.progress:
       case GazeSelectionAnimationType.rise:
-        return Material(
-          color: widget.properties.backgroundColor,
-          borderRadius: widget.properties.borderRadius,
-          child: widget.wrappedWidget,
-        );
+        return Material(color: widget.properties.backgroundColor, borderRadius: widget.properties.borderRadius, child: widget.wrappedWidget);
       case GazeSelectionAnimationType.fade:
         return AnimatedBuilder(
           animation: _colorTween,
@@ -213,7 +204,9 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   }
 
   void _register() {
-    ref.read(gazeInteractiveProvider).register(
+    ref
+        .read(gazeInteractiveProvider)
+        .register(
           GazeSelectableData(
             key: widget.wrappedKey,
             route: widget.properties.route,

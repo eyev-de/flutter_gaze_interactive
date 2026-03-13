@@ -40,9 +40,9 @@ class GazeToggleButtons extends StatelessWidget {
           ),
         )
         .toList();
-    final children = <Widget>[..._buttons]
-        .superJoin(Container(width: axis == Axis.horizontal ? borderWidth : null, height: axis == Axis.vertical ? borderWidth : null, color: _color))
-        .toList();
+    final children = <Widget>[
+      ..._buttons,
+    ].superJoin(Container(width: axis == Axis.horizontal ? borderWidth : null, height: axis == Axis.vertical ? borderWidth : null, color: _color)).toList();
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: borderWidth, color: _color),

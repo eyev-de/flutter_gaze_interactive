@@ -4,6 +4,4 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
-enum GazePointerAction {
-  click;
-}
+enum GazePointerAction { click }

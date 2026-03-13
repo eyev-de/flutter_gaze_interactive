@@ -6,326 +6,626 @@ part of 'state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$buttonMaybePlaySoundHash() =>
-    r'f4024cded024e96b44b6536e1b71a534e1e5f5f0';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+@ProviderFor(SnapActiveState)
+final snapActiveStateProvider = SnapActiveStateProvider._();
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [buttonMaybePlaySound].
-@ProviderFor(buttonMaybePlaySound)
-const buttonMaybePlaySoundProvider = ButtonMaybePlaySoundFamily();
-
-/// See also [buttonMaybePlaySound].
-class ButtonMaybePlaySoundFamily extends Family<AsyncValue<void>> {
-  /// See also [buttonMaybePlaySound].
-  const ButtonMaybePlaySoundFamily();
-
-  /// See also [buttonMaybePlaySound].
-  ButtonMaybePlaySoundProvider call({bool defaultVolume = false}) {
-    return ButtonMaybePlaySoundProvider(defaultVolume: defaultVolume);
-  }
-
-  @override
-  ButtonMaybePlaySoundProvider getProviderOverride(
-    covariant ButtonMaybePlaySoundProvider provider,
-  ) {
-    return call(defaultVolume: provider.defaultVolume);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'buttonMaybePlaySoundProvider';
-}
-
-/// See also [buttonMaybePlaySound].
-class ButtonMaybePlaySoundProvider extends AutoDisposeFutureProvider<void> {
-  /// See also [buttonMaybePlaySound].
-  ButtonMaybePlaySoundProvider({bool defaultVolume = false})
-    : this._internal(
-        (ref) => buttonMaybePlaySound(
-          ref as ButtonMaybePlaySoundRef,
-          defaultVolume: defaultVolume,
-        ),
-        from: buttonMaybePlaySoundProvider,
-        name: r'buttonMaybePlaySoundProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$buttonMaybePlaySoundHash,
-        dependencies: ButtonMaybePlaySoundFamily._dependencies,
-        allTransitiveDependencies:
-            ButtonMaybePlaySoundFamily._allTransitiveDependencies,
-        defaultVolume: defaultVolume,
+final class SnapActiveStateProvider
+    extends $NotifierProvider<SnapActiveState, bool> {
+  SnapActiveStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'snapActiveStateProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
 
-  ButtonMaybePlaySoundProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.defaultVolume,
-  }) : super.internal();
-
-  final bool defaultVolume;
-
   @override
-  Override overrideWith(
-    FutureOr<void> Function(ButtonMaybePlaySoundRef provider) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$snapActiveStateHash();
+
+  @$internal
+  @override
+  SnapActiveState create() => SnapActiveState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
       origin: this,
-      override: ButtonMaybePlaySoundProvider._internal(
-        (ref) => create(ref as ButtonMaybePlaySoundRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        defaultVolume: defaultVolume,
-      ),
+      providerOverride: $SyncValueProvider<bool>(value),
     );
   }
-
-  @override
-  AutoDisposeFutureProviderElement<void> createElement() {
-    return _ButtonMaybePlaySoundProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ButtonMaybePlaySoundProvider &&
-        other.defaultVolume == defaultVolume;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, defaultVolume.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ButtonMaybePlaySoundRef on AutoDisposeFutureProviderRef<void> {
-  /// The parameter `defaultVolume` of this provider.
-  bool get defaultVolume;
-}
-
-class _ButtonMaybePlaySoundProviderElement
-    extends AutoDisposeFutureProviderElement<void>
-    with ButtonMaybePlaySoundRef {
-  _ButtonMaybePlaySoundProviderElement(super.provider);
-
-  @override
-  bool get defaultVolume =>
-      (origin as ButtonMaybePlaySoundProvider).defaultVolume;
 }
 
 String _$snapActiveStateHash() => r'0ba78c6a0da56e78bf57e560e759113c94e72461';
 
-/// See also [SnapActiveState].
-@ProviderFor(SnapActiveState)
-final snapActiveStateProvider =
-    NotifierProvider<SnapActiveState, bool>.internal(
-      SnapActiveState.new,
-      name: r'snapActiveStateProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$snapActiveStateHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$SnapActiveState extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$SnapActiveState = Notifier<bool>;
+@ProviderFor(SnapIconState)
+final snapIconStateProvider = SnapIconStateProvider._();
+
+final class SnapIconStateProvider
+    extends $NotifierProvider<SnapIconState, bool> {
+  SnapIconStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'snapIconStateProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$snapIconStateHash();
+
+  @$internal
+  @override
+  SnapIconState create() => SnapIconState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
 String _$snapIconStateHash() => r'9beed2dc0f83941f0875b87008af21cfe0f35ee0';
 
-/// See also [SnapIconState].
-@ProviderFor(SnapIconState)
-final snapIconStateProvider = NotifierProvider<SnapIconState, bool>.internal(
-  SnapIconState.new,
-  name: r'snapIconStateProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$snapIconStateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$SnapIconState extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$SnapIconState = Notifier<bool>;
+@ProviderFor(GazePointerAlwaysVisible)
+final gazePointerAlwaysVisibleProvider = GazePointerAlwaysVisibleProvider._();
+
+final class GazePointerAlwaysVisibleProvider
+    extends $NotifierProvider<GazePointerAlwaysVisible, bool> {
+  GazePointerAlwaysVisibleProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'gazePointerAlwaysVisibleProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$gazePointerAlwaysVisibleHash();
+
+  @$internal
+  @override
+  GazePointerAlwaysVisible create() => GazePointerAlwaysVisible();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
 String _$gazePointerAlwaysVisibleHash() =>
     r'5c00d0ee6c8ec9b094e12e1d1459227b1e09fd34';
 
-/// See also [GazePointerAlwaysVisible].
-@ProviderFor(GazePointerAlwaysVisible)
-final gazePointerAlwaysVisibleProvider =
-    NotifierProvider<GazePointerAlwaysVisible, bool>.internal(
-      GazePointerAlwaysVisible.new,
-      name: r'gazePointerAlwaysVisibleProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$gazePointerAlwaysVisibleHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$GazePointerAlwaysVisible extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$GazePointerAlwaysVisible = Notifier<bool>;
+@ProviderFor(GazePointerHistoryNumber)
+final gazePointerHistoryNumberProvider = GazePointerHistoryNumberProvider._();
+
+final class GazePointerHistoryNumberProvider
+    extends $NotifierProvider<GazePointerHistoryNumber, int> {
+  GazePointerHistoryNumberProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'gazePointerHistoryNumberProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$gazePointerHistoryNumberHash();
+
+  @$internal
+  @override
+  GazePointerHistoryNumber create() => GazePointerHistoryNumber();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
 String _$gazePointerHistoryNumberHash() =>
     r'e6f875251f8edd6994aef177ba8dd834b09e58fa';
 
-/// See also [GazePointerHistoryNumber].
-@ProviderFor(GazePointerHistoryNumber)
-final gazePointerHistoryNumberProvider =
-    NotifierProvider<GazePointerHistoryNumber, int>.internal(
-      GazePointerHistoryNumber.new,
-      name: r'gazePointerHistoryNumberProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$gazePointerHistoryNumberHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$GazePointerHistoryNumber extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$GazePointerHistoryNumber = Notifier<int>;
+@ProviderFor(KeyboardSpeechToTextIsListening)
+final keyboardSpeechToTextIsListeningProvider =
+    KeyboardSpeechToTextIsListeningProvider._();
+
+final class KeyboardSpeechToTextIsListeningProvider
+    extends $NotifierProvider<KeyboardSpeechToTextIsListening, bool> {
+  KeyboardSpeechToTextIsListeningProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keyboardSpeechToTextIsListeningProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$keyboardSpeechToTextIsListeningHash();
+
+  @$internal
+  @override
+  KeyboardSpeechToTextIsListening create() => KeyboardSpeechToTextIsListening();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
 String _$keyboardSpeechToTextIsListeningHash() =>
     r'a83f38824105c6f822b7de5ee8b5f2b55d8a934e';
 
-/// See also [KeyboardSpeechToTextIsListening].
-@ProviderFor(KeyboardSpeechToTextIsListening)
-final keyboardSpeechToTextIsListeningProvider =
-    AutoDisposeNotifierProvider<KeyboardSpeechToTextIsListening, bool>.internal(
-      KeyboardSpeechToTextIsListening.new,
-      name: r'keyboardSpeechToTextIsListeningProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$keyboardSpeechToTextIsListeningHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$KeyboardSpeechToTextIsListening extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$KeyboardSpeechToTextIsListening = AutoDisposeNotifier<bool>;
+@ProviderFor(KeyboardSpeechToTextAvailable)
+final keyboardSpeechToTextAvailableProvider =
+    KeyboardSpeechToTextAvailableProvider._();
+
+final class KeyboardSpeechToTextAvailableProvider
+    extends
+        $NotifierProvider<KeyboardSpeechToTextAvailable, AsyncValue<bool?>> {
+  KeyboardSpeechToTextAvailableProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keyboardSpeechToTextAvailableProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$keyboardSpeechToTextAvailableHash();
+
+  @$internal
+  @override
+  KeyboardSpeechToTextAvailable create() => KeyboardSpeechToTextAvailable();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<bool?> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<bool?>>(value),
+    );
+  }
+}
+
 String _$keyboardSpeechToTextAvailableHash() =>
     r'c3d280809930eebe3a6ff5b6826347c0108596e2';
 
-/// See also [KeyboardSpeechToTextAvailable].
-@ProviderFor(KeyboardSpeechToTextAvailable)
-final keyboardSpeechToTextAvailableProvider =
-    NotifierProvider<KeyboardSpeechToTextAvailable, AsyncValue<bool?>>.internal(
-      KeyboardSpeechToTextAvailable.new,
-      name: r'keyboardSpeechToTextAvailableProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$keyboardSpeechToTextAvailableHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$KeyboardSpeechToTextAvailable
+    extends $Notifier<AsyncValue<bool?>> {
+  AsyncValue<bool?> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<bool?>, AsyncValue<bool?>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<bool?>, AsyncValue<bool?>>,
+              AsyncValue<bool?>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$KeyboardSpeechToTextAvailable = Notifier<AsyncValue<bool?>>;
+@ProviderFor(KeyboardSpeechToTextStatus)
+final keyboardSpeechToTextStatusProvider =
+    KeyboardSpeechToTextStatusProvider._();
+
+final class KeyboardSpeechToTextStatusProvider
+    extends
+        $NotifierProvider<
+          KeyboardSpeechToTextStatus,
+          KeyboardTextFieldStatus?
+        > {
+  KeyboardSpeechToTextStatusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keyboardSpeechToTextStatusProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$keyboardSpeechToTextStatusHash();
+
+  @$internal
+  @override
+  KeyboardSpeechToTextStatus create() => KeyboardSpeechToTextStatus();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(KeyboardTextFieldStatus? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<KeyboardTextFieldStatus?>(value),
+    );
+  }
+}
+
 String _$keyboardSpeechToTextStatusHash() =>
     r'e76435bd1cb1da0658cf46b502e3f907646da181';
 
-/// See also [KeyboardSpeechToTextStatus].
-@ProviderFor(KeyboardSpeechToTextStatus)
-final keyboardSpeechToTextStatusProvider =
-    AutoDisposeNotifierProvider<
-      KeyboardSpeechToTextStatus,
-      KeyboardTextFieldStatus?
-    >.internal(
-      KeyboardSpeechToTextStatus.new,
-      name: r'keyboardSpeechToTextStatusProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$keyboardSpeechToTextStatusHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$KeyboardSpeechToTextStatus
+    extends $Notifier<KeyboardTextFieldStatus?> {
+  KeyboardTextFieldStatus? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref as $Ref<KeyboardTextFieldStatus?, KeyboardTextFieldStatus?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<KeyboardTextFieldStatus?, KeyboardTextFieldStatus?>,
+              KeyboardTextFieldStatus?,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$KeyboardSpeechToTextStatus =
-    AutoDisposeNotifier<KeyboardTextFieldStatus?>;
+@ProviderFor(KeyboardSpeechToTextLocales)
+final keyboardSpeechToTextLocalesProvider =
+    KeyboardSpeechToTextLocalesProvider._();
+
+final class KeyboardSpeechToTextLocalesProvider
+    extends
+        $NotifierProvider<
+          KeyboardSpeechToTextLocales,
+          AsyncValue<List<LocaleName>>
+        > {
+  KeyboardSpeechToTextLocalesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keyboardSpeechToTextLocalesProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$keyboardSpeechToTextLocalesHash();
+
+  @$internal
+  @override
+  KeyboardSpeechToTextLocales create() => KeyboardSpeechToTextLocales();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<LocaleName>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<LocaleName>>>(value),
+    );
+  }
+}
+
 String _$keyboardSpeechToTextLocalesHash() =>
     r'540fffee052b22becae3048463367bf0bf36abc6';
 
-/// See also [KeyboardSpeechToTextLocales].
-@ProviderFor(KeyboardSpeechToTextLocales)
-final keyboardSpeechToTextLocalesProvider =
-    NotifierProvider<
-      KeyboardSpeechToTextLocales,
-      AsyncValue<List<LocaleName>>
-    >.internal(
-      KeyboardSpeechToTextLocales.new,
-      name: r'keyboardSpeechToTextLocalesProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$keyboardSpeechToTextLocalesHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$KeyboardSpeechToTextLocales
+    extends $Notifier<AsyncValue<List<LocaleName>>> {
+  AsyncValue<List<LocaleName>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<List<LocaleName>>, AsyncValue<List<LocaleName>>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<List<LocaleName>>,
+                AsyncValue<List<LocaleName>>
+              >,
+              AsyncValue<List<LocaleName>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$KeyboardSpeechToTextLocales = Notifier<AsyncValue<List<LocaleName>>>;
+@ProviderFor(KeyboardSpeechToTextLocale)
+final keyboardSpeechToTextLocaleProvider =
+    KeyboardSpeechToTextLocaleProvider._();
+
+final class KeyboardSpeechToTextLocaleProvider
+    extends $NotifierProvider<KeyboardSpeechToTextLocale, String> {
+  KeyboardSpeechToTextLocaleProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keyboardSpeechToTextLocaleProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$keyboardSpeechToTextLocaleHash();
+
+  @$internal
+  @override
+  KeyboardSpeechToTextLocale create() => KeyboardSpeechToTextLocale();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
 String _$keyboardSpeechToTextLocaleHash() =>
     r'951efbfca4edefae11afdba94bf410fb28037271';
 
-/// See also [KeyboardSpeechToTextLocale].
-@ProviderFor(KeyboardSpeechToTextLocale)
-final keyboardSpeechToTextLocaleProvider =
-    NotifierProvider<KeyboardSpeechToTextLocale, String>.internal(
-      KeyboardSpeechToTextLocale.new,
-      name: r'keyboardSpeechToTextLocaleProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$keyboardSpeechToTextLocaleHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$KeyboardSpeechToTextLocale extends $Notifier<String> {
+  String build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<String, String>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$KeyboardSpeechToTextLocale = Notifier<String>;
-String _$keyboardSpeechToTextHash() =>
-    r'5b523dd7c07272b37d0c85a3c0b0a9d1b7c2ac86';
+@ProviderFor(buttonMaybePlaySound)
+final buttonMaybePlaySoundProvider = ButtonMaybePlaySoundFamily._();
 
-/// See also [KeyboardSpeechToText].
+final class ButtonMaybePlaySoundProvider
+    extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
+    with $FutureModifier<void>, $FutureProvider<void> {
+  ButtonMaybePlaySoundProvider._({
+    required ButtonMaybePlaySoundFamily super.from,
+    required bool super.argument,
+  }) : super(
+         retry: null,
+         name: r'buttonMaybePlaySoundProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$buttonMaybePlaySoundHash();
+
+  @override
+  String toString() {
+    return r'buttonMaybePlaySoundProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<void> create(Ref ref) {
+    final argument = this.argument as bool;
+    return buttonMaybePlaySound(ref, defaultVolume: argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ButtonMaybePlaySoundProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$buttonMaybePlaySoundHash() =>
+    r'ec70038e9a783e67083fc8dc1a38c8233e3f5d76';
+
+final class ButtonMaybePlaySoundFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<void>, bool> {
+  ButtonMaybePlaySoundFamily._()
+    : super(
+        retry: null,
+        name: r'buttonMaybePlaySoundProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ButtonMaybePlaySoundProvider call({bool defaultVolume = false}) =>
+      ButtonMaybePlaySoundProvider._(argument: defaultVolume, from: this);
+
+  @override
+  String toString() => r'buttonMaybePlaySoundProvider';
+}
+
 @ProviderFor(KeyboardSpeechToText)
-final keyboardSpeechToTextProvider =
-    NotifierProvider<KeyboardSpeechToText, SpeechToText>.internal(
-      KeyboardSpeechToText.new,
-      name: r'keyboardSpeechToTextProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$keyboardSpeechToTextHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+final keyboardSpeechToTextProvider = KeyboardSpeechToTextProvider._();
 
-typedef _$KeyboardSpeechToText = Notifier<SpeechToText>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class KeyboardSpeechToTextProvider
+    extends $NotifierProvider<KeyboardSpeechToText, SpeechToText> {
+  KeyboardSpeechToTextProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keyboardSpeechToTextProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$keyboardSpeechToTextHash();
+
+  @$internal
+  @override
+  KeyboardSpeechToText create() => KeyboardSpeechToText();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SpeechToText value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SpeechToText>(value),
+    );
+  }
+}
+
+String _$keyboardSpeechToTextHash() =>
+    r'b029f2a3af8c90ff5214abe26b88ec556a844aa3';
+
+abstract class _$KeyboardSpeechToText extends $Notifier<SpeechToText> {
+  SpeechToText build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<SpeechToText, SpeechToText>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SpeechToText, SpeechToText>,
+              SpeechToText,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

@@ -59,28 +59,16 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    _animationControllerYear = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
+    _animationControllerYear = AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
     _animationYear = Tween<Offset>(
       begin: const Offset(0, -1),
       end: const Offset(0, 0),
-    ).animate(CurvedAnimation(
-      parent: _animationControllerYear,
-      curve: Curves.easeOut,
-    ));
-    _animationControllerMonth = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
+    ).animate(CurvedAnimation(parent: _animationControllerYear, curve: Curves.easeOut));
+    _animationControllerMonth = AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
     _animationMonth = Tween<Offset>(
       begin: const Offset(0, 0),
       end: const Offset(0, 1),
-    ).animate(CurvedAnimation(
-      parent: _animationControllerMonth,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _animationControllerMonth, curve: Curves.easeOut));
     _pageController.addListener(_listener);
   }
 
@@ -138,10 +126,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
     return Container(
       clipBehavior: Clip.hardEdge,
       margin: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.grey.shade900,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.grey.shade900),
       child: Stack(
         children: [
           SlideTransition(
@@ -166,10 +151,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                     final thisYear = widget.firstDate.year + index;
                     return GazeButton(
                       color: _current.year == thisYear ? Theme.of(context).primaryColor : Colors.transparent,
-                      properties: GazeButtonProperties(
-                        route: widget.route,
-                        text: Text('$thisYear'),
-                      ),
+                      properties: GazeButtonProperties(route: widget.route, text: Text('$thisYear')),
                       onTap: () {
                         setState(() {
                           _list = _list.map((e) {
@@ -190,10 +172,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  flex: 3,
-                  child: control(),
-                ),
+                Flexible(flex: 3, child: control()),
                 Flexible(
                   flex: 12,
                   child: PageView.builder(
@@ -205,10 +184,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                     },
                   ),
                 ),
-                Flexible(
-                  flex: 2,
-                  child: submit(),
-                ),
+                Flexible(flex: 2, child: submit()),
               ],
             ),
           ),
@@ -250,13 +226,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    flex: 2,
-                    child: Text(
-                      DateFormat('EEE, MMM d').format(_current),
-                      style: style,
-                    ),
-                  ),
+                  Flexible(flex: 2, child: Text(DateFormat('EEE, MMM d').format(_current), style: style)),
                   Flexible(
                     child: GazeButton(
                       properties: GazeButtonProperties(route: widget.route),
@@ -267,11 +237,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Theme.of(context).primaryColor, width: 3),
                         ),
-                        child: Text(
-                          '${_current.year}',
-                          textAlign: TextAlign.center,
-                          style: style,
-                        ),
+                        child: Text('${_current.year}', textAlign: TextAlign.center, style: style),
                       ),
                     ),
                   ),
@@ -289,31 +255,19 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
                     child: GazeButton(
                       properties: GazeButtonProperties(
                         route: widget.route,
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: blockPrevious ? Colors.white54 : Colors.white,
-                        ),
+                        icon: Icon(Icons.arrow_back, color: blockPrevious ? Colors.white54 : Colors.white),
                         direction: Axis.horizontal,
                         gazeInteractive: !blockPrevious,
                       ),
                       onTap: blockPrevious ? null : _prevMonth,
                     ),
                   ),
-                  Flexible(
-                    flex: 3,
-                    child: Text(
-                      DateFormat('MMMM').format(_current),
-                      style: style,
-                    ),
-                  ),
+                  Flexible(flex: 3, child: Text(DateFormat('MMMM').format(_current), style: style)),
                   Flexible(
                     child: GazeButton(
                       properties: GazeButtonProperties(
                         route: widget.route,
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: blockNext ? Colors.white54 : Colors.white,
-                        ),
+                        icon: Icon(Icons.arrow_forward, color: blockNext ? Colors.white54 : Colors.white),
                         direction: Axis.horizontal,
                         gazeInteractive: !blockNext,
                       ),
@@ -340,10 +294,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
             child: Padding(
               padding: const EdgeInsets.all(5),
               child: GazeButton(
-                properties: GazeButtonProperties(
-                  route: widget.route,
-                  text: Text(widget.cancelLabel),
-                ),
+                properties: GazeButtonProperties(route: widget.route, text: Text(widget.cancelLabel)),
                 onTap: () {
                   if (widget.cancelled != null) widget.cancelled!(context);
                 },
@@ -356,10 +307,7 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
               padding: const EdgeInsets.all(5),
               child: GazeButton(
                 color: Theme.of(context).primaryColor,
-                properties: GazeButtonProperties(
-                  route: widget.route,
-                  text: Text(widget.selectLabel),
-                ),
+                properties: GazeButtonProperties(route: widget.route, text: Text(widget.selectLabel)),
                 onTap: () {
                   if (widget.selected != null) widget.selected!(_current, context);
                 },
@@ -383,28 +331,37 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
         children: [
           Row(
             children: [
-              Expanded(child: Text('MON', style: style, textAlign: TextAlign.center)),
-              Expanded(child: Text('TUE', style: style, textAlign: TextAlign.center)),
-              Expanded(child: Text('WEN', style: style, textAlign: TextAlign.center)),
-              Expanded(child: Text('THU', style: style, textAlign: TextAlign.center)),
-              Expanded(child: Text('FRI', style: style, textAlign: TextAlign.center)),
-              Expanded(child: Text('SAT', style: style, textAlign: TextAlign.center)),
-              Expanded(child: Text('SUN', style: style, textAlign: TextAlign.center)),
+              Expanded(
+                child: Text('MON', style: style, textAlign: TextAlign.center),
+              ),
+              Expanded(
+                child: Text('TUE', style: style, textAlign: TextAlign.center),
+              ),
+              Expanded(
+                child: Text('WEN', style: style, textAlign: TextAlign.center),
+              ),
+              Expanded(
+                child: Text('THU', style: style, textAlign: TextAlign.center),
+              ),
+              Expanded(
+                child: Text('FRI', style: style, textAlign: TextAlign.center),
+              ),
+              Expanded(
+                child: Text('SAT', style: style, textAlign: TextAlign.center),
+              ),
+              Expanded(
+                child: Text('SUN', style: style, textAlign: TextAlign.center),
+              ),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Divider(),
-          ),
+          const Padding(padding: EdgeInsets.fromLTRB(20, 10, 20, 10), child: Divider()),
           for (var w = 0; w < weeks; w++)
             Flexible(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  for (var d = 1; d <= 7; d++) dateButton(month, w, d, firstWeekday, lastDay),
-                ],
+                children: [for (var d = 1; d <= 7; d++) dateButton(month, w, d, firstWeekday, lastDay)],
               ),
-            )
+            ),
         ],
       ),
     );
@@ -440,11 +397,9 @@ class _GazeDatePickerState extends State<GazeDatePicker> with TickerProviderStat
             ),
             onTap: actionable
                 ? () {
-                    setState(
-                      () {
-                        _current = DateTime(_current.year, _current.month, day);
-                      },
-                    );
+                    setState(() {
+                      _current = DateTime(_current.year, _current.month, day);
+                    });
                   }
                 : null,
           ),

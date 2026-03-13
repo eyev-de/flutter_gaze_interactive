@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/simple_notifiers.dart';
 import 'keyboard_controller.dart';
 import 'keyboard_key_type.enum.dart';
 import 'keyboards.dart';
@@ -56,16 +57,16 @@ class GazeKeyboardState {
 
   static KeyboardPlatformType getPlatformFromSystem() => Platform.isIOS || Platform.isAndroid ? KeyboardPlatformType.mobile : KeyboardPlatformType.desktop;
 
-  final shiftStateProvider = StateProvider((ref) => false);
-  final capsLockStateProvider = StateProvider((ref) => false);
-  final altStateProvider = StateProvider((ref) => false);
+  final shiftStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
+  final capsLockStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
+  final altStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
 
   // IOS specific button, letters or signs (numbers and special characters)
-  final signsStateProvider = StateProvider((ref) => false);
-  final ctrlStateProvider = StateProvider((ref) => false);
-  final selectingStateProvider = StateProvider((ref) => false);
-  final selectingWordStateProvider = StateProvider((ref) => false);
-  final disableStateProvider = StateProvider((ref) => false);
+  final signsStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
+  final ctrlStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
+  final selectingStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
+  final selectingWordStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
+  final disableStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
 
   final List<TextInputFormatter> inputFormatters;
 }
