@@ -56,7 +56,7 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   void _onGazeData(Offset gaze) {
     // ignore moving when dragging
     if (_isDragging) return;
-    debugPrint('GI._onGazeData: gaze=$gaze mounted=$mounted ignorePointer=${widget.state.ignorePointer} key=${_wrappedKey}');
+
     // update pointer position
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (mounted && !widget.state.ignorePointer) {
