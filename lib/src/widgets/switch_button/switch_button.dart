@@ -4,6 +4,7 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -17,12 +18,21 @@ part 'switch_button.g.dart';
 
 @riverpod
 class SwitchButtonToggleWithDelay extends _$SwitchButtonToggleWithDelay {
+  Timer? _restoreTimer;
+
   @override
-  bool build({required GlobalKey key}) => true;
+  bool build({required GlobalKey key}) {
+    ref.onDispose(() => _restoreTimer?.cancel());
+    return true;
+  }
 
   void toggle() {
+    _restoreTimer?.cancel();
     state = false;
-    Future.delayed(const Duration(milliseconds: 300), () => state = true);
+    _restoreTimer = Timer(const Duration(milliseconds: 300), () {
+      if (!ref.mounted) return;
+      state = true;
+    });
   }
 }
 
@@ -88,13 +98,19 @@ class _GazeSwitchButtonState extends ConsumerState<GazeSwitchButton> with Single
     super.initState();
     _controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _animation = Tween<double>(begin: math.pi, end: math.pi / 2).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticInOut));
-    if (widget.value) _controller.forward();
+    if (widget.value) {
+      _controller.forward();
+    }
     // // Change to initial value if value has not changed
     _controller.addStatusListener((status) {
       final changed = ref.watch(switchButtonChangedProvider(key: globalKey));
       if (changed == true) return;
-      if (status == AnimationStatus.dismissed && widget.value == true) _controller.forward();
-      if (status == AnimationStatus.completed && widget.value == false) _controller.reverse();
+      if (status == AnimationStatus.dismissed && widget.value == true) {
+        _controller.forward();
+      }
+      if (status == AnimationStatus.completed && widget.value == false) {
+        _controller.reverse();
+      }
     });
   }
 
