@@ -56,64 +56,43 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
   void _onGazeData(Offset gaze) {
     // ignore moving when dragging
     if (_isDragging) return;
-
-    // update pointer position
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (mounted && !widget.state.ignorePointer) {
-        ref.read(pointerIsMovingProvider.notifier).move();
-        final size = ref.read(pointerSizeProvider(type: widget.state.type));
-        final pos = gaze - Offset(size / 2, size / 2);
-        final clamped = widget.state.canLeaveBounds ? pos : context.validateGazePointer(offset: pos, size: size);
-        ref.read(pointerOffsetProvider.notifier).update(offset: clamped);
-        gazePointerData.onPointerMove?.call(clamped + Offset(size / 2, size / 2), Size(size, size));
-        if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze)) {
-          ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
-        }
-        // // Calculate if leaving snap radius
-        // if (ref.read(snappingStateProvider) == SnapState.inSnapTimer) {
-        //   if (_leftSnappingRadius(gaze)) {
-        //     // Test if not in same snap point radius
-        //     ref.read(snappingStateProvider.notifier).leftWhileSnapping(snapElement);
-        //     ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
-        //   }
-        // }
-      }
-    });
+    if (!mounted || widget.state.ignorePointer) return;
+    // Apply the position synchronously. Updating pointerOffsetProvider marks
+    // listening widgets dirty, which schedules a frame on its own. Wrapping
+    // this in addPostFrameCallback caused the pointer to lag whenever no
+    // other animation was driving the frame loop: callbacks queued up and
+    // were released in bursts only when something else dirtied the tree.
+    ref.read(pointerIsMovingProvider.notifier).move();
+    final size = ref.read(pointerSizeProvider(type: widget.state.type));
+    final pos = gaze - Offset(size / 2, size / 2);
+    final clamped = widget.state.canLeaveBounds ? pos : context.validateGazePointer(offset: pos, size: size);
+    ref.read(pointerOffsetProvider.notifier).update(offset: clamped);
+    gazePointerData.onPointerMove?.call(clamped + Offset(size / 2, size / 2), Size(size, size));
+    if (widget.state.type == GazePointerType.active && _leftFixationRadius(gaze)) {
+      ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
+    }
   }
 
   // on fixation -> user focuses on one point
   void _onFixation() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (mounted && widget.state.type == GazePointerType.active && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
-        ref.read(pointerFixationPointProvider.notifier).point = ref.read(pointerOffsetProvider);
-        ref.read(pointerAnimationControllerProvider(vsync: this)).forward();
-      }
-    });
+    if (!mounted || widget.state.type != GazePointerType.active) return;
+    if (ref.read(pointerAnimationControllerProvider(vsync: this)).isAnimating) return;
+    ref.read(pointerFixationPointProvider.notifier).point = ref.read(pointerOffsetProvider);
+    ref.read(pointerAnimationControllerProvider(vsync: this)).forward();
   }
 
   // on snap -> whenever user was close enough to a button
   void _onSnap(GazeElementData snapElement) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      // really move the pointer
-      final Offset includingSizeSnapToOffset = _getOffsetWithSizeDeviation(snapElement.key.globalPaintBounds!);
-      if (mounted && !ref.watch(pointerAnimationControllerProvider(vsync: this)).isAnimating) {
-        if (ref.read(snappingStateProvider) == SnapState.on) {
-          // wait for x milliseconds until snapping can be started
-          ref.read(snappingStateProvider.notifier).startSnapTimer(snapElement);
-          // really move the pointer
-        }
-        // It has to be in the same snap elements radius when snapping
-        if (ref.read(snappingStateProvider) == SnapState.readyToSnap) {
-          ref.read(snappingStateProvider.notifier).startSnap(snapElement);
-          //snap and set snap point (including size deviation due to pointer size)
-          _onGazeData(includingSizeSnapToOffset);
-          // reset ignorePointer after manual moving (snapping) pointer in snapFinished
-          // Timer(const Duration(milliseconds: timeToIgnorePointerWhenSnappingMs), () {
-          //   ref.read(snappingStateProvider.notifier).endSnap(snapElement);
-          // });
-        }
-      }
-    });
+    if (!mounted) return;
+    if (ref.read(pointerAnimationControllerProvider(vsync: this)).isAnimating) return;
+    final Offset includingSizeSnapToOffset = _getOffsetWithSizeDeviation(snapElement.key.globalPaintBounds!);
+    if (ref.read(snappingStateProvider) == SnapState.on) {
+      ref.read(snappingStateProvider.notifier).startSnapTimer(snapElement);
+    }
+    if (ref.read(snappingStateProvider) == SnapState.readyToSnap) {
+      ref.read(snappingStateProvider.notifier).startSnap(snapElement);
+      _onGazeData(includingSizeSnapToOffset);
+    }
   }
 
   Offset _getOffsetWithSizeDeviation(Rect snapElement) {
