@@ -58,7 +58,7 @@ class GazeInteractiveState {
 
   set currentRoute(String value) {
     if (ref.read(currentRouteStateProvider) != value) {
-      Future.delayed(const Duration(), () {
+      scheduleMicrotask(() {
         ref.read(currentRouteStateProvider.notifier).set(value);
       });
     }
@@ -68,7 +68,14 @@ class GazeInteractiveState {
 
   set active(bool value) {
     if (ref.read(activeStateProvider) != value) {
-      Future.delayed(const Duration(), () {
+      // Defer via microtask, not Future.delayed(0). The defer guards against
+      // callers that might assign during a Riverpod build phase, but
+      // Future.delayed schedules a Timer that only fires on the next
+      // event-loop tick -- so an `await` of an already-resolved Future
+      // (microtask hop) wouldn't drain it, and code that reads `active`
+      // right after setting it would see the stale value. A microtask
+      // drains before the next await returns.
+      scheduleMicrotask(() {
         ref.read(activeStateProvider.notifier).set(value);
       });
     }
