@@ -59,6 +59,10 @@ const gazeInteractiveMaxReselectionNumberOfLetterKeys = 5; // Not validated
 
 const timeToIgnorePointerWhenSnappingMs = 200; // needed especially for mouse usage
 
+// Cancel in-flight selection animations if no gaze update arrives within this
+// window — prevents unintended dwell clicks when tracking is lost.
+const gazeInteractiveCursorIdleTimeoutMs = 100;
+
 const deleteButtonColor = Color(0xFFAD1457);
 const deleteButtonTextColor = Colors.white;
 const textDisabledColor = Color(0x80ffffff);

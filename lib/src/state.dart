@@ -101,6 +101,20 @@ class GazeInteractiveState {
   final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
   GazePointerData? _currentGazePointerView;
 
+  Timer? _cursorIdleTimer;
+
+  void _resetCursorIdleTimer() {
+    _cursorIdleTimer?.cancel();
+    _cursorIdleTimer = Timer(const Duration(milliseconds: gazeInteractiveCursorIdleTimeoutMs), _onCursorIdle);
+  }
+
+  void _onCursorIdle() {
+    // Tracking went quiet — reverse any in-flight dwell animations so the
+    // cursor freezing on a button does not complete a click.
+    leaveAllGazeViews();
+    _currentGazePointerView?.onIdle?.call();
+  }
+
   List<GazeElementData> get currentGazeViews => _currentGazeViews;
 
   late final duration = NotifierProvider<GazeInteractiveDurationLocalNotifier, int>(() => GazeInteractiveDurationLocalNotifier(sharedPreferences));
@@ -197,6 +211,7 @@ class GazeInteractiveState {
   void onGaze(Offset position) {
     final active = ref.read(activeStateProvider);
     if (!active) return;
+    _resetCursorIdleTimer();
     // Ensure pointer is set up - this will trigger onPointerMove callback
     _currentGazePointerView?.onPointerMove = onPointerMove;
     _currentGazePointerView?.onGaze?.call(position);
@@ -208,6 +223,7 @@ class GazeInteractiveState {
 
   void onDragMove(Offset center, double size, {GlobalKey? origin}) {
     if (!ref.read(activeStateProvider)) return;
+    _resetCursorIdleTimer();
     onPointerMove(center, Size(size, size));
     for (final view in _currentGazeViews) {
       if (origin != null && view.key == origin) continue;

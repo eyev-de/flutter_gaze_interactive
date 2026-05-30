@@ -119,6 +119,10 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
         widget.state.onAction?.call(_pointerOffset + Offset(_size / 2, _size / 2));
       }
     });
+    gazePointerData.onIdle = () {
+      if (!mounted) return;
+      ref.read(pointerAnimationControllerProvider(vsync: this)).reset();
+    };
     _gazeState.register(gazePointerData);
   }
 
