@@ -47,4 +47,5 @@ final class GazeScrollableData extends GazeElementData {
 final class GazePointerData extends GazeElementData {
   GazePointerData({required super.key, required super.onGaze, super.onSnap, super.onFixation}) : super(type: GazeElementType.pointer);
   Function(Offset, Size)? onPointerMove;
+  void Function()? onIdle;
 }
