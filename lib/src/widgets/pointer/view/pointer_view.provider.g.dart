@@ -104,7 +104,7 @@ abstract class _$PointerAnimationController
   AnimationController build({required TickerProvider vsync});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AnimationController, AnimationController>;
     final element =
         ref.element
@@ -114,7 +114,7 @@ abstract class _$PointerAnimationController
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(vsync: _$args));
+    return element.handleCreate(ref, () => build(vsync: _$args));
   }
 }
 
@@ -201,7 +201,7 @@ abstract class _$PointerAnimation extends $Notifier<Animation<double>> {
   Animation<double> build({required TickerProvider vsync});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Animation<double>, Animation<double>>;
     final element =
         ref.element
@@ -211,7 +211,7 @@ abstract class _$PointerAnimation extends $Notifier<Animation<double>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(vsync: _$args));
+    return element.handleCreate(ref, () => build(vsync: _$args));
   }
 }
 
@@ -253,7 +253,7 @@ abstract class _$PointerIsMoving extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -263,7 +263,7 @@ abstract class _$PointerIsMoving extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -311,7 +311,7 @@ abstract class _$PointerOpacity extends $Notifier<double> {
   double build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<double, double>;
     final element =
         ref.element
@@ -321,7 +321,7 @@ abstract class _$PointerOpacity extends $Notifier<double> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -408,7 +408,7 @@ abstract class _$PointerColor extends $Notifier<Color> {
   Color build({required GazePointerType type});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Color, Color>;
     final element =
         ref.element
@@ -418,7 +418,7 @@ abstract class _$PointerColor extends $Notifier<Color> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(type: _$args));
+    return element.handleCreate(ref, () => build(type: _$args));
   }
 }
 
@@ -514,7 +514,7 @@ abstract class _$PointerSize extends $Notifier<double> {
   double build({required GazePointerType type});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<double, double>;
     final element =
         ref.element
@@ -524,7 +524,7 @@ abstract class _$PointerSize extends $Notifier<double> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(type: _$args));
+    return element.handleCreate(ref, () => build(type: _$args));
   }
 }
 
@@ -572,7 +572,7 @@ abstract class _$PointerOffset extends $Notifier<Offset> {
   Offset build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Offset, Offset>;
     final element =
         ref.element
@@ -582,7 +582,7 @@ abstract class _$PointerOffset extends $Notifier<Offset> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -634,7 +634,7 @@ abstract class _$PointerHistory
   Queue<(GlobalKey<State<StatefulWidget>>, Offset)> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
@@ -652,7 +652,7 @@ abstract class _$PointerHistory
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -701,7 +701,7 @@ abstract class _$PointerFixationPoint extends $Notifier<Offset> {
   Offset build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Offset, Offset>;
     final element =
         ref.element
@@ -711,7 +711,7 @@ abstract class _$PointerFixationPoint extends $Notifier<Offset> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -759,7 +759,7 @@ abstract class _$SnapElement extends $Notifier<GazeElementData?> {
   GazeElementData? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<GazeElementData?, GazeElementData?>;
     final element =
         ref.element
@@ -769,7 +769,7 @@ abstract class _$SnapElement extends $Notifier<GazeElementData?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -817,7 +817,7 @@ abstract class _$SnappingState extends $Notifier<SnapState> {
   SnapState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<SnapState, SnapState>;
     final element =
         ref.element
@@ -827,7 +827,7 @@ abstract class _$SnappingState extends $Notifier<SnapState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -876,7 +876,7 @@ abstract class _$PointerFixationRadius extends $Notifier<double> {
   double build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<double, double>;
     final element =
         ref.element
@@ -886,7 +886,7 @@ abstract class _$PointerFixationRadius extends $Notifier<double> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -935,7 +935,7 @@ abstract class _$PointerSnappingRadius extends $Notifier<double> {
   double build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<double, double>;
     final element =
         ref.element
@@ -945,7 +945,7 @@ abstract class _$PointerSnappingRadius extends $Notifier<double> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -994,7 +994,7 @@ abstract class _$IgnorePointerState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -1004,6 +1004,6 @@ abstract class _$IgnorePointerState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

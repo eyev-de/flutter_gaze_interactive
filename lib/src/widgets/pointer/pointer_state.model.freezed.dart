@@ -14,12 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GazePointerState {
 
-// type: passive (static circle), active (circle with animation on fixation)
- GazePointerType get type;// ignore gesture on pointer
- bool get ignorePointer;// ignore gesture on pointer
- double? get absoluteOpacityValue;// can leave the view bounds, used for windows on desktop platforms that are partially interactive
- bool get canLeaveBounds;// action on pointer
- GazePointerAction get action;  Function(Offset)? get onAction;
+ GazePointerType get type; bool get ignorePointer; double? get absoluteOpacityValue; bool get canLeaveBounds; GazePointerAction get action;  Function(Offset)? get onAction;
 /// Create a copy of GazePointerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -213,15 +208,10 @@ class _GazePointerState extends GazePointerState {
    _GazePointerState({this.type = GazePointerType.passive, this.ignorePointer = false, this.absoluteOpacityValue = null, this.canLeaveBounds = false, this.action = GazePointerAction.click, this.onAction}): super._();
   
 
-// type: passive (static circle), active (circle with animation on fixation)
 @override@JsonKey() final  GazePointerType type;
-// ignore gesture on pointer
 @override@JsonKey() final  bool ignorePointer;
-// ignore gesture on pointer
 @override@JsonKey() final  double? absoluteOpacityValue;
-// can leave the view bounds, used for windows on desktop platforms that are partially interactive
 @override@JsonKey() final  bool canLeaveBounds;
-// action on pointer
 @override@JsonKey() final  GazePointerAction action;
 @override final   Function(Offset)? onAction;
 
