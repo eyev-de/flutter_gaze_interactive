@@ -10,11 +10,21 @@ part of 'switch_button.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(SwitchButtonToggleWithDelay)
-final switchButtonToggleWithDelayProvider = SwitchButtonToggleWithDelayFamily._();
+final switchButtonToggleWithDelayProvider =
+    SwitchButtonToggleWithDelayFamily._();
 
-final class SwitchButtonToggleWithDelayProvider extends $NotifierProvider<SwitchButtonToggleWithDelay, bool> {
-  SwitchButtonToggleWithDelayProvider._({required SwitchButtonToggleWithDelayFamily super.from, required GlobalKey<State<StatefulWidget>> super.argument})
-    : super(retry: null, name: r'switchButtonToggleWithDelayProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+final class SwitchButtonToggleWithDelayProvider
+    extends $NotifierProvider<SwitchButtonToggleWithDelay, bool> {
+  SwitchButtonToggleWithDelayProvider._({
+    required SwitchButtonToggleWithDelayFamily super.from,
+    required GlobalKey<State<StatefulWidget>> super.argument,
+  }) : super(
+         retry: null,
+         name: r'switchButtonToggleWithDelayProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$switchButtonToggleWithDelayHash();
@@ -32,12 +42,16 @@ final class SwitchButtonToggleWithDelayProvider extends $NotifierProvider<Switch
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(bool value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is SwitchButtonToggleWithDelayProvider && other.argument == argument;
+    return other is SwitchButtonToggleWithDelayProvider &&
+        other.argument == argument;
   }
 
   @override
@@ -46,14 +60,30 @@ final class SwitchButtonToggleWithDelayProvider extends $NotifierProvider<Switch
   }
 }
 
-String _$switchButtonToggleWithDelayHash() => r'6313a962ad792833105f4ca96810703944bb8b64';
+String _$switchButtonToggleWithDelayHash() =>
+    r'83d29e0ceaa438ea15b1ff7c26cd11c083a944a8';
 
 final class SwitchButtonToggleWithDelayFamily extends $Family
-    with $ClassFamilyOverride<SwitchButtonToggleWithDelay, bool, bool, bool, GlobalKey<State<StatefulWidget>>> {
+    with
+        $ClassFamilyOverride<
+          SwitchButtonToggleWithDelay,
+          bool,
+          bool,
+          bool,
+          GlobalKey<State<StatefulWidget>>
+        > {
   SwitchButtonToggleWithDelayFamily._()
-    : super(retry: null, name: r'switchButtonToggleWithDelayProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+    : super(
+        retry: null,
+        name: r'switchButtonToggleWithDelayProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  SwitchButtonToggleWithDelayProvider call({required GlobalKey<State<StatefulWidget>> key}) => SwitchButtonToggleWithDelayProvider._(argument: key, from: this);
+  SwitchButtonToggleWithDelayProvider call({
+    required GlobalKey<State<StatefulWidget>> key,
+  }) => SwitchButtonToggleWithDelayProvider._(argument: key, from: this);
 
   @override
   String toString() => r'switchButtonToggleWithDelayProvider';
@@ -68,7 +98,14 @@ abstract class _$SwitchButtonToggleWithDelay extends $Notifier<bool> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, () => build(key: _$args));
   }
 }
@@ -76,9 +113,18 @@ abstract class _$SwitchButtonToggleWithDelay extends $Notifier<bool> {
 @ProviderFor(SwitchButtonChanged)
 final switchButtonChangedProvider = SwitchButtonChangedFamily._();
 
-final class SwitchButtonChangedProvider extends $NotifierProvider<SwitchButtonChanged, bool?> {
-  SwitchButtonChangedProvider._({required SwitchButtonChangedFamily super.from, required GlobalKey<State<StatefulWidget>> super.argument})
-    : super(retry: null, name: r'switchButtonChangedProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+final class SwitchButtonChangedProvider
+    extends $NotifierProvider<SwitchButtonChanged, bool?> {
+  SwitchButtonChangedProvider._({
+    required SwitchButtonChangedFamily super.from,
+    required GlobalKey<State<StatefulWidget>> super.argument,
+  }) : super(
+         retry: null,
+         name: r'switchButtonChangedProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$switchButtonChangedHash();
@@ -96,7 +142,10 @@ final class SwitchButtonChangedProvider extends $NotifierProvider<SwitchButtonCh
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(bool? value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool?>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool?>(value),
+    );
   }
 
   @override
@@ -110,13 +159,30 @@ final class SwitchButtonChangedProvider extends $NotifierProvider<SwitchButtonCh
   }
 }
 
-String _$switchButtonChangedHash() => r'6f647605224b7827a5ffd198be9eae756c4ce8ca';
+String _$switchButtonChangedHash() =>
+    r'6f647605224b7827a5ffd198be9eae756c4ce8ca';
 
-final class SwitchButtonChangedFamily extends $Family with $ClassFamilyOverride<SwitchButtonChanged, bool?, bool?, bool?, GlobalKey<State<StatefulWidget>>> {
+final class SwitchButtonChangedFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          SwitchButtonChanged,
+          bool?,
+          bool?,
+          bool?,
+          GlobalKey<State<StatefulWidget>>
+        > {
   SwitchButtonChangedFamily._()
-    : super(retry: null, name: r'switchButtonChangedProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+    : super(
+        retry: null,
+        name: r'switchButtonChangedProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  SwitchButtonChangedProvider call({required GlobalKey<State<StatefulWidget>> key}) => SwitchButtonChangedProvider._(argument: key, from: this);
+  SwitchButtonChangedProvider call({
+    required GlobalKey<State<StatefulWidget>> key,
+  }) => SwitchButtonChangedProvider._(argument: key, from: this);
 
   @override
   String toString() => r'switchButtonChangedProvider';
@@ -131,7 +197,14 @@ abstract class _$SwitchButtonChanged extends $Notifier<bool?> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<bool?, bool?>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<bool?, bool?>, bool?, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool?, bool?>,
+              bool?,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, () => build(key: _$args));
   }
 }

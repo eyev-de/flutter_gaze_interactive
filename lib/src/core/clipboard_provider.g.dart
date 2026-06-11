@@ -12,7 +12,8 @@ part of 'clipboard_provider.dart';
 @ProviderFor(ClipboardText)
 final clipboardTextProvider = ClipboardTextProvider._();
 
-final class ClipboardTextProvider extends $NotifierProvider<ClipboardText, String> {
+final class ClipboardTextProvider
+    extends $NotifierProvider<ClipboardText, String> {
   ClipboardTextProvider._()
     : super(
         from: null,
@@ -33,7 +34,10 @@ final class ClipboardTextProvider extends $NotifierProvider<ClipboardText, Strin
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
   }
 }
 
@@ -45,7 +49,14 @@ abstract class _$ClipboardText extends $Notifier<String> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<String, String>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<String, String>, String, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
