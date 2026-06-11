@@ -47,7 +47,7 @@ abstract class _$SnapActiveState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -57,7 +57,7 @@ abstract class _$SnapActiveState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -99,7 +99,7 @@ abstract class _$SnapIconState extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -109,7 +109,7 @@ abstract class _$SnapIconState extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -152,7 +152,7 @@ abstract class _$GazePointerAlwaysVisible extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -162,7 +162,7 @@ abstract class _$GazePointerAlwaysVisible extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -205,7 +205,7 @@ abstract class _$GazePointerHistoryNumber extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -215,7 +215,7 @@ abstract class _$GazePointerHistoryNumber extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -259,7 +259,7 @@ abstract class _$KeyboardSpeechToTextIsListening extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -269,7 +269,7 @@ abstract class _$KeyboardSpeechToTextIsListening extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -315,7 +315,7 @@ abstract class _$KeyboardSpeechToTextAvailable
   AsyncValue<bool?> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<bool?>, AsyncValue<bool?>>;
     final element =
         ref.element
@@ -325,7 +325,7 @@ abstract class _$KeyboardSpeechToTextAvailable
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -374,7 +374,7 @@ abstract class _$KeyboardSpeechToTextStatus
   KeyboardTextFieldStatus? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<KeyboardTextFieldStatus?, KeyboardTextFieldStatus?>;
     final element =
@@ -385,7 +385,7 @@ abstract class _$KeyboardSpeechToTextStatus
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -434,7 +434,7 @@ abstract class _$KeyboardSpeechToTextLocales
   AsyncValue<List<LocaleName>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<List<LocaleName>>, AsyncValue<List<LocaleName>>>;
@@ -449,7 +449,7 @@ abstract class _$KeyboardSpeechToTextLocales
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -493,7 +493,7 @@ abstract class _$KeyboardSpeechToTextLocale extends $Notifier<String> {
   String build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -503,7 +503,7 @@ abstract class _$KeyboardSpeechToTextLocale extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -616,7 +616,7 @@ abstract class _$KeyboardSpeechToText extends $Notifier<SpeechToText> {
   SpeechToText build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<SpeechToText, SpeechToText>;
     final element =
         ref.element
@@ -626,6 +626,6 @@ abstract class _$KeyboardSpeechToText extends $Notifier<SpeechToText> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

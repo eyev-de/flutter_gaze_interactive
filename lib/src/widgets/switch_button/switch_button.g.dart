@@ -96,7 +96,7 @@ abstract class _$SwitchButtonToggleWithDelay extends $Notifier<bool> {
   bool build({required GlobalKey<State<StatefulWidget>> key});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -106,7 +106,7 @@ abstract class _$SwitchButtonToggleWithDelay extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(key: _$args));
+    return element.handleCreate(ref, () => build(key: _$args));
   }
 }
 
@@ -195,7 +195,7 @@ abstract class _$SwitchButtonChanged extends $Notifier<bool?> {
   bool? build({required GlobalKey<State<StatefulWidget>> key});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool?, bool?>;
     final element =
         ref.element
@@ -205,6 +205,6 @@ abstract class _$SwitchButtonChanged extends $Notifier<bool?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(key: _$args));
+    return element.handleCreate(ref, () => build(key: _$args));
   }
 }
