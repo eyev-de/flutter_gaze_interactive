@@ -14,10 +14,19 @@ part of 'pointer_view.provider.dart';
 final pointerAnimationControllerProvider = PointerAnimationControllerFamily._();
 
 /// Animation Controller
-final class PointerAnimationControllerProvider extends $NotifierProvider<PointerAnimationController, AnimationController> {
+final class PointerAnimationControllerProvider
+    extends $NotifierProvider<PointerAnimationController, AnimationController> {
   /// Animation Controller
-  PointerAnimationControllerProvider._({required PointerAnimationControllerFamily super.from, required TickerProvider super.argument})
-    : super(retry: null, name: r'pointerAnimationControllerProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+  PointerAnimationControllerProvider._({
+    required PointerAnimationControllerFamily super.from,
+    required TickerProvider super.argument,
+  }) : super(
+         retry: null,
+         name: r'pointerAnimationControllerProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$pointerAnimationControllerHash();
@@ -35,12 +44,16 @@ final class PointerAnimationControllerProvider extends $NotifierProvider<Pointer
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AnimationController value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<AnimationController>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AnimationController>(value),
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PointerAnimationControllerProvider && other.argument == argument;
+    return other is PointerAnimationControllerProvider &&
+        other.argument == argument;
   }
 
   @override
@@ -49,18 +62,33 @@ final class PointerAnimationControllerProvider extends $NotifierProvider<Pointer
   }
 }
 
-String _$pointerAnimationControllerHash() => r'6e071f419b81615ab7f6403e91282cf6b658bd32';
+String _$pointerAnimationControllerHash() =>
+    r'6e071f419b81615ab7f6403e91282cf6b658bd32';
 
 /// Animation Controller
 
 final class PointerAnimationControllerFamily extends $Family
-    with $ClassFamilyOverride<PointerAnimationController, AnimationController, AnimationController, AnimationController, TickerProvider> {
+    with
+        $ClassFamilyOverride<
+          PointerAnimationController,
+          AnimationController,
+          AnimationController,
+          AnimationController,
+          TickerProvider
+        > {
   PointerAnimationControllerFamily._()
-    : super(retry: null, name: r'pointerAnimationControllerProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+    : super(
+        retry: null,
+        name: r'pointerAnimationControllerProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   /// Animation Controller
 
-  PointerAnimationControllerProvider call({required TickerProvider vsync}) => PointerAnimationControllerProvider._(argument: vsync, from: this);
+  PointerAnimationControllerProvider call({required TickerProvider vsync}) =>
+      PointerAnimationControllerProvider._(argument: vsync, from: this);
 
   @override
   String toString() => r'pointerAnimationControllerProvider';
@@ -68,7 +96,8 @@ final class PointerAnimationControllerFamily extends $Family
 
 /// Animation Controller
 
-abstract class _$PointerAnimationController extends $Notifier<AnimationController> {
+abstract class _$PointerAnimationController
+    extends $Notifier<AnimationController> {
   late final _$args = ref.$arg as TickerProvider;
   TickerProvider get vsync => _$args;
 
@@ -77,7 +106,14 @@ abstract class _$PointerAnimationController extends $Notifier<AnimationControlle
   @override
   void runBuild() {
     final ref = this.ref as $Ref<AnimationController, AnimationController>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<AnimationController, AnimationController>, AnimationController, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AnimationController, AnimationController>,
+              AnimationController,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, () => build(vsync: _$args));
   }
 }
@@ -85,9 +121,18 @@ abstract class _$PointerAnimationController extends $Notifier<AnimationControlle
 @ProviderFor(PointerAnimation)
 final pointerAnimationProvider = PointerAnimationFamily._();
 
-final class PointerAnimationProvider extends $NotifierProvider<PointerAnimation, Animation<double>> {
-  PointerAnimationProvider._({required PointerAnimationFamily super.from, required TickerProvider super.argument})
-    : super(retry: null, name: r'pointerAnimationProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+final class PointerAnimationProvider
+    extends $NotifierProvider<PointerAnimation, Animation<double>> {
+  PointerAnimationProvider._({
+    required PointerAnimationFamily super.from,
+    required TickerProvider super.argument,
+  }) : super(
+         retry: null,
+         name: r'pointerAnimationProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$pointerAnimationHash();
@@ -105,7 +150,10 @@ final class PointerAnimationProvider extends $NotifierProvider<PointerAnimation,
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Animation<double> value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Animation<double>>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Animation<double>>(value),
+    );
   }
 
   @override
@@ -122,10 +170,25 @@ final class PointerAnimationProvider extends $NotifierProvider<PointerAnimation,
 String _$pointerAnimationHash() => r'334d78d535c1a588bea85cd0f06f81c3597d0e4e';
 
 final class PointerAnimationFamily extends $Family
-    with $ClassFamilyOverride<PointerAnimation, Animation<double>, Animation<double>, Animation<double>, TickerProvider> {
-  PointerAnimationFamily._() : super(retry: null, name: r'pointerAnimationProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+    with
+        $ClassFamilyOverride<
+          PointerAnimation,
+          Animation<double>,
+          Animation<double>,
+          Animation<double>,
+          TickerProvider
+        > {
+  PointerAnimationFamily._()
+    : super(
+        retry: null,
+        name: r'pointerAnimationProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  PointerAnimationProvider call({required TickerProvider vsync}) => PointerAnimationProvider._(argument: vsync, from: this);
+  PointerAnimationProvider call({required TickerProvider vsync}) =>
+      PointerAnimationProvider._(argument: vsync, from: this);
 
   @override
   String toString() => r'pointerAnimationProvider';
@@ -140,7 +203,14 @@ abstract class _$PointerAnimation extends $Notifier<Animation<double>> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<Animation<double>, Animation<double>>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<Animation<double>, Animation<double>>, Animation<double>, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Animation<double>, Animation<double>>,
+              Animation<double>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, () => build(vsync: _$args));
   }
 }
@@ -148,7 +218,8 @@ abstract class _$PointerAnimation extends $Notifier<Animation<double>> {
 @ProviderFor(PointerIsMoving)
 final pointerIsMovingProvider = PointerIsMovingProvider._();
 
-final class PointerIsMovingProvider extends $NotifierProvider<PointerIsMoving, bool> {
+final class PointerIsMovingProvider
+    extends $NotifierProvider<PointerIsMoving, bool> {
   PointerIsMovingProvider._()
     : super(
         from: null,
@@ -169,7 +240,10 @@ final class PointerIsMovingProvider extends $NotifierProvider<PointerIsMoving, b
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(bool value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
   }
 }
 
@@ -181,7 +255,14 @@ abstract class _$PointerIsMoving extends $Notifier<bool> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -192,7 +273,8 @@ abstract class _$PointerIsMoving extends $Notifier<bool> {
 final pointerOpacityProvider = PointerOpacityProvider._();
 
 /// Gaze Pointer appears shortly and is then faded out -> current opacity
-final class PointerOpacityProvider extends $NotifierProvider<PointerOpacity, double> {
+final class PointerOpacityProvider
+    extends $NotifierProvider<PointerOpacity, double> {
   /// Gaze Pointer appears shortly and is then faded out -> current opacity
   PointerOpacityProvider._()
     : super(
@@ -214,7 +296,10 @@ final class PointerOpacityProvider extends $NotifierProvider<PointerOpacity, dou
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(double value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<double>(value),
+    );
   }
 }
 
@@ -228,7 +313,14 @@ abstract class _$PointerOpacity extends $Notifier<double> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<double, double>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<double, double>,
+              double,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -236,9 +328,18 @@ abstract class _$PointerOpacity extends $Notifier<double> {
 @ProviderFor(PointerColor)
 final pointerColorProvider = PointerColorFamily._();
 
-final class PointerColorProvider extends $NotifierProvider<PointerColor, Color> {
-  PointerColorProvider._({required PointerColorFamily super.from, required GazePointerType super.argument})
-    : super(retry: null, name: r'pointerColorProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+final class PointerColorProvider
+    extends $NotifierProvider<PointerColor, Color> {
+  PointerColorProvider._({
+    required PointerColorFamily super.from,
+    required GazePointerType super.argument,
+  }) : super(
+         retry: null,
+         name: r'pointerColorProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$pointerColorHash();
@@ -256,7 +357,10 @@ final class PointerColorProvider extends $NotifierProvider<PointerColor, Color> 
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Color value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Color>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Color>(value),
+    );
   }
 
   @override
@@ -272,10 +376,26 @@ final class PointerColorProvider extends $NotifierProvider<PointerColor, Color> 
 
 String _$pointerColorHash() => r'48c839ee1718a4ed70cb5c8b223875b8a188886c';
 
-final class PointerColorFamily extends $Family with $ClassFamilyOverride<PointerColor, Color, Color, Color, GazePointerType> {
-  PointerColorFamily._() : super(retry: null, name: r'pointerColorProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+final class PointerColorFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          PointerColor,
+          Color,
+          Color,
+          Color,
+          GazePointerType
+        > {
+  PointerColorFamily._()
+    : super(
+        retry: null,
+        name: r'pointerColorProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  PointerColorProvider call({required GazePointerType type}) => PointerColorProvider._(argument: type, from: this);
+  PointerColorProvider call({required GazePointerType type}) =>
+      PointerColorProvider._(argument: type, from: this);
 
   @override
   String toString() => r'pointerColorProvider';
@@ -290,7 +410,14 @@ abstract class _$PointerColor extends $Notifier<Color> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<Color, Color>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<Color, Color>, Color, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Color, Color>,
+              Color,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, () => build(type: _$args));
   }
 }
@@ -303,8 +430,16 @@ final pointerSizeProvider = PointerSizeFamily._();
 /// Gaze Pointer Circle Size
 final class PointerSizeProvider extends $NotifierProvider<PointerSize, double> {
   /// Gaze Pointer Circle Size
-  PointerSizeProvider._({required PointerSizeFamily super.from, required GazePointerType super.argument})
-    : super(retry: null, name: r'pointerSizeProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+  PointerSizeProvider._({
+    required PointerSizeFamily super.from,
+    required GazePointerType super.argument,
+  }) : super(
+         retry: null,
+         name: r'pointerSizeProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$pointerSizeHash();
@@ -322,7 +457,10 @@ final class PointerSizeProvider extends $NotifierProvider<PointerSize, double> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(double value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<double>(value),
+    );
   }
 
   @override
@@ -340,12 +478,28 @@ String _$pointerSizeHash() => r'64e0f8e2c0cf221b3c380cce07bfd35bfc17f0c5';
 
 /// Gaze Pointer Circle Size
 
-final class PointerSizeFamily extends $Family with $ClassFamilyOverride<PointerSize, double, double, double, GazePointerType> {
-  PointerSizeFamily._() : super(retry: null, name: r'pointerSizeProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+final class PointerSizeFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          PointerSize,
+          double,
+          double,
+          double,
+          GazePointerType
+        > {
+  PointerSizeFamily._()
+    : super(
+        retry: null,
+        name: r'pointerSizeProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   /// Gaze Pointer Circle Size
 
-  PointerSizeProvider call({required GazePointerType type}) => PointerSizeProvider._(argument: type, from: this);
+  PointerSizeProvider call({required GazePointerType type}) =>
+      PointerSizeProvider._(argument: type, from: this);
 
   @override
   String toString() => r'pointerSizeProvider';
@@ -362,7 +516,14 @@ abstract class _$PointerSize extends $Notifier<double> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<double, double>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<double, double>,
+              double,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, () => build(type: _$args));
   }
 }
@@ -373,10 +534,19 @@ abstract class _$PointerSize extends $Notifier<double> {
 final pointerOffsetProvider = PointerOffsetProvider._();
 
 /// Gaze Pointer Offset
-final class PointerOffsetProvider extends $NotifierProvider<PointerOffset, Offset> {
+final class PointerOffsetProvider
+    extends $NotifierProvider<PointerOffset, Offset> {
   /// Gaze Pointer Offset
   PointerOffsetProvider._()
-    : super(from: null, argument: null, retry: null, name: r'pointerOffsetProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pointerOffsetProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$pointerOffsetHash();
@@ -387,7 +557,10 @@ final class PointerOffsetProvider extends $NotifierProvider<PointerOffset, Offse
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Offset value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Offset>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Offset>(value),
+    );
   }
 }
 
@@ -401,7 +574,14 @@ abstract class _$PointerOffset extends $Notifier<Offset> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<Offset, Offset>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<Offset, Offset>, Offset, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Offset, Offset>,
+              Offset,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -409,7 +589,12 @@ abstract class _$PointerOffset extends $Notifier<Offset> {
 @ProviderFor(PointerHistory)
 final pointerHistoryProvider = PointerHistoryProvider._();
 
-final class PointerHistoryProvider extends $NotifierProvider<PointerHistory, Queue<(GlobalKey<State<StatefulWidget>>, Offset)>> {
+final class PointerHistoryProvider
+    extends
+        $NotifierProvider<
+          PointerHistory,
+          Queue<(GlobalKey<State<StatefulWidget>>, Offset)>
+        > {
   PointerHistoryProvider._()
     : super(
         from: null,
@@ -429,23 +614,40 @@ final class PointerHistoryProvider extends $NotifierProvider<PointerHistory, Que
   PointerHistory create() => PointerHistory();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Queue<(GlobalKey<State<StatefulWidget>>, Offset)> value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>>(value));
+  Override overrideWithValue(
+    Queue<(GlobalKey<State<StatefulWidget>>, Offset)> value,
+  ) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>>(
+            value,
+          ),
+    );
   }
 }
 
 String _$pointerHistoryHash() => r'5287b52caf12e35d985f7e96088f9c299b829105';
 
-abstract class _$PointerHistory extends $Notifier<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>> {
+abstract class _$PointerHistory
+    extends $Notifier<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>> {
   Queue<(GlobalKey<State<StatefulWidget>>, Offset)> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>, Queue<(GlobalKey<State<StatefulWidget>>, Offset)>>;
+    final ref =
+        this.ref
+            as $Ref<
+              Queue<(GlobalKey<State<StatefulWidget>>, Offset)>,
+              Queue<(GlobalKey<State<StatefulWidget>>, Offset)>
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<Queue<(GlobalKey<State<StatefulWidget>>, Offset)>, Queue<(GlobalKey<State<StatefulWidget>>, Offset)>>,
+              AnyNotifier<
+                Queue<(GlobalKey<State<StatefulWidget>>, Offset)>,
+                Queue<(GlobalKey<State<StatefulWidget>>, Offset)>
+              >,
               Queue<(GlobalKey<State<StatefulWidget>>, Offset)>,
               Object?,
               Object?
@@ -460,7 +662,8 @@ abstract class _$PointerHistory extends $Notifier<Queue<(GlobalKey<State<Statefu
 final pointerFixationPointProvider = PointerFixationPointProvider._();
 
 /// Gaze Pointer Fixation Point
-final class PointerFixationPointProvider extends $NotifierProvider<PointerFixationPoint, Offset> {
+final class PointerFixationPointProvider
+    extends $NotifierProvider<PointerFixationPoint, Offset> {
   /// Gaze Pointer Fixation Point
   PointerFixationPointProvider._()
     : super(
@@ -482,11 +685,15 @@ final class PointerFixationPointProvider extends $NotifierProvider<PointerFixati
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Offset value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Offset>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Offset>(value),
+    );
   }
 }
 
-String _$pointerFixationPointHash() => r'30365f0aa87b69a9e8a75ddc90185455ffd4a71a';
+String _$pointerFixationPointHash() =>
+    r'30365f0aa87b69a9e8a75ddc90185455ffd4a71a';
 
 /// Gaze Pointer Fixation Point
 
@@ -496,7 +703,14 @@ abstract class _$PointerFixationPoint extends $Notifier<Offset> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<Offset, Offset>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<Offset, Offset>, Offset, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Offset, Offset>,
+              Offset,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -507,10 +721,19 @@ abstract class _$PointerFixationPoint extends $Notifier<Offset> {
 final snapElementProvider = SnapElementProvider._();
 
 /// Gaze Pointer Snapping Point
-final class SnapElementProvider extends $NotifierProvider<SnapElement, GazeElementData?> {
+final class SnapElementProvider
+    extends $NotifierProvider<SnapElement, GazeElementData?> {
   /// Gaze Pointer Snapping Point
   SnapElementProvider._()
-    : super(from: null, argument: null, retry: null, name: r'snapElementProvider', isAutoDispose: false, dependencies: null, $allTransitiveDependencies: null);
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'snapElementProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$snapElementHash();
@@ -521,7 +744,10 @@ final class SnapElementProvider extends $NotifierProvider<SnapElement, GazeEleme
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(GazeElementData? value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<GazeElementData?>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GazeElementData?>(value),
+    );
   }
 }
 
@@ -535,7 +761,14 @@ abstract class _$SnapElement extends $Notifier<GazeElementData?> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<GazeElementData?, GazeElementData?>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<GazeElementData?, GazeElementData?>, GazeElementData?, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<GazeElementData?, GazeElementData?>,
+              GazeElementData?,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -546,7 +779,8 @@ abstract class _$SnapElement extends $Notifier<GazeElementData?> {
 final snappingStateProvider = SnappingStateProvider._();
 
 /// Gaze Pointer in snapp mode Point
-final class SnappingStateProvider extends $NotifierProvider<SnappingState, SnapState> {
+final class SnappingStateProvider
+    extends $NotifierProvider<SnappingState, SnapState> {
   /// Gaze Pointer in snapp mode Point
   SnappingStateProvider._()
     : super(
@@ -568,7 +802,10 @@ final class SnappingStateProvider extends $NotifierProvider<SnappingState, SnapS
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(SnapState value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<SnapState>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SnapState>(value),
+    );
   }
 }
 
@@ -582,7 +819,14 @@ abstract class _$SnappingState extends $Notifier<SnapState> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<SnapState, SnapState>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<SnapState, SnapState>, SnapState, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SnapState, SnapState>,
+              SnapState,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -593,7 +837,8 @@ abstract class _$SnappingState extends $Notifier<SnapState> {
 final pointerFixationRadiusProvider = PointerFixationRadiusProvider._();
 
 /// Gaze Pointer Fixation Radius
-final class PointerFixationRadiusProvider extends $NotifierProvider<PointerFixationRadius, double> {
+final class PointerFixationRadiusProvider
+    extends $NotifierProvider<PointerFixationRadius, double> {
   /// Gaze Pointer Fixation Radius
   PointerFixationRadiusProvider._()
     : super(
@@ -615,11 +860,15 @@ final class PointerFixationRadiusProvider extends $NotifierProvider<PointerFixat
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(double value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<double>(value),
+    );
   }
 }
 
-String _$pointerFixationRadiusHash() => r'9b571565e8267bb0ec6475b5227fe8d27c3b18f6';
+String _$pointerFixationRadiusHash() =>
+    r'9b571565e8267bb0ec6475b5227fe8d27c3b18f6';
 
 /// Gaze Pointer Fixation Radius
 
@@ -629,7 +878,14 @@ abstract class _$PointerFixationRadius extends $Notifier<double> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<double, double>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<double, double>,
+              double,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -640,7 +896,8 @@ abstract class _$PointerFixationRadius extends $Notifier<double> {
 final pointerSnappingRadiusProvider = PointerSnappingRadiusProvider._();
 
 /// Gaze Pointer Snapping Radius
-final class PointerSnappingRadiusProvider extends $NotifierProvider<PointerSnappingRadius, double> {
+final class PointerSnappingRadiusProvider
+    extends $NotifierProvider<PointerSnappingRadius, double> {
   /// Gaze Pointer Snapping Radius
   PointerSnappingRadiusProvider._()
     : super(
@@ -662,11 +919,15 @@ final class PointerSnappingRadiusProvider extends $NotifierProvider<PointerSnapp
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(double value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<double>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<double>(value),
+    );
   }
 }
 
-String _$pointerSnappingRadiusHash() => r'1a98da0a320a1f8813095aa5ff6d875bd0d54339';
+String _$pointerSnappingRadiusHash() =>
+    r'1a98da0a320a1f8813095aa5ff6d875bd0d54339';
 
 /// Gaze Pointer Snapping Radius
 
@@ -676,7 +937,14 @@ abstract class _$PointerSnappingRadius extends $Notifier<double> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<double, double>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<double, double>, double, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<double, double>,
+              double,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -687,7 +955,8 @@ abstract class _$PointerSnappingRadius extends $Notifier<double> {
 final ignorePointerStateProvider = IgnorePointerStateProvider._();
 
 /// Indicates if recently snapped and pointer is ignored by mouse
-final class IgnorePointerStateProvider extends $NotifierProvider<IgnorePointerState, bool> {
+final class IgnorePointerStateProvider
+    extends $NotifierProvider<IgnorePointerState, bool> {
   /// Indicates if recently snapped and pointer is ignored by mouse
   IgnorePointerStateProvider._()
     : super(
@@ -709,11 +978,15 @@ final class IgnorePointerStateProvider extends $NotifierProvider<IgnorePointerSt
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(bool value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
   }
 }
 
-String _$ignorePointerStateHash() => r'fd15cdd57247539445190998e274112b54f62ae5';
+String _$ignorePointerStateHash() =>
+    r'fd15cdd57247539445190998e274112b54f62ae5';
 
 /// Indicates if recently snapped and pointer is ignored by mouse
 
@@ -723,7 +996,14 @@ abstract class _$IgnorePointerState extends $Notifier<bool> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
