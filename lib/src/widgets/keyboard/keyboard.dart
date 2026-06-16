@@ -134,6 +134,8 @@ class GazeKeyboard {
                         ],
                       ),
                     ),
+                    // Validation widget for the entered text – centered directly below the text field
+                    if (state.validationView != null) Center(child: state.validationView),
                     // Mail proposals
                     if (state.type == KeyboardType.email)
                       SizedBox(
