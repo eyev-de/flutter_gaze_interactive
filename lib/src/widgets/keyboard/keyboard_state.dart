@@ -34,6 +34,7 @@ class GazeKeyboardState {
     this.onKey,
     KeyboardPlatformType? selectedKeyboardPlatformType,
     this.inputFormatters = const [],
+    this.validationView,
   }) : keyboardPlatformType = selectedKeyboardPlatformType ?? getPlatformFromSystem();
 
   final TextEditingController controller;
@@ -69,4 +70,7 @@ class GazeKeyboardState {
   final disableStateProvider = NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
 
   final List<TextInputFormatter> inputFormatters;
+
+  // Validation widget for the entered text – centered directly below the text field
+  final Widget? validationView;
 }
