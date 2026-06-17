@@ -57,6 +57,33 @@ const gazeInteractiveDefaultReselectionNumberOfLetterKeys = 2;
 const gazeInteractiveMinReselectionNumberOfLetterKeys = 1; // Not validated
 const gazeInteractiveMaxReselectionNumberOfLetterKeys = 5; // Not validated
 
+/// Keyboard Settings
+// A persisted keyboard size of 0 (the default) means "auto": the size is computed
+// per key from its rendered box (see GazeKeyboardKeySizing) so it looks good on any
+// screen. The "Default" constants below are the design baseline used as the auto
+// fallback (e.g. unbounded constraints) and to keep stacked keys proportional.
+const gazeInteractiveKeyboardSizeAuto = 0.0;
+
+// Font size of the characters displayed on the keyboard keys.
+const gazeInteractiveDefaultKeyboardFontSize = 20.0;
+const gazeInteractiveMinKeyboardFontSize = 12.0; // Not validated
+const gazeInteractiveMaxKeyboardFontSize = 40.0; // Not validated
+
+// Size of the icons displayed on the keyboard keys (shift, backspace, space, ...).
+const gazeInteractiveDefaultKeyboardIconSize = 25.0;
+const gazeInteractiveMinKeyboardIconSize = 15.0; // Not validated
+const gazeInteractiveMaxKeyboardIconSize = 50.0; // Not validated
+
+// Font size of the labels displayed on the keyboard utility buttons (copy, paste, ...).
+const gazeInteractiveDefaultKeyboardUtilityFontSize = 16.0;
+const gazeInteractiveMinKeyboardUtilityFontSize = 10.0; // Not validated
+const gazeInteractiveMaxKeyboardUtilityFontSize = 30.0; // Not validated
+
+// Size of the icons displayed on the keyboard utility buttons (copy, paste, ...).
+const gazeInteractiveDefaultKeyboardUtilityIconSize = 22.0;
+const gazeInteractiveMinKeyboardUtilityIconSize = 12.0; // Not validated
+const gazeInteractiveMaxKeyboardUtilityIconSize = 45.0; // Not validated
+
 const timeToIgnorePointerWhenSnappingMs = 200; // needed especially for mouse usage
 
 // Cancel in-flight selection animations if no gaze update arrives within this

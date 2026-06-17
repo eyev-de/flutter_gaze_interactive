@@ -15,7 +15,7 @@ Future<void> main() async {
 late final GazeInteractiveState gazeInteractiveState;
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,35 +74,39 @@ class _AppState extends ConsumerState<App> {
     return Scaffold(
       body: Stack(
         children: [
-          Center(
-            child: SizedBox(
-              width: width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 20,
-                children: [
-                  _PointerTypeButton(route: '/', type: type),
-                  const _PointerSizeButton(route: '/'),
-                  DebugExampleButton(),
-                  const SizedBox(height: 20),
-                  _SearchTextField(focusNode: _focusNode, controller: _controller, undoController: _undoHistoryController),
-                  ContentRow(
-                    subtitle: 'Date',
-                    title: _dateTime.toString(),
-                    child: _DateButton(selected: ({required DateTime value}) => setState(() => _dateTime = value)),
-                  ),
-                  ContentRow(
-                    title: 'Example Switch Button',
-                    subtitle: 'Clickable without value change',
-                    child: GazeSwitchButton(
-                      route: '/',
-                      value: true,
-                      onChanged: (_) {},
-                      properties: GazeSwitchButtonProperties(gazeInteractive: true, labelTextStyle: const TextStyle(fontSize: 10)),
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 40),
+            child: Center(
+              child: SizedBox(
+                width: width,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 20,
+                  children: [
+                    _PointerTypeButton(route: '/', type: type),
+                    const _PointerSizeButton(route: '/'),
+                    const _KeyboardSizeControls(),
+                    DebugExampleButton(),
+                    const SizedBox(height: 20),
+                    _SearchTextField(focusNode: _focusNode, controller: _controller, undoController: _undoHistoryController),
+                    ContentRow(
+                      subtitle: 'Date',
+                      title: _dateTime.toString(),
+                      child: _DateButton(selected: ({required DateTime value}) => setState(() => _dateTime = value)),
                     ),
-                  ),
-                ],
+                    ContentRow(
+                      title: 'Example Switch Button',
+                      subtitle: 'Clickable without value change',
+                      child: GazeSwitchButton(
+                        route: '/',
+                        value: true,
+                        onChanged: (_) {},
+                        properties: GazeSwitchButtonProperties(gazeInteractive: true, labelTextStyle: const TextStyle(fontSize: 10)),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -383,6 +387,292 @@ class _PointerSizeButton extends ConsumerWidget {
           ),
         );
       }).toList(),
+    );
+  }
+}
+
+/// The keyboard sizing controls: four independent, persisted size settings on
+/// [GazeInteractiveState] — the key font, the key icon, the utility-button font
+/// and the utility-button icon — each with its own slider.
+///
+/// Every setting defaults to "auto" (a stored value of
+/// [gazeInteractiveKeyboardSizeAuto]): the keyboard then sizes that content to
+/// each box (see [GazeKeyboardKeySizing]). Dragging a slider switches just that
+/// setting to a fixed size; its own "Auto" button resets only that setting. A
+/// live preview at the bottom reflects all four current values.
+class _KeyboardSizeControls extends ConsumerWidget {
+  const _KeyboardSizeControls();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = gazeInteractiveState;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Keyboard sizing', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'Each control defaults to Auto (sized per key). Drag a slider to fix a size, or tap its Auto to reset.',
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey),
+        ),
+        const SizedBox(height: 8),
+        _KeyboardSizeSlider(
+          title: 'Key font',
+          value: ref.watch(state.keyboardFontSize),
+          min: gazeInteractiveMinKeyboardFontSize,
+          max: gazeInteractiveMaxKeyboardFontSize,
+          autoPreviewValue: GazeKeyboardKeySizing.optimalFontSize(const BoxConstraints(maxWidth: 64, maxHeight: 64)),
+          onChanged: (value) => ref.read(state.keyboardFontSize.notifier).update(value),
+          onAuto: () => ref.read(state.keyboardFontSize.notifier).update(gazeInteractiveKeyboardSizeAuto),
+        ),
+        _KeyboardSizeSlider(
+          title: 'Key icon',
+          value: ref.watch(state.keyboardIconSize),
+          min: gazeInteractiveMinKeyboardIconSize,
+          max: gazeInteractiveMaxKeyboardIconSize,
+          autoPreviewValue: GazeKeyboardKeySizing.optimalIconSize(const BoxConstraints(maxWidth: 64, maxHeight: 64)),
+          onChanged: (value) => ref.read(state.keyboardIconSize.notifier).update(value),
+          onAuto: () => ref.read(state.keyboardIconSize.notifier).update(gazeInteractiveKeyboardSizeAuto),
+        ),
+        _KeyboardSizeSlider(
+          title: 'Utility font',
+          value: ref.watch(state.keyboardUtilityFontSize),
+          min: gazeInteractiveMinKeyboardUtilityFontSize,
+          max: gazeInteractiveMaxKeyboardUtilityFontSize,
+          autoPreviewValue: GazeKeyboardKeySizing.optimalUtilityFontSize(const BoxConstraints(maxWidth: 90, maxHeight: 64)),
+          onChanged: (value) => ref.read(state.keyboardUtilityFontSize.notifier).update(value),
+          onAuto: () => ref.read(state.keyboardUtilityFontSize.notifier).update(gazeInteractiveKeyboardSizeAuto),
+        ),
+        _KeyboardSizeSlider(
+          title: 'Utility icon',
+          value: ref.watch(state.keyboardUtilityIconSize),
+          min: gazeInteractiveMinKeyboardUtilityIconSize,
+          max: gazeInteractiveMaxKeyboardUtilityIconSize,
+          autoPreviewValue: GazeKeyboardKeySizing.optimalUtilityIconSize(const BoxConstraints(maxWidth: 90, maxHeight: 64)),
+          onChanged: (value) => ref.read(state.keyboardUtilityIconSize.notifier).update(value),
+          onAuto: () => ref.read(state.keyboardUtilityIconSize.notifier).update(gazeInteractiveKeyboardSizeAuto),
+        ),
+        const SizedBox(height: 12),
+        const _KeyboardSizePreview(),
+        const SizedBox(height: 12),
+        const _ShowKeyboardButton(),
+      ],
+    );
+  }
+}
+
+/// Opens the real gaze keyboard so the current sizing settings can be tried out
+/// live. Owns its own text controllers (and disposes them) so the sizing group
+/// stays self-contained.
+class _ShowKeyboardButton extends StatefulWidget {
+  const _ShowKeyboardButton();
+
+  @override
+  State<_ShowKeyboardButton> createState() => _ShowKeyboardButtonState();
+}
+
+class _ShowKeyboardButtonState extends State<_ShowKeyboardButton> {
+  final TextEditingController _controller = TextEditingController();
+  final UndoHistoryController _undoHistoryController = UndoHistoryController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _undoHistoryController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _showKeyboard() {
+    if (GazeKeyboard().isShown) return;
+    GazeKeyboard().show(
+      context,
+      GazeKeyboardState(
+        node: _focusNode,
+        route: '/dialog',
+        placeholder: 'Type to preview the keyboard sizing',
+        language: Language.english,
+        type: KeyboardType.extended,
+        controller: _controller,
+        undoHistoryController: _undoHistoryController,
+        selectedKeyboardPlatformType: KeyboardPlatformType.mobile,
+      ),
+      () => gazeInteractiveState.currentRoute = '/dialog',
+      (ctx) => Navigator.of(ctx).pop(),
+      (ctx) => gazeInteractiveState.currentRoute = '/',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 60,
+      child: GazeButton(
+        color: tealColor,
+        onTap: _showKeyboard,
+        properties: GazeButtonProperties(
+          route: '/',
+          direction: Axis.horizontal,
+          innerPadding: const EdgeInsets.symmetric(horizontal: 16),
+          icon: const Icon(Icons.keyboard, color: surfaceColor),
+          text: const Text(
+            'Show keyboard',
+            style: TextStyle(color: surfaceColor, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One labelled slider bound to a single persisted size setting. When the stored
+/// [value] is "auto" the thumb parks at [autoPreviewValue] (a representative
+/// optimal) and the "Auto" button is disabled; dragging fixes a size and
+/// re-enables it.
+class _KeyboardSizeSlider extends StatelessWidget {
+  const _KeyboardSizeSlider({
+    required this.title,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.autoPreviewValue,
+    required this.onChanged,
+    required this.onAuto,
+  });
+
+  final String title;
+  final double value;
+  final double min;
+  final double max;
+  final double autoPreviewValue;
+  final ValueChanged<double> onChanged;
+  final VoidCallback onAuto;
+
+  @override
+  Widget build(BuildContext context) {
+    final isAuto = value <= gazeInteractiveKeyboardSizeAuto;
+    final sliderValue = (isAuto ? autoPreviewValue : value).clamp(min, max).toDouble();
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(isAuto ? '$title — Auto' : '$title — ${value.round()}', style: Theme.of(context).textTheme.titleMedium)),
+              TextButton(onPressed: isAuto ? null : onAuto, child: const Text('Auto')),
+            ],
+          ),
+          Slider(
+            value: sliderValue,
+            min: min,
+            max: max,
+            divisions: (max - min).round(),
+            label: isAuto ? 'Auto' : value.round().toString(),
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Live preview of all four size settings: a letter key + an icon key (driven by
+/// the key font / icon sizes) and a utility button (driven by the utility font /
+/// icon sizes). Each element resolves "auto" with the same [GazeKeyboardKeySizing]
+/// helpers the real keyboard uses.
+class _KeyboardSizePreview extends ConsumerWidget {
+  const _KeyboardSizePreview();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = gazeInteractiveState;
+    final keyFont = ref.watch(state.keyboardFontSize);
+    final keyIcon = ref.watch(state.keyboardIconSize);
+    final utilFont = ref.watch(state.keyboardUtilityFontSize);
+    final utilIcon = ref.watch(state.keyboardUtilityIconSize);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Preview', style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.grey)),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _PreviewKey(
+              builder: (c) => Text(
+                'A',
+                style: TextStyle(color: Colors.black, fontSize: keyFont > 0 ? keyFont : GazeKeyboardKeySizing.optimalFontSize(c)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            _PreviewKey(
+              builder: (c) => Icon(Icons.backspace_outlined, color: Colors.black, size: keyIcon > 0 ? keyIcon : GazeKeyboardKeySizing.optimalIconSize(c)),
+            ),
+            const SizedBox(width: 24),
+            _PreviewUtilityButton(fontSize: utilFont, iconSize: utilIcon),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// A utility-button-shaped preview (icon stacked over a label) that mirrors how
+/// [GazeKeyboardUtilityBaseButton] resolves its auto sizes.
+class _PreviewUtilityButton extends StatelessWidget {
+  const _PreviewUtilityButton({required this.fontSize, required this.iconSize});
+
+  final double fontSize;
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 90,
+      height: 72,
+      decoration: BoxDecoration(color: tealColor, borderRadius: BorderRadius.circular(20)),
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final resolvedIcon = iconSize > 0 ? iconSize : GazeKeyboardKeySizing.optimalUtilityIconSize(c);
+          final resolvedFont = fontSize > 0 ? fontSize : GazeKeyboardKeySizing.optimalUtilityFontSize(c);
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.content_copy, color: Colors.black, size: resolvedIcon),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Copy',
+                    style: TextStyle(color: Colors.black, fontSize: resolvedFont),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// A small key-shaped box that reports its constraints to [builder], so the
+/// preview content can be auto-sized exactly like a real keyboard key.
+class _PreviewKey extends StatelessWidget {
+  const _PreviewKey({required this.builder});
+
+  final Widget Function(BoxConstraints constraints) builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 72,
+      height: 72,
+      decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(8)),
+      child: LayoutBuilder(builder: (context, constraints) => Center(child: builder(constraints))),
     );
   }
 }

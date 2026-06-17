@@ -110,36 +110,77 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
   final bool horizontal;
   final bool gazeInteractive;
 
+  // Last sizes published to the computed utility-size providers. Used to dedupe: every utility button resolves the same
+  // size for a given box, so only the first whose value changed schedules the (deferred) publish; the rest skip.
+  static double? _lastPublishedUtilityFontSize;
+  static double? _lastPublishedUtilityIconSize;
+
+  // Publishes the resolved utility-button sizes to the computed-size providers so other widgets can match them.
+  // Deferred to a post-frame callback because the resolve happens inside the LayoutBuilder (mid-build), where
+  // mutating providers is not allowed.
+  void _publishComputedUtilitySizes(WidgetRef ref, {required double fontSize, required double iconSize}) {
+    final publishFont = _lastPublishedUtilityFontSize != fontSize;
+    final publishIcon = _lastPublishedUtilityIconSize != iconSize;
+    if (!publishFont && !publishIcon) return;
+    if (publishFont) _lastPublishedUtilityFontSize = fontSize;
+    if (publishIcon) _lastPublishedUtilityIconSize = iconSize;
+    final gaze = ref.read(gazeInteractiveProvider);
+    final fontNotifier = publishFont ? ref.read(gaze.keyboardComputedUtilityFontSize.notifier) : null;
+    final iconNotifier = publishIcon ? ref.read(gaze.keyboardComputedUtilityIconSize.notifier) : null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (fontNotifier != null) fontNotifier.set(fontSize);
+      if (iconNotifier != null) iconNotifier.set(iconSize);
+    });
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final disabled = state == null ? false : ref.watch(state!.disableStateProvider);
-    const double size = 20;
+    final disabled = state != null && ref.watch(state!.disableStateProvider);
     final buttonColor = disabled ? disabledBaseButtonColor : backgroundColor ?? tealColor.disabled;
     final signColor = buttonColor.onColor(disabled: disabled);
+
+    // The utility buttons have their own font / icon size settings, independent
+    // from the regular keys: a configured size (> 0) wins, otherwise the size
+    // auto-adapts to the button's box (0 == auto, see GazeKeyboardKeySizing).
+    final configuredFontSize = ref.watch(ref.read(gazeInteractiveProvider).keyboardUtilityFontSize);
+    final configuredIconSize = ref.watch(ref.read(gazeInteractiveProvider).keyboardUtilityIconSize);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-      child: GazeButton(
-        onTap: () => onTap?.call(), // should not be null -> avoid disabled state
-        color: buttonColor,
-        properties: GazeButtonProperties(
-          route: route,
-          withSound: true,
-          reselectable: reselectable,
-          borderRadius: borderRadius,
-          innerPadding: innerPadding,
-          gazeInteractive: gazeInteractive,
-          direction: horizontal ? Axis.horizontal : Axis.vertical,
-          icon: Icon(icon, color: iconColor ?? signColor, size: size),
-          text: text != null
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: Text(text!, style: textStyle?.copyWith(color: signColor)),
-                  ),
-                )
-              : null,
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final iconSize = configuredIconSize > 0 ? configuredIconSize : GazeKeyboardKeySizing.optimalUtilityIconSize(constraints);
+          final fontSize = configuredFontSize > 0 ? configuredFontSize : GazeKeyboardKeySizing.optimalUtilityFontSize(constraints);
+          // Publish the resolved sizes so widgets outside the keyboard (e.g. the talk speak / clear buttons) can match it.
+          _publishComputedUtilitySizes(ref, fontSize: fontSize, iconSize: iconSize);
+          // Callers that pass no textStyle keep the default text color.
+          final labelStyle = textStyle == null ? TextStyle(fontSize: fontSize) : textStyle!.copyWith(color: signColor, fontSize: fontSize);
+          return GazeButton(
+            onTap: () => onTap?.call(), // should not be null -> avoid disabled state
+            color: buttonColor,
+            properties: GazeButtonProperties(
+              route: route,
+              withSound: true,
+              reselectable: reselectable,
+              borderRadius: borderRadius,
+              innerPadding: innerPadding,
+              gazeInteractive: gazeInteractive,
+              direction: horizontal ? Axis.horizontal : Axis.vertical,
+              icon: Icon(icon, color: iconColor ?? signColor, size: iconSize),
+              text: text != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      // Scale down only, so the resolved font size is honoured but
+                      // never overflows a narrow button.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(text!, style: labelStyle),
+                      ),
+                    )
+                  : null,
+            ),
+          );
+        },
       ),
     );
   }

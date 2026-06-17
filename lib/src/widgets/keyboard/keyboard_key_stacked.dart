@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants.dart';
 import '../../core/extensions.dart';
 
 class KeyboardKeyStackedString extends StatelessWidget {
@@ -16,9 +17,13 @@ class KeyboardKeyStackedString extends StatelessWidget {
     final textColor = backgroundColor.onColor(disabled: false);
     final top = characters.length >= 2 ? characters[1] : '';
     final bottom = characters.first;
-    final topTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor.background, fontWeight: FontWeight.bold);
-    final bottomTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize + 3)).copyWith(color: textColor, fontWeight: FontWeight.bold);
-    final shiftTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor, fontWeight: FontWeight.bold);
+    // Scale the stacked defaults relative to the user-chosen key font size so
+    // these keys grow/shrink in sync with the regular keys while keeping their
+    // proportions (bottom character slightly larger).
+    final scale = (textStyle?.fontSize ?? gazeInteractiveDefaultKeyboardFontSize) / gazeInteractiveDefaultKeyboardFontSize;
+    final topTextStyle = TextStyle(fontSize: defaultFontSize * scale, color: textColor.background, fontWeight: FontWeight.bold);
+    final bottomTextStyle = TextStyle(fontSize: (defaultFontSize + 3) * scale, color: textColor, fontWeight: FontWeight.bold);
+    final shiftTextStyle = TextStyle(fontSize: defaultFontSize * scale, color: textColor, fontWeight: FontWeight.bold);
     return _KeyboardKeyStacked(
       shift: shift,
       topWidget: DefaultTextStyle.merge(style: topTextStyle, child: Text(top)),
@@ -42,9 +47,13 @@ class KeyboardKeyStackedText extends StatelessWidget {
     final textColor = backgroundColor.onColor(disabled: false);
     final top = texts.length >= 2 ? texts[1] : Container();
     final bottom = texts.first;
-    final topTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor.background, fontWeight: FontWeight.bold);
-    final bottomTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize + 3)).copyWith(color: textColor, fontWeight: FontWeight.bold);
-    final shiftTextStyle = (textStyle ?? TextStyle(fontSize: defaultFontSize)).copyWith(color: textColor, fontWeight: FontWeight.bold);
+    // Scale the stacked defaults relative to the user-chosen key font size so
+    // these keys grow/shrink in sync with the regular keys while keeping their
+    // proportions (bottom character slightly larger).
+    final scale = (textStyle?.fontSize ?? gazeInteractiveDefaultKeyboardFontSize) / gazeInteractiveDefaultKeyboardFontSize;
+    final topTextStyle = TextStyle(fontSize: defaultFontSize * scale, color: textColor.background, fontWeight: FontWeight.bold);
+    final bottomTextStyle = TextStyle(fontSize: (defaultFontSize + 3) * scale, color: textColor, fontWeight: FontWeight.bold);
+    final shiftTextStyle = TextStyle(fontSize: defaultFontSize * scale, color: textColor, fontWeight: FontWeight.bold);
     return _KeyboardKeyStacked(
       shift: shift,
       topWidget: DefaultTextStyle.merge(style: topTextStyle, child: top),
@@ -55,15 +64,16 @@ class KeyboardKeyStackedText extends StatelessWidget {
 }
 
 class KeyboardKeyStackedIcon extends StatelessWidget {
-  const KeyboardKeyStackedIcon({super.key, required this.icons, this.shift = false});
+  const KeyboardKeyStackedIcon({super.key, required this.icons, this.shift = false, this.size});
 
   final bool shift;
   final List<IconData> icons;
+  final double? size;
 
   @override
   Widget build(BuildContext context) {
-    final top = icons.length >= 2 ? Icon(icons[1]) : Container();
-    return _KeyboardKeyStacked(shift: shift, topWidget: top, bottomWidget: Icon(icons.first), shiftWidget: top);
+    final top = icons.length >= 2 ? Icon(icons[1], size: size) : Container();
+    return _KeyboardKeyStacked(shift: shift, topWidget: top, bottomWidget: Icon(icons.first, size: size), shiftWidget: top);
   }
 }
 
@@ -77,11 +87,30 @@ class _KeyboardKeyStacked extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (shift) return Center(child: shiftWidget);
+    // Wrap the content in a scale-down FittedBox so the two stacked characters
+    // always fit inside the key box. The auto font size is budgeted for two
+    // lines (see GazeKeyboardKeySizing.optimalStackedFontSize), but the
+    // FittedBox is the hard guarantee against overflow for any font size /
+    // key dimensions (incl. user-configured sizes on small keys).
+    if (shift) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: FittedBox(fit: BoxFit.scaleDown, child: shiftWidget),
+        ),
+      );
+    }
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const Spacer(), topWidget, const Spacer(), bottomWidget, const Spacer()]),
+        padding: const EdgeInsets.all(6),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [topWidget, const SizedBox(height: 4), bottomWidget],
+          ),
+        ),
       ),
     );
   }

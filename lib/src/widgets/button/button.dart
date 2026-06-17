@@ -64,12 +64,18 @@ class GazeButtonProperties {
   final bool withSound;
 }
 
-class GazeButton extends ConsumerWidget {
-  GazeButton({super.key, required this.properties, this.child, this.color = Colors.transparent, this.onTap})
-    : assert(
-        (child == null || properties.text == null) && (child == null || properties.icon == null),
-        'You cannot specify a child widget as well as a text or icon. The child widget replaces all previously specified properties',
-      );
+class GazeButton extends ConsumerStatefulWidget {
+  GazeButton({
+    super.key,
+    required this.properties,
+    this.child,
+    this.color = Colors.transparent,
+    this.onTap,
+  }) : assert(
+         (child == null || properties.text == null) &&
+             (child == null || properties.icon == null),
+         'You cannot specify a child widget as well as a text or icon. The child widget replaces all previously specified properties',
+       );
 
   final GazeButtonProperties properties;
   final Widget? child;
@@ -77,25 +83,36 @@ class GazeButton extends ConsumerWidget {
   final void Function()? onTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final disabledColor = color == Colors.transparent ? color : color.withValues(alpha: 0.3);
+  ConsumerState<GazeButton> createState() => _GazeButtonState();
+}
+
+class _GazeButtonState extends ConsumerState<GazeButton> {
+  // Created once and kept stable across rebuilds. GazeSelectionAnimation uses
+  // this as its widget key, so a stable key lets it preserve its State
+  // (gaze registration + animation controller) instead of being torn down and
+  // re-registered every time this button rebuilds (e.g. on shift/caps toggle).
+  final GlobalKey _wrappedKey = GlobalKey();
+
+  void _handleTap() {
+    if (widget.properties.withSound) ref.read(buttonMaybePlaySoundProvider());
+    widget.onTap!();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final properties = widget.properties;
+    final color = widget.color;
+    final onTap = widget.onTap;
+    final disabledColor = color == Colors.transparent
+        ? color
+        : color.withValues(alpha: 0.3);
     return GazeSelectionAnimation(
-      onGazed: onTap != null
-          ? () {
-              if (properties.withSound) ref.read(buttonMaybePlaySoundProvider());
-              onTap!();
-            }
-          : null,
-      wrappedKey: GlobalKey(),
+      onGazed: onTap != null ? _handleTap : null,
+      wrappedKey: _wrappedKey,
       wrappedWidget: _Button(
         properties: properties,
-        onTap: onTap != null
-            ? () {
-                if (properties.withSound) ref.read(buttonMaybePlaySoundProvider());
-                onTap!();
-              }
-            : null,
-        child: child,
+        onTap: onTap != null ? _handleTap : null,
+        child: widget.child,
       ),
       properties: GazeSelectionAnimationProperties(
         backgroundColor: onTap != null ? color : disabledColor,
@@ -116,7 +133,11 @@ class GazeButton extends ConsumerWidget {
 }
 
 class _Button extends StatelessWidget {
-  const _Button({required this.properties, required this.onTap, required this.child});
+  const _Button({
+    required this.properties,
+    required this.onTap,
+    required this.child,
+  });
 
   final GazeButtonProperties properties;
   final void Function()? onTap;
@@ -124,7 +145,9 @@ class _Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = properties.text != null && properties.text is Text ? (properties.text! as Text).style?.color ?? Colors.white : Colors.white;
+    final textColor = properties.text != null && properties.text is Text
+        ? (properties.text! as Text).style?.color ?? Colors.white
+        : Colors.white;
     final disabled = onTap == null;
     return InkWell(
       borderRadius: properties.borderRadius,
@@ -133,14 +156,24 @@ class _Button extends StatelessWidget {
       splashColor: textColor.withAlpha(60),
       highlightColor: textColor.withAlpha(20),
       splashFactory: disabled ? NoSplash.splashFactory : null,
-      onTap: !disabled && properties.tapType == GazeButtonTapTypes.single ? onTap : null,
-      onDoubleTap: !disabled && properties.tapType == GazeButtonTapTypes.double ? onTap : null,
+      onTap: !disabled && properties.tapType == GazeButtonTapTypes.single
+          ? onTap
+          : null,
+      onDoubleTap: !disabled && properties.tapType == GazeButtonTapTypes.double
+          ? onTap
+          : null,
       child: child != null
-          ? AnimatedContainer(duration: const Duration(milliseconds: 150), child: child)
+          ? AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              child: child,
+            )
           : AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               padding: properties.innerPadding,
-              decoration: BoxDecoration(borderRadius: properties.borderRadius, border: _getBorder()),
+              decoration: BoxDecoration(
+                borderRadius: properties.borderRadius,
+                border: _getBorder(),
+              ),
               child: _ButtonChild(properties: properties),
             ),
     );
@@ -148,9 +181,20 @@ class _Button extends StatelessWidget {
 
   Border? _getBorder() {
     if (properties.borderColor == null) return null;
-    if (onTap == null && properties.borderColor == Colors.transparent) return Border.all(color: Colors.transparent, width: properties.borderWidth);
-    if (onTap == null) return Border.all(color: properties.borderColor!.withValues(alpha: 0.3), width: properties.borderWidth);
-    return Border.all(color: properties.borderColor!, width: properties.borderWidth);
+    if (onTap == null && properties.borderColor == Colors.transparent)
+      return Border.all(
+        color: Colors.transparent,
+        width: properties.borderWidth,
+      );
+    if (onTap == null)
+      return Border.all(
+        color: properties.borderColor!.withValues(alpha: 0.3),
+        width: properties.borderWidth,
+      );
+    return Border.all(
+      color: properties.borderColor!,
+      width: properties.borderWidth,
+    );
   }
 }
 
@@ -163,7 +207,10 @@ class _ButtonChild extends StatelessWidget {
   Widget build(BuildContext context) {
     final padding = properties.text == null
         ? EdgeInsets.zero
-        : EdgeInsets.only(right: properties.direction == Axis.horizontal ? 10 : 0, bottom: properties.direction == Axis.vertical ? 5 : 0);
+        : EdgeInsets.only(
+            right: properties.direction == Axis.horizontal ? 10 : 0,
+            bottom: properties.direction == Axis.vertical ? 5 : 0,
+          );
     return Align(
       alignment: properties.alignment,
       child: Flex(
@@ -171,11 +218,17 @@ class _ButtonChild extends StatelessWidget {
         mainAxisAlignment: properties.mainAxisAlignment,
         crossAxisAlignment: properties.crossAxisAlignment,
         children: [
-          if (properties.icon != null) Padding(padding: properties.iconPadding ?? padding, child: properties.icon),
+          if (properties.icon != null)
+            Padding(
+              padding: properties.iconPadding ?? padding,
+              child: properties.icon,
+            ),
           if (properties.text != null)
             Flexible(
               child: DefaultTextStyle.merge(
-                style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
+                style: Theme.of(
+                  context,
+                ).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: properties.maxTextLines,

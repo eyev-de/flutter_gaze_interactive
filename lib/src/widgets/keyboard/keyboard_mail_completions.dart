@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,7 +24,10 @@ class KeyboardMailCompletions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final completions = Platform.localeName.endsWith('DE') ? MailCompletions.de.completions : MailCompletions.en.completions;
+    final completions = [
+      if (kDebugMode) '@eyev.de',
+      ...Platform.localeName.endsWith('DE') ? MailCompletions.de.completions : MailCompletions.en.completions,
+    ];
     return Padding(
       padding: const EdgeInsets.only(top: 3),
       child: Row(

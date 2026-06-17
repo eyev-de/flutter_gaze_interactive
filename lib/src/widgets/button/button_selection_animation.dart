@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
 import '../../core/element_data.dart';
 import '../../core/element_type.dart';
+import '../../core/gaze_bounds_reporter.dart';
 import '../../state.dart';
 
 enum GazeSelectionAnimationType { progress, rise, fade }
@@ -51,7 +52,12 @@ class GazeSelectionAnimationProperties {
 }
 
 class GazeSelectionAnimation extends ConsumerStatefulWidget {
-  GazeSelectionAnimation({required this.wrappedKey, required this.properties, required this.wrappedWidget, this.onGazed}) : super(key: wrappedKey);
+  GazeSelectionAnimation({
+    required this.wrappedKey,
+    required this.properties,
+    required this.wrappedWidget,
+    this.onGazed,
+  }) : super(key: wrappedKey);
 
   final GazeSelectionAnimationProperties properties;
   final GlobalKey wrappedKey;
@@ -62,7 +68,8 @@ class GazeSelectionAnimation extends ConsumerStatefulWidget {
   _GazeSelectionAnimationState createState() => _GazeSelectionAnimationState();
 }
 
-class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation> with SingleTickerProviderStateMixin {
+class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
+    with SingleTickerProviderStateMixin {
   _GazeSelectionAnimationState();
 
   late AnimationController _controller;
@@ -81,8 +88,12 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   void _initAnimation() {
     _reselectionCount = 0;
-    _duration = widget.properties.durationMs ?? ref.read(ref.read(gazeInteractiveProvider).duration);
-    _recoverTime = widget.properties.recoverMs ?? ref.read(ref.read(gazeInteractiveProvider).recoverTime);
+    _duration =
+        widget.properties.durationMs ??
+        ref.read(ref.read(gazeInteractiveProvider).duration);
+    _recoverTime =
+        widget.properties.recoverMs ??
+        ref.read(ref.read(gazeInteractiveProvider).recoverTime);
     _controller =
         AnimationController(
           duration: Duration(milliseconds: _duration),
@@ -93,11 +104,16 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
               _controller.reset();
               if (widget.properties.reselectable) {
                 // reselectable count = null means infinite re-selections
-                if (widget.properties.reselectableCount != null && _reselectionCount >= widget.properties.reselectableCount! - 1) {
+                if (widget.properties.reselectableCount != null &&
+                    _reselectionCount >=
+                        widget.properties.reselectableCount! - 1) {
                   _reselectionCount = 0;
                 } else {
-                  final double reselectionAcceleration = ref.read(ref.read(gazeInteractiveProvider).reselectionAcceleration);
-                  final _newDuration = (_duration * reselectionAcceleration).round();
+                  final double reselectionAcceleration = ref.read(
+                    ref.read(gazeInteractiveProvider).reselectionAcceleration,
+                  );
+                  final _newDuration = (_duration * reselectionAcceleration)
+                      .round();
                   _reselectionCount += 1;
                   _duration = max(_newDuration, gazeInteractiveMinDuration);
                   _controller
@@ -109,7 +125,10 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
             if (widget.properties.gazeInteractive) widget.onGazed?.call();
           }
         });
-    _colorTween = ColorTween(begin: widget.properties.backgroundColor, end: widget.properties.animationColor).animate(_controller);
+    _colorTween = ColorTween(
+      begin: widget.properties.backgroundColor,
+      end: widget.properties.animationColor,
+    ).animate(_controller);
   }
 
   @override
@@ -122,52 +141,74 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
       ..listen(ref.read(gazeInteractiveProvider).recoverTime, (previous, next) {
         _recoverTime = next;
       });
-    return Stack(
-      children: [
-        _wrappedWidget(),
-        if (widget.properties.gazeInteractive)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: widget.properties.borderRadius,
-                  border: Border.all(color: gazeIn ? widget.properties.color : Colors.transparent, width: widget.properties.borderWidth),
+    return GazeBoundsReporter(
+      onBounds: (rect) => _data.cachedBounds = rect,
+      child: Stack(
+        children: [
+          _wrappedWidget(),
+          if (widget.properties.gazeInteractive)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: widget.properties.borderRadius,
+                    border: Border.all(
+                      color: gazeIn
+                          ? widget.properties.color
+                          : Colors.transparent,
+                      width: widget.properties.borderWidth,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        if (widget.properties.gazeInteractive &&
-            (widget.properties.type == GazeSelectionAnimationType.progress || widget.properties.type == GazeSelectionAnimationType.rise))
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(borderRadius: widget.properties.borderRadius),
-                child: AnimatedBuilder(
-                  animation: _controller,
-                  builder: (context, child) {
-                    if (widget.properties.type == GazeSelectionAnimationType.rise) {
+          if (widget.properties.gazeInteractive &&
+              (widget.properties.type == GazeSelectionAnimationType.progress ||
+                  widget.properties.type == GazeSelectionAnimationType.rise))
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: widget.properties.borderRadius,
+                  ),
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      if (widget.properties.type ==
+                          GazeSelectionAnimationType.rise) {
+                        return Transform(
+                          transform: Matrix4.diagonal3Values(
+                            1,
+                            _controller.value,
+                            1,
+                          ),
+                          alignment: Alignment.bottomCenter,
+                          origin: const Offset(0, 1),
+                          child: child,
+                        );
+                      }
                       return Transform(
-                        transform: Matrix4.diagonal3Values(1, _controller.value, 1),
-                        alignment: Alignment.bottomCenter,
+                        transform: Matrix4.diagonal3Values(
+                          _controller.value,
+                          1,
+                          1,
+                        ),
+                        alignment: Alignment.centerLeft,
                         origin: const Offset(0, 1),
                         child: child,
                       );
-                    }
-                    return Transform(
-                      transform: Matrix4.diagonal3Values(_controller.value, 1, 1),
-                      alignment: Alignment.centerLeft,
-                      origin: const Offset(0, 1),
-                      child: child,
-                    );
-                  },
-                  child: Container(color: widget.properties.color.withValues(alpha: 0.5)),
+                    },
+                    child: Container(
+                      color: widget.properties.color.withValues(alpha: 0.5),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -176,13 +217,19 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
     switch (widget.properties.type) {
       case GazeSelectionAnimationType.progress:
       case GazeSelectionAnimationType.rise:
-        return Material(color: widget.properties.backgroundColor, borderRadius: widget.properties.borderRadius, child: widget.wrappedWidget);
+        return Material(
+          color: widget.properties.backgroundColor,
+          borderRadius: widget.properties.borderRadius,
+          child: widget.wrappedWidget,
+        );
       case GazeSelectionAnimationType.fade:
         return AnimatedBuilder(
           animation: _colorTween,
           builder: (context, child) {
             return Material(
-              color: !widget.properties.gazeInteractive ? widget.properties.backgroundColor : _colorTween.value,
+              color: !widget.properties.gazeInteractive
+                  ? widget.properties.backgroundColor
+                  : _colorTween.value,
               borderRadius: widget.properties.borderRadius,
               child: widget.wrappedWidget,
             );
@@ -193,7 +240,9 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
 
   @override
   void deactivate() {
-    ref.read(gazeInteractiveProvider).unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
+    ref
+        .read(gazeInteractiveProvider)
+        .unregister(key: widget.wrappedKey, type: GazeElementType.selectable);
     super.deactivate();
   }
 
@@ -203,37 +252,41 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
     super.dispose();
   }
 
+  // Created once so the GazeBoundsReporter can push fresh bounds into the same
+  // object that is registered in the gaze hit-test list.
+  late final GazeSelectableData _data = GazeSelectableData(
+    key: widget.wrappedKey,
+    route: widget.properties.route,
+    snappable: widget.properties.snappable,
+    onGazeEnter: () {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() => gazeIn = true);
+          _duration =
+              widget.properties.durationMs ??
+              ref.read(ref.read(gazeInteractiveProvider).duration);
+          _controller
+            ..duration = Duration(milliseconds: _duration)
+            ..forward();
+        }
+      });
+    },
+    onGazeLeave: () {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() => gazeIn = false);
+          _recoverTime =
+              widget.properties.recoverMs ??
+              ref.read(ref.read(gazeInteractiveProvider).recoverTime);
+          _controller
+            ..duration = Duration(milliseconds: _recoverTime)
+            ..reverse();
+        }
+      });
+    },
+  );
+
   void _register() {
-    ref
-        .read(gazeInteractiveProvider)
-        .register(
-          GazeSelectableData(
-            key: widget.wrappedKey,
-            route: widget.properties.route,
-            snappable: widget.properties.snappable,
-            onGazeEnter: () {
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                if (mounted) {
-                  setState(() => gazeIn = true);
-                  _duration = widget.properties.durationMs ?? ref.read(ref.read(gazeInteractiveProvider).duration);
-                  _controller
-                    ..duration = Duration(milliseconds: _duration)
-                    ..forward();
-                }
-              });
-            },
-            onGazeLeave: () {
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                if (mounted) {
-                  setState(() => gazeIn = false);
-                  _recoverTime = widget.properties.recoverMs ?? ref.read(ref.read(gazeInteractiveProvider).recoverTime);
-                  _controller
-                    ..duration = Duration(milliseconds: _recoverTime)
-                    ..reverse();
-                }
-              });
-            },
-          ),
-        );
+    ref.read(gazeInteractiveProvider).register(_data);
   }
 }

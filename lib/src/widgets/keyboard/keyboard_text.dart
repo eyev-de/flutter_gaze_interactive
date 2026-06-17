@@ -93,6 +93,12 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
               constraints: BoxConstraints(minHeight: widget.minHeight),
               child: CupertinoTextField(
                 key: cupertinoTextFieldKey,
+                // This is a fully custom on-screen / gaze keyboard: all edits go
+                // through `state.controller`, which is the single source of truth.
+                // readOnly stops the field from opening a platform text-input
+                // connection that asynchronously echoes editing values back and
+                // could clobber the controller's value/selection mid-typing.
+                readOnly: true,
                 showCursor: true,
                 autofocus: true,
                 minLines: 1,
