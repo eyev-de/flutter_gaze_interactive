@@ -208,6 +208,9 @@ class GazeKey extends ConsumerWidget {
                   ? fontSize
                   : (stacked ? GazeKeyboardKeySizing.optimalStackedFontSize(constraints) : GazeKeyboardKeySizing.optimalFontSize(constraints));
               final resolvedIconSize = iconSize > 0 ? iconSize : GazeKeyboardKeySizing.optimalIconSize(constraints);
+              // Publish the resolved sizes so widgets outside the keyboard can match it without re-deriving the calculation.
+              // Only regular (non-stacked) keys represent the normal character size; stacked keys use a smaller two-line font.
+              _publishComputedSizes(ref, fontSize: stacked ? null : resolvedFontSize, iconSize: resolvedIconSize);
               return _buildContent(
                 context,
                 content,
@@ -226,6 +229,30 @@ class GazeKey extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  // Last sizes published to the computed-size providers. Used to dedupe: every key in a build resolves the same size,
+  // so only the first key whose value changed schedules the (deferred) publish; the rest skip. One keyboard is shown
+  // at a time, so a shared static cache is sufficient.
+  static double? _lastPublishedFontSize;
+  static double? _lastPublishedIconSize;
+
+  // Publishes the resolved key sizes to the computed-size providers so other widgets can match the keyboard.
+  // Deferred to a post-frame callback because the resolve happens inside the key's LayoutBuilder (mid-build), where
+  // mutating providers is not allowed.
+  void _publishComputedSizes(WidgetRef ref, {double? fontSize, required double iconSize}) {
+    final publishFont = fontSize != null && _lastPublishedFontSize != fontSize;
+    final publishIcon = _lastPublishedIconSize != iconSize;
+    if (!publishFont && !publishIcon) return;
+    if (publishFont) _lastPublishedFontSize = fontSize;
+    if (publishIcon) _lastPublishedIconSize = iconSize;
+    final gaze = ref.read(gazeInteractiveProvider);
+    final fontNotifier = publishFont ? ref.read(gaze.keyboardComputedFontSize.notifier) : null;
+    final iconNotifier = publishIcon ? ref.read(gaze.keyboardComputedIconSize.notifier) : null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (fontNotifier != null) fontNotifier.set(fontSize!);
+      if (iconNotifier != null) iconNotifier.set(iconSize);
+    });
   }
 
   void _onTap(data, GazeKeyType type, WidgetRef ref, BuildContext context) {

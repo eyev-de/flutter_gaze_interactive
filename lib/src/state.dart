@@ -157,6 +157,15 @@ class GazeInteractiveState {
     () => GazeInteractiveKeyboardUtilityIconSizeLocalNotifier(sharedPreferences),
   );
 
+  // Computed (runtime, NOT persisted) keyboard sizes: the size actually used to render the keys / utility buttons.
+  // When the matching size variable above is "auto" (<= 0) the keyboard resolves an optimal size per box (see GazeKeyboardKeySizing)
+  // and publishes it here so other widgets can match the keyboard without re-deriving the calculation. When the user sets a fixed
+  // size, the keyboard publishes that same value. Defaults to the baseline until the keyboard has laid out at least once.
+  late final keyboardComputedFontSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardFontSize));
+  late final keyboardComputedIconSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardIconSize));
+  late final keyboardComputedUtilityFontSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardUtilityFontSize));
+  late final keyboardComputedUtilityIconSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardUtilityIconSize));
+
   late final scrollFactor = NotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>(
     () => GazeInteractiveScrollFactorLocalNotifier(sharedPreferences),
   );

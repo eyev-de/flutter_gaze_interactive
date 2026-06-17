@@ -110,6 +110,29 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
   final bool horizontal;
   final bool gazeInteractive;
 
+  // Last sizes published to the computed utility-size providers. Used to dedupe: every utility button resolves the same
+  // size for a given box, so only the first whose value changed schedules the (deferred) publish; the rest skip.
+  static double? _lastPublishedUtilityFontSize;
+  static double? _lastPublishedUtilityIconSize;
+
+  // Publishes the resolved utility-button sizes to the computed-size providers so other widgets can match them.
+  // Deferred to a post-frame callback because the resolve happens inside the LayoutBuilder (mid-build), where
+  // mutating providers is not allowed.
+  void _publishComputedUtilitySizes(WidgetRef ref, {required double fontSize, required double iconSize}) {
+    final publishFont = _lastPublishedUtilityFontSize != fontSize;
+    final publishIcon = _lastPublishedUtilityIconSize != iconSize;
+    if (!publishFont && !publishIcon) return;
+    if (publishFont) _lastPublishedUtilityFontSize = fontSize;
+    if (publishIcon) _lastPublishedUtilityIconSize = iconSize;
+    final gaze = ref.read(gazeInteractiveProvider);
+    final fontNotifier = publishFont ? ref.read(gaze.keyboardComputedUtilityFontSize.notifier) : null;
+    final iconNotifier = publishIcon ? ref.read(gaze.keyboardComputedUtilityIconSize.notifier) : null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (fontNotifier != null) fontNotifier.set(fontSize);
+      if (iconNotifier != null) iconNotifier.set(iconSize);
+    });
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final disabled = state != null && ref.watch(state!.disableStateProvider);
@@ -128,6 +151,8 @@ class GazeKeyboardUtilityBaseButton extends ConsumerWidget {
         builder: (context, constraints) {
           final iconSize = configuredIconSize > 0 ? configuredIconSize : GazeKeyboardKeySizing.optimalUtilityIconSize(constraints);
           final fontSize = configuredFontSize > 0 ? configuredFontSize : GazeKeyboardKeySizing.optimalUtilityFontSize(constraints);
+          // Publish the resolved sizes so widgets outside the keyboard (e.g. the talk speak / clear buttons) can match it.
+          _publishComputedUtilitySizes(ref, fontSize: fontSize, iconSize: iconSize);
           // Callers that pass no textStyle keep the default text color.
           final labelStyle = textStyle == null ? TextStyle(fontSize: fontSize) : textStyle!.copyWith(color: signColor, fontSize: fontSize);
           return GazeButton(
