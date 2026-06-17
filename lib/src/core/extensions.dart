@@ -39,14 +39,34 @@ extension GazePointerValidationExtension on BuildContext {
 
 extension TextEditingControllerExtension on TextEditingController {
   void insert(String value, KeyboardType type, List<TextInputFormatter> inputFormatters) {
-    var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-    final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
+    final currentText = text;
+    final sel = selection;
 
-    if (text.isEmpty) {
-      text = value;
-    } else if (selection.isCollapsed) {
-      String before = text.substring(0, selection.baseOffset);
-      String after = text.substring(selection.baseOffset, text.length);
+    // Setting `text` resets the selection to offset -1. Doing so as a separate
+    // statement from updating the selection left the controller briefly in an
+    // invalid state and fired two change notifications per keystroke; under
+    // rapid input the next keypress could run while the selection was still -1,
+    // making `substring(0, -1)` throw and silently dropping the character.
+    //
+    // Resolve a safe caret first: when there is no valid selection (offset -1,
+    // e.g. right after the text was set programmatically) treat the caret as
+    // the end of the text so we append instead of throwing.
+    final bool collapsed = !sel.isValid || sel.isCollapsed;
+    final int caret = sel.isValid
+        ? (sel.base.affinity == TextAffinity.downstream ? sel.baseOffset : sel.extentOffset).clamp(0, currentText.length)
+        : currentText.length;
+    final int rangeEnd = sel.isValid
+        ? (sel.base.affinity == TextAffinity.upstream ? sel.baseOffset : sel.extentOffset).clamp(0, currentText.length)
+        : currentText.length;
+
+    String newText;
+    int caretAfter;
+    if (currentText.isEmpty) {
+      newText = value;
+      caretAfter = value.length;
+    } else if (collapsed) {
+      String before = currentText.substring(0, caret);
+      String after = currentText.substring(caret, currentText.length);
       // Trim if . ! ? is inserted
       if (value == '.' || value == '!' || value == '?') {
         before = before.trim();
@@ -54,16 +74,56 @@ extension TextEditingControllerExtension on TextEditingController {
           after = ' $after';
         }
       }
-      text = before + value + after;
+      newText = before + value + after;
+      caretAfter = before.length + value.length;
     } else {
-      startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
-      text = text.replaceRange(startIndex, endIndex, value);
+      final start = (caret == rangeEnd ? caret - 1 : caret).clamp(0, currentText.length);
+      newText = currentText.replaceRange(start, rangeEnd, value);
+      caretAfter = start + value.length;
     }
-    if (startIndex.isNegative) startIndex = 0;
+
     if (inputFormatters.isNotEmpty) {
-      text = inputFormatters.fold(text, (value, formatter) => formatter.formatEditUpdate(TextEditingValue(text: value), TextEditingValue(text: value)).text);
+      newText = inputFormatters.fold(newText, (v, formatter) => formatter.formatEditUpdate(TextEditingValue(text: v), TextEditingValue(text: v)).text);
     }
-    selection = TextSelection.fromPosition(TextPosition(offset: min(startIndex + 1, text.length)));
+
+    // Single atomic update: one notification, one rebuild, and never a transient
+    // selection == -1 between setting the text and the selection.
+    this.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: min(caretAfter, newText.length)),
+    );
+  }
+
+  /// Deletes the highlighted range, or the single character before the caret
+  /// when the selection is collapsed. Mirrors a hardware Backspace key.
+  void backspace(List<TextInputFormatter> inputFormatters) {
+    final currentText = text;
+    if (currentText.isEmpty) return;
+    final sel = selection;
+
+    final int start;
+    final int end;
+    if (sel.isValid && !sel.isCollapsed) {
+      // Delete the highlighted range.
+      start = sel.start;
+      end = sel.end;
+    } else {
+      // Collapsed (or no) selection: delete the char before the caret. When the
+      // selection is invalid (-1) treat the caret as the end of the text.
+      final caret = sel.isValid ? sel.baseOffset.clamp(0, currentText.length) : currentText.length;
+      if (caret <= 0) return;
+      start = caret - 1;
+      end = caret;
+    }
+
+    var newText = currentText.replaceRange(start, end, '');
+    if (inputFormatters.isNotEmpty) {
+      newText = inputFormatters.fold(newText, (v, formatter) => formatter.formatEditUpdate(TextEditingValue(text: v), TextEditingValue(text: v)).text);
+    }
+    value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: min(start, newText.length)),
+    );
   }
 
   Future<void> paste(List<TextInputFormatter> inputFormatters, {bool selecting = false}) async {

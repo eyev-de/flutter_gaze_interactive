@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech recognition is used to dictate text into the gaze keyboard.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The microphone is used to capture speech for dictation into the gaze keyboard.</string>
 </dict>
 </plist>

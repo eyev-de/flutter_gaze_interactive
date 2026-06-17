@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gaze_interactive/api.dart';
+import 'package:gaze_interactive/src/widgets/keyboard/keyboard_key_stacked.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -88,5 +90,58 @@ void main() {
   test('On iOS Keyboard when shift key IS  pressed and signs key IS  pressed, signs key should be abc.', () {
     final IconData key = GazeKey.getIOSKey(list: contentSigns, signs: true, shift: true) as IconData;
     expect(key, CupertinoIcons.textformat_abc);
+  });
+
+  // Stacked keys (e.g. `. ,` / `? !`) draw two characters on top of each other.
+  // In auto mode they must use a font budget for two lines and never overflow.
+
+  group('stacked key auto sizing', () {
+    const small = BoxConstraints(maxWidth: 50, maxHeight: 55);
+
+    test('budgets a smaller font than a single-content key for the same box', () {
+      final stacked = GazeKeyboardKeySizing.optimalStackedFontSize(small);
+      final single = GazeKeyboardKeySizing.optimalFontSize(small);
+      expect(stacked, lessThan(single), reason: 'two stacked lines must share the key height');
+    });
+
+    testWidgets('does not overflow on a small key in auto mode', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Center(
+            child: SizedBox(
+              width: 50,
+              height: 55,
+              child: KeyboardKeyStackedString(
+                characters: const ['.', ','],
+                backgroundColor: const Color(0xFFACE0D4),
+                // Auto resolves a per-box font size; assert no RenderFlex overflow.
+                textStyle: TextStyle(fontSize: GazeKeyboardKeySizing.optimalStackedFontSize(small)),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('does not overflow even at an oversized font (FittedBox safety net)', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Center(
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: KeyboardKeyStackedString(
+                characters: const ['?', '!'],
+                backgroundColor: const Color(0xFFACE0D4),
+                // Deliberately far larger than the box would allow for two lines.
+                textStyle: const TextStyle(fontSize: 60),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
   });
 }

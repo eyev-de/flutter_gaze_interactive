@@ -23,7 +23,7 @@ export 'src/widgets/button/button.dart' show GazeButton, GazeButtonProperties, G
 export 'src/widgets/button/button_selection_animation.dart' show GazeSelectionAnimation, GazeSelectionAnimationProperties, GazeSelectionAnimationType;
 export 'src/widgets/date_picker/date_picker.dart' show GazeDatePicker;
 export 'src/widgets/keyboard/keyboard.dart' show GazeKeyboard, GazeKeyboardWidget;
-export 'src/widgets/keyboard/keyboard_key.dart' show GazeKey;
+export 'src/widgets/keyboard/keyboard_key.dart' show GazeKey, GazeKeyboardKeySizing;
 export 'src/widgets/keyboard/keyboard_key_type.enum.dart' show GazeKeyType;
 export 'src/widgets/keyboard/keyboard_state.dart' show GazeKeyboardState;
 export 'src/widgets/keyboard/keyboard_text.dart' show GazeKeyboardTextWidget;

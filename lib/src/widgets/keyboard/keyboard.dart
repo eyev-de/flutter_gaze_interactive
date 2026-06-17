@@ -51,13 +51,17 @@ class GazeKeyboard {
         return SlideTransition(position: offsetAnimation, child: child);
       },
       pageBuilder: (context, animation, secondaryAnimation) {
-        const double height = 80;
-        return SafeArea(
-          top: false,
-          left: false,
-          right: false,
-          child: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: surfaceColor),
+        const double height = 100;
+        // Paint the background across the whole screen (including the bottom
+        // safe-area inset, e.g. the home indicator) so no transparent gap shows
+        // the screen behind. The SafeArea only keeps the interactive content
+        // (keys) clear of the bottom inset.
+        return DecoratedBox(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: surfaceColor),
+          child: SafeArea(
+            top: false,
+            left: false,
+            right: false,
             child: Stack(
               children: [
                 Column(
@@ -70,6 +74,8 @@ class GazeKeyboard {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
+                          // Inset the utility section by ~one keyboard-key width on each
+                          // side while the keys grid below stays full width.
                           const Spacer(),
                           Flexible(
                             flex: 8,
@@ -85,6 +91,7 @@ class GazeKeyboard {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
+                          // Keep the text field row aligned with the utility section above.
                           const Spacer(),
                           Flexible(
                             flex: 8,

@@ -137,6 +137,26 @@ class GazeInteractiveState {
     () => GazeInteractiveReselectionNumberOfLetterKeysNotifier(sharedPreferences),
   );
 
+  // font size of the characters displayed on the keyboard keys
+  late final keyboardFontSize = NotifierProvider<GazeInteractiveKeyboardFontSizeLocalNotifier, double>(
+    () => GazeInteractiveKeyboardFontSizeLocalNotifier(sharedPreferences),
+  );
+
+  // size of the icons displayed on the keyboard keys (shift, backspace, ...)
+  late final keyboardIconSize = NotifierProvider<GazeInteractiveKeyboardIconSizeLocalNotifier, double>(
+    () => GazeInteractiveKeyboardIconSizeLocalNotifier(sharedPreferences),
+  );
+
+  // font size of the labels displayed on the keyboard utility buttons (copy, paste, ...)
+  late final keyboardUtilityFontSize = NotifierProvider<GazeInteractiveKeyboardUtilityFontSizeLocalNotifier, double>(
+    () => GazeInteractiveKeyboardUtilityFontSizeLocalNotifier(sharedPreferences),
+  );
+
+  // size of the icons displayed on the keyboard utility buttons (copy, paste, ...)
+  late final keyboardUtilityIconSize = NotifierProvider<GazeInteractiveKeyboardUtilityIconSizeLocalNotifier, double>(
+    () => GazeInteractiveKeyboardUtilityIconSizeLocalNotifier(sharedPreferences),
+  );
+
   late final scrollFactor = NotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>(
     () => GazeInteractiveScrollFactorLocalNotifier(sharedPreferences),
   );
@@ -248,6 +268,9 @@ class GazeInteractiveState {
     }
   }
 
+  Offset? _lastSweepPosition;
+  static const double _sweepThresholdSq = 16; // 4px, squared
+
   /// Internal endpoint
   /// DO NOT USE
   // TODO(krjw): Change it!!!
@@ -255,16 +278,26 @@ class GazeInteractiveState {
     final active = ref.read(activeStateProvider);
     if (!active) return;
     final rect = Rect.fromCenter(center: position, width: size.width, height: size.height);
+    // Read once: this runs on every gaze sample, and `watch` on the long-lived
+    // GazeContext ref would re-subscribe each call.
+    final snapR = ref.read(snappingRadius);
     final snapRect = Rect.fromCenter(
-      center: position - Offset(ref.watch(snappingRadius), ref.watch(snappingRadius)),
+      center: position - Offset(snapR, snapR),
       // adding additional radius for snapping
-      width: size.width + (ref.watch(snappingRadius) * 2),
-      height: size.height + (ref.watch(snappingRadius) * 2),
+      width: size.width + (snapR * 2),
+      height: size.height + (snapR * 2),
     );
 
+    // Keep this every frame — it drives gaze-scroll, which relies on the rect changing.
     ref.read(currentRectStateProvider.notifier).set(rect);
-    final currentRoute = ref.read(currentRouteStateProvider);
+
+    // Gate ONLY the expensive 50-element sweep.
+    final last = _lastSweepPosition;
+    if (last != null && (position - last).distanceSquared < _sweepThresholdSq) return;
+    _lastSweepPosition = position;
+
     if (_currentGazePointerView != null) {
+      final currentRoute = ref.read(currentRouteStateProvider);
       _currentGazeViews = _getNewListOfActiveGazeElements(
         ref: ref,
         // gaze pointer is a circle with border radius of half the width/height
@@ -337,8 +370,9 @@ class GazeInteractiveState {
     required String currentRoute,
     PredicateReturnState Function(GazeShape element, GazeShape gazePointer, GazeShape gazeSnapPointer, String itemRoute, String currentRoute)? predicate,
   }) {
-    // Get bounding rect of the element
-    final elementRect = element.key.globalPaintBounds;
+    // Get bounding rect of the element. Prefer the cached bounds kept fresh by
+    // GazeBoundsReporter; fall back to recomputing if not yet measured.
+    final elementRect = element.cachedBounds ?? element.key.globalPaintBounds;
     // Get border radius of the element if available from Gaze Button => GazeSelectionAnimation
     final widget = element.key.currentContext?.widget;
     final borderRadius = widget is GazeSelectionAnimation ? widget.properties.borderRadius : BorderRadius.zero;

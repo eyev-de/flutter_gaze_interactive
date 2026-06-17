@@ -90,3 +90,27 @@ class GazeInteractiveReselectionNumberOfLetterKeysNotifier extends LocalStoreNot
   GazeInteractiveReselectionNumberOfLetterKeysNotifier(SharedPreferences sharedPreferences)
     : super(sharedPreferences, 'gazeInteractiveReselectionNumberOfLetterKeys', gazeInteractiveDefaultReselectionNumberOfLetterKeys);
 }
+
+// keyboard: font size of the characters displayed on the keys (0 == auto, see GazeKeyboardKeySizing)
+class GazeInteractiveKeyboardFontSizeLocalNotifier extends LocalStoreNotifier<double> {
+  GazeInteractiveKeyboardFontSizeLocalNotifier(SharedPreferences sharedPreferences)
+    : super(sharedPreferences, 'gazeInteractiveKeyboardFontSize', gazeInteractiveKeyboardSizeAuto);
+}
+
+// keyboard: size of the icons displayed on the keys (0 == auto, see GazeKeyboardKeySizing)
+class GazeInteractiveKeyboardIconSizeLocalNotifier extends LocalStoreNotifier<double> {
+  GazeInteractiveKeyboardIconSizeLocalNotifier(SharedPreferences sharedPreferences)
+    : super(sharedPreferences, 'gazeInteractiveKeyboardIconSize', gazeInteractiveKeyboardSizeAuto);
+}
+
+// keyboard: font size of the labels displayed on the utility buttons (0 == auto, see GazeKeyboardKeySizing)
+class GazeInteractiveKeyboardUtilityFontSizeLocalNotifier extends LocalStoreNotifier<double> {
+  GazeInteractiveKeyboardUtilityFontSizeLocalNotifier(SharedPreferences sharedPreferences)
+    : super(sharedPreferences, 'gazeInteractiveKeyboardUtilityFontSize', gazeInteractiveKeyboardSizeAuto);
+}
+
+// keyboard: size of the icons displayed on the utility buttons (0 == auto, see GazeKeyboardKeySizing)
+class GazeInteractiveKeyboardUtilityIconSizeLocalNotifier extends LocalStoreNotifier<double> {
+  GazeInteractiveKeyboardUtilityIconSizeLocalNotifier(SharedPreferences sharedPreferences)
+    : super(sharedPreferences, 'gazeInteractiveKeyboardUtilityIconSize', gazeInteractiveKeyboardSizeAuto);
+}

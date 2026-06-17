@@ -4,6 +4,8 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -56,13 +58,15 @@ class GazeKey extends ConsumerWidget {
     bool stacked,
     Color backgroundColor,
     bool disabled,
+    double fontSize,
+    double iconSize,
   ) {
     final signColor = backgroundColor.onColor(disabled: disabled);
-    final textStyle = TextStyle(fontSize: 20, color: signColor);
+    final textStyle = TextStyle(fontSize: fontSize, color: signColor);
     switch (content) {
       case final List<dynamic> list:
         if (stacked && !signs) {
-          return _GazeKeyStacked(characters: list, textStyle: textStyle, shift: shift, backgroundColor: backgroundColor);
+          return _GazeKeyStacked(characters: list, textStyle: textStyle, shift: shift, backgroundColor: backgroundColor, iconSize: iconSize);
         }
         final cntnt = (keyboardState.keyboardPlatformType == KeyboardPlatformType.mobile && keyboardState.type != KeyboardType.speak)
             ? getIOSKey(list: list, signs: signs, shift: shift)
@@ -79,12 +83,12 @@ class GazeKey extends ConsumerWidget {
             child: DefaultTextStyle.merge(style: textStyle, child: cntnt),
           );
         }
-        return _SpaceOut(child: Icon(cntnt as IconData, color: signColor, size: 25));
+        return _SpaceOut(child: Icon(cntnt as IconData, color: signColor, size: iconSize));
       case final String str:
         final _switchTo = shift && str.length == 1 && validCharacters.hasMatch(content);
         return _SpaceOut(child: Text(_switchTo ? str.toUpperCase() : str, style: textStyle));
       case final IconData icon:
-        return _SpaceOut(child: Icon(icon, color: signColor, size: 25));
+        return _SpaceOut(child: Icon(icon, color: signColor, size: iconSize));
       default:
         // This is just blank space
         return Container();
@@ -109,12 +113,31 @@ class GazeKey extends ConsumerWidget {
     // if disabled -> keyboard buttons should not be clickable (gaze interactive)
     final disabled = ref.watch(keyboardState.disableStateProvider);
 
+    // Persisted, user-adjustable size of the characters / icons shown on the keys.
+    // A value of 0 means "auto" -> resolved per key from its box further below.
+    final fontSize = ref.watch(ref.read(gazeInteractiveProvider).keyboardFontSize);
+    final iconSize = ref.watch(ref.read(gazeInteractiveProvider).keyboardIconSize);
+
     final baseColor = changeColor ? Theme.of(context).primaryColor : defaultColor;
     final baseDisabledColor = type.defaultColor(customColor: tealColor.background, fallbackColor: Colors.black);
     final finalBackgroundColor = disabled ? baseDisabledColor : baseColor;
 
-    final widget = _buildContent(context, content, shiftState, keyboardState, signsState, type, stacked, finalBackgroundColor, disabled);
-    if (widget is Container) return Flexible(flex: widthRatio.round(), child: widget); // This is just blank space
+    // Whether this cell renders a button depends only on the content/state, not on
+    // the size, so probe with the baseline sizes to detect blank (spacer) cells.
+    final probe = _buildContent(
+      context,
+      content,
+      shiftState,
+      keyboardState,
+      signsState,
+      type,
+      stacked,
+      finalBackgroundColor,
+      disabled,
+      gazeInteractiveDefaultKeyboardFontSize,
+      gazeInteractiveDefaultKeyboardIconSize,
+    );
+    if (probe is Container) return Flexible(flex: widthRatio.round(), child: probe); // This is just blank space
     return Flexible(
       flex: widthRatio.round(),
       child: Padding(
@@ -176,7 +199,30 @@ class GazeKey extends ConsumerWidget {
                     _onTap.call(null, type, ref, context);
                   }
                 },
-          child: widget,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // A configured size > 0 wins; otherwise auto-size to this key's box.
+              // Stacked keys draw two characters on top of each other, so they
+              // get a font size budgeted for two lines instead of one.
+              final resolvedFontSize = fontSize > 0
+                  ? fontSize
+                  : (stacked ? GazeKeyboardKeySizing.optimalStackedFontSize(constraints) : GazeKeyboardKeySizing.optimalFontSize(constraints));
+              final resolvedIconSize = iconSize > 0 ? iconSize : GazeKeyboardKeySizing.optimalIconSize(constraints);
+              return _buildContent(
+                context,
+                content,
+                shiftState,
+                keyboardState,
+                signsState,
+                type,
+                stacked,
+                finalBackgroundColor,
+                disabled,
+                resolvedFontSize,
+                resolvedIconSize,
+              );
+            },
+          ),
         ),
       ),
     );
@@ -204,10 +250,7 @@ class GazeKey extends ConsumerWidget {
         ref.read(keyboardState.capsLockStateProvider.notifier).set(!capsLock);
         break;
       case GazeKeyType.del:
-        // _controller.sendKeyEvent(LogicalKeyboardKey.backspace);
-        // widget.node?.requestFocus();
-        final String value = keyboardState.controller.text;
-        if (value.isNotEmpty) keyboardState.controller.insert(value.substring(0, value.length - 1), keyboardState.type, keyboardState.inputFormatters);
+        keyboardState.controller.backspace(keyboardState.inputFormatters);
         break;
       case GazeKeyType.enter:
         if (keyboardState.type == KeyboardType.editor) keyboardState.controller.insert('\n', keyboardState.type, keyboardState.inputFormatters);
@@ -256,19 +299,22 @@ class GazeKey extends ConsumerWidget {
 }
 
 class _GazeKeyStacked extends StatelessWidget {
-  const _GazeKeyStacked({required this.characters, required this.textStyle, required this.backgroundColor, this.shift = false});
+  const _GazeKeyStacked({required this.characters, required this.textStyle, required this.backgroundColor, required this.iconSize, this.shift = false});
 
   final List<dynamic> characters;
   final TextStyle textStyle;
   final bool shift;
   final Color backgroundColor;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
     if (characters.isEmpty) return Container();
-    if (characters.first is String) return KeyboardKeyStackedString(characters: characters as List<String>, shift: shift, backgroundColor: backgroundColor);
-    if (characters.first is Text) return KeyboardKeyStackedText(texts: List<Text>.from(characters), shift: shift, backgroundColor: backgroundColor);
-    if (characters.first is IconData) return KeyboardKeyStackedIcon(icons: characters as List<IconData>, shift: shift);
+    if (characters.first is String) {
+      return KeyboardKeyStackedString(characters: characters as List<String>, shift: shift, backgroundColor: backgroundColor, textStyle: textStyle);
+    }
+    if (characters.first is Text) return KeyboardKeyStackedText(texts: List<Text>.from(characters), shift: shift, backgroundColor: backgroundColor, textStyle: textStyle);
+    if (characters.first is IconData) return KeyboardKeyStackedIcon(icons: characters as List<IconData>, shift: shift, size: iconSize);
     return Container();
   }
 }
@@ -286,5 +332,98 @@ class _SpaceOut extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [child]),
       ],
     );
+  }
+}
+
+/// Computes aesthetically pleasing key content sizes from the box a key occupies.
+///
+/// Used when [GazeInteractiveState.keyboardFontSize] / `keyboardIconSize` are left
+/// at their "auto" default ([gazeInteractiveKeyboardSizeAuto], i.e. a value <= 0):
+/// the size then adapts to the actual key dimensions so the keyboard stays "big but
+/// nice" on any screen. Consumers can call it directly to preview the auto sizes.
+class GazeKeyboardKeySizing {
+  const GazeKeyboardKeySizing._();
+
+  /// Optimal font size for the characters drawn on a key of the given [constraints].
+  static double optimalFontSize(BoxConstraints constraints) => _optimal(
+    constraints,
+    heightFactor: 0.42,
+    widthFactor: 0.6,
+    min: gazeInteractiveMinKeyboardFontSize,
+    max: gazeInteractiveMaxKeyboardFontSize,
+    fallback: gazeInteractiveDefaultKeyboardFontSize,
+  );
+
+  /// Optimal font size for a *stacked* key (two characters drawn on top of
+  /// each other, e.g. `. ,` or `? !`).
+  ///
+  /// Both characters share the key height, so each line gets a smaller share of
+  /// the box than a single-content key (see [optimalFontSize]). The stacked
+  /// renderer additionally enlarges the bottom character and adds a gap between
+  /// the lines, so the budget here is deliberately conservative to leave room
+  /// for both lines plus their spacing within the key.
+  static double optimalStackedFontSize(BoxConstraints constraints) => _optimal(
+    constraints,
+    heightFactor: 0.26,
+    widthFactor: 0.5,
+    min: gazeInteractiveMinKeyboardFontSize,
+    max: gazeInteractiveMaxKeyboardFontSize,
+    fallback: gazeInteractiveDefaultKeyboardFontSize,
+  );
+
+  /// Optimal icon size for the icons drawn on a key of the given [constraints].
+  static double optimalIconSize(BoxConstraints constraints) => _optimal(
+    constraints,
+    heightFactor: 0.52,
+    widthFactor: 0.7,
+    min: gazeInteractiveMinKeyboardIconSize,
+    max: gazeInteractiveMaxKeyboardIconSize,
+    fallback: gazeInteractiveDefaultKeyboardIconSize,
+  );
+
+  /// Optimal icon size for a keyboard utility button of the given [constraints].
+  ///
+  /// Utility buttons stack an icon over a text label, so the icon gets a smaller
+  /// share of its box than a single-content key does (see [optimalIconSize]).
+  static double optimalUtilityIconSize(BoxConstraints constraints) => _optimal(
+    constraints,
+    heightFactor: 0.34,
+    widthFactor: 0.5,
+    min: gazeInteractiveMinKeyboardUtilityIconSize,
+    max: gazeInteractiveMaxKeyboardUtilityIconSize,
+    fallback: gazeInteractiveDefaultKeyboardUtilityIconSize,
+  );
+
+  /// Optimal font size for the label of a keyboard utility button of the given
+  /// [constraints].
+  ///
+  /// Utility buttons stack an icon over a text label, so the label gets a smaller
+  /// share of its box than the icon does (see [optimalUtilityIconSize]).
+  static double optimalUtilityFontSize(BoxConstraints constraints) => _optimal(
+    constraints,
+    heightFactor: 0.22,
+    widthFactor: 0.45,
+    min: gazeInteractiveMinKeyboardUtilityFontSize,
+    max: gazeInteractiveMaxKeyboardUtilityFontSize,
+    fallback: gazeInteractiveDefaultKeyboardUtilityFontSize,
+  );
+
+  /// Picks the larger size that still fits both dimensions of the key box, then
+  /// clamps it into the configured range. Falls back to the baseline when a
+  /// dimension is unbounded (e.g. inside an unconstrained test harness).
+  static double _optimal(
+    BoxConstraints constraints, {
+    required double heightFactor,
+    required double widthFactor,
+    required double min,
+    required double max,
+    required double fallback,
+  }) {
+    final candidates = <double>[
+      if (constraints.maxHeight.isFinite) constraints.maxHeight * heightFactor,
+      if (constraints.maxWidth.isFinite) constraints.maxWidth * widthFactor,
+    ];
+    if (candidates.isEmpty) return fallback;
+    return candidates.reduce(math.min).clamp(min, max).toDouble();
   }
 }
