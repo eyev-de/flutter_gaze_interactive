@@ -1,9 +1,18 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pulsator/pulsator.dart';
 
 import '../../../../api.dart';
 import '../../../core/text_editing_controller_notifier.dart';
+
+/// Safe permission probe for macOS debug. `SpeechToText.hasPermission` maps to a pure status read (`SFSpeechRecognizer.authorizationStatus()` +
+/// `AVCaptureDevice.authorizationStatus`) and never calls `requestAuthorization`, so it cannot crash. If it returns true the responsible process
+/// (terminal/IDE) is already authorized, so `initialize()` reads `.authorized` and skips the crashing prompt - the real mic can then be used even
+/// under `flutter run`. If false (the usual case, since VS Code/terminal has no speech usage description) we fall back to the info button.
+final _macOSDebugSpeechAvailableProvider = FutureProvider.autoDispose<bool>((ref) async => ref.read(keyboardSpeechToTextProvider).hasPermission);
 
 class MicrophoneButton extends GazeKeyboardUtilityButton {
   MicrophoneButton({
@@ -29,6 +38,16 @@ class MicrophoneButton extends GazeKeyboardUtilityButton {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // On macOS in debug mode, requesting the speech-recognition permission crashes the app: when launched via `flutter run` / hot reload, macOS
+    // attributes the request to the launching process (terminal/IDE), which has no usage description, and kills the app. So we first probe the
+    // already-granted status (safe, no prompt). Only if it is already authorized do we render the real mic; otherwise show an info button and never
+    // touch the speech-to-text init provider. This keeps the "VS Code already has permission" path working while preventing the crash otherwise.
+    if (kDebugMode && Platform.isMacOS) {
+      final alreadyAuthorized = ref.watch(_macOSDebugSpeechAvailableProvider).maybeWhen(data: (granted) => granted, orElse: () => false);
+      if (!alreadyAuthorized) {
+        return _MicrophoneDebugInfoButton(route: state.route, height: height, borderRadius: borderRadius);
+      }
+    }
     ref.watch(keyboardSpeechToTextStatusProvider);
     final selecting = ref.watch(state.selectingStateProvider);
     final isListening = ref.watch(keyboardSpeechToTextIsListeningProvider);
@@ -134,6 +153,41 @@ class _MicrophoneButton extends StatelessWidget {
         child: Align(
           alignment: Alignment.bottomRight,
           child: SizedBox(height: height ?? double.infinity, child: isLoading ? _loading : _icon),
+        ),
+      ),
+    );
+  }
+}
+
+/// Shown in place of the real microphone on macOS in debug mode when speech recognition is not already authorized. Tapping it explains why dictation
+/// is unavailable under `flutter run` / hot reload and how to test it (launch the standalone build). It reads no speech-to-text provider, so the
+/// speech engine never initializes and the app cannot be killed by the missing-usage-description TCC check.
+class _MicrophoneDebugInfoButton extends StatelessWidget {
+  const _MicrophoneDebugInfoButton({required this.route, this.height, this.borderRadius = const BorderRadius.all(Radius.circular(20))});
+
+  final String route;
+  final double? height;
+  final BorderRadius borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return _MicrophoneButton(
+      route: route,
+      icon: Icons.mic_off,
+      height: height,
+      borderRadius: borderRadius,
+      onTap: () => showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Microphone disabled (macOS debug)'),
+          content: const Text(
+            'Speech recognition is turned off here because the app was started via "flutter run" / hot reload.\n\n'
+            'On macOS the speech-recognition permission is attributed to the launching process (the terminal or VS Code), which has no usage '
+            'description, so requesting it would crash the app.\n\n'
+            'To test the microphone, launch the standalone build instead of using flutter run (e.g. open the built .app directly). Note that the '
+            'standalone app does not support hot reload.',
+          ),
+          actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
         ),
       ),
     );
