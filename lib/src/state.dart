@@ -331,29 +331,24 @@ class GazeInteractiveState {
     required String currentRoute,
     PredicateReturnState Function(GazeShape element, GazeShape gazePointer, GazeShape gazeSnapPointer, String elementRoute, String currentRoute)? predicate,
   }) {
-    if (currentElements.isNotEmpty) {
-      // Remove all that were left by the gaze pointer
-      currentElements.removeWhere((element) {
-        if (!_determineIfGazeElementIsLookedAt(
-          ref: ref,
-          gazePointer: gazePointer,
-          gazeSnapPointer: gazeSnapPointer,
-          element: element,
-          currentGazePointer: currentGazePointer,
-          currentRoute: currentRoute,
-          predicate: predicate,
-        )) {
-          element.onGazeLeave?.call();
-          return true;
-        }
-        return false;
-      });
-    }
-    // Do not use entries in currentElements
-    final _registeredElements = registeredElements.where((e1) => currentElements.where((e2) => e1.key == e2.key).isEmpty);
-    // Searching registeredElements for a new element
-    for (final element in _registeredElements) {
-      if (_determineIfGazeElementIsLookedAt(
+    // Re-evaluate every registered element against the current gaze pointer in a
+    // single pass and collect everything currently looked at.
+    //
+    // Forbid activating multiple gaze buttons at the same time: among the gaze-
+    // INTERACTIVE selectables under the pointer (the only ones that can fire),
+    // keep just the one overlapping the gaze pointer the most -- the others are
+    // not entered, so they neither animate nor fire `onGazed`. Re-evaluated every
+    // sample, so the dwell follows the gaze with no dead-zone.
+    //
+    // Non-interactive selectables cannot activate, so they must never compete for
+    // (and thereby starve) the dwell; they are entered freely, exactly like non-
+    // selectable elements (e.g. scrollables). This is why a lone interactive
+    // button keeps working even when a hidden/disabled selectable overlaps it.
+    final lookedAt = <GazeElementData>[];
+    double bestOverlap = -1;
+    GazeElementData? winner;
+    for (final element in registeredElements) {
+      if (!_determineIfGazeElementIsLookedAt(
         ref: ref,
         gazePointer: gazePointer,
         gazeSnapPointer: gazeSnapPointer,
@@ -362,12 +357,59 @@ class GazeInteractiveState {
         currentRoute: currentRoute,
         predicate: predicate,
       )) {
-        // New element was found
-        element.onGazeEnter?.call();
-        currentElements.add(element);
+        continue;
+      }
+      if (element.type != GazeElementType.selectable || !_isGazeInteractive(element)) {
+        lookedAt.add(element);
+        continue;
+      }
+      final overlap = _gazePointerOverlapArea(element, gazePointer.rect);
+      final isCurrent = currentElements.any((current) => current.key == element.key);
+      // Strict `>` keeps the currently dwelling button on ties, avoiding flicker
+      // when two buttons overlap the pointer equally.
+      if (overlap > bestOverlap || (overlap == bestOverlap && isCurrent)) {
+        bestOverlap = overlap;
+        winner = element;
       }
     }
+    if (winner != null) lookedAt.add(winner);
+
+    // Leave everything that is active but no longer in the looked-at set --
+    // including an interactive selectable that just lost the dwell to one with
+    // greater overlap.
+    currentElements.removeWhere((element) {
+      if (lookedAt.any((looked) => looked.key == element.key)) return false;
+      element.onGazeLeave?.call();
+      return true;
+    });
+    // Enter everything newly looked at.
+    for (final element in lookedAt) {
+      if (currentElements.any((current) => current.key == element.key)) continue;
+      element.onGazeEnter?.call();
+      currentElements.add(element);
+    }
     return currentElements;
+  }
+
+  /// Whether [element] is currently a gaze-interactive selectable. Read live from
+  /// the widget (like the border radius in [_determineIfGazeElementIsLookedAt]) so
+  /// a button that toggles interactivity (shown/hidden, enabled/disabled) is never
+  /// judged on a value cached at registration time. Defaults to `true` when the
+  /// widget is not a [GazeSelectionAnimation] or its context is not yet available.
+  static bool _isGazeInteractive(GazeElementData element) {
+    final widget = element.key.currentContext?.widget;
+    return widget is! GazeSelectionAnimation || widget.properties.gazeInteractive;
+  }
+
+  /// Area (logical px²) of the overlap between [element]'s bounds and the gaze
+  /// pointer rect. Used to pick which of several overlapping interactive
+  /// selectables wins the dwell, so only one gaze button activates at a time.
+  static double _gazePointerOverlapArea(GazeElementData element, Rect gazePointerRect) {
+    final elementRect = element.cachedBounds ?? element.key.globalPaintBounds;
+    if (elementRect == null) return 0;
+    final intersection = elementRect.intersect(gazePointerRect);
+    if (intersection.width <= 0 || intersection.height <= 0) return 0;
+    return intersection.width * intersection.height;
   }
 
   bool _determineIfGazeElementIsLookedAt({
@@ -556,8 +598,12 @@ Future<void> buttonMaybePlaySound(Ref ref, {bool defaultVolume = false}) async {
 class KeyboardSpeechToText extends _$KeyboardSpeechToText {
   @override
   SpeechToText build() {
-    ref.onDispose(() => state.stop());
-    return SpeechToText();
+    final speech = SpeechToText();
+    // Stop dictation when the provider is torn down. Use the captured instance
+    // rather than `state`: reading a provider's state inside onDispose trips a
+    // Riverpod lifecycle assertion (providers must not be touched during disposal).
+    ref.onDispose(speech.stop);
+    return speech;
   }
 
   Future<bool> init() async {
