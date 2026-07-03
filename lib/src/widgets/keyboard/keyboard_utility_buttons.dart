@@ -11,56 +11,76 @@ import '../../../api.dart';
 import '../../core/extensions.dart';
 
 class GazeKeyboardUtilityButtons extends ConsumerWidget {
-  GazeKeyboardUtilityButtons({super.key, required this.state, required this.node, this.type = KeyboardType.extended});
+  GazeKeyboardUtilityButtons({super.key, required this.state, required this.node, required this.keyWidth, this.type = KeyboardType.extended});
 
   final GazeKeyboardState state;
   final FocusNode node;
   final KeyboardType? type;
 
+  /// Width of one key of the keys grid below - every utility button is exactly one key wide.
+  final double keyWidth;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selecting = ref.watch(state.selectingStateProvider);
+    // Undo/redo below the two-key submit button, a flexible gap, the select/cursor/copy/paste/cut group below the
+    // text field, an empty key below the delete char button and delete all below the delete word button. Every button
+    // is exactly one keyboard key wide and the row spans the full screen width, aligning with the keys grid below.
     return Row(
       children: [
-        Flexible(
+        if (state.undoHistoryController != null) ...[
+          SizedBox(
+            width: keyWidth,
+            child: UndoButton(state: state, node: node),
+          ),
+          SizedBox(
+            width: keyWidth,
+            child: RedoButton(state: state, node: node),
+          ),
+        ],
+        const Spacer(),
+        SizedBox(
+          width: keyWidth,
           child: SelectButton(state: state, node: node),
         ),
-        Flexible(
+        SizedBox(
+          width: keyWidth,
           child: MoveCursorLeftButton(state: state, node: node),
         ),
-        Flexible(
+        SizedBox(
+          width: keyWidth,
           child: MoveCursorRightButton(state: state, node: node),
         ),
         if (state.onMoveCursorUp != null && state.type == KeyboardType.editor)
-          Flexible(
+          SizedBox(
+            width: keyWidth,
             child: MoveCursorUpButton(state: state, node: node),
           ),
         if (state.onMoveCursorDown != null && state.type == KeyboardType.editor)
-          Flexible(
+          SizedBox(
+            width: keyWidth,
             child: MoveCursorDownButton(state: state, node: node),
           ),
-        Flexible(
+        SizedBox(
+          width: keyWidth,
           child: CopyButton(state: state, node: node, label: selecting ? 'Copy' : 'Copy All'),
         ),
-        Flexible(
+        SizedBox(
+          width: keyWidth,
           child: PasteButton(state: state, node: node),
         ),
-        Flexible(
+        SizedBox(
+          width: keyWidth,
           child: CutButton(state: state, node: node, label: selecting ? 'Cut' : 'Cut All'),
         ),
-        if (selecting)
-          Flexible(
-            flex: 2,
-            child: DeleteButton(state: state, node: node, label: 'Select'),
-          )
-        else ...[
-          Flexible(
-            child: DeleteButton(state: state, node: node),
-          ),
-          Flexible(
-            child: DeleteWordButton(state: state, node: node),
-          ),
-        ],
+        SizedBox(
+          width: keyWidth,
+          child: DeleteWordButton(state: state, node: node),
+        ),
+        SizedBox(
+          width: keyWidth,
+          child: DeleteAllButton(controller: state.controller, node: node, route: state.route, state: state),
+        ),
       ],
     );
   }

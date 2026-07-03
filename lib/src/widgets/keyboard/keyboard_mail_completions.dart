@@ -33,9 +33,10 @@ class KeyboardMailCompletions extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // Inset by exactly one key of the keys grid below on each side, matching the text field and utility rows.
           const Spacer(),
           Flexible(
-            flex: 8,
+            flex: Keyboards.keyColumns(state) - 2,
             child: Row(
               children: completions.map((completion) => _KeyboardMailCompletion(completion: completion, state: state, node: node)).toList(),
             ),

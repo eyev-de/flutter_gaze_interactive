@@ -19,6 +19,28 @@ enum KeyboardPlatformType { mobile, desktop }
 enum KeyboardType { extended, editor, speak, email }
 
 class Keyboards {
+  /// Total flex units of the top rendered row of the keys grid (a GazeKey contributes its rounded widthRatio, a Spacer 1).
+  /// Used to inset the rows above the keys grid (text field, utility buttons, completions) by exactly one key width on each side.
+  static int keyColumns(GazeKeyboardState state) {
+    final keys = get(state.language, state);
+    // Mirror the row removal in GazeKeyboardWidget so the measured row is the one actually rendered on top.
+    if (!state.withNumbers && keys.length > 1) keys.removeAt(0);
+    var units = 0;
+    for (final element in keys.first) {
+      units += element is GazeKey ? element.widthRatio.round() : 1;
+    }
+    return units;
+  }
+
+  /// Number of key rows actually rendered for this state. Used to scale the rows above the keys grid
+  /// (text field, utility buttons, completions) to the height of one key row.
+  static int rowCount(GazeKeyboardState state) {
+    final keys = get(state.language, state);
+    // Mirror the row removal in GazeKeyboardWidget so the count matches what is rendered.
+    if (!state.withNumbers && keys.length > 1) keys.removeAt(0);
+    return keys.length;
+  }
+
   static List<List<Widget>> get(Language lang, GazeKeyboardState keyboardState) {
     switch (keyboardState.type) {
       case KeyboardType.extended:
