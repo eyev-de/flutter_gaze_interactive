@@ -19,6 +19,15 @@ class GazeKeyboardTextWidget extends StatefulWidget {
     this.onTap,
     this.maxLines = 10,
     this.minHeight = 100,
+    this.textStyle = const TextStyle(
+      fontFamily: 'Roboto',
+      color: Colors.white,
+      fontSize: 24,
+      wordSpacing: 0,
+      letterSpacing: 0,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.normal,
+    ),
   }) : super(key: key);
 
   final FocusNode node;
@@ -26,6 +35,7 @@ class GazeKeyboardTextWidget extends StatefulWidget {
   final void Function()? onTap;
   final int maxLines;
   final double minHeight;
+  final TextStyle textStyle;
   final ScrollController scrollController;
 
   @override
@@ -46,15 +56,7 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
       scrollController: widget.scrollController,
       textFieldGlobalKey: cupertinoTextFieldKey,
       textFieldPadding: const EdgeInsets.all(20),
-      textStyle: const TextStyle(
-        fontFamily: 'Roboto',
-        color: Colors.white,
-        fontSize: 24,
-        wordSpacing: 0,
-        letterSpacing: 0,
-        fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.normal,
-      ),
+      textStyle: widget.textStyle,
     );
   }
 

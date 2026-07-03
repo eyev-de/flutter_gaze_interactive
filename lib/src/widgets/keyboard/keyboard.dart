@@ -50,121 +50,92 @@ class GazeKeyboard {
         final offsetAnimation = animation.drive(tween);
         return SlideTransition(position: offsetAnimation, child: child);
       },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        const double height = 100;
-        // Paint the background across the whole screen (including the bottom
-        // safe-area inset, e.g. the home indicator) so no transparent gap shows
-        // the screen behind. The SafeArea only keeps the interactive content
-        // (keys) clear of the bottom inset.
-        return DecoratedBox(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: surfaceColor),
-          child: SafeArea(
-            top: false,
-            left: false,
-            right: false,
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const Spacer(),
-                    // Utility Buttons
-                    SizedBox(
-                      height: height,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          // Inset the utility section by ~one keyboard-key width on each
-                          // side while the keys grid below stays full width.
-                          const Spacer(),
-                          Flexible(
-                            flex: 8,
-                            child: GazeKeyboardUtilityButtons(state: state, node: node, type: state.type),
-                          ),
-                          const Spacer(),
-                        ],
-                      ),
-                    ),
-                    // Text Widget & Utility Buttons
-                    SizedBox(
-                      height: height,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          // Keep the text field row aligned with the utility section above.
-                          const Spacer(),
-                          Flexible(
-                            flex: 8,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                if (state.undoHistoryController != null) ...[
-                                  Flexible(
-                                    child: SizedBox(
-                                      height: height + 2, // Compensating the top and bottom padding
-                                      child: UndoButton(state: state, node: node),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: SizedBox(
-                                      height: height + 2, // Compensating the top and bottom padding
-                                      child: RedoButton(state: state, node: node),
-                                    ),
-                                  ),
-                                ],
-                                Flexible(
-                                  flex: 6,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-                                    // Subtract vertical padding from text field size
-                                    child: GazeKeyboardTextWidget(state: state, node: node, minHeight: height - 6, scrollController: _scrollController),
-                                  ),
-                                ),
-                                // Delete Button
-                                Flexible(
-                                  child: SizedBox(
-                                    height: height + 2, // Compensating the top and bottom padding
-                                    child: DeleteAllButton(controller: state.controller, node: node, route: state.route, label: '', state: state),
-                                  ),
-                                ),
-                                // Submit Button
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-                                    child: _GazeKeyboardCheckButton(state: state, height: height, onBack: onBack),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
-                        ],
-                      ),
-                    ),
-                    // Validation widget for the entered text – centered directly below the text field
-                    if (state.validationView != null) Center(child: state.validationView),
-                    // Mail proposals
-                    if (state.type == KeyboardType.email)
+      pageBuilder: (context, animation, secondaryAnimation) => LayoutBuilder(
+        builder: (context, constraints) {
+          // Scale everything with the display: the text field and utility rows are exactly one key row high.
+          // The screen is divided into key-row units: the keys grid takes keyRows of them, the text field and
+          // utility rows one each (plus the mail completions row for email), and the top spacer keeps two.
+          final keyRows = Keyboards.rowCount(state);
+          final contentRows = 2 + (state.type == KeyboardType.email ? 1 : 0);
+          final double height = (constraints.maxHeight - 20) / (keyRows + contentRows + 2);
+          // One key of the keys grid below: every utility button is exactly one key wide and the rows span the
+          // full screen width, aligning with the keys grid.
+          final keyColumns = Keyboards.keyColumns(state);
+          final double keyWidth = constraints.maxWidth / keyColumns;
+          // Paint the background across the whole screen (including the bottom
+          // safe-area inset, e.g. the home indicator) so no transparent gap shows
+          // the screen behind. The SafeArea only keeps the interactive content
+          // (keys) clear of the bottom inset.
+          return DecoratedBox(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: surfaceColor),
+            child: SafeArea(
+              top: false,
+              left: false,
+              right: false,
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Spacer(),
+                      // Text Widget row: submit (two keys) | text field | delete char | delete word -
+                      // full screen width, aligning with the keys grid below.
                       SizedBox(
                         height: height,
-                        child: KeyboardMailCompletions(state: state, node: node),
-                      ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20),
                         child: Row(
-                          children: [Flexible(flex: 8, child: GazeKeyboardWidget(state: state))],
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            // Submit Button - two keys wide on the left, like the speak button on the talk page
+                            SizedBox(
+                              width: 2 * keyWidth,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+                                child: _GazeKeyboardCheckButton(state: state, height: height, onBack: onBack),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+                                // Subtract vertical padding from text field size
+                                child: GazeKeyboardTextWidget(state: state, node: node, minHeight: height - 6, scrollController: _scrollController),
+                              ),
+                            ),
+                            // Delete char and delete word - right of the text field (one two-key wide delete button while selecting)
+                            _GazeKeyboardDeleteButtons(state: state, node: node, keyWidth: keyWidth, height: height),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                GazePointerView(),
-              ],
+                      // Utility Buttons - below the text field, every button one key in size, undo/redo below the submit
+                      // button and delete all below the delete word button
+                      SizedBox(
+                        height: height,
+                        child: GazeKeyboardUtilityButtons(state: state, node: node, type: state.type, keyWidth: keyWidth),
+                      ),
+                      // Validation widget for the entered text – centered directly below the text field
+                      if (state.validationView != null) Center(child: state.validationView),
+                      // Mail proposals
+                      if (state.type == KeyboardType.email)
+                        SizedBox(
+                          height: height,
+                          child: KeyboardMailCompletions(state: state, node: node),
+                        ),
+                      // Keys grid - exactly keyRows key rows high, so every row above matches one key row.
+                      SizedBox(
+                        height: keyRows * height + 20,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: GazeKeyboardWidget(state: state),
+                        ),
+                      ),
+                    ],
+                  ),
+                  GazePointerView(),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     ).then((value) {
       _isShown = !_isShown;
       onDismissed?.call(context);
@@ -193,6 +164,34 @@ class GazeKeyboard {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Delete char and delete word to the right of the text field - collapses into one two-key wide
+/// delete button while text is selected.
+class _GazeKeyboardDeleteButtons extends ConsumerWidget {
+  const _GazeKeyboardDeleteButtons({required this.state, required this.node, required this.keyWidth, required this.height});
+
+  final GazeKeyboardState state;
+  final FocusNode node;
+  final double keyWidth;
+  final double height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selecting = ref.watch(state.selectingStateProvider);
+    if (selecting) {
+      return SizedBox(
+        width: 2 * keyWidth,
+        height: height + 2, // Compensating the top and bottom padding
+        child: DeleteButton(state: state, node: node, label: 'Select'),
+      );
+    }
+    return SizedBox(
+      width: 2 * keyWidth,
+      height: height + 2, // Compensating the top and bottom padding
+      child: DeleteButton(state: state, node: node),
     );
   }
 }
