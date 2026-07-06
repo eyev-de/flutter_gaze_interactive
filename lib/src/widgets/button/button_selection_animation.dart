@@ -287,6 +287,10 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   );
 
   void _register() {
+    // Programmatic activation used by external drivers (e.g. snap-to-item):
+    // fires the same tap a completed gaze selection would, regardless of the
+    // gazeInteractive gate (the driver owns the dwell in that case).
+    _data.onActivate = () => widget.onGazed?.call();
     ref.read(gazeInteractiveProvider).register(_data);
   }
 }
