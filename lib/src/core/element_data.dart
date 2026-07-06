@@ -39,6 +39,12 @@ final class GazeElementData {
   /// element on every gaze sample. `null` until first measured (the hit-test
   /// falls back to recomputing in that case).
   Rect? cachedBounds;
+
+  /// Programmatic activation hook: triggers the element's tap action exactly
+  /// like a completed gaze selection would, bypassing the gaze animation and
+  /// the `gazeInteractive` gate. Set by the owning widget (e.g. the button
+  /// selection animation); used by external drivers such as snap-to-item.
+  void Function()? onActivate;
 }
 
 final class GazeSelectableData extends GazeElementData {
