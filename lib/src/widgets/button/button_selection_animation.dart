@@ -132,6 +132,25 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   }
 
   @override
+  void didUpdateWidget(covariant GazeSelectionAnimation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // The State is preserved across rebuilds (stable GlobalKey), so a tween
+    // built once in initState freezes its begin/end colors. When the wrapped
+    // button changes its background/animation color (e.g. a toggle button
+    // flipping between active and inactive), rebuild the tween so the fade
+    // animation paints the current colors instead of the stale initial ones.
+    if (oldWidget.properties.backgroundColor !=
+            widget.properties.backgroundColor ||
+        oldWidget.properties.animationColor !=
+            widget.properties.animationColor) {
+      _colorTween = ColorTween(
+        begin: widget.properties.backgroundColor,
+        end: widget.properties.animationColor,
+      ).animate(_controller);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref
       ..listen(ref.read(gazeInteractiveProvider).duration, (previous, next) {
