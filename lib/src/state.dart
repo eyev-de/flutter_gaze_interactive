@@ -96,6 +96,12 @@ class GazeInteractiveState {
       gazeView.onGazeLeave?.call();
     }
     _currentGazeViews.clear();
+    // Force the next sample to re-run the element sweep. Without this, the
+    // movement gate in onPointerMove keeps a steady fixation (smoothed gaze
+    // drifting < 4px) from ever re-entering the element it was just forced to
+    // leave -- e.g. after a blink trips the 100ms idle timeout, the element
+    // under the unchanged gaze position would stay dead until the gaze moves.
+    _lastSweepPosition = null;
   }
 
   final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
@@ -279,6 +285,12 @@ class GazeInteractiveState {
 
   Offset? _lastSweepPosition;
   static const double _sweepThresholdSq = 16; // 4px, squared
+  // Upper bound on how long the movement gate may suppress the sweep: elements
+  // can appear, disappear or toggle interactivity under a perfectly still gaze
+  // (dialogs opening, hidden targets becoming visible), so re-sweep
+  // periodically even without movement.
+  static const int _sweepMaxAgeMs = 200;
+  final Stopwatch _sweepAge = Stopwatch()..start();
 
   /// Internal endpoint
   /// DO NOT USE
@@ -302,8 +314,9 @@ class GazeInteractiveState {
 
     // Gate ONLY the expensive 50-element sweep.
     final last = _lastSweepPosition;
-    if (last != null && (position - last).distanceSquared < _sweepThresholdSq) return;
+    if (last != null && (position - last).distanceSquared < _sweepThresholdSq && _sweepAge.elapsedMilliseconds < _sweepMaxAgeMs) return;
     _lastSweepPosition = position;
+    _sweepAge.reset();
 
     if (_currentGazePointerView != null) {
       final currentRoute = ref.read(currentRouteStateProvider);
