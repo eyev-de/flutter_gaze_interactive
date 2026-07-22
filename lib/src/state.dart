@@ -104,6 +104,26 @@ class GazeInteractiveState {
     _lastSweepPosition = null;
   }
 
+  /// Drops every registered element's cached paint bounds so the next sweep
+  /// recomputes them live from the render tree (`globalPaintBounds`).
+  ///
+  /// Called on every ScrollNotification (see GazeContext): scrolling moves
+  /// list items WITHOUT repainting them -- items sit behind RepaintBoundaries
+  /// (ListView's addRepaintBoundaries default) whose retained layers are just
+  /// re-offset, and pure scrolling re-runs neither their layout (identical
+  /// constraints short-circuit) nor their paint. GazeBoundsReporter reports
+  /// only on paint, so without this the cached bounds would keep the
+  /// pre-scroll positions and gaze would hit-test against stale rects.
+  /// The cache refills naturally on each element's next real paint.
+  void invalidateBounds() {
+    for (final element in _registeredGazeViews) {
+      element.cachedBounds = null;
+    }
+    // Scrolling moves elements under a potentially still gaze -- bypass the
+    // movement gate so the next sample re-sweeps against the fresh bounds.
+    _lastSweepPosition = null;
+  }
+
   final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
   GazePointerData? _currentGazePointerView;
 

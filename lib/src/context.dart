@@ -54,6 +54,17 @@ class _GazeContextState extends ConsumerState<_GazeContext> {
         // Only clear if route really changes and is not empty
         if (prev != null && next.isNotEmpty && prev != next) widget.state.leaveAllGazeViews();
       });
-    return widget.child;
+    // Any scroll anywhere in the app moves gaze elements without repainting
+    // them (retained RepaintBoundary layers are only re-offset), which would
+    // leave GazeBoundsReporter's cached bounds at the pre-scroll positions.
+    // Invalidate the cache so the gaze sweep hit-tests against live bounds
+    // until the elements repaint.
+    return NotificationListener<ScrollNotification>(
+      onNotification: (_) {
+        widget.state.invalidateBounds();
+        return false;
+      },
+      child: widget.child,
+    );
   }
 }
