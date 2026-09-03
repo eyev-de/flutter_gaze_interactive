@@ -69,10 +69,14 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
   void _autoScroll() {
     // delay necessary since the listener is called multiple times
     Future.delayed(const Duration(milliseconds: 200), () {
+      // The keyboard can be gone by now - closed within the delay window (submit or dismiss right after a keystroke).
+      // The scroll view is disposed then, and reading the controller would throw the "not attached to any scroll views"
+      // assertion as an uncaught async error.
+      if (!mounted || !widget.scrollController.hasClients) return;
       final textOffset = widget.state.controller.selection.baseOffset;
       if (textOffset <= 0) return;
       final offset = scrollCalculator.calcScrollOffset();
-      if (offset != null) {
+      if (offset != null && widget.scrollController.hasClients) {
         widget.scrollController.animateTo(offset, duration: const Duration(milliseconds: 200), curve: Curves.fastOutSlowIn);
       }
     });

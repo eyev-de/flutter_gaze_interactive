@@ -31,13 +31,22 @@ enum GazeScrollableIndicatorSize {
 }
 
 class GazeScrollable extends StatelessWidget {
-  GazeScrollable({Key? key, required this.route, required this.child, required this.controller, this.indicatorSize = GazeScrollableIndicatorSize.medium})
-    : super(key: key);
+  GazeScrollable({
+    Key? key,
+    required this.route,
+    required this.child,
+    required this.controller,
+    this.indicatorSize = GazeScrollableIndicatorSize.medium,
+    this.axis = Axis.vertical,
+  }) : super(key: key);
 
   final String route;
   final Widget child;
   final ScrollController controller;
   final GazeScrollableIndicatorSize indicatorSize;
+
+  /// Scroll direction. Vertical dwells at the top/bottom edge of the child, horizontal at the left/right edge.
+  final Axis axis;
 
   final GlobalKey gazeInteractiveKey = GlobalKey();
 
@@ -47,8 +56,10 @@ class GazeScrollable extends StatelessWidget {
       route: route,
       controller: controller,
       wrappedKey: gazeInteractiveKey,
-      indicatorWidth: indicatorSize.size.width,
-      indicatorHeight: indicatorSize.size.height,
+      axis: axis,
+      // The indicator is a capsule lying across the scroll edge: wide and flat at the top/bottom, tall and narrow on the sides.
+      indicatorWidth: axis == Axis.vertical ? indicatorSize.size.width : indicatorSize.size.height,
+      indicatorHeight: axis == Axis.vertical ? indicatorSize.size.height : indicatorSize.size.width,
       indicatorInnerPadding: indicatorSize.padding,
       child: child,
     );

@@ -20,6 +20,9 @@ class ScrollCalculator {
   final bool isZoomed;
 
   double? calcScrollOffset() {
+    // No scroll view attached (keyboard mid-teardown or the field not laid out yet): nothing to scroll, and reading
+    // `offset` would assert.
+    if (!scrollController.hasClients) return null;
     // do not try to scroll if already at max scroll extent
     final double scrollOffset = scrollController.offset;
 
