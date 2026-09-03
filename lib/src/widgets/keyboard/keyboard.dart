@@ -41,7 +41,10 @@ class GazeKeyboard {
     return showGeneralDialog(
       context: context,
       barrierColor: Colors.transparent,
-      barrierDismissible: true,
+      // Deliberately NOT barrierDismissible (the default): the keyboard fills the whole screen, so the barrier is only
+      // reachable by accident - the four rounded corners of the background (a BoxDecoration with a borderRadius does not
+      // hit-test its corners), the slide-in animation window, and a hardware keyboard's Escape key. Every one of those
+      // closed the keyboard mid-typing without the user asking for it.
       barrierLabel: 'KEYBOARD',
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0, 1);
@@ -77,7 +80,12 @@ class GazeKeyboard {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const Spacer(),
+                      // The area above the text row is otherwise empty; the app can put a header there (state.headerView,
+                      // e.g. the message being answered). Bottom-aligned so it sits directly over the text field, inside
+                      // the room the spacer had - the keyboard's own rows never move because of it.
+                      Expanded(
+                        child: state.headerView == null ? const SizedBox.shrink() : Align(alignment: Alignment.bottomCenter, child: state.headerView),
+                      ),
                       // Text Widget row: submit (two keys) | text field | delete char | delete word -
                       // full screen width, aligning with the keys grid below.
                       SizedBox(
@@ -119,12 +127,17 @@ class GazeKeyboard {
                           height: height,
                           child: KeyboardMailCompletions(state: state, node: node),
                         ),
-                      // Keys grid - exactly keyRows key rows high, so every row above matches one key row.
+                      // Keys grid - exactly keyRows key rows high, so every row above matches one key row. The app can
+                      // swap the grid for a view of its own (state.keysOverride, e.g. an emoji keyboard) in the same box.
                       SizedBox(
                         height: keyRows * height + 20,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 20),
-                          child: GazeKeyboardWidget(state: state),
+                          child: ValueListenableBuilder<Widget?>(
+                            valueListenable: state.keysOverride,
+                            builder: (context, override, keys) => override ?? keys!,
+                            child: GazeKeyboardWidget(state: state),
+                          ),
                         ),
                       ),
                     ],

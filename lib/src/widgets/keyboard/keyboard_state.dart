@@ -35,6 +35,7 @@ class GazeKeyboardState {
     KeyboardPlatformType? selectedKeyboardPlatformType,
     this.inputFormatters = const [],
     this.validationView,
+    this.headerView,
   }) : keyboardPlatformType = selectedKeyboardPlatformType ?? getPlatformFromSystem();
 
   final TextEditingController controller;
@@ -73,4 +74,13 @@ class GazeKeyboardState {
 
   // Validation widget for the entered text – centered directly below the text field
   final Widget? validationView;
+
+  // App-provided widget shown in the otherwise empty area ABOVE the text field (e.g. the message being answered on a
+  // messaging compose page). Bottom-aligned onto the text row; it gets the space the top spacer had, so the keyboard's own
+  // rows never move because of it.
+  final Widget? headerView;
+
+  // Replaces the keys grid with an app-provided view while non-null (e.g. an emoji keyboard) - same box, same height:
+  // everything above (text field, utility row, validation view) stays exactly where it is. Swappable at runtime.
+  final ValueNotifier<Widget?> keysOverride = ValueNotifier<Widget?>(null);
 }

@@ -48,6 +48,7 @@ class GazeScrollableImpl extends ConsumerStatefulWidget {
     required this.indicatorWidth,
     required this.indicatorHeight,
     required this.indicatorInnerPadding,
+    this.axis = Axis.vertical,
   }) : super(key: wrappedKey);
 
   final String route;
@@ -57,6 +58,7 @@ class GazeScrollableImpl extends ConsumerStatefulWidget {
   final double indicatorWidth;
   final double indicatorHeight;
   final EdgeInsets indicatorInnerPadding;
+  final Axis axis;
 
   @override
   _GazeScrollableImplState createState() => _GazeScrollableImplState();
@@ -155,38 +157,45 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
   Future<void> _calculate(Rect rect) async {
     final bounds = widget.wrappedKey.globalPaintBounds;
     if (bounds == null) return;
-    // calculate top area in which scrolling happens
-    final tempTop = Rect.fromLTRB(bounds.left, bounds.top, bounds.right, bounds.top + bounds.height * scrollArea);
-    // calculate bottom area in which scrolling happens
-    final tempBottom = Rect.fromLTRB(bounds.left, bounds.bottom - bounds.height * scrollArea, bounds.right, bounds.bottom);
+    final vertical = widget.axis == Axis.vertical;
+    // calculate the area at the start of the scroll direction (top / left) in which scrolling back happens
+    final tempBack = vertical
+        ? Rect.fromLTRB(bounds.left, bounds.top, bounds.right, bounds.top + bounds.height * scrollArea)
+        : Rect.fromLTRB(bounds.left, bounds.top, bounds.left + bounds.width * scrollArea, bounds.bottom);
+    // calculate the area at the end of the scroll direction (bottom / right) in which scrolling forward happens
+    final tempForward = vertical
+        ? Rect.fromLTRB(bounds.left, bounds.bottom - bounds.height * scrollArea, bounds.right, bounds.bottom)
+        : Rect.fromLTRB(bounds.right - bounds.width * scrollArea, bounds.top, bounds.right, bounds.bottom);
+    // extent of the scroll areas along the scroll direction
+    final double areaExtent = vertical ? tempBack.height : tempBack.width;
 
     final double maxScrollSpeed = ref.read(ref.read(gazeInteractiveProvider).scrollFactor);
     // final double maxScrollSpeed = widget.gazeInteractive.scrollFactor;
     final _upIndicatorState = ref.read(_upIndicatorProvider);
     final _downIndicatorState = ref.read(_downIndicatorProvider);
-    if (tempTop.overlaps(rect)) {
-      // In top area
+    if (tempBack.overlaps(rect)) {
+      // In top / left area
       if (widget.controller.offset == 0) return;
       if (_downIndicatorState != GazeScrollableIndicatorState.visible || _upIndicatorState != GazeScrollableIndicatorState.active) {
         ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.visible);
         ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.active);
       }
       // calculate scrolling factor
-      final double factor = (tempTop.bottom - rect.topCenter.dy) / tempTop.height * maxScrollSpeed;
+      final double factor = (vertical ? tempBack.bottom - rect.topCenter.dy : tempBack.right - rect.centerLeft.dx) / areaExtent * maxScrollSpeed;
       // calculate new scrolling offset
       final double offset = widget.controller.offset - factor < 0 ? 0 : widget.controller.offset - factor;
       _animating = true;
       await widget.controller.position.animateTo(offset, duration: const Duration(milliseconds: 60), curve: Curves.ease);
       _animating = false;
-    } else if (tempBottom.overlaps(rect)) {
-      // In bottom area;
+    } else if (tempForward.overlaps(rect)) {
+      // In bottom / right area;
       if (widget.controller.position.atEdge && widget.controller.position.pixels > 0) return;
       if (_downIndicatorState != GazeScrollableIndicatorState.active || _upIndicatorState != GazeScrollableIndicatorState.visible) {
         ref.read(_downIndicatorProvider.notifier).set(GazeScrollableIndicatorState.active);
         ref.read(_upIndicatorProvider.notifier).set(GazeScrollableIndicatorState.visible);
       }
       // calculate scrolling factor
-      final double factor = (rect.bottomCenter.dy - tempBottom.top) / tempTop.height * maxScrollSpeed;
+      final double factor = (vertical ? rect.bottomCenter.dy - tempForward.top : rect.centerRight.dx - tempForward.left) / areaExtent * maxScrollSpeed;
       // calculate new scrolling offset
       final double offset = widget.controller.offset + factor > widget.controller.position.maxScrollExtent
           ? widget.controller.position.maxScrollExtent
@@ -216,11 +225,26 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
         alignment: AlignmentDirectional.topCenter,
         children: [
           widget.child,
-          Positioned(
-            bottom: 0,
-            child: _ArrowButton(size: size, type: ArrowButtonType.down, state: downIndicatorState, route: widget.route, padding: widget.indicatorInnerPadding),
+          Align(
+            alignment: widget.axis == Axis.vertical ? Alignment.bottomCenter : Alignment.centerRight,
+            child: _ArrowButton(
+              size: size,
+              type: widget.axis == Axis.vertical ? ArrowButtonType.down : ArrowButtonType.right,
+              state: downIndicatorState,
+              route: widget.route,
+              padding: widget.indicatorInnerPadding,
+            ),
           ),
-          _ArrowButton(size: size, type: ArrowButtonType.up, state: upIndicatorState, route: widget.route, padding: widget.indicatorInnerPadding),
+          Align(
+            alignment: widget.axis == Axis.vertical ? Alignment.topCenter : Alignment.centerLeft,
+            child: _ArrowButton(
+              size: size,
+              type: widget.axis == Axis.vertical ? ArrowButtonType.up : ArrowButtonType.left,
+              state: upIndicatorState,
+              route: widget.route,
+              padding: widget.indicatorInnerPadding,
+            ),
+          ),
         ],
       ),
     );
@@ -229,17 +253,24 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
 
 enum ArrowButtonType {
   up,
-  down;
+  down,
+  left,
+  right;
 
   IconData get icon => switch (this) {
     ArrowButtonType.up => Icons.arrow_upward,
     ArrowButtonType.down => Icons.arrow_downward,
+    ArrowButtonType.left => Icons.arrow_back,
+    ArrowButtonType.right => Icons.arrow_forward,
   };
 
+  // Rounded away from the edge the arrow sits on.
   BorderRadius get borderRadius {
     return switch (this) {
       ArrowButtonType.up => const BorderRadius.only(bottomLeft: Radius.circular(100), bottomRight: Radius.circular(100)),
       ArrowButtonType.down => const BorderRadius.only(topLeft: Radius.circular(100), topRight: Radius.circular(100)),
+      ArrowButtonType.left => const BorderRadius.only(topRight: Radius.circular(100), bottomRight: Radius.circular(100)),
+      ArrowButtonType.right => const BorderRadius.only(topLeft: Radius.circular(100), bottomLeft: Radius.circular(100)),
     };
   }
 }
