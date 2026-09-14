@@ -38,6 +38,23 @@ extension GazePointerValidationExtension on BuildContext {
 }
 
 extension TextEditingControllerExtension on TextEditingController {
+  /// The offset of the grapheme boundary before [offset] (0 at the start). Cursor moves and deletions step by grapheme
+  /// cluster, never by UTF-16 code unit: an emoji is two code units and often more, and an offset between them makes the
+  /// text ill-formed, which breaks the field's layout for good.
+  int graphemeBefore(int offset) {
+    final clamped = offset.clamp(0, text.length);
+    if (clamped <= 0) return 0;
+    return text.substring(0, clamped).characters.skipLast(1).toString().length;
+  }
+
+  /// The offset of the grapheme boundary after [offset] (the text length at the end).
+  int graphemeAfter(int offset) {
+    final clamped = offset.clamp(0, text.length);
+    if (clamped >= text.length) return text.length;
+    final rest = text.substring(clamped).characters;
+    return rest.isEmpty ? text.length : clamped + rest.first.length;
+  }
+
   void insert(String value, KeyboardType type, List<TextInputFormatter> inputFormatters) {
     final currentText = text;
     final sel = selection;
@@ -77,7 +94,7 @@ extension TextEditingControllerExtension on TextEditingController {
       newText = before + value + after;
       caretAfter = before.length + value.length;
     } else {
-      final start = (caret == rangeEnd ? caret - 1 : caret).clamp(0, currentText.length);
+      final start = (caret == rangeEnd ? graphemeBefore(caret) : caret).clamp(0, currentText.length);
       newText = currentText.replaceRange(start, rangeEnd, value);
       caretAfter = start + value.length;
     }
@@ -112,7 +129,10 @@ extension TextEditingControllerExtension on TextEditingController {
       // selection is invalid (-1) treat the caret as the end of the text.
       final caret = sel.isValid ? sel.baseOffset.clamp(0, currentText.length) : currentText.length;
       if (caret <= 0) return;
-      start = caret - 1;
+      // One grapheme cluster, not one UTF-16 code unit: an emoji is a surrogate pair (more with skin tones and ZWJ
+      // sequences), and `caret - 1` left half of it behind - a string that is no longer well-formed UTF-16, which every
+      // text layout of the field then threw on, frame after frame (measured 2026-09-14, WhatsApp compose keyboard).
+      start = graphemeBefore(caret);
       end = caret;
     }
 
@@ -177,10 +197,11 @@ extension TextEditingControllerExtension on TextEditingController {
   void moveCursorLeft({bool selecting = false}) {
     int baseOffset = selection.baseOffset;
     int extentOffset = selection.extentOffset;
+    // Grapheme steps, so the caret can never land inside an emoji's surrogate pair (see backspace).
     if (selecting) {
-      extentOffset = selection.extentOffset + 1 > text.length ? text.length : selection.extentOffset + 1;
+      extentOffset = graphemeAfter(selection.extentOffset);
     } else {
-      baseOffset = extentOffset = selection.extentOffset + 1 > text.length ? text.length : selection.extentOffset + 1;
+      baseOffset = extentOffset = graphemeAfter(selection.extentOffset);
     }
     value = TextEditingValue(
       text: text,
@@ -192,9 +213,9 @@ extension TextEditingControllerExtension on TextEditingController {
     int baseOffset = selection.baseOffset;
     int extentOffset = selection.extentOffset;
     if (selecting) {
-      baseOffset = selection.baseOffset - 1 < 0 ? 0 : selection.baseOffset - 1;
+      baseOffset = graphemeBefore(selection.baseOffset);
     } else {
-      baseOffset = extentOffset = selection.baseOffset - 1 < 0 ? 0 : selection.baseOffset - 1;
+      baseOffset = extentOffset = graphemeBefore(selection.baseOffset);
     }
     value = TextEditingValue(
       text: text,

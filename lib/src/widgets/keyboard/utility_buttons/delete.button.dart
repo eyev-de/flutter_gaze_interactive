@@ -39,7 +39,10 @@ class DeleteButton extends GazeKeyboardUtilityButton {
               if (state.controller.text.isNotEmpty) {
                 var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
                 final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-                startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
+                // One grapheme cluster back, not one code unit: an emoji is a surrogate pair, and `startIndex - 1` left half of
+                // it standing as a broken glyph that took a second press to go (user report 2026-09-14). This button has its
+                // own delete path (it reports the deleted text through onKey), so it needs the same care backspace() takes.
+                startIndex = selection.baseOffset == selection.extentOffset ? state.controller.graphemeBefore(startIndex) : startIndex;
                 if (startIndex.isNegative) startIndex = 0;
                 deletedText = state.controller.text.substring(startIndex, endIndex);
                 state.controller
