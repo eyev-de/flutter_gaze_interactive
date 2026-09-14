@@ -216,23 +216,61 @@ class _GazeKeyboardCheckButton extends ConsumerWidget {
   final GazeKeyboardState state;
   final void Function(BuildContext)? onBack;
 
+  void _onTap(BuildContext context, WidgetRef ref) {
+    ref.read(state.disableStateProvider.notifier).set(false);
+    ref.read(keyboardSpeechToTextProvider.notifier).stop();
+    onBack?.call(context);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final label = state.submitLabel;
+    // Without a label the button stays exactly what it always was: a bare icon, sized by the button itself.
+    if (label == null) {
+      return SizedBox(
+        height: height,
+        child: GazeButton(
+          onTap: () => _onTap(context, ref),
+          color: tealColor,
+          properties: GazeButtonProperties(
+            innerPadding: const EdgeInsets.all(0),
+            icon: Icon(state.submitIcon, color: surfaceColor),
+            direction: Axis.horizontal,
+            route: state.route,
+          ),
+        ),
+      );
+    }
+    // With a label the button mirrors the utility row: same configured-size-wins-over-auto rule, same sizing helpers,
+    // so icon and text match the buttons right below it instead of introducing a second scale (user decision 2026-09-14).
+    final configuredFontSize = ref.watch(ref.read(gazeInteractiveProvider).keyboardUtilityFontSize);
+    final configuredIconSize = ref.watch(ref.read(gazeInteractiveProvider).keyboardUtilityIconSize);
     return SizedBox(
       height: height,
-      child: GazeButton(
-        onTap: () {
-          ref.read(state.disableStateProvider.notifier).set(false);
-          ref.read(keyboardSpeechToTextProvider.notifier).stop();
-          onBack?.call(context);
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final iconSize = configuredIconSize > 0 ? configuredIconSize : GazeKeyboardKeySizing.optimalUtilityIconSize(constraints);
+          final fontSize = configuredFontSize > 0 ? configuredFontSize : GazeKeyboardKeySizing.optimalUtilityFontSize(constraints);
+          return GazeButton(
+            onTap: () => _onTap(context, ref),
+            color: tealColor,
+            properties: GazeButtonProperties(
+              innerPadding: const EdgeInsets.all(0),
+              icon: Icon(state.submitIcon, color: surfaceColor, size: iconSize),
+              // Scale down only, so a long translation shrinks instead of overflowing the two-key wide button.
+              text: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: TextStyle(color: surfaceColor, fontSize: fontSize),
+                ),
+              ),
+              // Icon over text (the default direction), the way every labelled utility button on this keyboard is built
+              // (user decision 2026-09-14 - side by side, the label was cut off next to the icon).
+              route: state.route,
+            ),
+          );
         },
-        color: tealColor,
-        properties: GazeButtonProperties(
-          innerPadding: const EdgeInsets.all(0),
-          icon: const Icon(Icons.check, color: surfaceColor),
-          direction: Axis.horizontal,
-          route: state.route,
-        ),
       ),
     );
   }
