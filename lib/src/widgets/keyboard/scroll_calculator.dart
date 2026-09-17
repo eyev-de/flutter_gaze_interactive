@@ -22,9 +22,9 @@ class ScrollCalculator {
   double? calcScrollOffset() {
     // No scroll view attached (keyboard mid-teardown or the field not laid out yet): nothing to scroll, and reading
     // `offset` would assert.
-    if (!scrollController.hasClients) return null;
-    // do not try to scroll if already at max scroll extent
+    if (!scrollController.hasClients || !scrollController.position.hasContentDimensions) return null;
     final double scrollOffset = scrollController.offset;
+    final double maxScrollExtent = scrollController.position.maxScrollExtent;
 
     double? textFieldWidth = textFieldGlobalKey.currentContext?.size?.width;
     double? textFieldHeight = textFieldGlobalKey.currentContext?.size?.height;
@@ -51,8 +51,8 @@ class ScrollCalculator {
     final numLinesToCursor = lm.length;
     tp.layout(minWidth: textFieldWidth, maxWidth: textFieldWidth);
     final double lineHeight = tp.computeLineMetrics()[0].height;
-    // how many lines are hidden because of scrollOffset
-    final int linesBeforeView = (scrollOffset / lineHeight).ceil();
+    // how many lines are hidden because of scrollOffset (the top padding scrolls away first, before any line does)
+    final int linesBeforeView = max(0, ((scrollOffset - textFieldPadding.top) / lineHeight).ceil());
     // how many lines fit into text field view on any scroll positions
     final double linesInView = textFieldHeight / lineHeight;
     // Cursor in view do nothing
@@ -60,6 +60,11 @@ class ScrollCalculator {
 
     // scroll to cursor on the bottom of view
     final double ret = (numLinesToCursor * lineHeight) - textFieldHeight;
-    return ret > 0 ? ret : 0;
+    // The line count is an estimate (deliberately narrower layout width, plain text style), so near the end of the text the
+    // target can exceed the real content height. Animating past maxScrollExtent lets iOS' bouncing physics rubber-band the
+    // whole text up and back on every keystroke - clamp to the real range and skip scrolls that would not move anything.
+    final double target = ret.clamp(0.0, maxScrollExtent).toDouble();
+    if ((target - scrollOffset).abs() < 0.5) return null;
+    return target;
   }
 }
