@@ -54,6 +54,11 @@ class GazeInteractiveState {
 
   PredicateReturnState Function(GazeShape element, GazeShape gazePointer, GazeShape gazeSnapPointer, String itemRoute, String currentRoute)? predicate;
 
+  /// Optional look of the passive gaze pointer (the default [GazePointerType]). Called with the
+  /// pointer's diameter and color; returning null keeps the built-in filled circle. The snap timer
+  /// shake and the pointer opacity are applied around whatever it returns.
+  Widget? Function(BuildContext context, WidgetRef ref, double size, Color color)? passivePointerBuilder;
+
   String get currentRoute => ref.read(currentRouteStateProvider);
 
   set currentRoute(String value) {
