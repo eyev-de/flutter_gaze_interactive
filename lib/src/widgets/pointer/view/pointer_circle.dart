@@ -57,12 +57,13 @@ class PointerCircle extends ConsumerWidget {
       );
     }
     final snapState = ref.watch(snappingStateProvider);
+    final custom = type == GazePointerType.passive ? ref.read(gazeInteractiveProvider).passivePointerBuilder?.call(context, ref, size, color) : null;
     if (snapState == SnapState.inSnapTimer) {
       return ShakeWidget(
         duration: Duration(milliseconds: ref.read(ref.read(gazeInteractiveProvider).snappingTimerMilliseconds)),
         shakeConstant: ShakeDefaultConstant1(),
         autoPlay: true,
-        child: Container(
+        child: custom ?? Container(
           width: size,
           height: size,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
@@ -70,6 +71,7 @@ class PointerCircle extends ConsumerWidget {
         ),
       );
     }
+    if (custom != null) return custom;
     return Container(
       width: size,
       height: size,
