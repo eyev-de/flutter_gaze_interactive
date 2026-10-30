@@ -281,6 +281,11 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
       SchedulerBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           setState(() => gazeIn = true);
+          // Every new look starts a fresh reselection series: a count left
+          // over from an earlier visit (gaze left before the series ended)
+          // would otherwise cut the next series short - a single tap left the
+          // count at 1, so holding the key next time fired only once.
+          _reselectionCount = 0;
           _duration =
               widget.properties.durationMs ??
               ref.read(ref.read(gazeInteractiveProvider).duration);
