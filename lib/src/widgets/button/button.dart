@@ -37,6 +37,7 @@ class GazeButtonProperties {
     this.reselectable = false,
     this.withSound = false,
     this.snappable = true,
+    this.adaptiveForeground = false,
   });
 
   final String route;
@@ -62,6 +63,10 @@ class GazeButtonProperties {
   final bool reselectable;
   final bool snappable;
   final bool withSound;
+
+  /// Fade animation only: text and icon color follow the fading background (see [GazeSelectionAnimationProperties.adaptiveForeground]). The
+  /// button's own default white text color is dropped for it, an explicit color on [text] / [icon] still wins.
+  final bool adaptiveForeground;
 }
 
 class GazeButton extends ConsumerStatefulWidget {
@@ -127,6 +132,7 @@ class _GazeButtonState extends ConsumerState<GazeButton> {
         reselectable: properties.reselectable,
         reselectableCount: properties.reselectableCount,
         snappable: properties.snappable,
+        adaptiveForeground: properties.adaptiveForeground,
       ),
     );
   }
@@ -228,7 +234,12 @@ class _ButtonChild extends StatelessWidget {
               child: DefaultTextStyle.merge(
                 style: Theme.of(
                   context,
-                ).primaryTextTheme.bodyLarge?.copyWith(color: Colors.white),
+                ).primaryTextTheme.bodyLarge?.copyWith(
+                  // Adaptive: take over the foreground the selection animation merged into the DefaultTextStyle instead of forcing white.
+                  color: properties.adaptiveForeground
+                      ? DefaultTextStyle.of(context).style.color
+                      : Colors.white,
+                ),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: properties.maxTextLines,
