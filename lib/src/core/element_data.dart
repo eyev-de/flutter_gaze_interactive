@@ -76,4 +76,8 @@ final class GazePointerData extends GazeElementData {
   }) : super(type: GazeElementType.pointer);
   Function(Offset, Size)? onPointerMove;
   void Function()? onIdle;
+
+  /// Whether the route the pointer view sits on is still active; null = always. A popped route is no longer active while its exit transition
+  /// still runs, so its pointer stops receiving the gaze at once (see `GazeInteractiveState`).
+  bool Function()? isOnActiveRoute;
 }
