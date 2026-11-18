@@ -95,12 +95,19 @@ class GazeInteractiveState {
   final List<GazeElementData> _registeredGazeViews = [];
   List<GazeElementData> _currentGazeViews = [];
 
+  /// Keys of the selectables in [_currentGazeViews] that were entered while NOT gaze interactive (entered freely, see
+  /// [_getNewListOfActiveGazeElements]). Such an element runs no dwell that can fire; when it turns interactive while still looked at (e.g. the
+  /// previously selected option of a slider becomes selectable again once a neighbour was picked), it is left and entered again so its dwell
+  /// starts. Without this it stayed dead until the gaze left it completely.
+  final Set<GlobalKey> _enteredNonInteractive = {};
+
   void leaveAllGazeViews() {
     logger?.i('Leaving ${_currentGazeViews.length} gaze views...');
     for (final gazeView in _currentGazeViews) {
       gazeView.onGazeLeave?.call();
     }
     _currentGazeViews.clear();
+    _enteredNonInteractive.clear();
     // Force the next sample to re-run the element sweep. Without this, the
     // movement gate in onPointerMove keeps a steady fixation (smoothed gaze
     // drifting < 4px) from ever re-entering the element it was just forced to
@@ -130,7 +137,16 @@ class GazeInteractiveState {
   }
 
   final ListQueue<GazePointerData> _listOfGazePointerViews = ListQueue<GazePointerData>();
-  GazePointerData? _currentGazePointerView;
+
+  /// The pointer view that receives the gaze: the most recently registered one whose route is still active. A page with its own pointer that is
+  /// being popped stays registered until its exit transition has finished; it is skipped right away, so the pointer below takes over the gaze
+  /// immediately instead of only after the transition (the gaze used to drive the invisible, sliding-out pointer meanwhile).
+  GazePointerData? get _currentGazePointerView {
+    for (final view in _listOfGazePointerViews.toList().reversed) {
+      if (view.isOnActiveRoute?.call() ?? true) return view;
+    }
+    return _listOfGazePointerViews.isEmpty ? null : _listOfGazePointerViews.last;
+  }
 
   Timer? _cursorIdleTimer;
 
@@ -241,7 +257,6 @@ class GazeInteractiveState {
     logger?.i('GazeInteractiveLib: Register GazeInteractive: ${data.type}:');
     if (data.type == GazeElementType.pointer) {
       _listOfGazePointerViews.add(data as GazePointerData);
-      _currentGazePointerView = data;
     } else {
       final exists = _registeredGazeViews.where((element) => element.key == data.key);
       if (exists.isEmpty) _registeredGazeViews.add(data);
@@ -254,12 +269,7 @@ class GazeInteractiveState {
     logger?.i('GazeInteractiveLib: Unregister GazeInteractive: $type');
     if (type == GazeElementType.pointer) {
       _listOfGazePointerViews.removeWhere((element) => element.key == key);
-      if (_listOfGazePointerViews.isNotEmpty) {
-        _currentGazePointerView = _listOfGazePointerViews.last;
-      } else {
-        // _currentButton = null;
-        leaveAllGazeViews();
-      }
+      if (_listOfGazePointerViews.isEmpty) leaveAllGazeViews();
     } else {
       _registeredGazeViews.removeWhere((element) => element.key == key);
     }
@@ -415,9 +425,14 @@ class GazeInteractiveState {
     // Leave everything that is active but no longer in the looked-at set --
     // including an interactive selectable that just lost the dwell to one with
     // greater overlap.
+    // A selectable entered while non-interactive that has become interactive is
+    // left here too, so the enter below starts its dwell.
     currentElements.removeWhere((element) {
-      if (lookedAt.any((looked) => looked.key == element.key)) return false;
+      final stillLookedAt = lookedAt.any((looked) => looked.key == element.key);
+      final becameInteractive = _enteredNonInteractive.contains(element.key) && _isGazeInteractive(element);
+      if (stillLookedAt && !becameInteractive) return false;
       element.onGazeLeave?.call();
+      _enteredNonInteractive.remove(element.key);
       return true;
     });
     // Enter everything newly looked at.
@@ -425,6 +440,7 @@ class GazeInteractiveState {
       if (currentElements.any((current) => current.key == element.key)) continue;
       element.onGazeEnter?.call();
       currentElements.add(element);
+      if (element.type == GazeElementType.selectable && !_isGazeInteractive(element)) _enteredNonInteractive.add(element.key);
     }
     return currentElements;
   }

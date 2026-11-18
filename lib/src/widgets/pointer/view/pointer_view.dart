@@ -126,6 +126,15 @@ class _PointerViewState extends ConsumerState<_PointerView> with TickerProviderS
     _gazeState.register(gazePointerData);
   }
 
+  ModalRoute<dynamic>? _route;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _route = ModalRoute.of(context);
+    gazePointerData.isOnActiveRoute = () => _route?.isActive ?? true;
+  }
+
   @override
   void dispose() {
     // Unregister using cached reference (safe to use after dispose)

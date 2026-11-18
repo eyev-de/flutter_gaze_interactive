@@ -33,6 +33,7 @@ class GazeSelectionAnimationProperties {
     this.reselectable = false,
     this.reselectableCount,
     this.snappable = true,
+    this.adaptiveForeground = false,
   });
 
   final String route;
@@ -49,6 +50,11 @@ class GazeSelectionAnimationProperties {
   final bool reselectable;
   final int? reselectableCount;
   final bool snappable;
+
+  /// Only used with [GazeSelectionAnimationType.fade]: the text and icon color follow the (animated) background so the content stays readable
+  /// while the background fades. The foreground is white on a dark and a dark color on a bright background (see
+  /// [GazeSelectionAnimation] for the details). It is provided through [DefaultTextStyle] and [IconTheme], so children that set an explicit color keep it.
+  final bool adaptiveForeground;
 }
 
 class GazeSelectionAnimation extends ConsumerStatefulWidget {
@@ -245,16 +251,45 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
         return AnimatedBuilder(
           animation: _colorTween,
           builder: (context, child) {
+            final background = !widget.properties.gazeInteractive
+                ? widget.properties.backgroundColor
+                : _colorTween.value;
+            var content = widget.wrappedWidget;
+            if (widget.properties.adaptiveForeground) {
+              // Merged INSIDE the Material: the Material installs its own DefaultTextStyle, which would hide a merge placed around it.
+              final foreground = _adaptiveForeground(context, background);
+              content = DefaultTextStyle.merge(
+                style: TextStyle(color: foreground),
+                child: IconTheme.merge(
+                  data: IconThemeData(color: foreground),
+                  child: content,
+                ),
+              );
+            }
             return Material(
-              color: !widget.properties.gazeInteractive
-                  ? widget.properties.backgroundColor
-                  : _colorTween.value,
+              color: background,
               borderRadius: widget.properties.borderRadius,
-              child: widget.wrappedWidget,
+              child: content,
             );
           },
         );
     }
+  }
+
+  /// Readable foreground for the current fade [background]: a translucent background is composited over the theme's surface color first (what
+  /// the user actually sees), then a dark background gets white and a bright one the theme's `onPrimary` (when that is dark itself) or black.
+  /// A hard switch on the estimated brightness, so it depends on the color only and does not flicker.
+  Color _adaptiveForeground(BuildContext context, Color? background) {
+    final scheme = Theme.of(context).colorScheme;
+    var effective = background ?? scheme.surface;
+    if (effective.a < 1) effective = Color.alphaBlend(effective, scheme.surface);
+    if (ThemeData.estimateBrightnessForColor(effective) == Brightness.dark) {
+      return Colors.white;
+    }
+    final dark = ThemeData.estimateBrightnessForColor(scheme.onPrimary) == Brightness.dark
+        ? scheme.onPrimary
+        : Colors.black;
+    return dark;
   }
 
   @override
