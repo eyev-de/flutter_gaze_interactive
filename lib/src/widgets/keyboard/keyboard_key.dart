@@ -153,12 +153,19 @@ class GazeKey extends ConsumerWidget {
             reselectableCount: type == GazeKeyType.none ? ref.read(ref.read(gazeInteractiveProvider).reselectionNumberOfLetterKeys) : null,
             gazeInteractive: disabled == false,
             withSound: type != GazeKeyType.close,
+            // Fire on pointer-down so fast typing (pointer already moving to the next key) never loses a press. Close pops the keyboard, firing it
+            // on down would deliver the pointer-up to whatever lies underneath.
+            activateOnPointerDown: type != GazeKeyType.close,
             // All keyboard keys should not be snapped to
             snappable: false,
           ),
           onTap: disabled
               ? null
               : () {
+                  // Re-read at fire time: the closure outlives the build it was created in (a press fires on pointer-down, rapid presses can land
+                  // within one frame after shift auto-release), so build-time captures would be stale.
+                  final shiftState = ref.read(keyboardState.shiftStateProvider) ^ ref.read(keyboardState.capsLockStateProvider);
+                  final signsState = ref.read(keyboardState.signsStateProvider);
                   if (content is List) {
                     // What will be done & inserted in text field on pressed IconData on shift/signs tap
                     switch (type) {

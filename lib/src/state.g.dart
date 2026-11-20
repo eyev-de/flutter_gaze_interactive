@@ -507,12 +507,17 @@ abstract class _$KeyboardSpeechToTextLocale extends $Notifier<String> {
   }
 }
 
+/// Provider flavour of [maybePlayButtonClickSound], awaitable by host apps (e.g. to preview the sound in settings).
+
 @ProviderFor(buttonMaybePlaySound)
 final buttonMaybePlaySoundProvider = ButtonMaybePlaySoundFamily._();
+
+/// Provider flavour of [maybePlayButtonClickSound], awaitable by host apps (e.g. to preview the sound in settings).
 
 final class ButtonMaybePlaySoundProvider
     extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
     with $FutureModifier<void>, $FutureProvider<void> {
+  /// Provider flavour of [maybePlayButtonClickSound], awaitable by host apps (e.g. to preview the sound in settings).
   ButtonMaybePlaySoundProvider._({
     required ButtonMaybePlaySoundFamily super.from,
     required bool super.argument,
@@ -557,7 +562,9 @@ final class ButtonMaybePlaySoundProvider
 }
 
 String _$buttonMaybePlaySoundHash() =>
-    r'ec70038e9a783e67083fc8dc1a38c8233e3f5d76';
+    r'0f5c76ce8bea39751216cdb8dd8e14c96652dab7';
+
+/// Provider flavour of [maybePlayButtonClickSound], awaitable by host apps (e.g. to preview the sound in settings).
 
 final class ButtonMaybePlaySoundFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<void>, bool> {
@@ -569,6 +576,8 @@ final class ButtonMaybePlaySoundFamily extends $Family
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
+
+  /// Provider flavour of [maybePlayButtonClickSound], awaitable by host apps (e.g. to preview the sound in settings).
 
   ButtonMaybePlaySoundProvider call({bool defaultVolume = false}) =>
       ButtonMaybePlaySoundProvider._(argument: defaultVolume, from: this);
@@ -610,7 +619,7 @@ final class KeyboardSpeechToTextProvider
 }
 
 String _$keyboardSpeechToTextHash() =>
-    r'b029f2a3af8c90ff5214abe26b88ec556a844aa3';
+    r'4751addfff13de3b5272d7326b0da56cf445f89d';
 
 abstract class _$KeyboardSpeechToText extends $Notifier<SpeechToText> {
   SpeechToText build();
