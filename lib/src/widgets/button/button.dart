@@ -4,6 +4,9 @@
 //  Copyright © eyeV GmbH. All rights reserved.
 //
 
+import 'dart:async';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,6 +41,7 @@ class GazeButtonProperties {
     this.withSound = false,
     this.snappable = true,
     this.adaptiveForeground = false,
+    this.activateOnPointerDown = false,
   });
 
   final String route;
@@ -67,6 +71,12 @@ class GazeButtonProperties {
   /// Fade animation only: text and icon color follow the fading background (see [GazeSelectionAnimationProperties.adaptiveForeground]). The
   /// button's own default white text color is dropped for it, an explicit color on [text] / [icon] still wins.
   final bool adaptiveForeground;
+
+  /// Fires the tap on pointer-down instead of pointer-up (touch, stylus and the primary mouse button; not trackpad). Only applies to enabled
+  /// [GazeButtonTapTypes.single] buttons. A regular tap is cancelled when the pointer moves more than the tap slop between down and up, which
+  /// loses presses when typing fast (e.g. on the on-screen keyboard). A press fired on down is not fired a second time on up; taps without a
+  /// pointer press (semantics, Enter/Space) still fire.
+  final bool activateOnPointerDown;
 }
 
 class GazeButton extends ConsumerStatefulWidget {
@@ -99,8 +109,11 @@ class _GazeButtonState extends ConsumerState<GazeButton> {
   final GlobalKey _wrappedKey = GlobalKey();
 
   void _handleTap() {
-    if (widget.properties.withSound) ref.read(buttonMaybePlaySoundProvider());
+    // Resolve the container before the tap: the tap may dispose this widget (and with it its ref).
+    final container = widget.properties.withSound ? ProviderScope.containerOf(context, listen: false) : null;
+    // Tap first, the click sound is fire-and-forget and must never delay or break the action.
     widget.onTap!();
+    if (container != null) unawaited(maybePlayButtonClickSound(container.read).catchError((Object _) {}));
   }
 
   @override
@@ -138,7 +151,7 @@ class _GazeButtonState extends ConsumerState<GazeButton> {
   }
 }
 
-class _Button extends StatelessWidget {
+class _Button extends StatefulWidget {
   const _Button({
     required this.properties,
     required this.onTap,
@@ -150,57 +163,83 @@ class _Button extends StatelessWidget {
   final Widget? child;
 
   @override
+  State<_Button> createState() => _ButtonState();
+}
+
+class _ButtonState extends State<_Button> {
+  // True between a pointer-down that already fired the tap and the end of that pointer sequence; InkWell.onTap is swallowed meanwhile.
+  bool _firedOnPointerDown = false;
+
+  GazeButtonProperties get properties => widget.properties;
+  void Function()? get onTap => widget.onTap;
+
+  bool get _activatesOnPointerDown => properties.activateOnPointerDown && onTap != null && properties.tapType == GazeButtonTapTypes.single;
+
+  bool _acceptsPointer(PointerDownEvent event) => switch (event.kind) {
+    PointerDeviceKind.touch || PointerDeviceKind.stylus || PointerDeviceKind.invertedStylus || PointerDeviceKind.unknown => true,
+    PointerDeviceKind.mouse => event.buttons & kPrimaryMouseButton != 0,
+    PointerDeviceKind.trackpad => false,
+  };
+
+  void _onPointerDown(PointerDownEvent event) {
+    if (!_acceptsPointer(event)) return;
+    _firedOnPointerDown = true;
+    onTap?.call();
+  }
+
+  // The tap recognizer delivers InkWell.onTap synchronously in the same dispatch as the pointer-up (right after this Listener ran), so a microtask
+  // runs strictly after it. Clearing there (instead of in onTap) cannot leave the flag stuck when no onTap follows: drag beyond the slop,
+  // cancel, or a second finger the recognizer never tracks.
+  void _onPointerEnd(PointerEvent event) {
+    if (_firedOnPointerDown) scheduleMicrotask(() => _firedOnPointerDown = false);
+  }
+
+  void _onInkWellTap() {
+    if (_firedOnPointerDown) {
+      _firedOnPointerDown = false;
+      return;
+    }
+    onTap?.call();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final textColor = properties.text != null && properties.text is Text
-        ? (properties.text! as Text).style?.color ?? Colors.white
-        : Colors.white;
+    final textColor = properties.text != null && properties.text is Text ? (properties.text! as Text).style?.color ?? Colors.white : Colors.white;
     final disabled = onTap == null;
-    return InkWell(
+    final child = widget.child;
+    final ink = InkWell(
       borderRadius: properties.borderRadius,
       hoverColor: textColor.withAlpha(20),
       focusColor: textColor.withAlpha(20),
       splashColor: textColor.withAlpha(60),
       highlightColor: textColor.withAlpha(20),
       splashFactory: disabled ? NoSplash.splashFactory : null,
-      onTap: !disabled && properties.tapType == GazeButtonTapTypes.single
-          ? onTap
-          : null,
-      onDoubleTap: !disabled && properties.tapType == GazeButtonTapTypes.double
-          ? onTap
-          : null,
+      onTap: !disabled && properties.tapType == GazeButtonTapTypes.single ? _onInkWellTap : null,
+      onDoubleTap: !disabled && properties.tapType == GazeButtonTapTypes.double ? onTap : null,
       child: child != null
-          ? AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              child: child,
-            )
+          ? AnimatedContainer(duration: const Duration(milliseconds: 150), child: child)
           : AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               padding: properties.innerPadding,
-              decoration: BoxDecoration(
-                borderRadius: properties.borderRadius,
-                border: _getBorder(),
-              ),
+              decoration: BoxDecoration(borderRadius: properties.borderRadius, border: _getBorder()),
               child: _ButtonChild(properties: properties),
             ),
+    );
+    // Always a Listener (callbacks null when inactive), so enabling / disabling the button never changes the tree above the InkWell (no remount).
+    final active = _activatesOnPointerDown;
+    return Listener(
+      onPointerDown: active ? _onPointerDown : null,
+      onPointerUp: active ? _onPointerEnd : null,
+      onPointerCancel: active ? _onPointerEnd : null,
+      child: ink,
     );
   }
 
   Border? _getBorder() {
     if (properties.borderColor == null) return null;
-    if (onTap == null && properties.borderColor == Colors.transparent)
-      return Border.all(
-        color: Colors.transparent,
-        width: properties.borderWidth,
-      );
-    if (onTap == null)
-      return Border.all(
-        color: properties.borderColor!.withValues(alpha: 0.3),
-        width: properties.borderWidth,
-      );
-    return Border.all(
-      color: properties.borderColor!,
-      width: properties.borderWidth,
-    );
+    if (onTap == null && properties.borderColor == Colors.transparent) return Border.all(color: Colors.transparent, width: properties.borderWidth);
+    if (onTap == null) return Border.all(color: properties.borderColor!.withValues(alpha: 0.3), width: properties.borderWidth);
+    return Border.all(color: properties.borderColor!, width: properties.borderWidth);
   }
 }
 
@@ -213,10 +252,7 @@ class _ButtonChild extends StatelessWidget {
   Widget build(BuildContext context) {
     final padding = properties.text == null
         ? EdgeInsets.zero
-        : EdgeInsets.only(
-            right: properties.direction == Axis.horizontal ? 10 : 0,
-            bottom: properties.direction == Axis.vertical ? 5 : 0,
-          );
+        : EdgeInsets.only(right: properties.direction == Axis.horizontal ? 10 : 0, bottom: properties.direction == Axis.vertical ? 5 : 0);
     return Align(
       alignment: properties.alignment,
       child: Flex(
@@ -224,21 +260,13 @@ class _ButtonChild extends StatelessWidget {
         mainAxisAlignment: properties.mainAxisAlignment,
         crossAxisAlignment: properties.crossAxisAlignment,
         children: [
-          if (properties.icon != null)
-            Padding(
-              padding: properties.iconPadding ?? padding,
-              child: properties.icon,
-            ),
+          if (properties.icon != null) Padding(padding: properties.iconPadding ?? padding, child: properties.icon),
           if (properties.text != null)
             Flexible(
               child: DefaultTextStyle.merge(
-                style: Theme.of(
-                  context,
-                ).primaryTextTheme.bodyLarge?.copyWith(
+                style: Theme.of(context).primaryTextTheme.bodyLarge?.copyWith(
                   // Adaptive: take over the foreground the selection animation merged into the DefaultTextStyle instead of forcing white.
-                  color: properties.adaptiveForeground
-                      ? DefaultTextStyle.of(context).style.color
-                      : Colors.white,
+                  color: properties.adaptiveForeground ? DefaultTextStyle.of(context).style.color : Colors.white,
                 ),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
