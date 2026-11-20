@@ -641,11 +641,21 @@ class KeyboardSpeechToTextLocale extends _$KeyboardSpeechToTextLocale {
   set locale(String value) => state = value;
 }
 
+/// Plays the configured button click sound (volume / type from [gazeInteractiveProvider]).
+///
+/// Plain function instead of a provider so the button press path does not create (and dispose) an auto-dispose provider per press.
+/// [read] is `ref.read` of a `WidgetRef`, `Ref` or `ProviderContainer` (all share the same shape).
+Future<void> maybePlayButtonClickSound(T Function<T>(ProviderListenable<T> provider) read, {bool defaultVolume = false}) async {
+  final gaze = read(gazeInteractiveProvider);
+  final volume = SoundVolume.getByNumber(read(gaze.clickSoundVolume));
+  final type = SoundType.getByName(read(gaze.clickSoundType));
+  await SoundPlayerUtil.playClickSound(defaultVolume ? SoundVolume.getDefault() : volume, type);
+}
+
+/// Provider flavour of [maybePlayButtonClickSound], awaitable by host apps (e.g. to preview the sound in settings).
 @riverpod
 Future<void> buttonMaybePlaySound(Ref ref, {bool defaultVolume = false}) async {
-  final volume = SoundVolume.getByNumber(ref.read(ref.read(gazeInteractiveProvider).clickSoundVolume));
-  final type = SoundType.getByName(ref.read(ref.read(gazeInteractiveProvider).clickSoundType));
-  await SoundPlayerUtil.playClickSound(defaultVolume ? SoundVolume.getDefault() : volume, type);
+  await maybePlayButtonClickSound(ref.read, defaultVolume: defaultVolume);
 }
 
 @Riverpod(keepAlive: true)
