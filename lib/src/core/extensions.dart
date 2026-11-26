@@ -14,6 +14,9 @@ import 'package:speech_to_text/speech_to_text.dart';
 import '../../api.dart';
 
 extension GlobalKeyExtension on GlobalKey {
+  /// Global paint bounds of the widget under this key, or null when they cannot be determined (not mounted, not laid out, or the render tree
+  /// throws while resolving the transform: an offstage route whose ancestors were never laid out, a sliver child whose ancestor reads a missing
+  /// `size` in `applyPaintTransform`, ...). Never throws; called per element on every gaze sweep, so it logs nothing.
   Rect? get globalPaintBounds {
     try {
       final renderObject = currentContext?.findRenderObject() as RenderBox?;
@@ -21,7 +24,9 @@ extension GlobalKeyExtension on GlobalKey {
       if (translation != null && renderObject != null && renderObject.hasSize && currentState != null && currentState!.mounted) {
         return renderObject.paintBounds.shift(Offset(translation.x, translation.y));
       }
-    } finally {}
+    } catch (_) {
+      return null;
+    }
     return null;
   }
 }

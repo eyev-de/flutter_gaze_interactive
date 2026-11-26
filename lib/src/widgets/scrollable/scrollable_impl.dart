@@ -79,12 +79,17 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
 
   static const double scrollArea = 0.2;
 
+  late final GazeScrollableData _data = GazeScrollableData(
+    key: widget.wrappedKey,
+    route: widget.route,
+    onGazeEnter: () => _active = true,
+    onGazeLeave: () => _active = false,
+  );
+
   @override
   void initState() {
     super.initState();
-    ref
-        .read(gazeInteractiveProvider)
-        .register(GazeScrollableData(key: widget.wrappedKey, route: widget.route, onGazeEnter: () => _active = true, onGazeLeave: () => _active = false));
+    ref.read(gazeInteractiveProvider).register(_data);
     widget.controller.addListener(_scrollListener);
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       try {
@@ -96,6 +101,16 @@ class _GazeScrollableImplState extends ConsumerState<GazeScrollableImpl> {
         }
       } catch (_) {}
     });
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    // deactivate() unregistered: a GlobalKey reparenting (deactivate + activate within one frame) keeps this State alive, so register again.
+    // register() is idempotent per key.
+    ref.read(gazeInteractiveProvider).register(_data);
+    widget.controller.removeListener(_scrollListener);
+    widget.controller.addListener(_scrollListener);
   }
 
   @override

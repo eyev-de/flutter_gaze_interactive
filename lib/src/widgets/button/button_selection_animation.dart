@@ -293,6 +293,14 @@ class _GazeSelectionAnimationState extends ConsumerState<GazeSelectionAnimation>
   }
 
   @override
+  void activate() {
+    super.activate();
+    // deactivate() unregistered: a GlobalKey reparenting (deactivate + activate within one frame) keeps this State alive, so register again.
+    // register() is idempotent per key.
+    _register();
+  }
+
+  @override
   void deactivate() {
     ref
         .read(gazeInteractiveProvider)
