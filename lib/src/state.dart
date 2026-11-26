@@ -54,6 +54,20 @@ class GazeInteractiveState {
 
   PredicateReturnState Function(GazeShape element, GazeShape gazePointer, GazeShape gazeSnapPointer, String itemRoute, String currentRoute)? predicate;
 
+  /// Cheap route-only pre-filter, evaluated per element BEFORE any RenderObject / paint-bounds work in the hit-test sweep.
+  /// Returning false skips the element for this sample (it is left if it was entered). Null = every element is measured.
+  bool Function(String? itemRoute, String currentRoute)? routeFilter;
+
+  /// Diagnostics of the hit-test sweep (element errors, "gaze arrives but no element is reachable"). Called rate-limited, never at
+  /// gaze rate. Messages carry no gaze coordinates. Null = falls back to [logger] at warning level.
+  void Function(String message, {Object? error, StackTrace? stackTrace})? onDiagnostic;
+
+  final Stopwatch _diagnosticClock = Stopwatch()..start();
+
+  /// Monotonic milliseconds used by the diagnostics rate limits and the unreachable-episode detection. Replaceable in tests.
+  @visibleForTesting
+  late int Function() diagnosticNowMs = () => _diagnosticClock.elapsedMilliseconds;
+
   /// Optional look of the passive gaze pointer (the default [GazePointerType]). Called with the
   /// pointer's diameter and color; returning null keeps the built-in filled circle. The snap timer
   /// shake and the pointer opacity are applied around whatever it returns.
@@ -104,7 +118,11 @@ class GazeInteractiveState {
   void leaveAllGazeViews() {
     logger?.i('Leaving ${_currentGazeViews.length} gaze views...');
     for (final gazeView in _currentGazeViews) {
-      gazeView.onGazeLeave?.call();
+      try {
+        gazeView.onGazeLeave?.call();
+      } catch (error, stackTrace) {
+        _noteElementError(gazeView, 'onGazeLeave', error, stackTrace);
+      }
     }
     _currentGazeViews.clear();
     _enteredNonInteractive.clear();
@@ -159,7 +177,12 @@ class GazeInteractiveState {
     // Tracking went quiet — reverse any in-flight dwell animations so the
     // cursor freezing on a button does not complete a click.
     leaveAllGazeViews();
-    _currentGazePointerView?.onIdle?.call();
+    final pointerView = _currentGazePointerView;
+    try {
+      pointerView?.onIdle?.call();
+    } catch (error, stackTrace) {
+      _noteElementError(pointerView, 'onIdle', error, stackTrace);
+    }
   }
 
   List<GazeElementData> get currentGazeViews => _currentGazeViews;
@@ -210,8 +233,12 @@ class GazeInteractiveState {
   // size, the keyboard publishes that same value. Defaults to the baseline until the keyboard has laid out at least once.
   late final keyboardComputedFontSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardFontSize));
   late final keyboardComputedIconSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardIconSize));
-  late final keyboardComputedUtilityFontSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardUtilityFontSize));
-  late final keyboardComputedUtilityIconSize = NotifierProvider<SimpleNotifier<double>, double>(() => SimpleNotifier(gazeInteractiveDefaultKeyboardUtilityIconSize));
+  late final keyboardComputedUtilityFontSize = NotifierProvider<SimpleNotifier<double>, double>(
+    () => SimpleNotifier(gazeInteractiveDefaultKeyboardUtilityFontSize),
+  );
+  late final keyboardComputedUtilityIconSize = NotifierProvider<SimpleNotifier<double>, double>(
+    () => SimpleNotifier(gazeInteractiveDefaultKeyboardUtilityIconSize),
+  );
 
   late final scrollFactor = NotifierProvider<GazeInteractiveScrollFactorLocalNotifier, double>(
     () => GazeInteractiveScrollFactorLocalNotifier(sharedPreferences),
@@ -256,7 +283,8 @@ class GazeInteractiveState {
   void register(GazeElementData data) {
     logger?.i('GazeInteractiveLib: Register GazeInteractive: ${data.type}:');
     if (data.type == GazeElementType.pointer) {
-      _listOfGazePointerViews.add(data as GazePointerData);
+      // Idempotent per key (a re-registration, e.g. on activate, must not leave a duplicate that outlives the single unregister).
+      if (!_listOfGazePointerViews.any((element) => element.key == data.key)) _listOfGazePointerViews.add(data as GazePointerData);
     } else {
       final exists = _registeredGazeViews.where((element) => element.key == data.key);
       if (exists.isEmpty) _registeredGazeViews.add(data);
@@ -283,11 +311,21 @@ class GazeInteractiveState {
     if (!active) return;
     _resetCursorIdleTimer();
     // Ensure pointer is set up - this will trigger onPointerMove callback
-    _currentGazePointerView?.onPointerMove = onPointerMove;
-    _currentGazePointerView?.onGaze?.call(position);
+    final pointerView = _currentGazePointerView;
+    pointerView?.onPointerMove = onPointerMove;
+    // One throwing callback must not stop the others (nor the pointer).
+    try {
+      pointerView?.onGaze?.call(position);
+    } catch (error, stackTrace) {
+      _noteElementError(pointerView, 'onGaze', error, stackTrace);
+    }
     // Process gaze for active views
     for (final view in _currentGazeViews) {
-      view.onGaze?.call(position);
+      try {
+        view.onGaze?.call(position);
+      } catch (error, stackTrace) {
+        _noteElementError(view, 'onGaze', error, stackTrace);
+      }
     }
   }
 
@@ -297,7 +335,11 @@ class GazeInteractiveState {
     onPointerMove(center, Size(size, size));
     for (final view in _currentGazeViews) {
       if (origin != null && view.key == origin) continue;
-      view.onGaze?.call(center);
+      try {
+        view.onGaze?.call(center);
+      } catch (error, stackTrace) {
+        _noteElementError(view, 'onGaze', error, stackTrace);
+      }
     }
   }
 
@@ -305,7 +347,12 @@ class GazeInteractiveState {
   void onFixation() {
     final active = ref.read(activeStateProvider);
     if (active) {
-      _currentGazePointerView?.onFixation?.call();
+      final pointerView = _currentGazePointerView;
+      try {
+        pointerView?.onFixation?.call();
+      } catch (error, stackTrace) {
+        _noteElementError(pointerView, 'onFixation', error, stackTrace);
+      }
     }
   }
 
@@ -314,7 +361,12 @@ class GazeInteractiveState {
     // only snap if in general snapping is on
     final active = ref.read(snapActiveStateProvider);
     if (active) {
-      _currentGazePointerView?.onSnap?.call(snapElement);
+      final pointerView = _currentGazePointerView;
+      try {
+        pointerView?.onSnap?.call(snapElement);
+      } catch (error, stackTrace) {
+        _noteElementError(pointerView, 'onSnap', error, stackTrace);
+      }
     }
   }
 
@@ -392,32 +444,45 @@ class GazeInteractiveState {
     // (and thereby starve) the dwell; they are entered freely, exactly like non-
     // selectable elements (e.g. scrollables). This is why a lone interactive
     // button keeps working even when a hidden/disabled selectable overlaps it.
+    //
+    // Every element is evaluated in its own try/catch: one element that throws (unlaid-out ancestors, a throwing predicate/callback) is treated
+    // as not looked at and must never abort the sweep for all the others.
+    _sweepRegistered = registeredElements.length;
+    _sweepFiltered = 0;
+    _sweepNullBounds = 0;
+    _sweepErrors = 0;
+    _sweepReachable = 0;
     final lookedAt = <GazeElementData>[];
     double bestOverlap = -1;
     GazeElementData? winner;
     for (final element in registeredElements) {
-      if (!_determineIfGazeElementIsLookedAt(
-        ref: ref,
-        gazePointer: gazePointer,
-        gazeSnapPointer: gazeSnapPointer,
-        element: element,
-        currentGazePointer: currentGazePointer,
-        currentRoute: currentRoute,
-        predicate: predicate,
-      )) {
-        continue;
-      }
-      if (element.type != GazeElementType.selectable || !_isGazeInteractive(element)) {
-        lookedAt.add(element);
-        continue;
-      }
-      final overlap = _gazePointerOverlapArea(element, gazePointer.rect);
-      final isCurrent = currentElements.any((current) => current.key == element.key);
-      // Strict `>` keeps the currently dwelling button on ties, avoiding flicker
-      // when two buttons overlap the pointer equally.
-      if (overlap > bestOverlap || (overlap == bestOverlap && isCurrent)) {
-        bestOverlap = overlap;
-        winner = element;
+      try {
+        _elementMeasured = false;
+        final looked = _determineIfGazeElementIsLookedAt(
+          ref: ref,
+          gazePointer: gazePointer,
+          gazeSnapPointer: gazeSnapPointer,
+          element: element,
+          currentGazePointer: currentGazePointer,
+          currentRoute: currentRoute,
+          predicate: predicate,
+        );
+        if (_elementMeasured) _sweepReachable++;
+        if (!looked) continue;
+        if (element.type != GazeElementType.selectable || !_isGazeInteractive(element)) {
+          lookedAt.add(element);
+          continue;
+        }
+        final overlap = _gazePointerOverlapArea(element, gazePointer.rect);
+        final isCurrent = currentElements.any((current) => current.key == element.key);
+        // Strict `>` keeps the currently dwelling button on ties, avoiding flicker
+        // when two buttons overlap the pointer equally.
+        if (overlap > bestOverlap || (overlap == bestOverlap && isCurrent)) {
+          bestOverlap = overlap;
+          winner = element;
+        }
+      } catch (error, stackTrace) {
+        _noteElementError(element, 'hit-test', error, stackTrace);
       }
     }
     if (winner != null) lookedAt.add(winner);
@@ -431,18 +496,138 @@ class GazeInteractiveState {
       final stillLookedAt = lookedAt.any((looked) => looked.key == element.key);
       final becameInteractive = _enteredNonInteractive.contains(element.key) && _isGazeInteractive(element);
       if (stillLookedAt && !becameInteractive) return false;
-      element.onGazeLeave?.call();
+      try {
+        element.onGazeLeave?.call();
+      } catch (error, stackTrace) {
+        _noteElementError(element, 'onGazeLeave', error, stackTrace);
+      }
       _enteredNonInteractive.remove(element.key);
       return true;
     });
     // Enter everything newly looked at.
     for (final element in lookedAt) {
       if (currentElements.any((current) => current.key == element.key)) continue;
-      element.onGazeEnter?.call();
+      try {
+        element.onGazeEnter?.call();
+      } catch (error, stackTrace) {
+        _noteElementError(element, 'onGazeEnter', error, stackTrace);
+      }
       currentElements.add(element);
       if (element.type == GazeElementType.selectable && !_isGazeInteractive(element)) _enteredNonInteractive.add(element.key);
     }
+    _trackReachability(currentRoute, registeredElements);
     return currentElements;
+  }
+
+  // Per-sweep counters of the hit-test sweep (reset at the start of every sweep; plain ints, no allocation).
+  int _sweepRegistered = 0;
+  int _sweepFiltered = 0;
+  int _sweepNullBounds = 0;
+  int _sweepErrors = 0;
+  int _sweepReachable = 0;
+
+  /// Set by [_determineIfGazeElementIsLookedAt] once the element passed the route filter and its bounds are known; read by the sweep loop
+  /// after the call returned without throwing to count the element as reachable.
+  bool _elementMeasured = false;
+
+  // Element error reporting, per window of [_errorReportIntervalMs]: the first error of an element key not seen before is reported (with error +
+  // stack trace) while the window has room for it ([_maxNewKeyReportsPerWindow] - a whole broken subtree must not log one stack trace per element
+  // on every page change), a repeated error only as the first report of a window. Everything else is counted and carried by the next report.
+  static const int _errorReportIntervalMs = 10000;
+  static const int _maxNewKeyReportsPerWindow = 3;
+  static const int _maxTrackedErrorKeys = 200;
+  final Set<GlobalKey> _erroredKeys = {};
+  int _errorWindowStartMs = -1;
+  int _reportsInErrorWindow = 0;
+  int _suppressedErrors = 0;
+
+  // Unreachable episode: consecutive sweeps with >= 1 registered element but none reachable (route-filtered, no bounds or throwing).
+  static const int _episodeReportAfterMs = 3000;
+  static const int _episodeMinReportGapMs = 60000;
+  // Sweeps only run while gaze arrives: a longer pause between two unreachable sweeps (gaze idle) restarts the episode instead of counting as
+  // one long outage.
+  static const int _episodeMaxSweepGapMs = 1500;
+  int _episodeStartMs = -1;
+  int _episodeLastSweepMs = -1;
+  bool _episodeReported = false;
+  int _lastEpisodeReportMs = -1;
+
+  void _emitDiagnostic(String message, {Object? error, StackTrace? stackTrace}) {
+    final callback = onDiagnostic;
+    if (callback == null) {
+      logger?.w(message, error: error, stackTrace: stackTrace);
+      return;
+    }
+    try {
+      callback(message, error: error, stackTrace: stackTrace);
+    } catch (_) {
+      // A throwing diagnostics sink must never break gaze handling.
+    }
+  }
+
+  /// Records an error thrown by [element] (or its callback) during gaze handling and reports it rate-limited. [element] may be null.
+  void _noteElementError(GazeElementData? element, String phase, Object error, StackTrace stackTrace) {
+    _sweepErrors++;
+    final now = diagnosticNowMs();
+    final key = element?.key;
+    final isNew = key != null && _erroredKeys.add(key);
+    if (_erroredKeys.length > _maxTrackedErrorKeys) _erroredKeys.clear();
+    if (_errorWindowStartMs < 0 || now - _errorWindowStartMs >= _errorReportIntervalMs) {
+      _errorWindowStartMs = now;
+      _reportsInErrorWindow = 0;
+    }
+    if (_reportsInErrorWindow >= (isNew ? _maxNewKeyReportsPerWindow : 1)) {
+      _suppressedErrors++;
+      return;
+    }
+    _reportsInErrorWindow++;
+    final suppressed = _suppressedErrors;
+    _suppressedErrors = 0;
+    _emitDiagnostic(
+      'GazeInteractive: element error in $phase (type ${element?.type.name}, route ${element?.route}, treated as not looked at)'
+      '${suppressed > 0 ? ', $suppressed further errors suppressed since the last report' : ''}',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
+
+  /// Ends of a sweep: tracks "gaze arrives but no element is reachable" episodes (see [onDiagnostic]). Cheap: integer compares only, strings are
+  /// built when something is reported.
+  void _trackReachability(String currentRoute, List<GazeElementData> registeredElements) {
+    if (_sweepRegistered == 0) {
+      // Nothing registered = nothing to reach: not the failure this detects.
+      _episodeStartMs = -1;
+      _episodeReported = false;
+      return;
+    }
+    final now = diagnosticNowMs();
+    if (_sweepReachable > 0) {
+      if (_episodeStartMs >= 0 && _episodeReported) {
+        _emitDiagnostic('GazeInteractive: gaze elements reachable again after ${((now - _episodeStartMs) / 1000).toStringAsFixed(1)} s (route $currentRoute)');
+      }
+      _episodeStartMs = -1;
+      _episodeReported = false;
+      return;
+    }
+    if (_episodeStartMs < 0 || now - _episodeLastSweepMs > _episodeMaxSweepGapMs) {
+      _episodeStartMs = now;
+      _episodeReported = false;
+    }
+    _episodeLastSweepMs = now;
+    if (_episodeReported || now - _episodeStartMs < _episodeReportAfterMs) return;
+    if (_lastEpisodeReportMs >= 0 && now - _lastEpisodeReportMs < _episodeMinReportGapMs) return;
+    _episodeReported = true;
+    _lastEpisodeReportMs = now;
+    final routes = <String?>{};
+    for (final element in registeredElements) {
+      routes.add(element.route);
+      if (routes.length >= 10) break;
+    }
+    _emitDiagnostic(
+      'GazeInteractive: gaze arrives but no element is reachable for ${((now - _episodeStartMs) / 1000).toStringAsFixed(1)} s '
+      '(currentRoute $currentRoute, registered $_sweepRegistered, filtered by route $_sweepFiltered, no bounds $_sweepNullBounds, '
+      'errors $_sweepErrors, element routes ${routes.toList()})',
+    );
   }
 
   /// Whether [element] is currently a gaze-interactive selectable. Read live from
@@ -475,6 +660,12 @@ class GazeInteractiveState {
     required String currentRoute,
     PredicateReturnState Function(GazeShape element, GazeShape gazePointer, GazeShape gazeSnapPointer, String itemRoute, String currentRoute)? predicate,
   }) {
+    // Cheapest check first: the route filter needs no RenderObject, so an element on another route never gets measured (and never throws).
+    final filter = routeFilter;
+    if (filter != null && !filter(element.route, currentRoute)) {
+      _sweepFiltered++;
+      return false;
+    }
     // Get bounding rect of the element. Prefer the cached bounds kept fresh by
     // GazeBoundsReporter; fall back to recomputing if not yet measured.
     final elementRect = element.cachedBounds ?? element.key.globalPaintBounds;
@@ -483,7 +674,11 @@ class GazeInteractiveState {
     final borderRadius = widget is GazeSelectionAnimation ? widget.properties.borderRadius : BorderRadius.zero;
     PredicateReturnState predicateState = PredicateReturnState.none;
     // Check if bounds and context exist
-    if (elementRect == null) return false;
+    if (elementRect == null) {
+      _sweepNullBounds++;
+      return false;
+    }
+    _elementMeasured = true;
     // Check in case of supplied custom predicate
     if (predicate != null) {
       predicateState = predicate(GazeShape(rect: elementRect, borderRadius: borderRadius), gazePointer, gazeSnapPointer, element.route!, currentRoute);
