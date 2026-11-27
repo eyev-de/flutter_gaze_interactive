@@ -60,7 +60,10 @@ extension TextEditingControllerExtension on TextEditingController {
     return rest.isEmpty ? text.length : clamped + rest.first.length;
   }
 
-  void insert(String value, KeyboardType type, List<TextInputFormatter> inputFormatters) {
+  /// Inserts [value] at the caret, replacing the selected range if there is one. With [smartPunctuation] (the gaze keys)
+  /// a `.`, `!` or `?` trims the whitespace before it and pushes a space after it; a hardware keyboard passes false,
+  /// because there the user types every space themselves (`3.5`, `www.eyev.de`).
+  void insert(String value, KeyboardType type, List<TextInputFormatter> inputFormatters, {bool smartPunctuation = true}) {
     final currentText = text;
     final sel = selection;
 
@@ -90,7 +93,7 @@ extension TextEditingControllerExtension on TextEditingController {
       String before = currentText.substring(0, caret);
       String after = currentText.substring(caret, currentText.length);
       // Trim if . ! ? is inserted
-      if (value == '.' || value == '!' || value == '?') {
+      if (smartPunctuation && (value == '.' || value == '!' || value == '?')) {
         before = before.trim();
         if (type != KeyboardType.email) {
           after = ' $after';
@@ -99,8 +102,12 @@ extension TextEditingControllerExtension on TextEditingController {
       newText = before + value + after;
       caretAfter = before.length + value.length;
     } else {
-      final start = (caret == rangeEnd ? graphemeBefore(caret) : caret).clamp(0, currentText.length);
-      newText = currentText.replaceRange(start, rangeEnd, value);
+      // A backward selection (base after extent, e.g. made with Shift+Left on a hardware keyboard) gives caret > rangeEnd:
+      // replace the ordered range, replaceRange would throw on the reversed one.
+      final from = min(caret, rangeEnd);
+      final to = max(caret, rangeEnd);
+      final start = (from == to ? graphemeBefore(from) : from).clamp(0, currentText.length);
+      newText = currentText.replaceRange(start, to, value);
       caretAfter = start + value.length;
     }
 
@@ -151,6 +158,33 @@ extension TextEditingControllerExtension on TextEditingController {
     );
   }
 
+  /// Deletes the highlighted range, or the grapheme cluster after the caret when the selection is collapsed. Mirrors a
+  /// hardware Delete (forward delete) key.
+  void deleteForward(List<TextInputFormatter> inputFormatters) {
+    final currentText = text;
+    if (currentText.isEmpty) return;
+    final sel = selection;
+    final int start;
+    final int end;
+    if (sel.isValid && !sel.isCollapsed) {
+      start = sel.start;
+      end = sel.end;
+    } else {
+      if (!sel.isValid) return;
+      start = sel.baseOffset.clamp(0, currentText.length);
+      end = graphemeAfter(start);
+      if (end <= start) return;
+    }
+    var newText = currentText.replaceRange(start, end, '');
+    if (inputFormatters.isNotEmpty) {
+      newText = inputFormatters.fold(newText, (v, formatter) => formatter.formatEditUpdate(TextEditingValue(text: v), TextEditingValue(text: v)).text);
+    }
+    value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: min(start, newText.length)),
+    );
+  }
+
   Future<void> paste(List<TextInputFormatter> inputFormatters, {bool selecting = false}) async {
     final data = await Clipboard.getData(Clipboard.kTextPlain) ?? const ClipboardData(text: '');
     String pasteText = data.text ?? '';
@@ -174,10 +208,9 @@ extension TextEditingControllerExtension on TextEditingController {
   void cut() {
     String cutText = text;
     if (!selection.isCollapsed) {
-      var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-      final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-      startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
-      if (startIndex.isNegative) startIndex = 0;
+      // Ordered range: a backward selection (base after extent) made substring/replaceRange throw.
+      final startIndex = selection.start;
+      final endIndex = selection.end;
       cutText = text.substring(startIndex, endIndex);
       text = text.replaceRange(startIndex, endIndex, '');
       selection = TextSelection.fromPosition(TextPosition(offset: startIndex));
@@ -190,10 +223,9 @@ extension TextEditingControllerExtension on TextEditingController {
   void copy() {
     String copyText = text;
     if (!selection.isCollapsed) {
-      var startIndex = selection.base.affinity == TextAffinity.downstream ? selection.baseOffset : selection.extentOffset;
-      final endIndex = selection.base.affinity == TextAffinity.upstream ? selection.baseOffset : selection.extentOffset;
-      startIndex = selection.baseOffset == selection.extentOffset ? startIndex - 1 : startIndex;
-      if (startIndex.isNegative) startIndex = 0;
+      // Ordered range: a backward selection (base after extent) made substring/replaceRange throw.
+      final startIndex = selection.start;
+      final endIndex = selection.end;
       copyText = text.substring(startIndex, endIndex);
     }
     Clipboard.setData(ClipboardData(text: copyText));
