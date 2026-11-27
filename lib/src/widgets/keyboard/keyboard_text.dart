@@ -97,30 +97,35 @@ class _GazeKeyboardTextWidgetState extends State<GazeKeyboardTextWidget> {
           children: [
             Container(
               constraints: BoxConstraints(minHeight: widget.minHeight),
-              child: CupertinoTextField(
-                key: cupertinoTextFieldKey,
-                // This is a fully custom on-screen / gaze keyboard: all edits go
-                // through `state.controller`, which is the single source of truth.
-                // readOnly stops the field from opening a platform text-input
-                // connection that asynchronously echoes editing values back and
-                // could clobber the controller's value/selection mid-typing.
-                readOnly: true,
-                showCursor: true,
-                autofocus: true,
-                minLines: 1,
-                undoController: widget.state.undoHistoryController,
-                maxLines: widget.maxLines,
-                style: scrollCalculator.textStyle,
-                padding: scrollCalculator.textFieldPadding,
-                focusNode: widget.node,
-                scrollController: widget.scrollController,
-                controller: widget.state.controller,
-                placeholder: widget.state.placeholder,
-                cursorColor: Colors.white,
-                keyboardType: TextInputType.none,
-                suffix: widget.state.type != KeyboardType.email ? SizedBox(height: widget.minHeight, width: 70) : null,
-                decoration: BoxDecoration(color: tealColor.disabled, borderRadius: const BorderRadius.all(Radius.circular(20))),
-                inputFormatters: widget.state.inputFormatters,
+              // readOnly below also blocks every hardware key; on desktop this wrapper feeds them into state.controller
+              // through the gaze keys' edit path while the field (or anything inside it) has the focus.
+              child: GazeKeyboardHardwareKeys(
+                state: widget.state,
+                child: CupertinoTextField(
+                  key: cupertinoTextFieldKey,
+                  // This is a fully custom on-screen / gaze keyboard: all edits go
+                  // through `state.controller`, which is the single source of truth.
+                  // readOnly stops the field from opening a platform text-input
+                  // connection that asynchronously echoes editing values back and
+                  // could clobber the controller's value/selection mid-typing.
+                  readOnly: true,
+                  showCursor: true,
+                  autofocus: true,
+                  minLines: 1,
+                  undoController: widget.state.undoHistoryController,
+                  maxLines: widget.maxLines,
+                  style: scrollCalculator.textStyle,
+                  padding: scrollCalculator.textFieldPadding,
+                  focusNode: widget.node,
+                  scrollController: widget.scrollController,
+                  controller: widget.state.controller,
+                  placeholder: widget.state.placeholder,
+                  cursorColor: Colors.white,
+                  keyboardType: TextInputType.none,
+                  suffix: widget.state.type != KeyboardType.email ? SizedBox(height: widget.minHeight, width: 70) : null,
+                  decoration: BoxDecoration(color: tealColor.disabled, borderRadius: const BorderRadius.all(Radius.circular(20))),
+                  inputFormatters: widget.state.inputFormatters,
+                ),
               ),
             ),
             if (widget.state.type != KeyboardType.email)
